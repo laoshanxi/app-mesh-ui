@@ -40,11 +40,14 @@ npm run build:prod
 
 ## Build release
 
+```bash
 # 安装 nodejs 和 npm
 ./autogen.sh
 
+
 # 构建release包
 ./build.sh
+```
 
 ## 其它
 

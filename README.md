@@ -37,12 +37,13 @@ npm run build:prod
 ```
 
 ## Build release
-
+```bash
 # install nodejs and npm
 ./autogen.sh
 
 # build release package
 ./build.sh
+```
 
 ## Advanced
 
