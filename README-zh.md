@@ -38,6 +38,14 @@ npm run build:stage
 npm run build:prod
 ```
 
+## Build release
+
+# 安装 nodejs 和 npm
+./autogen.sh
+
+# 构建release包
+./build.sh
+
 ## 其它
 
 ```bash

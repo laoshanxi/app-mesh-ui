@@ -36,6 +36,14 @@ npm run build:stage
 npm run build:prod
 ```
 
+## Build release
+
+# install nodejs and npm
+./autogen.sh
+
+# build release package
+./build.sh
+
 ## Advanced
 
 ```bash
