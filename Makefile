@@ -1,7 +1,9 @@
 RELEASE_DIR=./release
 
-all:
+npm:
 	npm install --registry=https://registry.npm.taobao.org --disturl=https://npm.taobao.org/mirrors/node
+
+all:
 	npm run build:prod
 	chmod +x ./server/*.sh
 	mkdir -p ${RELEASE_DIR}
