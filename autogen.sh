@@ -13,6 +13,6 @@ fi
 
 #Ubuntu
 if [ -f "/usr/bin/apt" ]; then
-	sudo apt-get install -y nodejs
-	sudo apt-get install -y npm
+	sudo apt install -y nodejs
+	sudo apt install -y npm
 fi

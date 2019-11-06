@@ -12,7 +12,7 @@ English | [简体中文](./README-zh.md)
 
 ```bash
 # clone the project
-git clone git@github.com:laoshanxi/app-manager-ui.git
+git clone https://github.com/laoshanxi/app-manager-ui.git
 
 # enter the project directory
 cd app-manager-ui

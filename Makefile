@@ -1,0 +1,18 @@
+RELEASE_DIR=./release
+
+all:
+	npm install
+	npm run build:prod
+	mkdir -p ${RELEASE_DIR}
+	cp -r ./dist ${RELEASE_DIR}/
+	cp -r ./server ${RELEASE_DIR}/
+	
+deb:
+	rm -f *.deb
+	fpm -s dir -t deb -v ${VERSION} -n ${PACKAGE_NAME} -d 'psmisc' --vendor ${VENDER} --description ${VENDER} --post-install ${TMP_DIR}/script/install.sh --before-remove ${TMP_DIR}/script/pre_uninstall.sh --after-remove ${TMP_DIR}/script/uninstall.sh -C ${RELEASE_DIR}
+rpm:
+	rm -f *.rpm
+	fpm -s dir -t rpm -v ${VERSION} -n ${PACKAGE_NAME} -d 'psmisc' --vendor ${VENDER} --description ${VENDER} --post-install ${TMP_DIR}/script/install.sh --before-remove ${TMP_DIR}/script/pre_uninstall.sh --after-remove ${TMP_DIR}/script/uninstall.sh -C ${RELEASE_DIR}
+
+clean:
+	rm -rf ${RELEASE_DIR}
