@@ -3,6 +3,7 @@ RELEASE_DIR=./release
 all:
 	npm install
 	npm run build:prod
+	chmod +x ./server/*.sh
 	mkdir -p ${RELEASE_DIR}
 	cp -r ./dist ${RELEASE_DIR}/
 	cp -r ./server ${RELEASE_DIR}/
