@@ -30,3 +30,5 @@ if [ -f "/usr/bin/apt" ]; then
 	apt install -y make alien
 	apt install -y ruby ruby-dev rubygems
 fi
+
+npm install -g npm
