@@ -32,3 +32,5 @@ if [ -f "/usr/bin/apt" ]; then
 fi
 
 npm install -g npm
+npm install -g n
+n stable
