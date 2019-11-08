@@ -56,7 +56,8 @@
         shellApp : {
           name:"",
           command:"${COMMAND}",
-          working_dir:"/tmp"
+          working_dir:"/tmp",
+          status:0
         },
         connected : 0//0,未连接；1，连接中；2，已连接
       }
@@ -165,6 +166,7 @@
             this.getOutputValue(res.data);
           }, 1000);
         }, (res)=>{
+          console.info(res);
           this.shellContents.push({
               content: "# Failed: " + res.message
           });

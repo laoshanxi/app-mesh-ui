@@ -78,6 +78,7 @@ service.interceptors.response.use(
     if(error.response && error.response.data){
       errMessage = errMessage + ": " + error.response.data;
     }
+    error.message = errMessage;
     Message({
       message: errMessage,
       type: 'error',
