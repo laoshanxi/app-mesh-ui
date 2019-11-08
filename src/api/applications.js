@@ -30,16 +30,16 @@ export function deleteApplication(appName) {
   })
 }
 
-export function startApp(appName) {
+export function enableApp(appName) {
   return request({
-    url: '/app/' + appName + '?action=start',
+    url: '/app/' + appName + '/enable',
     method: 'POST'
   })
 }
 
-export function stopApp(appName) {
+export function disableApp(appName) {
   return request({
-    url: '/app/' + appName + '?action=stop',
+    url: '/app/' + appName + '/disable',
     method: 'POST'
   })
 }

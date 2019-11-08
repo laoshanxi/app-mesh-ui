@@ -234,7 +234,7 @@
 </template>
 
 <script>
-import { getApplications, runApp, startApp, stopApp, deleteApplication, registerApplication } from '@/api/applications'
+import { getApplications, runApp, enableApp, disableApp, deleteApplication, registerApplication } from '@/api/applications'
 import { parseTime } from '@/utils'
 import { MessageBox, Message } from 'element-ui'
 
@@ -367,7 +367,7 @@ export default {
           return;
         }
         case "enable": {
-          startApp(this.currentRow.name).then((res)=>{
+          enableApp(this.currentRow.name).then((res)=>{
             Message({
               message: 'Application '+this.currentRow.name+' enabled successfully.',
               type: 'success',
@@ -380,7 +380,7 @@ export default {
           return;
         }
         case "disable": {
-          stopApp(this.currentRow.name).then((res)=>{
+          disableApp(this.currentRow.name).then((res)=>{
             Message({
               message: 'Application '+this.currentRow.name+' disabled successfully.',
               type: 'success',
