@@ -12,6 +12,7 @@
 	        :fetch-suggestions="querySearch"
 	      ></el-autocomplete>
       <el-button type="warning" icon="el-icon-sort" @click="switchHost()">Switch</el-button>
+      <el-button icon="el-icon-refresh" @click="refresh()">Refresh</el-button>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <div><img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"><span class="username-avatar">{{name}}</span></div>

@@ -6,5 +6,6 @@ const getters = {
   name: state => state.user.name,
   auth: state => state.user.auth,
   baseUrl: state => state.settings.baseUrl,
+  loading: state => state.app.loading,
 }
 export default getters
