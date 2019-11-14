@@ -109,6 +109,10 @@ export default {
       immediate: true
     }
   },
+  created(){
+    this.loginForm.host = "https://" + window.location.hostname + ":6060";
+    this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
+  },
   methods: {
     addHost(){
       let createFilter=function(queryString) {

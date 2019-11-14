@@ -170,7 +170,7 @@
         runApp(this.shellApp.name, this.timeout, false, envs).then((res)=>{
           this.timer = setInterval(()=>{
             this.getOutputValue(res.data);
-          }, 1000);
+          }, 200);
         }, (res)=>{
           console.info(res);
           this.shellContents.push({

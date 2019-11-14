@@ -29,9 +29,9 @@
              {{ formatEmpty(scope.row.pid) }}
            </template>
          </el-table-column>
-         <el-table-column label="Name" width="150">
+         <el-table-column label="Name" width="200">
            <template slot-scope="scope">
-             <span>{{ scope.row.name }}</span>
+             <el-link :underline="true" @click="showDetail()"><i class="el-icon-view el-icon--right"></i> {{ scope.row.name }}</el-link>
            </template>
          </el-table-column>
          <el-table-column label="Command" width="150">
@@ -120,8 +120,12 @@
     </el-dialog>
 
     <!-- Register application dialog -->
-    <el-dialog title="Register Application" :visible.sync="registerFormVisible">
-      <el-card shadow="never" style="height:400px;overflow-y: auto;">
+    <!-- <el-dialog title="Register Application" :visible.sync="registerFormVisible" fullscreen="false"> -->
+    <el-drawer custom-class="right-drawer"
+      title="Register Application"
+      :visible.sync="registerFormVisible"
+      size="60%">
+      <el-card shadow="never" class="register-card">
       <el-form :model="registerForm" ref="regForm" :rules="regRules" label-width="160px">
         <el-form-item label="Name" prop="name">
           <el-input v-model="registerForm.name"></el-input>
@@ -148,24 +152,24 @@
             :inactive-value="0">
           </el-switch>
         </el-form-item>
-        <el-form-item label="Daily Limitation">
+        <el-form-item label="Daily limitation">
             <el-time-picker
                 is-range
                 v-model="daily_time_range"
                 range-separator="-"
                 value-format="HH:mm:ss"
-                start-placeholder="Start Time"
-                end-placeholder="End Time">
+                start-placeholder="Start time"
+                end-placeholder="End time">
             </el-time-picker>
         </el-form-item>
 
-        <el-form-item label="CPU Shares" prop="resource_limit.cpu_shares">
+        <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
           <el-input v-model="registerForm.resource_limit.cpu_shares"></el-input>
         </el-form-item>
         <el-form-item label="Memory" prop="resource_limit.memory_mb">
           <el-input v-model="registerForm.resource_limit.memory_mb"></el-input> MB
         </el-form-item>
-        <el-form-item label="Memory Virt" prop="resource_limit.memory_virt_mb">
+        <el-form-item label="Memory virt" prop="resource_limit.memory_virt_mb">
           <el-input v-model="registerForm.resource_limit.memory_virt_mb"></el-input> MB
         </el-form-item>
         <el-divider></el-divider>
@@ -178,17 +182,17 @@
               required: true, message: 'ENV is not empty', trigger: 'blur'
             }"
           >
-          <el-input v-model="env.name"></el-input>=
-          <el-input v-model="env.value"></el-input><el-button @click.prevent="removeEnvReg(env)" icon="el-icon-delete"></el-button>
+          <el-input v-model="env.name" ref="envs" style="width:200px"></el-input>=
+          <el-input v-model="env.value" style="width:200px"></el-input><el-button @click.prevent="removeEnvReg(env)" icon="el-icon-delete"></el-button>
         </el-form-item>
 
-        <el-form-item label="Posix Timezone" prop="posix_timezone">
+        <el-form-item label="Posix timezone" prop="posix_timezone">
           <el-input v-model="registerForm.posix_timezone"></el-input>
         </el-form-item>
-        <el-form-item label="Cache Lines" prop="cache_lines">
+        <el-form-item label="Cache lines" prop="cache_lines">
           <el-input v-model="registerForm.cache_lines"></el-input>
         </el-form-item>
-        <el-form-item label="Docker Image" prop="docker_image">
+        <el-form-item label="Docker image" prop="docker_image">
           <el-input v-model="registerForm.docker_image"></el-input>
         </el-form-item>
         <el-form-item label="PID" prop="pid">
@@ -196,18 +200,18 @@
         </el-form-item>
 
         <el-divider></el-divider>
-        <el-form-item label="Keep Running" prop="keep_running">
+        <el-form-item label="Keep running" prop="keep_running">
           <el-switch
             v-model="registerForm.keep_running"
             :active-value="1"
             :inactive-value="0">
           </el-switch>
         </el-form-item>
-        <el-form-item label="Start Interval Seconds" prop="start_interval_seconds"
+        <el-form-item label="Start interval seconds" prop="start_interval_seconds"
           >
           <el-input v-model="registerForm.start_interval_seconds" :disabled="registerForm.keep_running=='1'"></el-input> S
         </el-form-item>
-        <el-form-item label="Start Time" prop="start_time"
+        <el-form-item label="Start time" prop="start_time"
           >
           <el-date-picker
                 v-model="registerForm.start_time" value-format="yyyy-MM-dd HH:mm:ss"
@@ -215,7 +219,7 @@
                 placeholder="">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="Start Interval Timeout" prop="start_interval_timeout"
+        <el-form-item label="Start tnterval timeout" prop="start_interval_timeout"
           >
           <el-input v-model="registerForm.start_interval_timeout" :disabled="registerForm.keep_running=='1'"></el-input> S
         </el-form-item>
@@ -223,12 +227,22 @@
       </el-form>
 
       </el-card>
-      <div slot="footer" class="dialog-footer">
+      <div class="dialog-footer">
         <el-button @click="registerFormVisible = false">Cancel</el-button>
+        <el-button @click="reset()">Reset</el-button>
         <el-button @click="addEnvReg()">Add Env</el-button>
         <el-button type="primary" @click="registerApp()">Register</el-button>
       </div>
-    </el-dialog>
+    </el-drawer>
+
+    <el-drawer
+      :title="currentRow? currentRow.name:'Please select one application'"
+      :visible.sync="isShowDetail"
+      size="50%">
+      <div>
+        <app-detail :record="currentRow"/>
+      </div>
+    </el-drawer>
   </div>
 
 </template>
@@ -237,8 +251,12 @@
 import { getApplications, runApp, enableApp, disableApp, deleteApplication, registerApplication } from '@/api/applications'
 import { parseTime } from '@/utils'
 import { MessageBox, Message } from 'element-ui'
+import AppDetail from './appDetail'
 
 export default {
+  components:{
+    AppDetail
+  },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -251,6 +269,7 @@ export default {
   },
   data() {
     return {
+      isShowDetail:false,
       isSelected:false,
       isStart:false,
       isEnabled:false,
@@ -271,6 +290,7 @@ export default {
       },
       registerFormVisible: false,
       daily_time_range:null,
+      initRegisterForm:null,
       registerForm:{
         name:'',
         command:'',
@@ -306,17 +326,21 @@ export default {
         ],
         command: [
           { required: true, message: 'Command is not empty', trigger: 'blur' }
-        ],
-        working_dir: [
-          { required: true, message: 'Working Dir is not empty', trigger: 'blur' }
         ]
       }
     }
   },
   created() {
-    this.fetchData()
+    this.fetchData();
   },
   methods: {
+    reset(){
+      this.$refs.regForm.resetFields();
+      this.registerForm.envs = [];
+    },
+    showDetail(){
+      this.isShowDetail = true;
+    },
     addEnv(){
       this.form.envs.push({
         name:'',
@@ -330,6 +354,9 @@ export default {
         value: '',
         key: Date.now()
       });
+      setTimeout(()=>{
+        this.$refs["envs"][this.registerForm.envs.length - 1].focus();
+      }, 100)
     },
     removeEnv(item){
       var index = this.form.envs.indexOf(item)
@@ -436,6 +463,7 @@ export default {
               duration: 5 * 1000
             });
             this.registerFormVisible = false;
+            this.reset();
           }, (res)=>{
 
           });
@@ -532,11 +560,26 @@ export default {
   }
 </style>
 <style lang="scss" scoped>
+  .register-card{
+    height: calc(100vh - 136px) !important;
+    overflow-y: auto;
+  }
   .el-row{
     margin-bottom: 8px;
   }
   .el-input{
-    width:200px;
+    width:350px;
     margin-right: 10px;
+  }
+  .dialog-footer{
+    border-top: 1px solid #BFCBD9;
+    background-color: #FFFFFF;
+    width:100%;
+    position: absolute;
+    bottom: 0px;
+    text-align: right;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 30px;
   }
 </style>
