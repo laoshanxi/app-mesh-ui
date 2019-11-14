@@ -15,6 +15,9 @@
       <el-col :span="12"></el-col>
     </el-row>
     <div class="shell-div" ref="shell_div">
+      <el-button-group class="buttonsArea">
+        <i class="el-icon-delete" @click="clearScreen"></i>
+      </el-button-group>
       <div class="shell-content">
         <div v-for="line in shellContents" class="shell-line"><pre>{{line.content}}</pre></div>
       </div>
@@ -82,6 +85,9 @@
       this.connectHost();
     },
     methods:{
+      clearScreen(){
+        this.shellContents = [];
+      },
       upCommand(){
         if(this.commands.length==0){
           return;
@@ -209,7 +215,14 @@
   }
 </style>
 <style scoped>
-
+  .buttonsArea{
+    position: absolute;
+    right: 35px;
+    padding: 10px;
+  }
+  .buttonsArea i{
+    cursor: pointer;
+  }
   .shell-div{
     overflow: auto;
     width: 100%;
