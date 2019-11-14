@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import router from '@/router'
 
 // create an axios instance
 const service = axios.create({
@@ -77,6 +78,7 @@ service.interceptors.response.use(
     let errMessage = error.message;
     if(error.response && error.response.data){
       errMessage = errMessage + ": " + error.response.data;
+
     }
     error.message = errMessage;
     Message({
@@ -84,6 +86,11 @@ service.interceptors.response.use(
       type: 'error',
       duration: 5 * 1000
     })
+    if(error.response && error.response.data && error.response.data.indexOf("token verification failed")>-1){
+      store.dispatch('user/logout').then(res=>{
+        router.go("/login");
+      }, res=>{});
+    }
     return Promise.reject(error)
   }
 )

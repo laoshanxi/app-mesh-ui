@@ -8,6 +8,7 @@
       <span>Host:</span>
       <el-autocomplete
 	        class="inline-input"
+          style="width:300px"
 	        v-model="host"
 	        :fetch-suggestions="querySearch"
 	      ></el-autocomplete>
@@ -59,9 +60,11 @@ export default {
     Breadcrumb,
     Hamburger
   },
-  mounted(){
+  created() {
     this.host = this.$store.getters.baseUrl;
-    this.addHost();
+    this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
+  },
+  mounted(){
   },
   computed: {
     ...mapGetters([
@@ -73,18 +76,6 @@ export default {
     ])
   },
   methods: {
-    addHost(){
-      let createFilter=function(queryString) {
-        return (restaurant) => {
-          return (restaurant.value.toLowerCase().trim()==queryString.toLowerCase().trim());
-        };
-      }
-      if(this.restaurants.filter(createFilter(this.host)).length==0){
-        this.restaurants.push({
-          value: this.host
-        });
-      }
-    },
     refresh () {
       this.$router.replace({
         path: '/refresh',
@@ -100,7 +91,6 @@ export default {
           type: 'success',
           duration: 5 * 1000
         });
-        this.addHost();
         this.refresh();
       }).catch(() => {
 

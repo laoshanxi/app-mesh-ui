@@ -25,3 +25,4 @@ export function getUser(){
 export function removeUser(){
   sessionStorage["user"] = null;
 }
+

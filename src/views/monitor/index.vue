@@ -1,8 +1,11 @@
 <template>
   <div class="app-container">
-    <code>
-      {{resources}}
-    </code>
+    <el-tabs type="border-card">
+      <el-tab-pane>
+        <span slot="label"><i class="el-icon-monitor"></i> Monitor</span>
+        <json-viewer :value="resources"></json-viewer>
+      </el-tab-pane>
+    </el-tabs>
   </div>
 </template>
 
@@ -13,7 +16,7 @@ export default {
   data() {
     return {
       activeNames:[],
-      resources:''
+      resources:'No Data'
     }
   },
   mounted(){
