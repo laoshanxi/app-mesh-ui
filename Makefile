@@ -21,4 +21,6 @@ tar:
 	tar czvf appmanager-ui.${VER}.tar.gz appmanager-ui.${VER}.tar
 	
 clean:
-	rm -rf ${RELEASE_DIR}
+	docker rm -f appmanager-ui
+	docker rmi -f appmanager-ui:${VER}
+	rm -rf *.tar
