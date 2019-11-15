@@ -239,7 +239,7 @@
       :title="currentRow? currentRow.name:'Please select one application'"
       :visible.sync="isShowDetail"
       size="50%">
-      <div>
+      <div class="register-card">
         <app-detail :record="currentRow"/>
       </div>
     </el-drawer>

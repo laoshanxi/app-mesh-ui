@@ -1,24 +1,33 @@
 <template>
-    <el-col :span="+col">
-      <div class="term">{{term}}</div>
-      <div class="detail">
+  <div class="description_text">
+      <div v-if="title" class="title">{{title}}</div>
+      <el-row :gutter="gutter">
         <slot></slot>
-      </div>
-    </el-col>
+      </el-row>
+  </div>
 </template>
 
 <script>
 
 export default {
-  name: "Description",
+  name: "DescriptionList",
   props: {
   	title: "",
-    term: ""
-  },
-  computed:{
-    col(){
-      return this.$parent.$parent.col;
+    gutter: {
+      type: [Number, String],
+      default: 20
+    },
+    col: {
+      type: [Number, String],
+      default: 8
     }
+  },
+
+  data() {
+    return {
+    };
+  },
+  watch: {
   }
 };
 </script>
@@ -37,7 +46,7 @@ export default {
     color: #606266;
     font-weight: 400;
     font-size: 14px;
-    line-height: 35px;
+    line-height: 22px;
     padding-bottom: 16px;
     margin-right: 8px;
     white-space: nowrap;
@@ -51,7 +60,7 @@ export default {
   }
   .detail {
     font-size: 14px;
-    line-height: 35px;
+    line-height: 1.5;
     width: 100%;
     padding-bottom: 16px;
     color: #909399;

@@ -2,6 +2,13 @@
 
   <el-card>
     <el-row slot="header">
+      <el-col :span="3" style="text-align: center;height: 38px; line-height: 38px;">
+        <el-switch
+            v-model="isSync"
+            active-text="Sync"
+            inactive-text="Async">
+        </el-switch>
+      </el-col>
       <el-col :span="2" style="text-align: center;height: 38px; line-height: 38px;">Timeout</el-col>
       <el-col :span="10">
         <el-slider
@@ -12,7 +19,8 @@
               :marks="marks">
         </el-slider>
       </el-col>
-      <el-col :span="12"></el-col>
+      <el-col :span="9">
+      </el-col>
     </el-row>
     <div class="shell-div" ref="shell_div">
       <el-button-group class="buttonsArea">
@@ -56,6 +64,7 @@
         index:-1,
         input : "",
         inputDisabled:false,
+        isSync:true,
         shellApp : {
           name:"",
           command:"${COMMAND}",
@@ -167,16 +176,29 @@
         this.$nextTick(() => {
           shell.scrollTop = shell.scrollHeight;
         });
-        runApp(this.shellApp.name, this.timeout, false, envs).then((res)=>{
-          this.timer = setInterval(()=>{
-            this.getOutputValue(res.data);
-          }, 200);
+        runApp(this.shellApp.name, this.timeout, this.isSync, envs).then((res)=>{
+          if(this.isSync){
+            this.refreshShellContents(res.data);
+            this.runFinished();
+          }else{
+            this.timer = setInterval(()=>{
+              this.getOutputValue(res.data);
+            }, 1000);
+          }
         }, (res)=>{
-          console.info(res);
           this.shellContents.push({
               content: "# Failed: " + res.message
           });
           this.runFinished();
+        });
+      },
+      refreshShellContents(content){
+        this.shellContents.push({
+            content: content
+        });
+        let shell = this.$refs['shell_div'];
+        this.$nextTick(() => {
+          shell.scrollTop = shell.scrollHeight;
         });
       },
       getOutputValue(pid){
@@ -187,13 +209,7 @@
           if(res.data==""){
             return;
           }
-          this.shellContents.push({
-              content: res.data
-          });
-          let shell = this.$refs['shell_div'];
-          this.$nextTick(() => {
-            shell.scrollTop = shell.scrollHeight;
-          });
+          this.refreshShellContents(res.data);
         }, (res)=>{
           this.shellContents.push({
               content: "# Failed: " + res.message
