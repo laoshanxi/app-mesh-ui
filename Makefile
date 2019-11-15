@@ -1,12 +1,13 @@
 RELEASE_DIR=./release
 VER=1.0
+NODE_VER=10.17.0-jessie
 
 all:
 	make buildnode
 	make package
 
 buildnode:
-	docker run -ti -p 9825:9825 --rm --privileged -v `pwd`:/opt node:10.17.0-jessie sh -c "cd /opt; npm install; npm run build:prod"
+	docker run -ti -p 9825:9825 --rm --privileged -v `pwd`:/opt node:${NODE_VER} sh -c "cd /opt; npm install; npm run build:prod"
 	
 package:
 	docker rmi -f appmanager-ui:${VER}
@@ -24,3 +25,4 @@ clean:
 	docker rm -f appmanager-ui
 	docker rmi -f appmanager-ui:${VER}
 	rm -rf *.tar
+	rm -rf ./node_modules
