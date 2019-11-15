@@ -7,7 +7,7 @@ all:
 	make package
 
 buildnode:
-	docker run -ti -p 9825:9825 --rm --privileged -v `pwd`:/opt node:${NODE_VER} sh -c "cd /opt; npm install; npm run build:prod"
+	docker run -ti -p 9825:9825 --rm --privileged -v `pwd`:/opt --workdir /opt node:${NODE_VER} sh -c "npm install; npm run build:prod"
 	
 package:
 	docker rmi -f appmanager-ui:${VER}
