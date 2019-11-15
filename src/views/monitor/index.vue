@@ -3,7 +3,8 @@
     <el-tabs type="border-card">
       <el-tab-pane>
         <span slot="label"><i class="el-icon-monitor"></i> Monitor</span>
-        <json-viewer :value="resources"></json-viewer>
+        <i class="el-icon-circle-plus" @click="expandJson()"></i>
+        <json-viewer :value="resources" :expand-depth="expand"></json-viewer>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -16,7 +17,8 @@ export default {
   data() {
     return {
       activeNames:[],
-      resources:'No Data'
+      resources:'No Data',
+      expand:1
     }
   },
   mounted(){
@@ -27,7 +29,9 @@ export default {
     });
   },
   methods: {
-
+    expandJson(){
+      this.expand = 10;
+    }
   }
 }
 </script>

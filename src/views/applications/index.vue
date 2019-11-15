@@ -239,7 +239,7 @@
       :title="currentRow? currentRow.name:'Please select one application'"
       :visible.sync="isShowDetail"
       size="50%">
-      <div class="register-card">
+      <div class="detail-card">
         <app-detail :record="currentRow"/>
       </div>
     </el-drawer>
@@ -560,18 +560,22 @@ export default {
   }
 </style>
 <style lang="scss" scoped>
-  .register-card{
-    height: calc(100vh - 136px) !important;
-    overflow-y: auto;
-  }
   .el-row{
     margin-bottom: 8px;
   }
   .el-input{
+    width:200px;
+    margin-right: 10px;
+  }
+  .register-card{
+    height: calc(100vh - 136px) !important;
+    overflow-y: auto;
+  }
+  .register-card .el-input{
     width:350px;
     margin-right: 10px;
   }
-  .dialog-footer{
+  .right-drawer .dialog-footer{
     border-top: 1px solid #BFCBD9;
     background-color: #FFFFFF;
     width:100%;
@@ -581,5 +585,9 @@ export default {
     padding-top: 10px;
     padding-bottom: 10px;
     padding-right: 30px;
+  }
+  .detail-card{
+    height: calc(100vh - 77px) !important;
+    overflow-y: auto;
   }
 </style>
