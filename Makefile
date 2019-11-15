@@ -24,5 +24,5 @@ tar:
 clean:
 	docker rm -f appmanager-ui
 	docker rmi -f appmanager-ui:${VER}
-	rm -rf *.tar
+	rm -rf *.tar *.gz
 	rm -rf ./node_modules
