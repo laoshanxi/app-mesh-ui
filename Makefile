@@ -10,6 +10,7 @@ buildnode:
 	docker run -ti -p 9825:9825 --rm --privileged -v `pwd`:/opt --workdir /opt node:${NODE_VER} sh -c "npm install; npm run build:prod"
 	
 package:
+	docker rm -f appmanager-ui
 	docker rmi -f appmanager-ui:${VER}
 	docker build -t appmanager-ui:${VER} -f ./Dockerfile .
 	
@@ -24,5 +25,5 @@ tar:
 clean:
 	docker rm -f appmanager-ui
 	docker rmi -f appmanager-ui:${VER}
-	rm -rf *.tar *.gz
-	rm -rf ./node_modules
+	rm -rf ./*.tar ./*.gz
+	#rm -rf ./node_modules
