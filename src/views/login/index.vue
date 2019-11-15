@@ -65,6 +65,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import request from '@/utils/request'
 
 export default {
   name: 'Login',
@@ -113,7 +114,24 @@ export default {
     this.loginForm.host = "https://" + window.location.hostname + ":6060";
     this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
   },
+  mounted(){
+    this.certifedHost();
+  },
   methods: {
+    certifedHost(callback){
+      request({
+        url: this.loginForm.host,
+        timeout: 3000,
+        method: 'GET'
+      }).then((res)=>{
+        console.info("Certified");
+        this.loading = false;
+        callback ? callback() : '';
+      }, (res)=>{
+        this.loading = false;
+        window.open(this.$store.getters.baseUrl);
+      });
+    },
     addHost(){
       let createFilter=function(queryString) {
         return (restaurant) => {
@@ -127,10 +145,13 @@ export default {
       }
     },
     switchHost(){
+      this.loading = true;
       this.$store.dispatch("settings/changeSetting", {key:"baseUrl", value:this.loginForm.host}).then(() => {
-        this.handleLogin();
+        this.certifedHost(()=>{
+          this.handleLogin();
+        });
       }).catch(() => {
-        //this.loading = false
+        this.loading = false
       });
     },
     querySearch(queryString, cb) {

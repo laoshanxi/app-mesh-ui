@@ -11,14 +11,7 @@ export default {
   name: 'App',
 
   mounted(){
-    request({
-      url: '',
-      method: 'GET'
-    }).then((res)=>{
-      console.info("Certified");
-    }, (res)=>{
-      window.open(this.$store.getters.baseUrl);
-    });
+    
   }
 }
 </script>

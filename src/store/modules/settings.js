@@ -6,7 +6,7 @@ const { showSettings, fixedHeader, sidebarLogo, baseUrl } = defaultSettings
 
 const state = {
   baseUrl: baseUrl,
-  apiUrls: null,
+  apiUrls: getDataLocalStorage(constants.API_URLS),
   showSettings: showSettings,
   fixedHeader: fixedHeader,
   sidebarLogo: sidebarLogo

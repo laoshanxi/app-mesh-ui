@@ -12,7 +12,7 @@
 	        v-model="host"
 	        :fetch-suggestions="querySearch"
 	      ></el-autocomplete>
-      <el-button type="warning" icon="el-icon-sort" @click="switchHost()">Switch</el-button>
+      <el-button type="warning" icon="el-icon-sort" @click="switchHost()" v-loading.fullscreen.lock="fullscreenLoading">Switch</el-button>
       <el-button icon="el-icon-refresh" @click="refresh()">Refresh</el-button>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
@@ -46,6 +46,7 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import { MessageBox, Message } from 'element-ui'
+import request from '@/utils/request'
 
 export default {
   data(){
@@ -53,7 +54,8 @@ export default {
       restaurants:[{
         value:"https://localhost:6060"
       }],
-      host:"https://localhost:6060"
+      host:"https://localhost:6060",
+      fullscreenLoading: false
     };
   },
   components: {
@@ -76,6 +78,19 @@ export default {
     ])
   },
   methods: {
+    certifedHost(callback){
+      request({
+        url: this.host,
+        timeout: 3000,
+        method: 'GET'
+      }).then((res)=>{
+        console.info("Certified");
+        callback ? callback() : '';
+      }, (res)=>{
+        this.fullscreenLoading = false;
+        window.open(this.host);
+      });
+    },
     refresh () {
       this.$router.replace({
         path: '/refresh',
@@ -91,16 +106,20 @@ export default {
           type: 'success',
           duration: 5 * 1000
         });
+        this.fullscreenLoading = false;
         this.refresh();
       }).catch(() => {
-
+        this.fullscreenLoading = false;
       })
     },
     switchHost(){
-      this.$store.dispatch("settings/changeSetting", {key:"baseUrl", value:this.host}).then(() => {
-        this.logonWithNewHost();
-      }).catch(() => {
-        //this.loading = false
+      this.fullscreenLoading = true;
+      this.certifedHost(()=>{
+        this.$store.dispatch("settings/changeSetting", {key:"baseUrl", value:this.host}).then(() => {
+          this.logonWithNewHost();
+        }).catch(() => {
+          this.fullscreenLoading = false;
+        });
       });
     },
     querySearch(queryString, cb) {
