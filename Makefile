@@ -18,5 +18,9 @@ run:
 	docker rm -f appmanager-ui
 	docker run -d -p 6061:80 --name appmgr-web appmanager-ui:${VER}
 	
+tar:
+	docker save appmanager-ui:${VER}  -o  ./appmanager-ui.${VER}.tar
+	tar czvf appmanager-ui.${VER}.tar.gz appmanager-ui.${VER}.tar
+	
 clean:
 	rm -rf ${RELEASE_DIR}
