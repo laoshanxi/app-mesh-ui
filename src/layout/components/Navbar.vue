@@ -51,10 +51,8 @@ import request from '@/utils/request'
 export default {
   data(){
     return {
-      restaurants:[{
-        value:"https://localhost:6060"
-      }],
-      host:"https://localhost:6060",
+      restaurants:[],
+      host:"",
       fullscreenLoading: false
     };
   },

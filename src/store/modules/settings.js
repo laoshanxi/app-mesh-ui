@@ -5,7 +5,7 @@ import constants from '@/utils/constants'
 const { showSettings, fixedHeader, sidebarLogo, baseUrl } = defaultSettings
 
 const state = {
-  baseUrl: baseUrl,
+  baseUrl: getDataLocalStorage(constants.BASE_URL),
   apiUrls: getDataLocalStorage(constants.API_URLS),
   showSettings: showSettings,
   fixedHeader: fixedHeader,
@@ -33,6 +33,8 @@ const mutations = {
         });
       }
       setDataLocalStorage(constants.API_URLS, state.apiUrls);
+      setDataLocalStorage(constants.BASE_URL, value);
+
     }
     if (state.hasOwnProperty(key)) {
       state[key] = value
