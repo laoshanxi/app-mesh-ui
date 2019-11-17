@@ -112,6 +112,18 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/config',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Config',
+        component: () => import('@/views/config/index'),
+        meta: { title: 'Configuration', icon: 'config' }
+      }
+    ]
+  },
 
   { path: '/refresh', component: () => import('@/views/refresh'), hidden: true },
   // 404 page must be placed at the end !!!

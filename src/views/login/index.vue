@@ -111,7 +111,7 @@ export default {
     }
   },
   created(){
-    this.loginForm.host = "https://" + window.location.hostname + ":6060";
+    this.loginForm.host = this.$store.getters.baseUrl ? this.$store.getters.baseUrl : "https://" + window.location.hostname + ":6060";
     this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
   },
   mounted(){

@@ -85,10 +85,17 @@ service.interceptors.response.use(
       type: 'error',
       duration: 5 * 1000
     })
-    if(error.response && error.response.data && error.response.data.indexOf("token verification failed")>-1){
-      store.dispatch('user/logout').then(res=>{
-        router.go("/login");
-      }, res=>{});
+    if(error.response && error.response.data && error.response.data.indexOf("verification failed")>-1){
+      MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+        confirmButtonText: 'Re-Login',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
+        store.dispatch('user/logout').then(res=>{
+          router.go("/login");
+        }, res=>{});
+      })
+
     }
     return Promise.reject(error)
   }

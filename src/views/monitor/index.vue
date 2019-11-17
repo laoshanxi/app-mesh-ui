@@ -5,8 +5,8 @@
         <span slot="label"><i class="el-icon-monitor"></i> Monitor</span>
 
         <el-row class="detail-card">
-          <el-col span="1" style="text-align: right; padding-top: 20px;"><i :class="btnIcon" style="cursor: pointer;" :title="button" @click="expandJson()"></i></el-col>
-          <el-col span="23">
+          <el-col :span="1" style="text-align: right; padding-top: 20px;"><i :class="btnIcon" style="cursor: pointer;" :title="button" @click="expandJson()"></i></el-col>
+          <el-col :span="23">
             <el-row v-show="showExpand">
               <json-viewer :value="resources" :expand-depth="1"></json-viewer>
             </el-row>
