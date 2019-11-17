@@ -124,6 +124,37 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/security',
+    component: Layout,
+    redirect: '/security/changePwd',
+    name: 'Security',
+    meta: {
+      title: 'Security',
+      icon: 'security'
+    },
+    children: [
+      {
+        path: 'changePwd',
+        name: 'ChangePwd',
+        component: () => import('@/views/security/changePwd'),
+        meta: { title: 'Change Password', icon: 'password' }
+      },
+      {
+        path: 'users',
+        name: 'Users',
+        component: () => import('@/views/security/users'),
+        meta: { title: 'Users', icon: 'user' }
+      },
+      {
+        path: 'roles',
+        name: 'Roles',
+        component: () => import('@/views/security/roles'),
+        meta: { title: 'Roles', icon: 'role' }
+      }
+    ]
+  },
+
 
   { path: '/refresh', component: () => import('@/views/refresh'), hidden: true },
   // 404 page must be placed at the end !!!

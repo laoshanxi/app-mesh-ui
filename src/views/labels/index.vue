@@ -35,7 +35,7 @@
               </el-form-item>
 
               <el-form-item>
-                <el-button size="small" type="primary" @click.prevent="addLabel()">Add Label</el-button>
+                <el-button size="small" @click.prevent="addLabel()">Add Label</el-button>
                 <el-button size="small" type="primary" @click.prevent="saveLabels()">Submit</el-button>
               </el-form-item>
             </el-form>

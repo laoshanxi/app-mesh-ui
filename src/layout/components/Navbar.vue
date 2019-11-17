@@ -21,19 +21,25 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <router-link to="/">
+          <router-link to="/security/changePwd">
             <el-dropdown-item>
-              Home
+              <i class="iconfont icon-lock"></i>Change Password
             </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://github.com/laoshanxi/app-manager">
-            <el-dropdown-item>Github</el-dropdown-item>
+            <el-dropdown-item>
+              <i class="iconfont icon-github"></i>Github
+            </el-dropdown-item>
           </a>
           <a target="_blank" href="https://github.com/laoshanxi/app-manager/blob/master/README.md">
-            <el-dropdown-item>Docs</el-dropdown-item>
+            <el-dropdown-item>
+              <i class="iconfont icon-file"></i>Docs
+            </el-dropdown-item>
           </a>
           <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">Log Out</span>
+            <span style="display:block;" @click="logout">
+              <i class="iconfont icon-log-out"></i>Log Out
+            </span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>

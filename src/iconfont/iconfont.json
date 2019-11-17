@@ -1,0 +1,44 @@
+{
+  "id": "1514126",
+  "name": "app_manager",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "431779",
+      "name": "github",
+      "font_class": "github",
+      "unicode": "e709",
+      "unicode_decimal": 59145
+    },
+    {
+      "icon_id": "2715909",
+      "name": "log-out",
+      "font_class": "log-out",
+      "unicode": "e64a",
+      "unicode_decimal": 58954
+    },
+    {
+      "icon_id": "6086536",
+      "name": "doc",
+      "font_class": "file",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "6775883",
+      "name": "password",
+      "font_class": "lock",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "10371730",
+      "name": "role",
+      "font_class": "role",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    }
+  ]
+}

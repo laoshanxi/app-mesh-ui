@@ -70,7 +70,7 @@
 
               <el-form-item>
                 <el-button size="small" type="primary" @click.prevent="saveConfig()">Submit</el-button>
-                <el-button size="small" type="primary" @click.prevent="reset()">Reset</el-button>
+                <el-button size="small" @click.prevent="reset()">Reset</el-button>
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -104,6 +104,7 @@ export default {
         SSLEnabled: "",
         ScheduleIntervalSeconds: ""
       },
+      configData:null,
       options:[{
         label: "DEBUG",
         value: "DEBUG"
@@ -123,10 +124,18 @@ export default {
     this.refresh();
   },
   methods: {
+    setConfig(data){
+      this.configData = data;
+      for(let prop in this.form){
+        if(data.hasOwnProperty(prop)){
+          this.form[prop] = data[prop];
+        }
+      }
+    },
     refresh(){
       this.loading = true;
       getConfig().then((res)=>{
-        this.form = res.data;
+        this.setConfig(res.data);
         this.loading = false;
       }, (res)=>{
         this.loading = false;
@@ -134,7 +143,7 @@ export default {
       });
     },
     reset(){
-      this.$refs.form.reset();
+      this.setConfig(this.configData);
     },
     saveConfig(){
       this.$refs["form"].validate((valid) => {
