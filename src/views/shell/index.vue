@@ -248,7 +248,7 @@
   }
   .shell-command{
     padding: 0px 10px 10px 10px;
-    line-height: 30px;
+    line-height: 24px;
     width: 100%;
     height:50px;
     background-color:#001528;
@@ -256,7 +256,7 @@
   }
   .shell-content{
     padding: 10px 10px 0px 10px;
-    line-height: 30px;
+    line-height: 24px;
     width: 100%;
     background-color:#001528;
     color: #BFCBD9;
