@@ -64,8 +64,9 @@
       <Description term="Cache lines">{{formatEmpty(record.cache_lines)}}</Description>
       <Description term="Docker image">{{formatEmpty(record.docker_image)}}</Description>
     </DescriptionList>
+    <el-divider></el-divider>
     <DescriptionList title="Environment variables" col="24" v-if="record.env">
-      <Description :term="name" v-for="(name, value) in record.env">{{value}}</Description>
+      <Description :term="name" v-for="(value, name) in record.env">{{value}}</Description>
     </DescriptionList>
   </el-card>
 </template>

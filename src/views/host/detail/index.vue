@@ -33,7 +33,7 @@
         highlight-current-row
       >
 
-        <el-table-column label="Device" width="240">
+        <el-table-column label="Device">
           <template slot-scope="scope">
             {{ formatEmpty(scope.row.device) }}
           </template>
@@ -44,17 +44,17 @@
             {{ formatEmpty(scope.row.mount_point) }}
           </template>
         </el-table-column>
-        <el-table-column label="Size">
+        <el-table-column label="Size" width="140">
           <template slot-scope="scope">
             {{ formatMemory(scope.row.size) }}
           </template>
         </el-table-column>
-        <el-table-column label="Used">
+        <el-table-column label="Used" width="140">
           <template slot-scope="scope">
             {{ formatMemory(scope.row.used) }}
           </template>
         </el-table-column>
-        <el-table-column label="Usage">
+        <el-table-column label="Usage" width="140">
           <template slot-scope="scope">
             {{ formatPercentage(scope.row.usage) }}
           </template>
@@ -76,7 +76,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="IPV4">
+        <el-table-column label="IPV4" width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.ipv4" :type="'success'">
               Yes

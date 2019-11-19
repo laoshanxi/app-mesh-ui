@@ -38,7 +38,6 @@ export default {
     font-weight: 400;
     font-size: 14px;
     line-height: 35px;
-    padding-bottom: 16px;
     margin-right: 8px;
     white-space: nowrap;
     display: table-cell;
@@ -53,7 +52,6 @@ export default {
     font-size: 14px;
     line-height: 35px;
     width: 100%;
-    padding-bottom: 16px;
     color: #909399;
     display: table-cell;
   }
