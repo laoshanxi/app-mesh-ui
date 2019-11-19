@@ -17,9 +17,6 @@
               Home
             </router-link>
           </li>
-          <li class="link-type">
-            <a href="https://www.taobao.com/">Look around</a>
-          </li>
           <li><a href="#" @click.prevent="dialogVisible=true">Look at the picture</a></li>
         </ul>
       </el-col>
