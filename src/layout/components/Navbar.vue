@@ -36,6 +36,11 @@
               <i class="iconfont icon-file"></i>Docs
             </el-dropdown-item>
           </a>
+          <a target="_blank" href="https://github.com/laoshanxi/app-manager-ui">
+            <el-dropdown-item>
+              <i class="el-icon-mobile-phone"></i>GUI
+            </el-dropdown-item>
+          </a>
           <el-dropdown-item divided>
             <span style="display:block;" @click="logout">
               <i class="iconfont icon-log-out"></i>Log Out
