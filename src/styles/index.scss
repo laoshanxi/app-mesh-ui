@@ -81,3 +81,6 @@ div:focus {
     height: calc(100vh - 131px) !important;
     overflow: auto;
 }
+.el-input, .el-textarea{
+  max-width:400px !important;
+}
