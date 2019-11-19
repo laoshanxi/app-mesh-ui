@@ -27,11 +27,22 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      const hasGetUserInfo = store.getters.name
+      const hasGetUserInfo = store.getters.user
       if (hasGetUserInfo) {
         if (to.meta && to.meta.roles && to.meta.roles.length>0){
-          let result = to.meta.roles.indexOf(hasGetUserInfo);
-          if(result >= 0){
+          let curPermissions = to.meta.roles;
+          let permissions = hasGetUserInfo.permissions;
+          let hasPermission = false;
+          if(permissions){
+            for(let i=0;i<curPermissions.length;i++){
+              if(permissions.indexOf(curPermissions[i]) >= 0 ){
+                hasPermission = true;
+                break;
+              }
+            }
+          }
+
+          if(hasPermission){
             next();
           }else{
             next('/401');

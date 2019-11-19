@@ -8,5 +8,6 @@ const getters = {
   baseUrl: state => state.settings.baseUrl,
   apiUrls: state => state.settings.apiUrls,
   loading: state => state.app.loading,
+  user: state => state.user,
 }
 export default getters

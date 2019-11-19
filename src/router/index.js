@@ -156,13 +156,13 @@ export const constantRoutes = [
         path: 'users',
         name: 'Users',
         component: () => import('@/views/security/users'),
-        meta: { title: 'Users', icon: 'user',roles: ['admin'] }
+        meta: { title: 'Users', icon: 'user',roles: ['lock-user', 'unlock-user'] }
       },
       {
         path: 'roles',
         name: 'Roles',
         component: () => import('@/views/security/roles'),
-        meta: { title: 'Roles', icon: 'role',roles: ['admin'] }
+        meta: { title: 'Roles', icon: 'role',roles: ['lock-user', 'unlock-user'] }
       }
     ]
   },

@@ -7,8 +7,8 @@
       <el-button-group>
       <el-button @click="btnClick('new')" type="primary" icon="el-icon-plus" >New</el-button>
       <el-button @click="btnClick('delete')" type="danger" icon="el-icon-delete" :disabled="!isSelected">Delete</el-button>
-      <el-button @click="btnClick('lock')" type="warning" icon="el-icon-lock" :disabled="!isSelected || isLocked">Lock</el-button>
-      <el-button @click="btnClick('unlock')" type="success" icon="el-icon-unlock" :disabled="!isSelected || !isLocked">Unlock</el-button>
+      <el-button @click="locked()" type="warning" icon="el-icon-lock" :disabled="!isSelected || isLocked">Lock</el-button>
+      <el-button @click="unlocked()" type="success" icon="el-icon-unlock" :disabled="!isSelected || !isLocked">Unlock</el-button>
       <el-button @click="btnClick('roles')" type="success" icon="iconfont icon-role" :disabled="!isSelected">Roles</el-button>
       </el-button-group>
     </el-row>
@@ -26,17 +26,17 @@
 
          <el-table-column label="Name" width="200">
            <template slot-scope="scope">
-             <el-link :underline="true" @click="showDetail()"><i class="el-icon-view el-icon--right"></i> {{ scope.row.name }}</el-link>
+             {{ scope.row.name }}
            </template>
          </el-table-column>
 
          <el-table-column class-name="status-col" label="Status" width="110">
            <template slot-scope="scope">
-             <el-tag v-if="scope.row.locked" :type="'success'">
+             <el-tag v-if="scope.row.locked" :type="'danger'">
                Locked
              </el-tag>
-             <el-tag v-else :type="'info'">
-               Unlocked
+             <el-tag v-else :type="'success'">
+               Normal
              </el-tag>
 
            </template>
@@ -52,7 +52,8 @@
 </template>
 
 <script>
-import {getResources} from '@/api/resources'
+import {getConfig} from '@/api/config'
+import {locked, unlocked} from '@/api/user'
 
 export default {
   data() {
@@ -60,32 +61,37 @@ export default {
       tableKey:0,
       isSelected:false,
       isLocked:false,
-      list: null,
+      list: [],
       listLoading: false,
 
       currentRow: null,
     }
   },
   mounted(){
-    getResources().then((res)=>{
-      this.resources = res.data;
-    }, (res)=>{
-
-    });
+    this.refreshData();
   },
   methods: {
+    refreshData(){
+      this.list = [];
+      getConfig().then((res)=>{
+        if(res && res.data && res.data.JWT){
+          for(let p in res.data.JWT){
+            this.list.push({
+              name: p,
+              locked: res.data.JWT[p].locked,
+              roles: res.data.JWT[p].roles,
+            });
+          }
+        }
+      }, (res)=>{
+
+      });
+    },
     btnClick(action){
       switch (action){
         case "new": {
           // this.registerFormVisible = true;
           this.$alert("Nothing here", "New");
-          return;
-        }
-        case "lock": {
-          // this.dialogFormVisible = true;
-          return;
-        }
-        case "unlock": {
           return;
         }
         case "delete": {
@@ -97,6 +103,26 @@ export default {
           return;
         }
       }
+    },
+    locked(){
+      this.listLoading = true;
+      locked(this.currentRow.name).then((res)=>{
+        this.$message.success('User '+ this.currentRow.name+' had locked.', 5000);
+        this.refreshData();
+        this.listLoading = false;
+      }, (res)=>{
+        this.listLoading = false;
+      });
+    },
+    unlocked(){
+      this.listLoading = true;
+      unlocked(this.currentRow.name).then((res)=>{
+        this.$message.success('User '+ this.currentRow.name+' had unlocked.', 5000);
+        this.refreshData();
+        this.listLoading = false;
+      }, (res)=>{
+        this.listLoading = false;
+      });
     },
     currentRowChange(currentRow, oldCurrentRow){
       this.currentRow = currentRow;

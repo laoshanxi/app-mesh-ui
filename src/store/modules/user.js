@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getInfo, getPermissions } from '@/api/user'
 import { getToken, setToken, removeToken, setUser, getUser, removeUser } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { Base64 } from 'js-base64'
@@ -11,6 +11,7 @@ const state = {
   account: user ? user.account : '',
   auth: user ? user.auth : '',
   avatar: user ? user.avatar : '',
+  permissions: user ? user.permissions : '',
 }
 
 const mutations = {
@@ -25,6 +26,9 @@ const mutations = {
   },
   SET_AUTH: (state, auth) => {
     state.auth = auth
+  },
+  SET_PERMISSIONS: (state, permissions) => {
+    state.permissions = permissions
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
@@ -45,14 +49,21 @@ const actions = {
           auth: password,
           avatar: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
         };
-        commit('SET_TOKEN', user.token)
-        commit('SET_NAME', user.name)
-        commit('SET_ACCOUNT', user.username)
-        commit('SET_AUTH', user.auth)
-        commit('SET_AVATAR', user.avatar)
-        setToken(user.token)
-        setUser(user);
-        resolve()
+        setToken(user.token);
+        commit('SET_TOKEN', user.token);
+        commit('SET_NAME', user.name);
+        commit('SET_ACCOUNT', user.username);
+        commit('SET_AUTH', user.auth);
+        commit('SET_AVATAR', user.avatar);
+        getPermissions().then(res=>{
+          user.permissions = res.data;
+          commit('SET_PERMISSIONS', res.data);
+          setUser(user);
+          resolve()
+        }).catch(error => {
+          this.logout();
+          reject(error)
+        })
       }).catch(error => {
         reject(error)
       })
