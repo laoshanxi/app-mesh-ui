@@ -63,7 +63,7 @@ export default {
           for(let p in res.data.Roles){
             this.list.push({
               name: p,
-              permissions: res.data.Roles[p][p],
+              permissions: res.data.Roles[p],
             });
           }
         }
