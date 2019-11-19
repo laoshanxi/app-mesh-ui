@@ -29,7 +29,20 @@ router.beforeEach(async(to, from, next) => {
     } else {
       const hasGetUserInfo = store.getters.name
       if (hasGetUserInfo) {
-        next()
+        if (to.meta && to.meta.roles && to.meta.roles.length>0){
+          let result = to.meta.roles.indexOf(hasGetUserInfo);
+          if(result >= 0){
+            next();
+          }else{
+            next('/401');
+            NProgress.done();
+            setTimeout(()=>{
+              store.dispatch("app/setLoading", false);
+            }, 1000);
+          }
+        }else{
+          next();
+        }
       } else {
         try {
           // get user info

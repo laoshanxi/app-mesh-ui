@@ -42,7 +42,19 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
-
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/401',
+    hidden: true,
+    children: [{
+      path: '401',
+      name: '401',
+      component: () => import('@/views/errors/401'),
+      meta: { title: 'No Permission' },
+      hidden: true
+    }]
+  },
   {
     path: '/',
     component: Layout,
@@ -144,13 +156,13 @@ export const constantRoutes = [
         path: 'users',
         name: 'Users',
         component: () => import('@/views/security/users'),
-        meta: { title: 'Users', icon: 'user' }
+        meta: { title: 'Users', icon: 'user',roles: ['admin'] }
       },
       {
         path: 'roles',
         name: 'Roles',
         component: () => import('@/views/security/roles'),
-        meta: { title: 'Roles', icon: 'role' }
+        meta: { title: 'Roles', icon: 'role',roles: ['admin'] }
       }
     ]
   },
