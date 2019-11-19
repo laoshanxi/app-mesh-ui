@@ -24,7 +24,7 @@
 
          <el-table-column label="Name" width="200">
            <template slot-scope="scope">
-             <el-link :underline="true" @click="showDetail()"><i class="el-icon-view el-icon--right"></i> {{ scope.row.name }}</el-link>
+             {{ scope.row.name }}
            </template>
          </el-table-column>
 
