@@ -1,9 +1,9 @@
 <template>
   <div class="app-container" style="clear:both;" v-loading="loading">
-    <el-row style="width:600px;">
+    <el-row >
       <el-col :span="24">
         <el-tabs type="border-card">
-          <el-tab-pane>
+          <el-tab-pane style="minWidth:600px;">
             <span slot="label"><i class="el-icon-s-operation"></i> Configuration</span>
             <el-form ref="form" :model="form" label-width="200px">
               <el-form-item label="Description" prop="Description">

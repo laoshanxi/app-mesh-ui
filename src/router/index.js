@@ -42,6 +42,12 @@ export const constantRoutes = [
     component: () => import('@/views/404'),
     hidden: true
   },
+
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/host/index',
+  },
   {
     path: '/',
     component: Layout,
@@ -63,8 +69,21 @@ export const constantRoutes = [
       path: 'home',
       name: 'Home',
       component: () => import('@/views/home/index'),
-      meta: { title: 'Home', icon: 'home' }
+      meta: { title: 'Home', icon: 'home' },
+      hidden: true
     }]
+  },
+  {
+    path: '/host',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Host',
+        component: () => import('@/views/host/index'),
+        meta: { title: 'Host', icon: 'host' }
+      }
+    ]
   },
 
   {
@@ -86,18 +105,6 @@ export const constantRoutes = [
       component: () => import('@/views/shell/index'),
       meta: { title: 'Remote Shell', icon: 'shell' }
     }]
-  },
-  {
-    path: '/monitor',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Monitor',
-        component: () => import('@/views/monitor/index'),
-        meta: { title: 'Monitor', icon: 'monitor' }
-      }
-    ]
   },
 
   {

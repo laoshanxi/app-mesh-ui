@@ -100,7 +100,7 @@
 import DescriptionList from "@/components/Descriptions";
 import Description from "@/components/Description";
 export default {
-  name:"AppDetail",
+  name:"Detail",
   props:[
     "record"
   ],

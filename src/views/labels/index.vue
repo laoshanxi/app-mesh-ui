@@ -1,13 +1,13 @@
 <template>
   <div class="app-container" style="clear:both;">
-    <el-row style="width:600px;">
+    <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
-          <el-tab-pane>
+          <el-tab-pane style="minWidth:600px;">
             <span slot="label"><i class="el-icon-s-flag"></i> Labels</span>
             <el-form ref="form" :model="form" label-width="80px">
               <el-row v-for="(label, index) in form.labels">
-                <el-col :span="12">
+                <el-col :span="5">
                   <el-form-item :label="'Label ' + index"
                     :prop="'labels.' + index + '.key'"
                     :rules="{
@@ -18,7 +18,7 @@
                     =
                   </el-form-item>
                 </el-col>
-                <el-col :span="12">
+                <el-col :span="6">
                   <el-form-item  label-width="0px"
                     :prop="'labels.' + index + '.value'"
                     :rules="{

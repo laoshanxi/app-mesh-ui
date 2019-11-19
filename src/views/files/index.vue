@@ -1,9 +1,9 @@
 <template>
   <div class="app-container" style="clear:both;">
-    <el-row style="width:600px;">
+    <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
-          <el-tab-pane>
+          <el-tab-pane style="minWidth:600px;">
             <span slot="label"><i class="el-icon-upload"></i> Upload file</span>
             <el-form ref="form" :model="form" label-width="80px">
               <el-form-item label="File Path">

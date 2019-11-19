@@ -72,3 +72,12 @@ div:focus {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+//解决table表头错位
+  .el-table th.gutter{
+    display: table-cell!important;
+  }
+.el-tabs__content{
+    height: calc(100vh - 131px) !important;
+    overflow: auto;
+}

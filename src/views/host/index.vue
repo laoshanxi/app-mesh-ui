@@ -3,7 +3,7 @@
     <el-tabs type="border-card">
 
       <el-tab-pane>
-        <span slot="label"><i class="el-icon-monitor"></i> Monitor</span>
+        <span slot="label"><i class="el-icon-monitor"></i> Host</span>
         <el-row>
           <el-col :span="24" style="padding: 10px;">
             <detail :record="resources"/>
@@ -21,7 +21,7 @@
       <el-tab-pane>
         <span slot="label"><i class="el-icon-document"></i> Json</span>
 
-        <el-row class="detail-card">
+        <el-row>
           <el-col :span="1" style="text-align: right; padding-top: 20px;"><i :class="btnIcon" style="cursor: pointer;" :title="button" @click="expandJson()"></i></el-col>
           <el-col :span="23">
             <el-row v-show="showExpand">
@@ -140,9 +140,5 @@ export default {
 <style scoped>
 .line{
   text-align: center;
-}
-.detail-card{
-    height: calc(100vh - 162px) !important;
-    overflow-y: auto;
 }
 </style>
