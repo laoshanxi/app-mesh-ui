@@ -7,7 +7,7 @@
             <span slot="label"><i class="el-icon-s-operation"></i> Configuration</span>
             <el-form ref="form" :model="form" label-width="200px">
               <el-form-item label="Description" prop="Description">
-                <el-input type="textarea" v-model="form.Description"></el-input>
+                <el-input v-model="form.Description"></el-input>
               </el-form-item>
               <el-form-item label="Http thread pool size" prop="HttpThreadPoolSize">
                 <el-input-number v-model="form.HttpThreadPoolSize"></el-input-number>
@@ -106,11 +106,17 @@ export default {
       },
       configData:null,
       options:[{
+        label: "NOTEST",
+        value: "NOTEST"
+      },{
         label: "DEBUG",
         value: "DEBUG"
       },{
         label: "INFO",
         value: "INFO"
+      },{
+        label: "NOTICE",
+        value: "NOTICE"
       },{
         label: "WARN",
         value: "WARN"

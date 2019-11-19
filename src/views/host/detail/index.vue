@@ -76,7 +76,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="Mount point">
+        <el-table-column label="IPV4">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.ipv4" :type="'success'">
               Yes
@@ -86,7 +86,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="Size">
+        <el-table-column label="Address">
           <template slot-scope="scope">
             {{ formatEmpty(scope.row.address) }}
           </template>

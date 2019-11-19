@@ -30,7 +30,7 @@
 
          <el-table-column label="Permissions">
            <template slot-scope="scope">
-             {{ formatEmpty(scope.row.permission) }}
+             {{ formatEmpty(scope.row.permissions) }}
            </template>
          </el-table-column>
        </el-table>
@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import {getResources} from '@/api/resources'
+import {getConfig} from '@/api/config'
 
 export default {
   data() {
@@ -53,10 +53,26 @@ export default {
     }
   },
   mounted(){
+    this.refreshData();
   },
   methods: {
+    refreshData(){
+      this.list = [];
+      getConfig().then((res)=>{
+        if(res && res.data && res.data.Roles){
+          for(let p in res.data.Roles){
+            this.list.push({
+              name: p,
+              permissions: res.data.Roles[p][p],
+            });
+          }
+        }
+      }, (res)=>{
+
+      });
+    },
     btnClick(action){
-      
+
       switch (action){
         case "new": {
           // this.registerFormVisible = true;

@@ -7,6 +7,20 @@ export function getApplications() {
   })
 }
 
+export function getApplicationByName(appname) {
+  return request({
+    url: '/app/'+appname,
+    method: 'get'
+  })
+}
+
+export function getAppLog(appname) {
+  return request({
+    url: `/app/${appname}/output?keep_history=1`,
+    method: 'get'
+  })
+}
+
 export function registerApplication(appName, data) {
   return request({
     url: '/app/' + appName,

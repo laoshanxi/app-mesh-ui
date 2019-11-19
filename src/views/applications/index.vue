@@ -9,7 +9,6 @@
       <el-button @click="btnClick('delete')" type="danger" icon="el-icon-delete" :disabled="!isSelected">Delete</el-button>
       <el-button @click="btnClick('enable')" type="success" icon="el-icon-open" :disabled="!isSelected || isEnabled">Enable</el-button>
       <el-button @click="btnClick('disable')" type="warning" icon="el-icon-turn-off" :disabled="!isSelected || !isEnabled">Disable</el-button>
-      <el-button @click="btnClick('run')" type="success" icon="el-icon-caret-right" :disabled="!isSelected">Run</el-button>
       </el-button-group>
     </el-row>
     <el-row>
@@ -24,22 +23,17 @@
          @current-change="currentRowChange"
        >
 
-         <el-table-column label="PID" width="100">
-           <template slot-scope="scope">
-             {{ formatEmpty(scope.row.pid) }}
-           </template>
-         </el-table-column>
+
          <el-table-column label="Name" width="200">
            <template slot-scope="scope">
-             <el-link :underline="true" @click="showDetail()"><i class="el-icon-view el-icon--right"></i> {{ scope.row.name }}</el-link>
+             <el-link :underline="true" @click="showDetail()" title="Show application detail"><i class="el-icon-view el-icon--right"></i> {{ scope.row.name }}</el-link>
            </template>
          </el-table-column>
-         <el-table-column label="Command" width="150">
+         <el-table-column label="User" width="110">
            <template slot-scope="scope">
-             {{ scope.row.command }}
+             {{ formatEmpty(scope.row.user) }}
            </template>
          </el-table-column>
-
          <el-table-column class-name="status-col" label="State" width="110">
            <template slot-scope="scope">
              <el-tag v-if="scope.row.status==1" :type="'success'">
@@ -51,9 +45,9 @@
 
            </template>
          </el-table-column>
-         <el-table-column label="Return" width="110">
+         <el-table-column label="PID" width="100">
            <template slot-scope="scope">
-             {{ formatEmpty(scope.row.return) }}
+             {{ formatEmpty(scope.row.pid) }}
            </template>
          </el-table-column>
          <el-table-column label="Memory" width="110">
@@ -61,9 +55,26 @@
              {{ formatMemory(scope.row.memory) }}
            </template>
          </el-table-column>
-         <el-table-column label="User" width="110">
+         <el-table-column label="Return" width="110">
            <template slot-scope="scope">
-             {{ formatEmpty(scope.row.user) }}
+             {{ formatEmpty(scope.row.return) }}
+           </template>
+         </el-table-column>
+         <el-table-column prop="last_start_time" label="Last Start Time" width="200">
+           <template slot-scope="scope">
+             <span v-if="scope.row.last_start_time">
+              <el-link :underline="true" @click="showLog()" title="Show log">
+                <i class="el-icon-document"></i>
+                <i class="el-icon-time" style="margin-right: 5px;" />
+                {{ scope.row.last_start_time | parseTime('{y}-{m}-{d} {h}:{i}') }}
+              </el-link>
+             </span>
+             <span v-else>-</span>
+           </template>
+         </el-table-column>
+         <el-table-column label="Command" width="150">
+           <template slot-scope="scope">
+             {{ scope.row.command }}
            </template>
          </el-table-column>
          <el-table-column label="Working Dir">
@@ -71,53 +82,9 @@
              {{ formatEmpty(scope.row.working_dir) }}
            </template>
          </el-table-column>
-         <el-table-column prop="last_start_time" label="Last Start Time" width="200">
-           <template slot-scope="scope">
-             <i class="el-icon-time" />
-             <span v-if="scope.row.last_start_time">{{ scope.row.last_start_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
-             <span v-else>-</span>
-           </template>
-         </el-table-column>
+
        </el-table>
     </el-row>
-    <!-- Run application dialog -->
-    <el-dialog title="Run Application" :visible.sync="dialogFormVisible">
-      <el-form :model="form" ref="dialogForm" :label-width="formLabelWidth">
-        <el-form-item label="Name">
-          {{currentRow ? currentRow.name : ''}}
-        </el-form-item>
-        <el-form-item label="Sync/Async">
-          <el-switch
-            v-model="form.sync"
-            active-text="Sync"
-            inactive-text="Async">
-          </el-switch>
-        </el-form-item>
-        <el-form-item label="Timeout"
-            :rules="{
-              required: true, message: 'Timeout is not empty', trigger: 'blur'
-            }">
-          <el-input v-model="form.timeout">10</el-input>S
-        </el-form-item>
-        <el-form-item
-            v-for="(env, index) in form.envs"
-            :label="'Env ' + index"
-            :key="env.key"
-            :prop="'envs.' + index + '.value'"
-            :rules="{
-              required: true, message: 'ENV is not empty', trigger: 'blur'
-            }"
-          >
-          <el-input v-model="env.name"></el-input>=
-          <el-input v-model="env.value"></el-input><el-button @click.prevent="removeEnv(env)" icon="el-icon-delete"></el-button>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Cancel</el-button>
-        <el-button @click="addEnv()">Add Env</el-button>
-        <el-button type="primary" @click="realRunApp()">Run</el-button>
-      </div>
-    </el-dialog>
 
     <!-- Register application dialog -->
     <!-- <el-dialog title="Register Application" :visible.sync="registerFormVisible" fullscreen="false"> -->
@@ -209,19 +176,19 @@
         </el-form-item>
         <el-form-item label="Start interval seconds" prop="start_interval_seconds"
           >
-          <el-input v-model="registerForm.start_interval_seconds" :disabled="registerForm.keep_running=='1'"></el-input> S
+          <el-input v-model="registerForm.start_interval_seconds"></el-input> S
         </el-form-item>
         <el-form-item label="Start time" prop="start_time"
           >
           <el-date-picker
                 v-model="registerForm.start_time" value-format="yyyy-MM-dd HH:mm:ss"
-                type="datetime" :disabled="registerForm.keep_running=='1'"
+                type="datetime"
                 placeholder="">
           </el-date-picker>
         </el-form-item>
         <el-form-item label="Start tnterval timeout" prop="start_interval_timeout"
           >
-          <el-input v-model="registerForm.start_interval_timeout" :disabled="registerForm.keep_running=='1'"></el-input> S
+          <el-input v-model="registerForm.start_interval_timeout" ></el-input> S
         </el-form-item>
 
       </el-form>
@@ -236,11 +203,25 @@
     </el-drawer>
 
     <el-drawer
-      :title="currentRow? currentRow.name:'Please select one application'"
       :visible.sync="isShowDetail"
+      v-loading="isLoadingDetail"
       size="50%">
+      <span slot="title">
+        <span class="el-icon-view">&nbsp;&nbsp;{{currentRow? currentRow.name:'Please select one application'}}</span>
+      </span>
       <div class="detail-card">
-        <app-detail :record="currentRow"/>
+        <app-detail :record="application"/>
+      </div>
+    </el-drawer>
+    <el-drawer
+      :visible.sync="isShowLog"
+      v-loading="isLoadingLog"
+      size="50%">
+      <span slot="title">
+        <span class="el-icon-document">&nbsp;&nbsp;{{currentRow? currentRow.name:'Please select one application'}}</span>
+      </span>
+      <div class="detail-card">
+        <app-log :loginfo="appLogInfo"/>
       </div>
     </el-drawer>
   </div>
@@ -248,14 +229,15 @@
 </template>
 
 <script>
-import { getApplications, runApp, enableApp, disableApp, deleteApplication, registerApplication } from '@/api/applications'
+import { getApplications, getApplicationByName, getAppLog, runApp, enableApp, disableApp, deleteApplication, registerApplication } from '@/api/applications'
 import { parseTime } from '@/utils'
 import { MessageBox, Message } from 'element-ui'
 import AppDetail from './appDetail'
+import AppLog from './appLog'
 
 export default {
   components:{
-    AppDetail
+    AppDetail,AppLog
   },
   filters: {
     statusFilter(status) {
@@ -269,9 +251,12 @@ export default {
   },
   data() {
     return {
+      isShowLog:false,
+      isLoadingLog:false,
+      appLogInfo:null,
+      isLoadingDetail:false,
       isShowDetail:false,
       isSelected:false,
-      isStart:false,
       isEnabled:false,
       tableKey:0,
       total:15,
@@ -279,15 +264,9 @@ export default {
       currentPage:1,
       list: null,
       listLoading: true,
-
+      application: null,
       currentRow: null,
-      dialogFormVisible : false,
       formLabelWidth: "100px",
-      form : {
-        sync : true,
-        timeout : 10,
-        envs : []
-      },
       registerFormVisible: false,
       daily_time_range:null,
       initRegisterForm:null,
@@ -340,13 +319,15 @@ export default {
     },
     showDetail(){
       this.isShowDetail = true;
+      setTimeout(()=>{
+        this.getAppByName(this.currentRow.name);
+      }, 500);
     },
-    addEnv(){
-      this.form.envs.push({
-        name:'',
-        value: '',
-        key: Date.now()
-      });
+    showLog(){
+      this.isShowLog = true;
+      setTimeout(()=>{
+        this.getAppLogByName(this.currentRow.name);
+      }, 500);
     },
     addEnvReg(){
       this.registerForm.envs.push({
@@ -358,12 +339,6 @@ export default {
         this.$refs["envs"][this.registerForm.envs.length - 1].focus();
       }, 100)
     },
-    removeEnv(item){
-      var index = this.form.envs.indexOf(item)
-      if (index !== -1) {
-        this.form.envs.splice(index, 1);
-      }
-    },
     removeEnvReg(item){
       var index = this.registerForm.envs.indexOf(item)
       if (index !== -1) {
@@ -374,10 +349,6 @@ export default {
       switch (action){
         case "register": {
           this.registerFormVisible = true;
-          return;
-        }
-        case "run": {
-          this.dialogFormVisible = true;
           return;
         }
         case "delete": {
@@ -473,32 +444,6 @@ export default {
         }
       });
     },
-    realRunApp(){
-      this.$refs["dialogForm"].validate((valid) => {
-        if (valid) {
-          let appname = this.currentRow.name;
-          let envs = {
-            env : {}
-          };
-          for(let i=0;i<this.form.envs.length;i++){
-            envs.env[this.form.envs[i].name] = this.form.envs[i].value;
-          }
-
-          runApp(appname, this.form.timeout, this.form.sync, envs).then((res)=>{
-            Message({
-              message: 'Application '+appname+' running successfully.',
-              type: 'success',
-              duration: 5 * 1000
-            })
-          },(res)=>{
-            console.info(res);
-          });
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
-    },
     currentRowChange(currentRow, oldCurrentRow){
       this.currentRow = currentRow;
       if(!currentRow){
@@ -549,16 +494,28 @@ export default {
       }, res => {
         this.listLoading = false;
       })
+    },
+    getAppByName(name){
+      this.isLoadingDetail = true
+      getApplicationByName(name).then(response => {
+        this.application = response.data;
+        this.isLoadingDetail = false
+      }, res => {
+        this.isLoadingDetail = false;
+      })
+    },
+    getAppLogByName(name){
+      this.isLoadingLog = true
+      getAppLog(name).then(response => {
+        this.appLogInfo = response.data;
+        this.isLoadingLog = false
+      }, res => {
+        this.isLoadingLog = false;
+      })
     }
   }
 }
 </script>
-<style lang="scss">
-  //解决table表头错位
-  .el-table th.gutter{
-    display: table-cell!important;
-  }
-</style>
 <style lang="scss" scoped>
   .el-row{
     margin-bottom: 8px;
