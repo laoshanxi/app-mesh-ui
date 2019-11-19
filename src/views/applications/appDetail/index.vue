@@ -59,13 +59,13 @@
       <Description term="Memory (MB)">{{record.resource_limit? record.resource_limit.memory_mb:'-'}}</Description>
       <Description term="Memory virt (MB)">{{record.resource_limit? record.resource_limit.memory_virt_mb:'-'}}</Description>
     </DescriptionList>
-    <DescriptionList title="" col="24" v-if="record.envs">
-      <Description :term="env.name" v-for="(env, index) in record.envs">{{env.value}}</Description>
-    </DescriptionList>
     <DescriptionList title="" col="8">
       <Description term="Posix timezone">{{formatEmpty(record.posix_timezone)}}</Description>
       <Description term="Cache lines">{{formatEmpty(record.cache_lines)}}</Description>
       <Description term="Docker image">{{formatEmpty(record.docker_image)}}</Description>
+    </DescriptionList>
+    <DescriptionList title="Environment variables" col="24" v-if="record.env">
+      <Description :term="name" v-for="(name, value) in record.env">{{value}}</Description>
     </DescriptionList>
   </el-card>
 </template>

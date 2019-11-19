@@ -1,6 +1,6 @@
 <template>
-  <el-card class="box-card" v-if="loginfo">
-    <pre>{{loginfo}}</pre>
+  <el-card class="box-card">
+    <pre>{{loginfo ? loginfo : 'No log'}}</pre>
   </el-card>
 </template>
 

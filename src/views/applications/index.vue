@@ -131,13 +131,13 @@
         </el-form-item>
 
         <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
-          <el-input v-model="registerForm.resource_limit.cpu_shares"></el-input>
+          <el-input type="number" v-model="registerForm.resource_limit.cpu_shares"></el-input>
         </el-form-item>
         <el-form-item label="Memory" prop="resource_limit.memory_mb">
-          <el-input v-model="registerForm.resource_limit.memory_mb"></el-input> MB
+          <el-input type="number" v-model="registerForm.resource_limit.memory_mb"></el-input> MB
         </el-form-item>
         <el-form-item label="Memory virt" prop="resource_limit.memory_virt_mb">
-          <el-input v-model="registerForm.resource_limit.memory_virt_mb"></el-input> MB
+          <el-input type="number" v-model="registerForm.resource_limit.memory_virt_mb"></el-input> MB
         </el-form-item>
         <el-divider></el-divider>
         <el-form-item
@@ -157,13 +157,13 @@
           <el-input v-model="registerForm.posix_timezone"></el-input>
         </el-form-item>
         <el-form-item label="Cache lines" prop="cache_lines">
-          <el-input v-model="registerForm.cache_lines"></el-input>
+          <el-input type="number" v-model="registerForm.cache_lines"></el-input>
         </el-form-item>
         <el-form-item label="Docker image" prop="docker_image">
           <el-input v-model="registerForm.docker_image"></el-input>
         </el-form-item>
         <el-form-item label="PID" prop="pid">
-          <el-input v-model="registerForm.pid"></el-input>
+          <el-input type="number" v-model="registerForm.pid"></el-input>
         </el-form-item>
 
         <el-divider></el-divider>
@@ -176,7 +176,7 @@
         </el-form-item>
         <el-form-item label="Start interval seconds" prop="start_interval_seconds"
           >
-          <el-input v-model="registerForm.start_interval_seconds"></el-input> S
+          <el-input type="number" v-model="registerForm.start_interval_seconds"></el-input> S
         </el-form-item>
         <el-form-item label="Start time" prop="start_time"
           >
@@ -188,7 +188,7 @@
         </el-form-item>
         <el-form-item label="Start tnterval timeout" prop="start_interval_timeout"
           >
-          <el-input v-model="registerForm.start_interval_timeout" ></el-input> S
+          <el-input type="number" v-model="registerForm.start_interval_timeout" ></el-input> S
         </el-form-item>
 
       </el-form>
@@ -210,7 +210,7 @@
         <span class="el-icon-view">&nbsp;&nbsp;{{currentRow? currentRow.name:'Please select one application'}}</span>
       </span>
       <div class="detail-card">
-        <app-detail :record="application"/>
+        <app-detail :record="currentRow"/>
       </div>
     </el-drawer>
     <el-drawer
@@ -319,9 +319,6 @@ export default {
     },
     showDetail(){
       this.isShowDetail = true;
-      setTimeout(()=>{
-        this.getAppByName(this.currentRow.name);
-      }, 500);
     },
     showLog(){
       this.isShowLog = true;
@@ -408,23 +405,34 @@ export default {
         }
         return hasValue;
       }
+      function formatData(data){
+        if(data.cache_lines) data.cache_lines = parseInt(data.cache_lines);
+        if(data.pid) data.pid = parseInt(data.pid);
+        if(data.start_interval_seconds) data.start_interval_seconds = parseInt(data.start_interval_seconds);
+        if(data.start_interval_timeout) data.start_interval_timeout = parseInt(data.start_interval_timeout);
+        if(data.resource_limit){
+          if(data.resource_limit.cpu_shares) data.resource_limit.cpu_shares = parseInt(data.resource_limit.cpu_shares);
+          if(data.resource_limit.memory_mb) data.resource_limit.memory_mb = parseInt(data.resource_limit.memory_mb);
+          if(data.resource_limit.memory_virt_mb) data.resource_limit.memory_virt_mb = parseInt(data.resource_limit.memory_virt_mb);
+        }
+      }
       this.$refs["regForm"].validate((valid) => {
         if (valid) {
           let data = JSON.parse(JSON.stringify(this.registerForm));
           let envs = {
-            env : {}
           };
           for(let i=0;i<this.registerForm.envs.length;i++){
-            envs.env[this.registerForm.envs[i].name] = this.registerForm.envs[i].value;
+            envs[this.registerForm.envs[i].name] = this.registerForm.envs[i].value;
           }
 
-          data.envs = data.envs.length>0 ? envs : null;
+          data.env = data.envs.length>0 ? envs : null;
           if(this.daily_time_range!=null){
             data.daily_limitation.daily_start = this.daily_time_range[0];
             data.daily_limitation.daily_end = this.daily_time_range[1];
           }
 
           removeEmptyProperties(data);
+          formatData(data);
 
           registerApplication(data.name, data).then((res)=>{
             this.fetchData();
