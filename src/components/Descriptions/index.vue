@@ -34,7 +34,7 @@ export default {
 
 <style lang="scss" scoped>
 .description_text {
-  font-family: "Hiragino Sans GB";
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
   .title {
     font-weight: 700;
     font-size: 16px;
@@ -47,7 +47,6 @@ export default {
     font-weight: 400;
     font-size: 14px;
     line-height: 22px;
-    padding-bottom: 16px;
     margin-right: 8px;
     white-space: nowrap;
     display: table-cell;
@@ -62,7 +61,6 @@ export default {
     font-size: 14px;
     line-height: 1.5;
     width: 100%;
-    padding-bottom: 16px;
     color: #909399;
     display: table-cell;
   }
