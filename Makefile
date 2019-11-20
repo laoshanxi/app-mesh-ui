@@ -7,7 +7,7 @@ all:
 	make package
 
 buildnode:
-	docker run -ti -p 9825:9825 --rm --privileged -v `pwd`:/opt --workdir /opt node:${NODE_VER} sh -c "npm install; npm run build:prod"
+	docker run -ti --rm --privileged -v `pwd`:/opt --workdir /opt node:${NODE_VER} sh -c "npm install; npm run build:prod"
 	
 package:
 	-docker rm -f appmgr-web
@@ -16,7 +16,7 @@ package:
 	
 run:
 	-docker rm -f appmgr-web
-	docker run -d -p 6061:80 --name appmgr-web appmanager-ui:${VER}
+	docker run -d -p 6066:80 --name appmgr-web appmanager-ui:${VER}
 	
 tar:
 	docker save appmanager-ui:${VER}  -o  ./appmanager-ui.${VER}.tar

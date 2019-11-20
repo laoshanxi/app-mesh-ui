@@ -4,8 +4,6 @@ English | [简体中文](./README-zh.md)
 
 > The WEB GUI for laoshanxi/app-manager
 
-**Live demo:** http://xxxx/
-
 
 ## Build Setup
 
@@ -24,7 +22,7 @@ make
 make run
 ```
 
-Visit http://localhost:6061
+Visit http://localhost:6066
 
 ## Build Docker image package
 ```bash
@@ -50,7 +48,10 @@ npm run lint -- --fix
 ## Demo
 
 ## Extra
-
+```bash
+# register to app manager
+appc reg -c "sh -c 'docker rm -f appmgr-web; docker run --rm -p 6066:80 --name appmgr-web appmanager-ui:1.0'" -n appmgr-web -f
+```
 
 ## Browsers support
 
