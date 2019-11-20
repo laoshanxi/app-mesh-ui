@@ -1,12 +1,8 @@
 # app-manager-ui
 
-English | [简体中文](./README-zh.md)
-
 > The WEB GUI for laoshanxi/app-manager
 
-
 ## Build Setup
-
 
 ```bash
 # clone the project
