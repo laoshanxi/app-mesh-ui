@@ -342,6 +342,23 @@ export default {
         this.registerForm.envs.splice(index, 1);
       }
     },
+    removeApp(){
+      this.$confirm(`Do you want to remove the application <${this.currentRow.name}>?`, 'Tooltip', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+              }).then(() => {
+                deleteApplication(this.currentRow.name).then((res)=>{
+                  this.$message({
+                    type: 'success',
+                    message: `Application <${this.currentRow.name}> removed successfully.`
+                  }, 5000);
+                  this.fetchData();
+                },(res)=>{
+                  console.info(res);
+                });
+              });
+    },
     btnClick(action){
       switch (action){
         case "register": {
@@ -349,16 +366,7 @@ export default {
           return;
         }
         case "delete": {
-          deleteApplication(this.currentRow.name).then((res)=>{
-            Message({
-              message: 'Application '+this.currentRow.name+' removed successfully.',
-              type: 'success',
-              duration: 5 * 1000
-            });
-            this.fetchData();
-          },(res)=>{
-            console.info(res);
-          });
+          this.removeApp();
           return;
         }
         case "enable": {

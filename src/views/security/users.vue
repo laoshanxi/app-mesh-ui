@@ -105,23 +105,35 @@ export default {
       }
     },
     locked(){
-      this.listLoading = true;
-      locked(this.currentRow.name).then((res)=>{
-        this.$message.success('User '+ this.currentRow.name+' had locked.', 5000);
-        this.refreshData();
-        this.listLoading = false;
-      }, (res)=>{
-        this.listLoading = false;
+      this.$confirm(`Do you want to lock the user <${this.currentRow.name}>?`, 'Tooltip', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+      }).then(() => {
+        this.listLoading = true;
+        locked(this.currentRow.name).then((res)=>{
+          this.$message.success('User '+ this.currentRow.name+' had locked.', 5000);
+          this.refreshData();
+          this.listLoading = false;
+        }, (res)=>{
+          this.listLoading = false;
+        });
       });
     },
     unlocked(){
-      this.listLoading = true;
-      unlocked(this.currentRow.name).then((res)=>{
-        this.$message.success('User '+ this.currentRow.name+' had unlocked.', 5000);
-        this.refreshData();
-        this.listLoading = false;
-      }, (res)=>{
-        this.listLoading = false;
+      this.$confirm(`Do you want to unlock the user <${this.currentRow.name}>?`, 'Tooltip', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+      }).then(() => {
+        this.listLoading = true;
+        unlocked(this.currentRow.name).then((res)=>{
+          this.$message.success('User '+ this.currentRow.name+' had unlocked.', 5000);
+          this.refreshData();
+          this.listLoading = false;
+        }, (res)=>{
+          this.listLoading = false;
+        });
       });
     },
     currentRowChange(currentRow, oldCurrentRow){
