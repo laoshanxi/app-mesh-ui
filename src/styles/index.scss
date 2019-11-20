@@ -77,6 +77,9 @@ div:focus {
   .el-table th.gutter{
     display: table-cell!important;
   }
+.el-table thead th {
+    background: #f5f7fa;
+}
 .el-tabs__content{
     height: calc(100vh - 131px) !important;
     overflow: auto;
