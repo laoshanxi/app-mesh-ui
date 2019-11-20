@@ -50,7 +50,11 @@ npm run lint -- --fix
 ## Extra
 ```bash
 # register to app manager
+
+# option1 : shell process
 appc reg -c "sh -c 'docker rm -f appweb; docker run --rm -p 6066:80 --name appweb appmanager-ui:1.0'" -n appweb -f
+# option2 : native docker process
+appc reg -n appweb -e APP_DOCKER_OPTS="-p 6066:80" -c "nginx -g 'daemon off;'" -d appmanager-ui:1.0 -f
 ```
 
 ## Browsers support
