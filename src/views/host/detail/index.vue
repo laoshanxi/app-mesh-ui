@@ -1,25 +1,25 @@
 <template>
   <div class="box-card" v-if="record!='No Data'">
-    <DescriptionList title="Host" col="24">
+    <DescriptionList title="Host" col="8">
       <Description term="Name">{{formatEmpty(record.host_name)}}</Description>
+      <Description term="Time">{{formatEmpty(record.systime)}}</Description>
       <Description term="Description">{{formatEmpty(record.host_description)}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="8">
-      <Description term="1 Minites">{{formatEmpty(record.load["1min"])}}</Description>
+      <Description term="Load 1 Minites">{{formatEmpty(record.load["1min"])}}</Description>
       <Description term="5 Minites">{{formatEmpty(record.load["5min"])}}</Description>
       <Description term="15 Minites">{{formatEmpty(record.load["15min"])}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
-    <DescriptionList title="CPU & Memory" col="8">
-      <Description term="CPU cores">{{formatEmpty(record.cpu_cores)}}</Description>
+    <DescriptionList title="CPU & Memory" col="12">
       <Description term="CPU processors">{{formatEmpty(record.cpu_processors)}}</Description>
-      <Description term="Time">{{formatEmpty(record.systime)}}</Description>
+      <Description term="CPU cores">{{formatEmpty(record.cpu_cores)}}</Description>
 
-      <Description term="Memory free swap">{{formatMemory(record.mem_freeSwap_bytes)}}</Description>
-      <Description term="Memory free">{{formatMemory(record.mem_free_bytes)}}</Description>
-      <Description term="Memory applications">{{formatMemory(record.mem_applications)}}</Description>
-      <Description term="Memory total swap">{{formatMemory(record.mem_totalSwap_bytes)}}</Description>
       <Description term="Memory total">{{formatMemory(record.mem_total_bytes)}}</Description>
+      <Description term="Memory free">{{formatMemory(record.mem_free_bytes)}}</Description>
+      <Description term="Memory total swap">{{formatMemory(record.mem_totalSwap_bytes)}}</Description>
+      <Description term="Memory free swap">{{formatMemory(record.mem_freeSwap_bytes)}}</Description>
+      <Description term="Memory applications">{{formatMemory(record.mem_applications)}}</Description>
 
     </DescriptionList>
     <el-divider></el-divider>
@@ -29,12 +29,14 @@
         :key="1"
         :data="record.fs"
         border
+        :default-sort="{prop:'device'}"
         style="width: 100%"
         highlight-current-row
       >
 
-        <el-table-column label="Device">
+        <el-table-column label="Device" prop="device">
           <template slot-scope="scope">
+            <i class="el-icon-warning" style="color: firebrick;font-size: 18px; vertical-align: middle;" v-if="formatPercent(scope.row.usage)"></i>
             {{ formatEmpty(scope.row.device) }}
           </template>
         </el-table-column>
@@ -54,9 +56,9 @@
             {{ formatMemory(scope.row.used) }}
           </template>
         </el-table-column>
-        <el-table-column label="Usage" width="140">
+        <el-table-column label="Usage" width="340">
           <template slot-scope="scope">
-            {{ formatPercentage(scope.row.usage) }}
+            <percentage-bar :id="scope.$index" :data="formatChartData(scope.row)"></percentage-bar>
           </template>
         </el-table-column>
       </el-table>
@@ -65,28 +67,29 @@
       <el-table
         :key="2"
         :data="record.net"
+        :default-sort="{prop:'name'}"
         border
         style="width: 100%"
         highlight-current-row
       >
 
-        <el-table-column label="Name" width="240">
+        <el-table-column label="Name" width="240" prop="name">
           <template slot-scope="scope">
             {{ formatEmpty(scope.row.name) }}
           </template>
         </el-table-column>
 
-        <el-table-column label="IPV4" width="100">
+        <el-table-column label="Protocol" width="100" prop="protocol">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.ipv4" :type="'success'">
-              Yes
+              IPv4
             </el-tag>
             <el-tag v-else :type="'info'">
-              No
+              IPv6
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="Address">
+        <el-table-column label="Address" prop="address">
           <template slot-scope="scope">
             {{ formatEmpty(scope.row.address) }}
           </template>
@@ -99,6 +102,8 @@
 <script>
 import DescriptionList from "@/components/Descriptions";
 import Description from "@/components/Description";
+import PercentageBar from "@/components/Charts/PercentageBar";
+import G2 from '@antv/g2';
 export default {
   name:"Detail",
   props:[
@@ -106,7 +111,8 @@ export default {
   ],
   components:{
     DescriptionList,
-    Description
+    Description,
+    PercentageBar
   },
   data(){
     return {
@@ -119,6 +125,23 @@ export default {
   mounted(){
   },
   methods:{
+    createChart(p){
+      console.info(p);
+    },
+    formatPercent(data){
+      return data > 0.85;
+    },
+    formatChartData(data){
+      return [{
+        key:'Usage',
+        label:'Used',
+        value:data.used,
+      },{
+        key:'Usage',
+        label:'Unused',
+        value:data.size-data.used,
+      }];
+    },
     formatPercentage(value){
       if(!value){
         return "-";

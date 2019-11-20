@@ -167,13 +167,6 @@
         </el-form-item>
 
         <el-divider></el-divider>
-        <el-form-item label="Keep running" prop="keep_running">
-          <el-switch
-            v-model="registerForm.keep_running"
-            :active-value="1"
-            :inactive-value="0">
-          </el-switch>
-        </el-form-item>
         <el-form-item label="Start interval seconds" prop="start_interval_seconds"
           >
           <el-input type="number" v-model="registerForm.start_interval_seconds"></el-input> S
@@ -190,7 +183,13 @@
           >
           <el-input type="number" v-model="registerForm.start_interval_timeout" ></el-input> S
         </el-form-item>
-
+        <el-form-item label="Keep running" prop="keep_running">
+          <el-switch
+            v-model="registerForm.keep_running"
+            :active-value="true"
+            :inactive-value="false">
+          </el-switch>
+        </el-form-item>
       </el-form>
 
       </el-card>
@@ -297,7 +296,7 @@ export default {
         start_time:'',
         start_interval_timeout:null,
 
-        keep_running:1 //0 no, 1 yes
+        keep_running:false //0 no, 1 yes
       },
       regRules:{
         name: [

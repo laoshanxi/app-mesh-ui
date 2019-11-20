@@ -87,3 +87,13 @@ div:focus {
 .el-input, .el-textarea{
   max-width:400px !important;
 }
+tr.current-row>td {
+    background-color: #E4E7ED !important;
+}
+pre {
+  color: #606266;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 24px;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
