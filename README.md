@@ -17,32 +17,18 @@ git clone https://github.com/laoshanxi/app-manager-ui.git
 # enter the project directory
 cd app-manager-ui
 
-# install dependency
-npm install
+# build
+make
 
 # develop
-npm run dev
+make run
 ```
 
-This will automatically open http://localhost:9528
+Visit http://localhost:6061
 
-## Build
-
+## Build Docker image package
 ```bash
-# build for test environment
-npm run build:stage
-
-# build for production environment
-npm run build:prod
-```
-
-## Build release
-```bash
-# install nodejs and npm
-./autogen.sh
-
-# build release package
-./build.sh
+make tar
 ```
 
 ## Advanced
