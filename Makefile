@@ -15,8 +15,8 @@ package:
 	docker build -t appmanager-ui:${VER} -f ./Dockerfile .
 	
 run:
-	-docker rm -f appmgr-web
-	docker run -d -p 6066:80 --name appmgr-web appmanager-ui:${VER}
+	-docker rm -f appweb
+	docker run -d -p 6066:80 --name appweb appmanager-ui:${VER}
 	
 tar:
 	docker save appmanager-ui:${VER}  -o  ./appmanager-ui.${VER}.tar

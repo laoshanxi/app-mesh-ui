@@ -50,7 +50,7 @@ npm run lint -- --fix
 ## Extra
 ```bash
 # register to app manager
-appc reg -c "sh -c 'docker rm -f appmgr-web; docker run --rm -p 6066:80 --name appmgr-web appmanager-ui:1.0'" -n appmgr-web -f
+appc reg -c "sh -c 'docker rm -f appweb; docker run --rm -p 6066:80 --name appweb appmanager-ui:1.0'" -n appweb -f
 ```
 
 ## Browsers support
