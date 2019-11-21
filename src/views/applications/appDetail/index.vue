@@ -1,6 +1,6 @@
 <template>
   <el-card class="box-card" v-if="record">
-    <DescriptionList title="Basic information 1" col="24">
+    <DescriptionList title="Basic information" col="24">
       <Description term="Name">{{formatEmpty(record.name)}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
@@ -22,6 +22,7 @@
     </DescriptionList>
     <DescriptionList title="" col="24">
       <Description term="Comments">{{formatEmpty(record.comments)}}</Description>
+      <Description term="Docker image">{{formatEmpty(record.docker_image)}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
 
@@ -36,7 +37,7 @@
       <Description term="Container id">{{formatEmpty(record.container_id)}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
-    <DescriptionList title="Basic information 2" col="12">
+    <DescriptionList title="Short running App infomation" col="12">
       <Description term="Start time">{{record.start_time}}</Description>
       <Description term="Keep running">
         <el-tag v-if="record.keep_running==1" :type="'success'">
@@ -62,7 +63,6 @@
     <DescriptionList title="" col="8">
       <Description term="Posix timezone">{{formatEmpty(record.posix_timezone)}}</Description>
       <Description term="Cache lines">{{formatEmpty(record.cache_lines)}}</Description>
-      <Description term="Docker image">{{formatEmpty(record.docker_image)}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="Environment variables" col="24" v-if="record.env">

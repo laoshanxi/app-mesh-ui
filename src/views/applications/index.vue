@@ -103,12 +103,12 @@
         <el-form-item label="Working dir" prop="working_dir">
           <el-input v-model="registerForm.working_dir"></el-input>
         </el-form-item>
+		<el-form-item label="Comments" prop="comments">
+          <el-input v-model="registerForm.comments"></el-input>
+        </el-form-item>
         <el-divider></el-divider>
         <el-form-item label="Start user" prop="user">
           <el-input v-model="registerForm.user"></el-input>
-        </el-form-item>
-        <el-form-item label="Comments" prop="comments">
-          <el-input v-model="registerForm.comments"></el-input>
         </el-form-item>
         <el-form-item label="Status">
           <el-switch
@@ -162,15 +162,11 @@
         <el-form-item label="Docker image" prop="docker_image">
           <el-input v-model="registerForm.docker_image"></el-input>
         </el-form-item>
-        <el-form-item label="Pid to attach" prop="pid">
+        <el-form-item label="Pid(for attach)" prop="pid">
           <el-input type="number" v-model="registerForm.pid"></el-input>
         </el-form-item>
 
         <el-divider></el-divider>
-        <el-form-item label="Start interval" prop="start_interval_seconds"
-          >
-          <el-input type="number" v-model="registerForm.start_interval_seconds"></el-input> S
-        </el-form-item>
         <el-form-item label="Start time" prop="start_time"
           >
           <el-date-picker
@@ -178,6 +174,10 @@
                 type="datetime"
                 placeholder="">
           </el-date-picker>
+        </el-form-item>
+		<el-form-item label="Start interval" prop="start_interval_seconds"
+          >
+          <el-input type="number" v-model="registerForm.start_interval_seconds"></el-input> S
         </el-form-item>
         <el-form-item label="Start interval timeout" prop="start_interval_timeout"
           >
