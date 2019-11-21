@@ -97,14 +97,14 @@
         <el-form-item label="Name" prop="name">
           <el-input v-model="registerForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="Command" prop="command">
+        <el-form-item label="Command line" prop="command">
           <el-input v-model="registerForm.command"></el-input>
         </el-form-item>
-        <el-form-item label="Working Dir" prop="working_dir">
+        <el-form-item label="Working dir" prop="working_dir">
           <el-input v-model="registerForm.working_dir"></el-input>
         </el-form-item>
         <el-divider></el-divider>
-        <el-form-item label="User" prop="user">
+        <el-form-item label="Start user" prop="user">
           <el-input v-model="registerForm.user"></el-input>
         </el-form-item>
         <el-form-item label="Comments" prop="comments">
@@ -133,10 +133,10 @@
         <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
           <el-input type="number" v-model="registerForm.resource_limit.cpu_shares"></el-input>
         </el-form-item>
-        <el-form-item label="Memory" prop="resource_limit.memory_mb">
+        <el-form-item label="Physical memory" prop="resource_limit.memory_mb">
           <el-input type="number" v-model="registerForm.resource_limit.memory_mb"></el-input> MB
         </el-form-item>
-        <el-form-item label="Memory virt" prop="resource_limit.memory_virt_mb">
+        <el-form-item label="Virtual memory" prop="resource_limit.memory_virt_mb">
           <el-input type="number" v-model="registerForm.resource_limit.memory_virt_mb"></el-input> MB
         </el-form-item>
         <el-divider></el-divider>
@@ -156,18 +156,18 @@
         <el-form-item label="Posix timezone" prop="posix_timezone">
           <el-input v-model="registerForm.posix_timezone"></el-input>
         </el-form-item>
-        <el-form-item label="Cache lines" prop="cache_lines">
+        <el-form-item label="Output cache lines" prop="cache_lines">
           <el-input type="number" v-model="registerForm.cache_lines"></el-input>
         </el-form-item>
         <el-form-item label="Docker image" prop="docker_image">
           <el-input v-model="registerForm.docker_image"></el-input>
         </el-form-item>
-        <el-form-item label="PID" prop="pid">
+        <el-form-item label="Pid to attach" prop="pid">
           <el-input type="number" v-model="registerForm.pid"></el-input>
         </el-form-item>
 
         <el-divider></el-divider>
-        <el-form-item label="Start interval seconds" prop="start_interval_seconds"
+        <el-form-item label="Start interval" prop="start_interval_seconds"
           >
           <el-input type="number" v-model="registerForm.start_interval_seconds"></el-input> S
         </el-form-item>
@@ -179,7 +179,7 @@
                 placeholder="">
           </el-date-picker>
         </el-form-item>
-        <el-form-item label="Start tnterval timeout" prop="start_interval_timeout"
+        <el-form-item label="Start interval timeout" prop="start_interval_timeout"
           >
           <el-input type="number" v-model="registerForm.start_interval_timeout" ></el-input> S
         </el-form-item>

@@ -21,6 +21,11 @@ run:
 tar:
 	docker save appmanager-ui:${VER}  -o  ./appmanager-ui.${VER}.tar
 	tar czvf appmanager-ui.${VER}.tar.gz appmanager-ui.${VER}.tar
+
+dev:
+	git pull
+	make
+	make run
 	
 clean:
 	-docker rm -f appmgr-web

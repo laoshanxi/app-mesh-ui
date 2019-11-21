@@ -1,25 +1,25 @@
 <template>
   <div class="box-card" v-if="record!='No Data'">
     <DescriptionList title="Host" col="8">
-      <Description term="Name">{{formatEmpty(record.host_name)}}</Description>
-      <Description term="Time">{{formatEmpty(record.systime)}}</Description>
+      <Description term="Host name">{{formatEmpty(record.host_name)}}</Description>
+      <Description term="Date time">{{formatEmpty(record.systime)}}</Description>
       <Description term="Description">{{formatEmpty(record.host_description)}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="8">
-      <Description term="Load 1 Minites">{{formatEmpty(record.load["1min"])}}</Description>
-      <Description term="5 Minites">{{formatEmpty(record.load["5min"])}}</Description>
-      <Description term="15 Minites">{{formatEmpty(record.load["15min"])}}</Description>
+      <Description term="1 minutes Load">{{formatEmpty(record.load["1min"])}}</Description>
+      <Description term="5 minutes Load">{{formatEmpty(record.load["5min"])}}</Description>
+      <Description term="15 minutes Load">{{formatEmpty(record.load["15min"])}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="CPU & Memory" col="12">
-      <Description term="CPU processors">{{formatEmpty(record.cpu_processors)}}</Description>
+      <Description term="Processors">{{formatEmpty(record.cpu_processors)}}</Description>
       <Description term="CPU cores">{{formatEmpty(record.cpu_cores)}}</Description>
 
-      <Description term="Memory total">{{formatMemory(record.mem_total_bytes)}}</Description>
-      <Description term="Memory free">{{formatMemory(record.mem_free_bytes)}}</Description>
-      <Description term="Memory total swap">{{formatMemory(record.mem_totalSwap_bytes)}}</Description>
-      <Description term="Memory free swap">{{formatMemory(record.mem_freeSwap_bytes)}}</Description>
-      <Description term="Memory applications">{{formatMemory(record.mem_applications)}}</Description>
+      <Description term="Total memory">{{formatMemory(record.mem_total_bytes)}}</Description>
+      <Description term="Free memory">{{formatMemory(record.mem_free_bytes)}}</Description>
+      <Description term="Total swap memory">{{formatMemory(record.mem_totalSwap_bytes)}}</Description>
+      <Description term="Free swap momery">{{formatMemory(record.mem_freeSwap_bytes)}}</Description>
+      <Description term="Total app memory">{{formatMemory(record.mem_applications)}}</Description>
 
     </DescriptionList>
     <el-divider></el-divider>
