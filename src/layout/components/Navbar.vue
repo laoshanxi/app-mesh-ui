@@ -31,11 +31,6 @@
               <i class="iconfont icon-github"></i>Github
             </el-dropdown-item>
           </a>
-          <a target="_blank" href="https://github.com/laoshanxi/app-manager/tree/master/doc">
-            <el-dropdown-item>
-              <i class="iconfont icon-file"></i>Docs
-            </el-dropdown-item>
-          </a>
           <a target="_blank" href="https://github.com/laoshanxi/app-manager-ui">
             <el-dropdown-item>
               <i class="el-icon-mobile-phone"></i>GUI
