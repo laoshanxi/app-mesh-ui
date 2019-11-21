@@ -6,9 +6,9 @@
       <Description term="Description">{{formatEmpty(record.host_description)}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="8">
-      <Description term="Load 1 Minites">{{formatEmpty(record.load["1min"])}}</Description>
-      <Description term="5 Minites">{{formatEmpty(record.load["5min"])}}</Description>
-      <Description term="15 Minites">{{formatEmpty(record.load["15min"])}}</Description>
+      <Description term="1 minites Load">{{formatEmpty(record.load["1min"])}}</Description>
+      <Description term="5 minites Load">{{formatEmpty(record.load["5min"])}}</Description>
+      <Description term="15 minites Load">{{formatEmpty(record.load["15min"])}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="CPU & Memory" col="12">
