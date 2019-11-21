@@ -162,7 +162,7 @@
         <el-form-item label="Docker image" prop="docker_image">
           <el-input v-model="registerForm.docker_image"></el-input>
         </el-form-item>
-        <el-form-item label="Pid for Attach" prop="pid">
+        <el-form-item label="Pid to attach" prop="pid">
           <el-input type="number" v-model="registerForm.pid"></el-input>
         </el-form-item>
 
