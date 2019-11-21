@@ -1,14 +1,8 @@
 # app-manager-ui
 
-English | [简体中文](./README-zh.md)
-
 > The WEB GUI for laoshanxi/app-manager
 
-**Live demo:** http://xxxx/
-
-
 ## Build Setup
-
 
 ```bash
 # clone the project
@@ -17,32 +11,18 @@ git clone https://github.com/laoshanxi/app-manager-ui.git
 # enter the project directory
 cd app-manager-ui
 
-# install dependency
-npm install
+# build
+make
 
 # develop
-npm run dev
+make run
 ```
 
-This will automatically open http://localhost:9528
+Visit http://localhost:6066
 
-## Build
-
+## Build Docker image package
 ```bash
-# build for test environment
-npm run build:stage
-
-# build for production environment
-npm run build:prod
-```
-
-## Build release
-```bash
-# install nodejs and npm
-./autogen.sh
-
-# build release package
-./build.sh
+make tar
 ```
 
 ## Advanced
@@ -64,7 +44,14 @@ npm run lint -- --fix
 ## Demo
 
 ## Extra
+```bash
+# register to app manager
 
+# option1 : shell process
+appc reg -c "sh -c 'docker rm -f appweb; docker run --rm -p 6066:80 --name appweb appmanager-ui:1.0'" -n appweb -f
+# option2 : native docker process
+appc reg -n appweb -e APP_DOCKER_OPTS="-p 6066:80" -c "nginx -g 'daemon off;'" -d appmanager-ui:1.0 -f
+```
 
 ## Browsers support
 
