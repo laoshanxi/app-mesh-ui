@@ -11,6 +11,8 @@ export default {
   props:[
     "id",
     "data",// data:[{label:"",value:10}]
+    "width",
+    "padding"
   ],
   data(){
     return {
@@ -36,7 +38,8 @@ export default {
         container: 'pb-'+this.id,
         forceFit: true,
         height: 30,
-        padding: [0, 50, 0, 50]
+        width:this.width,
+        padding: this.padding ? this.padding : [0, 0, 0, 0]
       });
       // chart.source(this.data);
       chart.source(dv, {
@@ -57,7 +60,7 @@ export default {
         }
         return {
           position: 'end',
-          offset: 0,
+          offset: 5,
           textStyle: {
             fill: '#fff',
             fontSize:16

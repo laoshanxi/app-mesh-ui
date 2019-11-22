@@ -11,14 +11,21 @@
       <Description term="15 minutes Load">{{formatEmpty(record.load["15min"])}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
-    <DescriptionList title="CPU & Memory" col="12">
+    <DescriptionList title="CPU & Memory" col="8">
       <Description term="Processors">{{formatEmpty(record.cpu_processors)}}</Description>
       <Description term="CPU cores">{{formatEmpty(record.cpu_cores)}}</Description>
-
+    </DescriptionList>
+    <DescriptionList title="" col="8">
       <Description term="Total memory">{{formatMemory(record.mem_total_bytes)}}</Description>
       <Description term="Free memory">{{formatMemory(record.mem_free_bytes)}}</Description>
+      <Description term="Memory usage">
+        <percentage-bar id="mem_usage" :data="formatMemUsageData()" :width="230" :padding="[0,0,0,38]"></percentage-bar>
+      </Description>
       <Description term="Total swap memory">{{formatMemory(record.mem_totalSwap_bytes)}}</Description>
       <Description term="Free swap momery">{{formatMemory(record.mem_freeSwap_bytes)}}</Description>
+      <Description term="Swap memory usage">
+        <percentage-bar id="mem_swap_usage" :data="formatSwapMemUsageData()" :width="230"></percentage-bar>
+      </Description>
       <Description term="Total app memory">{{formatMemory(record.mem_applications)}}</Description>
 
     </DescriptionList>
@@ -58,7 +65,7 @@
         </el-table-column>
         <el-table-column label="Usage" width="340">
           <template slot-scope="scope">
-            <percentage-bar :id="scope.$index" :data="formatChartData(scope.row)"></percentage-bar>
+            <percentage-bar :id="scope.$index" :data="formatUsageData(scope.row)"></percentage-bar>
           </template>
         </el-table-column>
       </el-table>
@@ -131,7 +138,31 @@ export default {
     formatPercent(data){
       return data > 0.85;
     },
-    formatChartData(data){
+    formatSwapMemUsageData(){
+      let data = this.record;
+      return [{
+        key:'Usage',
+        label:'Used',
+        value:data.mem_totalSwap_bytes - data.mem_freeSwap_bytes,
+      },{
+        key:'Usage',
+        label:'Free',
+        value: data.mem_freeSwap_bytes,
+      }];
+    },
+    formatMemUsageData(){
+      let data = this.record;
+      return [{
+        key:'Usage',
+        label:'Used',
+        value:data.mem_total_bytes - data.mem_free_bytes,
+      },{
+        key:'Usage',
+        label:'Free',
+        value: data.mem_free_bytes,
+      }];
+    },
+    formatUsageData(data){
       return [{
         key:'Usage',
         label:'Used',
@@ -169,4 +200,10 @@ export default {
 </script>
 
 <style>
+.detail {
+  vertical-align: middle;
+}
+.detail > div > div {
+  height:30px;
+}
 </style>

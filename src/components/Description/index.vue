@@ -1,6 +1,6 @@
 <template>
     <el-col :span="+col">
-      <div class="term">{{term}}</div>
+      <div class="term" :style="termStyle">{{term}}</div>
       <div class="detail">
         <slot></slot>
       </div>
@@ -13,7 +13,8 @@ export default {
   name: "Description",
   props: {
   	title: "",
-    term: ""
+    term: "",
+    termStyle:"",
   },
   computed:{
     col(){

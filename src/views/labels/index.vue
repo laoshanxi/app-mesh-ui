@@ -7,7 +7,7 @@
             <span slot="label"><i class="el-icon-s-flag"></i> Labels</span>
             <el-form ref="form" :model="form" label-width="80px">
               <el-row v-for="(label, index) in form.labels">
-                <el-col :span="5">
+                <el-col style="width:300px">
                   <el-form-item :label="'Label ' + index"
                     :prop="'labels.' + index + '.key'"
                     :rules="{
@@ -18,7 +18,7 @@
                     =
                   </el-form-item>
                 </el-col>
-                <el-col :span="6">
+                <el-col style="width:350px">
                   <el-form-item  label-width="0px"
                     :prop="'labels.' + index + '.value'"
                     :rules="{
