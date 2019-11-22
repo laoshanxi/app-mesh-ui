@@ -15,7 +15,7 @@ package:
 	docker build -t appmanager-ui:${VER} -f ./Dockerfile .
 	
 run:
-	-docker rm -f appweb
+	appc logon -u admin -x Admin123
 	#docker run -d -p 6066:80 --name appweb appmanager-ui:${VER}
 	appc reg -n appweb -e APP_DOCKER_OPTS="-p 6066:80" -c "nginx -g 'daemon off;'" -d appmanager-ui:1.0 -f
 tar:
