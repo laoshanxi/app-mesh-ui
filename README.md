@@ -41,7 +41,6 @@ npm run lint
 npm run lint -- --fix
 ```
 
-## Demo
 
 ## Extra
 ```bash
@@ -52,6 +51,15 @@ appc reg -c "sh -c 'docker rm -f appweb; docker run --rm -p 6066:80 --name appwe
 # option2 : native docker process
 appc reg -n appweb -e APP_DOCKER_OPTS="-p 6066:80" -c "nginx -g 'daemon off;'" -d appmanager-ui:1.0 -f
 ```
+
+## Demo
+
+<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/applications.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/configuration.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/host.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/labels.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/remote_shell.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/users.png" />
 
 ## Browsers support
 
