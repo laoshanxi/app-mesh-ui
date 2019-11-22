@@ -1,6 +1,6 @@
 # app-manager-ui
 
-> The WEB GUI for laoshanxi/app-manager
+[Applicaton Manager](https://github.com/laoshanxi/app-manager)
 
 ## Build Setup
 
