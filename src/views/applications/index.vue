@@ -103,12 +103,12 @@
         <el-form-item label="Working dir" prop="working_dir">
           <el-input v-model="registerForm.working_dir"></el-input>
         </el-form-item>
+		<el-form-item label="Comments" prop="comments">
+          <el-input v-model="registerForm.comments"></el-input>
+        </el-form-item>
         <el-divider></el-divider>
         <el-form-item label="Start user" prop="user">
           <el-input v-model="registerForm.user"></el-input>
-        </el-form-item>
-        <el-form-item label="Comments" prop="comments">
-          <el-input v-model="registerForm.comments"></el-input>
         </el-form-item>
         <el-form-item label="Status">
           <el-switch
@@ -140,18 +140,7 @@
           <el-input type="number" v-model="registerForm.resource_limit.memory_virt_mb"></el-input> MB
         </el-form-item>
         <el-divider></el-divider>
-        <el-form-item
-            v-for="(env, index) in registerForm.envs"
-            :label="'Env ' + index"
-            :key="env.key"
-            :prop="'envs.' + index + '.value'"
-            :rules="{
-              required: true, message: 'ENV is not empty', trigger: 'blur'
-            }"
-          >
-          <el-input v-model="env.name" ref="envs" style="width:200px"></el-input>=
-          <el-input v-model="env.value" style="width:200px"></el-input><el-button @click.prevent="removeEnvReg(env)" icon="el-icon-delete"></el-button>
-        </el-form-item>
+        
 
         <el-form-item label="Posix timezone" prop="posix_timezone">
           <el-input v-model="registerForm.posix_timezone"></el-input>
@@ -162,15 +151,11 @@
         <el-form-item label="Docker image" prop="docker_image">
           <el-input v-model="registerForm.docker_image"></el-input>
         </el-form-item>
-        <el-form-item label="Pid to attach" prop="pid">
+        <el-form-item label="Pid(for attach)" prop="pid">
           <el-input type="number" v-model="registerForm.pid"></el-input>
         </el-form-item>
 
         <el-divider></el-divider>
-        <el-form-item label="Start interval" prop="start_interval_seconds"
-          >
-          <el-input type="number" v-model="registerForm.start_interval_seconds"></el-input> S
-        </el-form-item>
         <el-form-item label="Start time" prop="start_time"
           >
           <el-date-picker
@@ -178,6 +163,10 @@
                 type="datetime"
                 placeholder="">
           </el-date-picker>
+        </el-form-item>
+		<el-form-item label="Start interval" prop="start_interval_seconds"
+          >
+          <el-input type="number" v-model="registerForm.start_interval_seconds"></el-input> S
         </el-form-item>
         <el-form-item label="Start interval timeout" prop="start_interval_timeout"
           >
@@ -189,6 +178,19 @@
             :active-value="true"
             :inactive-value="false">
           </el-switch>
+        </el-form-item>
+		<el-divider></el-divider>
+		<el-form-item
+            v-for="(env, index) in registerForm.envs"
+            :label="'Env ' + index"
+            :key="env.key"
+            :prop="'envs.' + index + '.value'"
+            :rules="{
+              required: true, message: 'ENV is not empty', trigger: 'blur'
+            }"
+          >
+          <el-input v-model="env.name" ref="envs" style="width:200px"></el-input>=
+          <el-input v-model="env.value" style="width:200px"></el-input><el-button @click.prevent="removeEnvReg(env)" icon="el-icon-delete"></el-button>
         </el-form-item>
       </el-form>
 
