@@ -140,18 +140,7 @@
           <el-input type="number" v-model="registerForm.resource_limit.memory_virt_mb"></el-input> MB
         </el-form-item>
         <el-divider></el-divider>
-        <el-form-item
-            v-for="(env, index) in registerForm.envs"
-            :label="'Env ' + index"
-            :key="env.key"
-            :prop="'envs.' + index + '.value'"
-            :rules="{
-              required: true, message: 'ENV is not empty', trigger: 'blur'
-            }"
-          >
-          <el-input v-model="env.name" ref="envs" style="width:200px"></el-input>=
-          <el-input v-model="env.value" style="width:200px"></el-input><el-button @click.prevent="removeEnvReg(env)" icon="el-icon-delete"></el-button>
-        </el-form-item>
+        
 
         <el-form-item label="Posix timezone" prop="posix_timezone">
           <el-input v-model="registerForm.posix_timezone"></el-input>
@@ -189,6 +178,19 @@
             :active-value="true"
             :inactive-value="false">
           </el-switch>
+        </el-form-item>
+		<el-divider></el-divider>
+		<el-form-item
+            v-for="(env, index) in registerForm.envs"
+            :label="'Env ' + index"
+            :key="env.key"
+            :prop="'envs.' + index + '.value'"
+            :rules="{
+              required: true, message: 'ENV is not empty', trigger: 'blur'
+            }"
+          >
+          <el-input v-model="env.name" ref="envs" style="width:200px"></el-input>=
+          <el-input v-model="env.value" style="width:200px"></el-input><el-button @click.prevent="removeEnvReg(env)" icon="el-icon-delete"></el-button>
         </el-form-item>
       </el-form>
 
