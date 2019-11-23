@@ -187,7 +187,7 @@ export default {
       if(!memory){
         return "-";
       }
-      let units = ["B", "KB", "MB", "GB", "TB", "PB"];
+      let units = ["B", "Ki", "Mi", "Gi", "Ti", "Pi"];
       let index = 0;
       let compute = function(num){
         index ++;

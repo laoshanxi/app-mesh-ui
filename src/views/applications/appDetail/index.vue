@@ -52,17 +52,13 @@
     </DescriptionList>
     <el-divider></el-divider>
 
-    <DescriptionList title="Extra infomation" col="24">
+    <DescriptionList title="Extra infomation" col="12">
       <Description term="Daily limitation">{{(record.daily_limitation) ? record.daily_limitation.daily_start + ' - ' + record.daily_limitation.daily_end : '-'}}</Description>
-    </DescriptionList>
-    <DescriptionList title="" col="8">
-      <Description term="CPU shares">{{record.resource_limit? record.resource_limit.cpu_shares:'-'}}</Description>
-      <Description term="Memory (MB)">{{record.resource_limit? record.resource_limit.memory_mb:'-'}}</Description>
-      <Description term="Memory virt (MB)">{{record.resource_limit? record.resource_limit.memory_virt_mb:'-'}}</Description>
-    </DescriptionList>
-    <DescriptionList title="" col="8">
       <Description term="Posix timezone">{{formatEmpty(record.posix_timezone)}}</Description>
-      <Description term="Cache lines">{{formatEmpty(record.cache_lines)}}</Description>
+      <Description term="Phisical memory (Mi)">{{record.resource_limit? record.resource_limit.memory_mb:'-'}}</Description>
+      <Description term="Virtual memory (Mi)">{{record.resource_limit? record.resource_limit.memory_virt_mb:'-'}}</Description>
+      <Description term="CPU shares">{{record.resource_limit? record.resource_limit.cpu_shares:'-'}}</Description>
+      <Description term="Output cache lines">{{formatEmpty(record.cache_lines)}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="Environment variables" col="24" v-if="record.env">
@@ -98,7 +94,7 @@ export default {
       if(!memory){
         return "-";
       }
-      let units = ["B", "KB", "MB", "GB", "TB", "PB"];
+      let units = ["B", "Ki", "Mi", "Gi", "Ti", "Pi"];
       let index = 0;
       let compute = function(num){
         index ++;

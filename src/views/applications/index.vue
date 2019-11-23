@@ -134,10 +134,10 @@
           <el-input type="number" v-model="registerForm.resource_limit.cpu_shares"></el-input>
         </el-form-item>
         <el-form-item label="Physical memory" prop="resource_limit.memory_mb">
-          <el-input type="number" v-model="registerForm.resource_limit.memory_mb"></el-input> MB
+          <el-input type="number" v-model="registerForm.resource_limit.memory_mb"></el-input> Mi
         </el-form-item>
         <el-form-item label="Virtual memory" prop="resource_limit.memory_virt_mb">
-          <el-input type="number" v-model="registerForm.resource_limit.memory_virt_mb"></el-input> MB
+          <el-input type="number" v-model="registerForm.resource_limit.memory_virt_mb"></el-input> Mi
         </el-form-item>
         <el-divider></el-divider>
         
@@ -488,7 +488,7 @@ export default {
       if(!memory){
         return "-";
       }
-      let units = ["B", "KB", "MB", "GB", "TB", "PB"];
+      let units = ["B", "Ki", "Mi", "Gi", "Ti", "Pi"];
       let index = 0;
       let compute = function(num){
         index ++;
