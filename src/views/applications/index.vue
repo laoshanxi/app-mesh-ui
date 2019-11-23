@@ -140,7 +140,7 @@
           <el-input type="number" v-model="registerForm.resource_limit.memory_virt_mb"></el-input> Mi
         </el-form-item>
         <el-divider></el-divider>
-        
+
 
         <el-form-item label="Posix timezone" prop="posix_timezone">
           <el-input v-model="registerForm.posix_timezone"></el-input>
@@ -371,32 +371,50 @@ export default {
           return;
         }
         case "enable": {
-          enableApp(this.currentRow.name).then((res)=>{
-            Message({
-              message: 'Application '+this.currentRow.name+' enabled successfully.',
-              type: 'success',
-              duration: 5 * 1000
-            });
-            this.fetchData();
-          },(res)=>{
-            console.info(res);
-          });
+          this.enableApp();
           return;
         }
         case "disable": {
-          disableApp(this.currentRow.name).then((res)=>{
-            Message({
-              message: 'Application '+this.currentRow.name+' disabled successfully.',
-              type: 'success',
-              duration: 5 * 1000
-            });
-            this.fetchData();
-          },(res)=>{
-            console.info(res);
-          });
+          this.disableApp();
           return;
         }
       }
+    },
+    enableApp(){
+      this.$confirm(`Do you want to enable the application <${this.currentRow.name}>?`, 'Tooltip', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+              }).then(() => {
+                enableApp(this.currentRow.name).then((res)=>{
+                  Message({
+                    message: 'Application '+this.currentRow.name+' enabled successfully.',
+                    type: 'success',
+                    duration: 5 * 1000
+                  });
+                  this.fetchData();
+                },(res)=>{
+                  console.info(res);
+                });
+              });
+    },
+    disableApp(){
+      this.$confirm(`Do you want to disable the application <${this.currentRow.name}>?`, 'Tooltip', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+              }).then(() => {
+                disableApp(this.currentRow.name).then((res)=>{
+                  Message({
+                    message: 'Application '+this.currentRow.name+' disabled successfully.',
+                    type: 'success',
+                    duration: 5 * 1000
+                  });
+                  this.fetchData();
+                },(res)=>{
+                  console.info(res);
+                });
+              });
     },
     registerApp(){
       function removeEmptyProperties(obj){
