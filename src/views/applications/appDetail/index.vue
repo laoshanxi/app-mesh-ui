@@ -55,8 +55,8 @@
     <DescriptionList title="Extra infomation" col="12">
       <Description term="Daily limitation">{{(record.daily_limitation) ? record.daily_limitation.daily_start + ' - ' + record.daily_limitation.daily_end : '-'}}</Description>
       <Description term="Posix timezone">{{formatEmpty(record.posix_timezone)}}</Description>
-      <Description term="Phisical memory (MB)">{{record.resource_limit? record.resource_limit.memory_mb:'-'}}</Description>
-      <Description term="Virtual memory (MB)">{{record.resource_limit? record.resource_limit.memory_virt_mb:'-'}}</Description>
+      <Description term="Phisical memory (Mi)">{{record.resource_limit? record.resource_limit.memory_mb:'-'}}</Description>
+      <Description term="Virtual memory (Mi)">{{record.resource_limit? record.resource_limit.memory_virt_mb:'-'}}</Description>
       <Description term="CPU shares">{{record.resource_limit? record.resource_limit.cpu_shares:'-'}}</Description>
       <Description term="Output cache lines">{{formatEmpty(record.cache_lines)}}</Description>
     </DescriptionList>
