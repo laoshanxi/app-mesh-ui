@@ -15,11 +15,15 @@
       <Description term="Processors">{{formatEmpty(record.cpu_processors)}}</Description>
       <Description term="CPU cores">{{formatEmpty(record.cpu_cores)}}</Description>
     </DescriptionList>
-    <DescriptionList title="" col="8">
+    <DescriptionList title="" col="24">
       <Description term="Total memory">{{formatMemory(record.mem_total_bytes)}}</Description>
       <Description term="Free memory">{{formatMemory(record.mem_free_bytes)}}</Description>
       <Description term="Memory usage">
-        <percentage-bar id="mem_usage" :data="formatMemUsageData()" :width="230" :padding="[0,0,0,38]"></percentage-bar>
+        <el-row>
+          <el-col :span="1">{{formatMemory(record.mem_total_bytes)}}</el-col>
+          <el-col :span="5" style="float: clear;"><percentage-bar id="mem_usage" :data="formatMemUsageData()" :width="100" :padding="[0,0,0,38]"></percentage-bar></el-col>
+          <el-col :span="1">{{formatMemory(record.mem_free_bytes)}}</el-col>
+        </el-row>
       </Description>
       <Description term="Total swap memory">{{formatMemory(record.mem_totalSwap_bytes)}}</Description>
       <Description term="Free swap momery">{{formatMemory(record.mem_freeSwap_bytes)}}</Description>
