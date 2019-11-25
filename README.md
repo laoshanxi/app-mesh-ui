@@ -2,6 +2,8 @@
 
 [Applicaton Manager](https://github.com/laoshanxi/app-manager)
 
+<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/diagram.png" />
+
 ## Build Setup
 
 ```bash
