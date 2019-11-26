@@ -3,7 +3,7 @@
 [Applicaton Manager](https://github.com/laoshanxi/app-manager)
 
 <div align=center>
-<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/diagram.png" width=529 height=407/>
+<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/diagram.png"width=434 height=334/>
 </div>
 
 ## Build Setup
