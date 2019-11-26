@@ -2,6 +2,10 @@
 
 [Applicaton Manager](https://github.com/laoshanxi/app-manager)
 
+<div align=center>
+<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/diagram.png" width=529 height=407/>
+</div>
+
 ## Build Setup
 
 ```bash
@@ -18,7 +22,7 @@ make
 make run
 ```
 
-Visit http://localhost:6066
+Visit http://localhost
 
 ## Build Docker image package
 ```bash
