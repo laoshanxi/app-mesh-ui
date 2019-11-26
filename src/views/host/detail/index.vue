@@ -55,12 +55,6 @@
             {{ formatEmpty(scope.row.device) }}
           </template>
         </el-table-column>
-
-        <el-table-column label="Mount point">
-          <template slot-scope="scope">
-            {{ formatEmpty(scope.row.mount_point) }}
-          </template>
-        </el-table-column>
         <el-table-column label="Size" width="140">
           <template slot-scope="scope">
             {{ formatMemory(scope.row.size) }}
@@ -71,9 +65,14 @@
             {{ formatMemory(scope.row.used) }}
           </template>
         </el-table-column>
-        <el-table-column label="Usage" width="340">
+        <el-table-column label="Usage" width="200">
           <template slot-scope="scope">
             <percentage-bar :id="scope.$index" :data="formatUsageData(scope.row)"></percentage-bar>
+          </template>
+        </el-table-column>
+        <el-table-column label="Mount point">
+          <template slot-scope="scope">
+            {{ formatEmpty(scope.row.mount_point) }}
           </template>
         </el-table-column>
       </el-table>
