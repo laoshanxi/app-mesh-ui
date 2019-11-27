@@ -20,9 +20,9 @@
       <Description term="Free memory">{{formatMemory(record.mem_free_bytes)}}</Description> -->
       <Description term="Memory">
         <div style="margin-left: 39px;">
-          <div class="chart-label">Free {{formatMemory(record.mem_free_bytes)}}</div>
+          <div class="chart-label">{{formatMemory(record.mem_free_bytes)}} free</div>
           <div class="chart-div"><percentage-bar id="mem_usage" :data="formatMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
-          <div class="chart-label">Total {{formatMemory(record.mem_total_bytes)}}</div>
+          <div class="chart-label">{{formatMemory(record.mem_total_bytes)}} total</div>
         </div>
       </Description>
       <!-- <Description term="Total swap memory">{{formatMemory(record.mem_totalSwap_bytes)}}</Description>
