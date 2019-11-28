@@ -107,7 +107,7 @@
        <el-button @click="cancel()">Cancel</el-button>
        <el-button @click="reset()">Reset</el-button>
        <el-button @click="addEnvReg()">Add Env</el-button>
-       <el-button type="primary" @click="registerApp()">Register</el-button>
+       <el-button type="primary" @click="registerApp()">Save</el-button>
      </div>
   </div>
 

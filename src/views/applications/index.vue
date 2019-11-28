@@ -5,7 +5,7 @@
     </el-row>
     <el-row>
       <el-button-group>
-      <el-button @click="btnClick('register')" type="primary" icon="el-icon-plus" >Register</el-button>
+      <el-button @click="btnClick('register')" type="primary" icon="el-icon-plus" >Add</el-button>
       <el-button @click="btnClick('delete')" type="danger" icon="el-icon-delete" :disabled="!isSelected">Delete</el-button>
       <el-button @click="btnClick('enable')" type="success" icon="el-icon-open" :disabled="!isSelected || isEnabled">Enable</el-button>
       <el-button @click="btnClick('disable')" type="warning" icon="el-icon-turn-off" :disabled="!isSelected || !isEnabled">Disable</el-button>
@@ -85,10 +85,10 @@
        </el-table>
     </el-row>
 
-    <!-- Register application dialog -->
-    <!-- <el-dialog title="Register Application" :visible.sync="registerFormVisible" fullscreen="false"> -->
+    <!-- Add application dialog -->
+    <!-- <el-dialog title="Add Application" :visible.sync="registerFormVisible" fullscreen="false"> -->
     <el-drawer custom-class="right-drawer"
-      title="Register Application"
+      title="Add Application"
       :visible.sync="registerFormVisible"
       size="60%">
       <app-reg @close="registerFormVisible = false" @success="regSuccess()"></app-reg>
