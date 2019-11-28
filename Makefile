@@ -16,7 +16,6 @@ package:
 	
 run:
 	appc logon -u admin -x Admin123
-	#docker run -d -p 6066:80 --name appweb appmanager-ui:${VER}
 	appc reg -n appweb -e APP_DOCKER_OPTS="-p 80:80 -p 443:443" -c "nginx -g 'daemon off;'" -d appmanager-ui:1.0 -f
 tar:
 	docker save appmanager-ui:${VER}  -o  ./appmanager-ui.${VER}.tar

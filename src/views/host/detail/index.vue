@@ -20,9 +20,9 @@
       <Description term="Free memory">{{formatMemory(record.mem_free_bytes)}}</Description> -->
       <Description term="Memory">
         <div style="margin-left: 39px;">
-          <div class="chart-label">Free {{formatMemory(record.mem_free_bytes)}}</div>
+          <div class="chart-label">{{formatMemory(record.mem_free_bytes)}} free</div>
           <div class="chart-div"><percentage-bar id="mem_usage" :data="formatMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
-          <div class="chart-label">Total {{formatMemory(record.mem_total_bytes)}}</div>
+          <div class="chart-label">{{formatMemory(record.mem_total_bytes)}} total</div>
         </div>
       </Description>
       <!-- <Description term="Total swap memory">{{formatMemory(record.mem_totalSwap_bytes)}}</Description>
@@ -49,23 +49,23 @@
         highlight-current-row
       >
 
-        <el-table-column label="Device" prop="device">
+        <el-table-column label="Device" prop="device" width="150">
           <template slot-scope="scope">
             <i class="el-icon-warning" style="color: firebrick;font-size: 18px; vertical-align: middle;" v-if="formatPercent(scope.row.usage)"></i>
             {{ formatEmpty(scope.row.device) }}
           </template>
         </el-table-column>
-        <el-table-column label="Size" width="140">
+        <el-table-column label="Size" width="150">
           <template slot-scope="scope">
             {{ formatMemory(scope.row.size) }}
           </template>
         </el-table-column>
-        <el-table-column label="Used" width="140">
+        <el-table-column label="Used" width="150">
           <template slot-scope="scope">
             {{ formatMemory(scope.row.used) }}
           </template>
         </el-table-column>
-        <el-table-column label="Usage" width="200">
+        <el-table-column label="Usage" width="150">
           <template slot-scope="scope">
             <percentage-bar :id="scope.$index" :data="formatUsageData(scope.row)"></percentage-bar>
           </template>
