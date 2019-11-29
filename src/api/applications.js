@@ -58,9 +58,9 @@ export function disableApp(appName) {
   })
 }
 
-export function runApp(appName, timeout, sync, options) {
+export function runApp(timeout, sync, options) {
   return request({
-    url: '/app/' + appName + '/' + (sync ? 'syncrun' : 'run') + '?timeout=' + timeout,
+    url: '/app/' + (sync ? 'syncrun' : 'run') + '?timeout=' + timeout,
     method: 'POST',
     data: options
   })

@@ -65,11 +65,10 @@
         input : "",
         inputDisabled:false,
         isSync:true,
+        command:'sh -c ',
         shellApp : {
-          name:"",
-          command:"${COMMAND}",
-          working_dir:"/tmp",
-          status:0
+          command:'',
+          working_dir:'/tmp'
         },
         connected : 0//0,未连接；1，连接中；2，已连接
       }
@@ -84,11 +83,6 @@
         clearInterval(this.timer);
         this.timer = null;
       }
-      deleteApplication(this.shellApp.name).then((res)=>{
-        console.info("Remove the application " + this.shellApp.name + " successfully.");
-      }, (res)=>{
-        console.info("Remove the application " + this.shellApp.name + " failed.");
-      });
     },
     mounted () {
       this.connectHost();
@@ -124,8 +118,8 @@
         this.shellContents.push({
             content: "# Connecting remote host..."
         });
-        this.shellApp.name = "sh-" + new Date().getTime();
-        registerShApp(this.shellApp.name, this.shellApp).then((res)=>{
+        this.shellApp.command = this.command + '""';
+        runApp(this.timeout, true, this.shellApp).then((res)=>{
           this.connected = 2;
           this.shellContents.push(
             {
@@ -167,16 +161,12 @@
         });
       },
       run(){
-        let envs = {
-          env :{
-            "COMMAND" : this.input
-          }
-        };
+        this.shellApp.command = this.command + '" ' + this.input + '"';
         let shell = this.$refs['shell_div'];
         this.$nextTick(() => {
           shell.scrollTop = shell.scrollHeight;
         });
-        runApp(this.shellApp.name, this.timeout, this.isSync, envs).then((res)=>{
+        runApp(this.timeout, this.isSync, this.shellApp).then((res)=>{
           if(this.isSync){
             this.refreshShellContents(res.data);
             this.runFinished();
@@ -201,8 +191,8 @@
           shell.scrollTop = shell.scrollHeight;
         });
       },
-      getOutputValue(pid){
-        getOutput(this.shellApp.name, pid).then((res)=>{
+      getOutputValue(data){
+        getOutput(data.name, data.process_uuid).then((res)=>{
           if(res.status == 201){
             this.runFinished();
           }

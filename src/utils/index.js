@@ -105,3 +105,21 @@ export function param2Obj(url) {
       '"}'
   )
 }
+
+export function formatEmpty(value, defaultValue){
+	return value || value == 0 ? value : (defaultValue ? defaultValue : "-");
+}
+
+export function formatMemory(memory){
+	if(!memory){
+	  return "-";
+	}
+	let units = ["B", "Ki", "Mi", "Gi", "Ti", "Pi"];
+	let index = 0;
+	let compute = function(num){
+	  index ++;
+	  let result = num > 1024 ? num / 1024 : num;
+	  return result > 1024 ? compute(result) : result;
+	}
+	return compute(memory).toFixed(2) + " " + units[index];
+}

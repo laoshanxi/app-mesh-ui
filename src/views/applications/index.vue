@@ -30,7 +30,7 @@
          </el-table-column>
          <el-table-column label="User" width="110">
            <template slot-scope="scope">
-             {{ formatEmpty(scope.row.user) }}
+             {{ scope.row.user | formatEmpty }}
            </template>
          </el-table-column>
          <el-table-column class-name="status-col" label="State" width="110">
@@ -46,17 +46,17 @@
          </el-table-column>
          <el-table-column label="PID" width="100">
            <template slot-scope="scope">
-             {{ formatEmpty(scope.row.pid) }}
+             {{ scope.row.pid | formatEmpty }}
            </template>
          </el-table-column>
          <el-table-column label="Memory" width="110">
            <template slot-scope="scope">
-             {{ formatMemory(scope.row.memory) }}
+             {{ scope.row.memory | formatMemory }}
            </template>
          </el-table-column>
          <el-table-column label="Return" width="110">
            <template slot-scope="scope">
-             {{ formatEmpty(scope.row.return) }}
+             {{ scope.row.return | formatEmpty }}
            </template>
          </el-table-column>
          <el-table-column prop="last_start_time" label="Last Start Time" width="200">
@@ -73,12 +73,12 @@
          </el-table-column>
          <el-table-column label="Command" width="150">
            <template slot-scope="scope">
-             {{ scope.row.command }}
+             {{ scope.row.command | formatEmpty }}
            </template>
          </el-table-column>
          <el-table-column label="Working Dir">
            <template slot-scope="scope">
-             {{ formatEmpty(scope.row.working_dir) }}
+             {{ scope.row.working_dir | formatEmpty }}
            </template>
          </el-table-column>
 
@@ -94,6 +94,7 @@
       <app-reg @close="registerFormVisible = false" @success="regSuccess()"></app-reg>
     </el-drawer>
 
+    <!-- show application detail -->
     <el-drawer
       :visible.sync="isShowDetail"
       v-loading="isLoadingDetail"
@@ -105,6 +106,8 @@
         <app-detail :record="currentRow"/>
       </div>
     </el-drawer>
+
+    <!-- show application logs -->
     <el-drawer
       :visible.sync="isShowLog"
       v-loading="isLoadingLog"
@@ -262,7 +265,6 @@ export default {
       if(!currentRow){
         this.isSelected = false;
         this.isEnabled = false;
-        this.isStart = false;
         return;
       }
       this.isSelected = true;
@@ -271,27 +273,6 @@ export default {
       }else{
         this.isEnabled = false;
       }
-      if(currentRow.pid > 0){
-        this.isStart = true;
-      }else{
-        this.isStart = false;
-      }
-    },
-    formatEmpty(value){
-      return value || value == 0 ? value : "-";
-    },
-    formatMemory(memory){
-      if(!memory){
-        return "-";
-      }
-      let units = ["B", "Ki", "Mi", "Gi", "Ti", "Pi"];
-      let index = 0;
-      let compute = function(num){
-        index ++;
-        let result = num > 1024 ? num / 1024 : num;
-        return result > 1024 ? compute(result) : result;
-      }
-      return compute(memory).toFixed(2) + " " + units[index];
     },
     handleSizeChange(value){
       this.pageSize = value;

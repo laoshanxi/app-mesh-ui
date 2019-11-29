@@ -43,7 +43,7 @@
          </el-table-column>
          <el-table-column label="Roles">
            <template slot-scope="scope">
-             {{ formatEmpty(scope.row.roles) }}
+             {{ scope.row.roles | formatEmpty }}
            </template>
          </el-table-column>
        </el-table>
@@ -149,9 +149,6 @@ export default {
       }else{
         this.isLocked = false;
       }
-    },
-    formatEmpty(value){
-      return (value && value.length>0) || value == 0 ? value : "-";
     },
   }
 }

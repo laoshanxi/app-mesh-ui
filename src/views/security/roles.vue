@@ -30,7 +30,7 @@
 
          <el-table-column label="Permissions">
            <template slot-scope="scope">
-             {{ formatEmpty(scope.row.permissions) }}
+             {{ scope.row.permissions | formatEmpty }}
            </template>
          </el-table-column>
        </el-table>
@@ -96,9 +96,6 @@ export default {
         return;
       }
       this.isSelected = true;
-    },
-    formatEmpty(value){
-      return (value && value.length>0) || value == 0 ? value : "-";
     },
   }
 }

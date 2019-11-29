@@ -1,7 +1,7 @@
 <template>
   <el-card class="box-card" v-if="record">
     <DescriptionList title="Basic information" col="24">
-      <Description term="Name">{{formatEmpty(record.name)}}</Description>
+      <Description term="Name">{{record.name | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
       <Description term="Status">
@@ -14,27 +14,27 @@
           </el-tag>
         </div>
       </Description>
-      <Description term="User">{{formatEmpty(record.user)}}</Description>
+      <Description term="User">{{record.user | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
-      <Description term="Command">{{formatEmpty(record.command)}}</Description>
-      <Description term="Working dir">{{formatEmpty(record.working_dir)}}</Description>
+      <Description term="Command">{{record.command | formatEmpty}}</Description>
+      <Description term="Working dir">{{record.working_dir | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="24">
-      <Description term="Comments">{{formatEmpty(record.comments)}}</Description>
-      <Description term="Docker image">{{formatEmpty(record.docker_image)}}</Description>
+      <Description term="Comments">{{record.comments | formatEmpty}}</Description>
+      <Description term="Docker image">{{record.docker_image | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
 
     <DescriptionList title="Runtime infomation" col="12">
-      <Description term="PID">{{formatEmpty(record.pid)}}</Description>
-      <Description term="Return">{{formatEmpty(record.return)}}</Description>
-      <Description term="Memory">{{formatMemory(record.memory)}}</Description>
+      <Description term="PID">{{record.pid | formatEmpty}}</Description>
+      <Description term="Return">{{record.return | formatEmpty}}</Description>
+      <Description term="Memory">{{record.memory | formatMemory}}</Description>
       <Description term="Last start time">
         <span v-if="record.last_start_time">{{ record.last_start_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         <span v-else>-</span>
       </Description>
-      <Description term="Container id">{{formatEmpty(record.container_id)}}</Description>
+      <Description term="Container id">{{record.container_id | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="Short running App infomation" col="12">
@@ -47,18 +47,18 @@
           No
         </el-tag>
       </Description>
-      <Description term="Start interval seconds (S)">{{formatEmpty(record.start_interval_seconds)}}</Description>
-      <Description term="Start tnterval timeout (S)">{{formatEmpty(record.start_interval_timeout)}}</Description>
+      <Description term="Start interval seconds (S)">{{record.start_interval_seconds | formatEmpty}}</Description>
+      <Description term="Start tnterval timeout (S)">{{record.start_interval_timeout | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
 
     <DescriptionList title="Extra infomation" col="12">
       <Description term="Daily limitation">{{(record.daily_limitation) ? record.daily_limitation.daily_start + ' - ' + record.daily_limitation.daily_end : '-'}}</Description>
-      <Description term="Posix timezone">{{formatEmpty(record.posix_timezone)}}</Description>
+      <Description term="Posix timezone">{{record.posix_timezone | formatEmpty}}</Description>
       <Description term="Phisical memory (Mi)">{{record.resource_limit? record.resource_limit.memory_mb:'-'}}</Description>
       <Description term="Virtual memory (Mi)">{{record.resource_limit? record.resource_limit.memory_virt_mb:'-'}}</Description>
       <Description term="CPU shares">{{record.resource_limit? record.resource_limit.cpu_shares:'-'}}</Description>
-      <Description term="Output cache lines">{{formatEmpty(record.cache_lines)}}</Description>
+      <Description term="Output cache lines">{{record.cache_lines | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="Environment variables" col="24" v-if="record.env">
@@ -90,22 +90,6 @@ export default {
   mounted(){
   },
   methods:{
-    formatMemory(memory){
-      if(!memory){
-        return "-";
-      }
-      let units = ["B", "Ki", "Mi", "Gi", "Ti", "Pi"];
-      let index = 0;
-      let compute = function(num){
-        index ++;
-        let result = num > 1024 ? num / 1024 : num;
-        return result > 1024 ? compute(result) : result;
-      }
-      return compute(memory).toFixed(2) + " " + units[index];
-    },
-    formatEmpty(value){
-      return value || value == 0 ? value : "-";
-    },
   }
 }
 </script>

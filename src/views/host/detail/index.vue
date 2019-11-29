@@ -1,40 +1,36 @@
 <template>
   <div class="box-card" v-if="record!='No Data'">
     <DescriptionList title="Host" col="8">
-      <Description term="Host name">{{formatEmpty(record.host_name)}}</Description>
-      <Description term="Date time">{{formatEmpty(record.systime)}}</Description>
-      <Description term="Description">{{formatEmpty(record.host_description)}}</Description>
+      <Description term="Host name">{{record.host_name | formatEmpty}}</Description>
+      <Description term="Date time">{{record.systime | formatEmpty}}</Description>
+      <Description term="Description">{{record.host_description | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="8">
-      <Description term="1 minutes Load">{{formatEmpty(record.load["1min"])}}</Description>
-      <Description term="5 minutes Load">{{formatEmpty(record.load["5min"])}}</Description>
-      <Description term="15 minutes Load">{{formatEmpty(record.load["15min"])}}</Description>
+      <Description term="1 minutes Load">{{record.load["1min"] | formatEmpty}}</Description>
+      <Description term="5 minutes Load">{{record.load["5min"] | formatEmpty}}</Description>
+      <Description term="15 minutes Load">{{record.load["15min"] | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="CPU & Memory" col="8">
-      <Description term="Processors">{{formatEmpty(record.cpu_processors)}}</Description>
-      <Description term="CPU cores">{{formatEmpty(record.cpu_cores)}}</Description>
+      <Description term="Processors">{{record.cpu_processors | formatEmpty}}</Description>
+      <Description term="CPU cores">{{record.cpu_cores | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="24">
-      <!-- <Description term="Total memory">{{formatMemory(record.mem_total_bytes)}}</Description>
-      <Description term="Free memory">{{formatMemory(record.mem_free_bytes)}}</Description> -->
       <Description term="Memory">
         <div style="margin-left: 39px;">
-          <div class="chart-label">Free {{formatMemory(record.mem_free_bytes)}}</div>
+          <div class="chart-label">Free {{record.mem_free_bytes | formatMemory}}</div>
           <div class="chart-div"><percentage-bar id="mem_usage" :data="formatMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
-          <div class="chart-label">Total {{formatMemory(record.mem_total_bytes)}}</div>
+          <div class="chart-label">Total {{record.mem_total_bytes | formatMemory}}</div>
         </div>
       </Description>
-      <!-- <Description term="Total swap memory">{{formatMemory(record.mem_totalSwap_bytes)}}</Description>
-      <Description term="Free swap momery">{{formatMemory(record.mem_freeSwap_bytes)}}</Description> -->
       <Description term="Swap memory">
         <el-row>
-          <div class="chart-label">Free {{formatMemory(record.mem_freeSwap_bytes)}}</div>
+          <div class="chart-label">Free {{record.mem_freeSwap_bytes | formatMemory}}</div>
           <div class="chart-div"><percentage-bar id="mem_swap_usage" :data="formatSwapMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
-          <div class="chart-label">Total {{formatMemory(record.mem_totalSwap_bytes)}}</div>
+          <div class="chart-label">Total {{record.mem_totalSwap_bytes | formatMemory}}</div>
         </el-row>
       </Description>
-      <Description term="Total app memory">{{formatMemory(record.mem_applications)}}</Description>
+      <Description term="Total app memory">{{record.mem_applications | formatMemory}}</Description>
 
     </DescriptionList>
     <el-divider></el-divider>
@@ -52,17 +48,17 @@
         <el-table-column label="Device" prop="device">
           <template slot-scope="scope">
             <i class="el-icon-warning" style="color: firebrick;font-size: 18px; vertical-align: middle;" v-if="formatPercent(scope.row.usage)"></i>
-            {{ formatEmpty(scope.row.device) }}
+            {{ scope.row.device | formatEmpty }}
           </template>
         </el-table-column>
         <el-table-column label="Size" width="140">
           <template slot-scope="scope">
-            {{ formatMemory(scope.row.size) }}
+            {{ scope.row.size | formatMemory }}
           </template>
         </el-table-column>
         <el-table-column label="Used" width="140">
           <template slot-scope="scope">
-            {{ formatMemory(scope.row.used) }}
+            {{ scope.row.used | formatMemory }}
           </template>
         </el-table-column>
         <el-table-column label="Usage" width="200">
@@ -72,7 +68,7 @@
         </el-table-column>
         <el-table-column label="Mount point">
           <template slot-scope="scope">
-            {{ formatEmpty(scope.row.mount_point) }}
+            {{ scope.row.mount_point | formatEmpty }}
           </template>
         </el-table-column>
       </el-table>
@@ -89,7 +85,7 @@
 
         <el-table-column label="Name" width="240" prop="name">
           <template slot-scope="scope">
-            {{ formatEmpty(scope.row.name) }}
+            {{ scope.row.name | formatEmpty }}
           </template>
         </el-table-column>
 
@@ -105,7 +101,7 @@
         </el-table-column>
         <el-table-column label="Address" prop="address">
           <template slot-scope="scope">
-            {{ formatEmpty(scope.row.address) }}
+            {{ scope.row.address | formatEmpty }}
           </template>
         </el-table-column>
       </el-table>
@@ -179,28 +175,6 @@ export default {
         label:'Unused',
         value:data.size-data.used,
       }];
-    },
-    formatPercentage(value){
-      if(!value){
-        return "-";
-      }
-      return (value * 100).toFixed(2) + "%";
-    },
-    formatMemory(memory){
-      if(!memory){
-        return "-";
-      }
-      let units = ["B", "Ki", "Mi", "Gi", "Ti", "Pi"];
-      let index = 0;
-      let compute = function(num){
-        index ++;
-        let result = num > 1024 ? num / 1024 : num;
-        return result > 1024 ? compute(result) : result;
-      }
-      return compute(memory).toFixed(2) + " " + units[index];
-    },
-    formatEmpty(value){
-      return value || value == 0 ? value : "-";
     },
   }
 }
