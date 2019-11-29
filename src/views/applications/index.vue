@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import { getApplications, getApplicationByName, getAppLog, runApp, enableApp, disableApp, deleteApplication, registerApplication } from '@/api/applications'
+import applications from '@/services/applications'
 import { parseTime } from '@/utils'
 import { MessageBox, Message } from 'element-ui'
 import AppDetail from './appDetail'
@@ -186,23 +186,6 @@ export default {
       }, 500);
     },
 
-    removeApp(){
-      this.$confirm(`Do you want to remove the application <${this.currentRow.name}>?`, 'Tooltip', {
-                confirmButtonText: 'Confirm',
-                cancelButtonText: 'Cancel',
-                type: 'warning'
-              }).then(() => {
-                deleteApplication(this.currentRow.name).then((res)=>{
-                  this.$message({
-                    type: 'success',
-                    message: `Application <${this.currentRow.name}> removed successfully.`
-                  }, 5000);
-                  this.fetchData();
-                },(res)=>{
-                  console.info(res);
-                });
-              });
-    },
     btnClick(action){
       switch (action){
         case "register": {
@@ -210,54 +193,18 @@ export default {
           return;
         }
         case "delete": {
-          this.removeApp();
+          applications.removeApp(this);
           return;
         }
         case "enable": {
-          this.enableApp();
+          applications.enableApp(this);
           return;
         }
         case "disable": {
-          this.disableApp();
+          applications.disableApp(this);
           return;
         }
       }
-    },
-    enableApp(){
-      this.$confirm(`Do you want to enable the application <${this.currentRow.name}>?`, 'Tooltip', {
-                confirmButtonText: 'Confirm',
-                cancelButtonText: 'Cancel',
-                type: 'warning'
-              }).then(() => {
-                enableApp(this.currentRow.name).then((res)=>{
-                  Message({
-                    message: 'Application '+this.currentRow.name+' enabled successfully.',
-                    type: 'success',
-                    duration: 5 * 1000
-                  });
-                  this.fetchData();
-                },(res)=>{
-                  console.info(res);
-                });
-              });
-    },
-    disableApp(){
-      this.$confirm(`Do you want to disable the application <${this.currentRow.name}>?`, 'Tooltip', {
-                confirmButtonText: 'Confirm',
-                cancelButtonText: 'Cancel',
-                type: 'warning'
-              }).then(() => {
-                disableApp(this.currentRow.name).then((res)=>{
-                  Message({
-                    message: 'Application '+this.currentRow.name+' disabled successfully.',
-                    type: 'success',
-                    duration: 5 * 1000
-                  });
-                  this.fetchData();
-                },(res)=>{
-                  console.info(res);
-                });
-              });
     },
 
     currentRowChange(currentRow, oldCurrentRow){
@@ -281,31 +228,13 @@ export default {
       console.info(arguments);
     },
     fetchData() {
-      this.listLoading = true
-      getApplications().then(response => {
-        this.list = response.data;
-        this.listLoading = false
-      }, res => {
-        this.listLoading = false;
-      })
+      applications.getAppList(this);
     },
     getAppByName(name){
-      this.isLoadingDetail = true
-      getApplicationByName(name).then(response => {
-        this.application = response.data;
-        this.isLoadingDetail = false
-      }, res => {
-        this.isLoadingDetail = false;
-      })
+      applications.getAppByName(this, name);
     },
     getAppLogByName(name){
-      this.isLoadingLog = true
-      getAppLog(name).then(response => {
-        this.appLogInfo = response.data;
-        this.isLoadingLog = false
-      }, res => {
-        this.isLoadingLog = false;
-      })
+      applications.getAppLogByName(this, name);
     }
   }
 }

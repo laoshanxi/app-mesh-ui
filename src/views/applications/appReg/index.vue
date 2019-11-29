@@ -114,7 +114,7 @@
 </template>
 
 <script>
-import { registerApplication } from '@/api/applications'
+import applications from '@/services/applications'
 
 export default {
   name:"AppReg",
@@ -190,62 +190,7 @@ export default {
       }
     },
     registerApp(){
-      function removeEmptyProperties(obj){
-        let hasValue = false;
-        for(let p in obj){
-          let isNull = false;
-          if(Object.prototype.toString.call(obj[p])=='[object Object]'){
-            isNull = !removeEmptyProperties(obj[p]);
-          }
-          if(obj[p]==null || obj[p].length==0 || isNull){
-            delete obj[p];
-          }else{
-            hasValue = true;
-          }
-        }
-        return hasValue;
-      }
-      function formatData(data){
-        if(data.cache_lines) data.cache_lines = parseInt(data.cache_lines);
-        if(data.pid) data.pid = parseInt(data.pid);
-        if(data.start_interval_seconds) data.start_interval_seconds = parseInt(data.start_interval_seconds);
-        if(data.start_interval_timeout) data.start_interval_timeout = parseInt(data.start_interval_timeout);
-        if(data.resource_limit){
-          if(data.resource_limit.cpu_shares) data.resource_limit.cpu_shares = parseInt(data.resource_limit.cpu_shares);
-          if(data.resource_limit.memory_mb) data.resource_limit.memory_mb = parseInt(data.resource_limit.memory_mb);
-          if(data.resource_limit.memory_virt_mb) data.resource_limit.memory_virt_mb = parseInt(data.resource_limit.memory_virt_mb);
-        }
-      }
-      this.$refs["regForm"].validate((valid) => {
-        if (valid) {
-          let data = JSON.parse(JSON.stringify(this.registerForm));
-          let envs = {
-          };
-          for(let i=0;i<this.registerForm.envs.length;i++){
-            envs[this.registerForm.envs[i].name] = this.registerForm.envs[i].value;
-          }
-
-          data.env = data.envs.length>0 ? envs : null;
-          if(this.daily_time_range!=null){
-            data.daily_limitation.daily_start = this.daily_time_range[0];
-            data.daily_limitation.daily_end = this.daily_time_range[1];
-          }
-
-          removeEmptyProperties(data);
-          formatData(data);
-
-          registerApplication(data.name, data).then((res)=>{
-            this.$message.success('Application '+data.name+' register successfully.', 5000);
-            this.$emit("success");
-            this.reset();
-          }, (res)=>{
-
-          });
-
-        } else {
-          return false;
-        }
-      });
+      applications.registerApp(this);
     },
   }
 }

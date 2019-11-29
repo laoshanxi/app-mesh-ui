@@ -84,7 +84,7 @@
 </template>
 
 <script>
-import {getConfig, updateConfig} from '@/api/config'
+import configService from '@/services/config'
 
 export default {
   data() {
@@ -130,43 +130,14 @@ export default {
     this.refresh();
   },
   methods: {
-    setConfig(data){
-      this.configData = data;
-      for(let prop in this.form){
-        if(data.hasOwnProperty(prop)){
-          this.form[prop] = data[prop];
-        }
-      }
-    },
     refresh(){
-      this.loading = true;
-      getConfig().then((res)=>{
-        this.setConfig(res.data);
-        this.loading = false;
-      }, (res)=>{
-        this.loading = false;
-        this.$message.error('Get configuration failed. ' + res.data, 5000);
-      });
+      configService.refresh(this);
     },
     reset(){
-      this.setConfig(this.configData);
+      configService.setConfig(this, this.configData);
     },
     saveConfig(){
-      this.$refs["form"].validate((valid) => {
-        this.loading = true;
-        if (valid) {
-          updateConfig(this.form).then((res)=>{
-            this.$message.success('Configuration update successfully.', 5000);
-            this.form = res.data;
-            this.loading = false;
-          }, (res)=>{
-            this.loading = false;
-          });
-        } else {
-          this.loading = false;
-          return false;
-        }
-      });
+      configService.saveConfig(this);
     }
   }
 }

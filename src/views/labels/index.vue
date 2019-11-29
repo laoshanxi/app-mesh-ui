@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import {getLabels, updateLabels} from '@/api/labels'
+import lablesService from '@/services/labels'
 
 export default {
   data() {
@@ -67,16 +67,7 @@ export default {
   methods: {
     refresh(){
       this.form.labels = [];
-      getLabels().then((res)=>{
-        for(let p in res.data){
-          this.form.labels.push({
-            key : p,
-            value : res.data[p]
-          });
-        }
-      }, (res)=>{
-        this.$message.error('Get labels failed. ' + res.data, 5000);
-      });
+      lablesService.getLabels(this);
     },
     removeLabel(item){
       var index = this.form.labels.indexOf(item)
@@ -91,25 +82,7 @@ export default {
       });
     },
     saveLabels(){
-      this.$refs["form"].validate((valid) => {
-        if (valid) {
-          let labels = {};
-
-          for(let i=0;i<this.form.labels.length;i++){
-            labels[this.form.labels[i].key] = this.form.labels[i].value;
-          }
-
-          updateLabels(labels).then((res)=>{
-            this.$message.success('Labels update successfully.', 5000);
-            this.refresh();
-          }, (res)=>{
-
-          });
-
-        } else {
-          return false;
-        }
-      });
+      lablesService.saveLabels(this);
     }
   }
 }

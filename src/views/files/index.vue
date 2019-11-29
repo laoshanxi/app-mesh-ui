@@ -54,7 +54,7 @@
 <script>
 import { getToken } from '@/utils/auth';
 import { mapGetters } from 'vuex';
-import { upload, download } from '@/api/files';
+import fileService from '@/services/file';
 
 export default {
   data() {
@@ -102,19 +102,7 @@ export default {
       this.$refs.upload.submit();
     },
     download(){
-      download(this.downloadForm.filepath).then((res)=>{
-        console.info(res);
-        var aLink = document.createElement('a');
-        var blob = new Blob([res.data]);
-        var evt = document.createEvent("HTMLEvents");
-        evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错, 感谢 Barret Lee 的反馈
-        aLink.download = this.downloadForm.filepath;
-        aLink.href = URL.createObjectURL(blob);
-        aLink.dispatchEvent(evt);
-        aLink.click();
-      }, (res)=>{
-        this.$message.error('File '+ this.downloadForm.filepath +' download failed. ' + res.data, 5000);
-      });
+      fileService.download(this);
     }
   }
 }

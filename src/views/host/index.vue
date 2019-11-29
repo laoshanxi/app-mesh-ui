@@ -41,6 +41,7 @@
 
 <script>
 import {getResources} from '@/api/resources';
+import hostService from '@/services/host'
 import detail from './detail'
 import G2 from '@antv/g2';
 
@@ -63,57 +64,22 @@ export default {
   },
   mounted(){
     this.initData();
-    // this.drawChart();
     // this.monitor();
   },
   methods: {
     initData(){
-      getResources().then((res)=>{
-        this.resources = res.data;
-        this.memoryData.push({
-          time: this.resources.systime.substring(11),
-          memory: (this.resources.mem_applications/1024).toFixed(0)
-        });
-      }, (res)=>{
-
-      });
+      hostService.getResources(this);
     },
     monitor(){
+      hostService.drawChart(this);
       this.timer = setInterval(()=>{
-        getResources().then((res)=>{
-          this.resources = res.data;
-          if(this.memoryData.length>40){
-            this.memoryData.shift();
-          }
-          this.memoryData.push({
-            time: this.resources.systime.substring(11),
-            memory: (this.resources.mem_applications/1024).toFixed(0)
-          });
-          this.memoryChart.source(this.memoryData);
-          this.memoryChart.render();
-        }, (res)=>{
-
-        });
+        hostService.getResourcesForChart(this);
       }, 1000);
     },
     destroyed(){
       if(this.timer){
         clearInterval(this.timer);
       }
-    },
-    drawChart(){
-      this.memoryChart = new G2.Chart({
-        container: 'memory',
-        width: "1200",
-        height: 400,
-        animate: false
-      });
-      this.memoryChart.source(this.memoryData);
-      // Step 3：创建图形语法，绘制柱状图，由 time 和 memory 两个属性决定图形位置，time 映射至 x 轴，memory 映射至 y 轴
-      this.memoryChart.line().position('time*memory');
-      this.memoryChart.area().position('time*memory');
-      // Step 4: 渲染图表
-      this.memoryChart.render();
     },
     expandJson(){
       let tmpJson = this.resources;

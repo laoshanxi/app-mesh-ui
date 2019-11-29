@@ -45,7 +45,8 @@
 </template>
 
 <script>
-  import { registerShApp,deleteApplication,runApp,getOutput } from '@/api/applications'
+  import shellService from '@/services/shell'
+
   export default {
     name: 'Shell',
     data(){
@@ -114,27 +115,7 @@
         return;
       },
       connectHost(){
-        this.connected = 1;
-        this.shellContents.push({
-            content: "# Connecting remote host..."
-        });
-        this.shellApp.command = this.command + '""';
-        runApp(this.timeout, true, this.shellApp).then((res)=>{
-          this.connected = 2;
-          this.shellContents.push(
-            {
-              content: "# Connected remote host successfully."
-            }
-          );
-          this.runFinished();
-        }, (res)=>{
-          this.connected = 0;
-          this.shellContents.push(
-            {
-              content: "# Connected remote host failed."
-            }
-          );
-        });
+        shellService.connectHost(this);
       },
       runShell(){
         this.commands.push(this.input);
@@ -144,68 +125,7 @@
           }
         );
         this.inputDisabled = true;
-        this.run();
-      },
-      runFinished(){
-        this.index=-1;
-        if(this.timer){
-          clearInterval(this.timer);
-          this.timer = null;
-        }
-        this.input = '';
-        this.inputDisabled = false;
-        let shell = this.$refs['shell_div'];
-        this.$nextTick(() => {
-          shell.scrollTop = shell.scrollHeight;
-          this.$refs["input"].focus();
-        });
-      },
-      run(){
-        this.shellApp.command = this.command + '" ' + this.input + '"';
-        let shell = this.$refs['shell_div'];
-        this.$nextTick(() => {
-          shell.scrollTop = shell.scrollHeight;
-        });
-        runApp(this.timeout, this.isSync, this.shellApp).then((res)=>{
-          if(this.isSync){
-            this.refreshShellContents(res.data);
-            this.runFinished();
-          }else{
-            this.timer = setInterval(()=>{
-              this.getOutputValue(res.data);
-            }, 1000);
-          }
-        }, (res)=>{
-          this.shellContents.push({
-              content: "# Failed: " + res.message
-          });
-          this.runFinished();
-        });
-      },
-      refreshShellContents(content){
-        this.shellContents.push({
-            content: content
-        });
-        let shell = this.$refs['shell_div'];
-        this.$nextTick(() => {
-          shell.scrollTop = shell.scrollHeight;
-        });
-      },
-      getOutputValue(data){
-        getOutput(data.name, data.process_uuid).then((res)=>{
-          if(res.status == 201){
-            this.runFinished();
-          }
-          if(res.data==""){
-            return;
-          }
-          this.refreshShellContents(res.data);
-        }, (res)=>{
-          this.shellContents.push({
-              content: "# Failed: " + res.message
-          });
-          this.runFinished();
-        });
+        shellService.run(this);
       }
     }
   }
