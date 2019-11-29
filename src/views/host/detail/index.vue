@@ -18,22 +18,16 @@
     <DescriptionList title="" col="24">
       <Description term="Memory">
         <div style="margin-left: 39px;">
-          <div class="chart-label">Free {{record.mem_free_bytes | formatMemory}}</div>
+          <div class="chart-label">free {{record.mem_free_bytes | formatMemory}}</div>
           <div class="chart-div"><percentage-bar id="mem_usage" :data="formatMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
-          <div class="chart-label">Total {{record.mem_total_bytes | formatMemory}}</div>
-          <div class="chart-label">free {{formatMemory(record.mem_free_bytes)}}</div>
-          <div class="chart-div"><percentage-bar id="mem_usage" :data="formatMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
-          <div class="chart-label">total {{formatMemory(record.mem_total_bytes)}}</div>
+          <div class="chart-label">total {{record.mem_total_bytes | formatMemory}}</div>
         </div>
       </Description>
       <Description term="Swap memory">
         <el-row>
-          <div class="chart-label">Free {{record.mem_freeSwap_bytes | formatMemory}}</div>
+          <div class="chart-label">free {{record.mem_freeSwap_bytes | formatMemory}}</div>
           <div class="chart-div"><percentage-bar id="mem_swap_usage" :data="formatSwapMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
-          <div class="chart-label">Total {{record.mem_totalSwap_bytes | formatMemory}}</div>
-          <div class="chart-label">free {{formatMemory(record.mem_freeSwap_bytes)}}</div>
-          <div class="chart-div"><percentage-bar id="mem_swap_usage" :data="formatSwapMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
-          <div class="chart-label">total {{formatMemory(record.mem_totalSwap_bytes)}}</div>
+          <div class="chart-label">total {{record.mem_totalSwap_bytes | formatMemory}}</div>
         </el-row>
       </Description>
       <Description term="Total app memory">{{record.mem_applications | formatMemory}}</Description>
@@ -51,23 +45,23 @@
         highlight-current-row
       >
 
-        <el-table-column label="Device" prop="device" width="150">
+        <el-table-column label="Device" prop="device">
           <template slot-scope="scope">
             <i class="el-icon-warning" style="color: firebrick;font-size: 18px; vertical-align: middle;" v-if="formatPercent(scope.row.usage)"></i>
             {{ scope.row.device | formatEmpty }}
           </template>
         </el-table-column>
-        <el-table-column label="Size" width="150">
+        <el-table-column label="Size" width="140">
           <template slot-scope="scope">
             {{ scope.row.size | formatMemory }}
           </template>
         </el-table-column>
-        <el-table-column label="Used" width="150">
+        <el-table-column label="Used" width="140">
           <template slot-scope="scope">
             {{ scope.row.used | formatMemory }}
           </template>
         </el-table-column>
-        <el-table-column label="Usage" width="150">
+        <el-table-column label="Usage" width="200">
           <template slot-scope="scope">
             <percentage-bar :id="scope.$index" :data="formatUsageData(scope.row)"></percentage-bar>
           </template>
