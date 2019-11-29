@@ -8,7 +8,6 @@
 import { mapGetters } from 'vuex'
 import axios from 'axios'
 import showdown from 'showdown'
-import readme from 'html-loader!markdown-loader?modules!@/README.md'
 
 export default {
   name: 'Home',
