@@ -25,4 +25,8 @@ export default {
   line-height: 24px;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
 }
+.box-card .el-card__body{
+    height: calc(100vh - 80px) !important;
+    overflow: auto;
+}
 </style>
