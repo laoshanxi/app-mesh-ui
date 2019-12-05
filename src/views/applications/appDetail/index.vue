@@ -38,7 +38,10 @@
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="Short running App infomation" col="12">
-      <Description term="Start time">{{record.start_time}}</Description>
+      <Description term="Start time">{{record.start_time | formatEmpty}}</Description>
+      <Description term="Next start time">{{record.next_start_time | formatEmpty}}</Description>
+      <Description term="Start interval seconds (S)">{{record.start_interval_seconds | formatEmpty}}</Description>
+      <Description term="Start tnterval timeout (S)">{{record.start_interval_timeout | formatEmpty}}</Description>
       <Description term="Keep running">
         <el-tag v-if="record.keep_running==1" :type="'success'">
           Yes
@@ -47,8 +50,6 @@
           No
         </el-tag>
       </Description>
-      <Description term="Start interval seconds (S)">{{record.start_interval_seconds | formatEmpty}}</Description>
-      <Description term="Start tnterval timeout (S)">{{record.start_interval_timeout | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
 

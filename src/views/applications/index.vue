@@ -25,7 +25,8 @@
 
          <el-table-column label="Name" width="200">
            <template slot-scope="scope">
-             <el-link :underline="true" @click="showDetail()" title="Show application detail"><i class="el-icon-view el-icon--right"></i> {{ scope.row.name }}</el-link>
+             <el-link :underline="true" @click="showDetail()" title="Show application detail"><i class="el-icon-view"></i> {{ scope.row.name }}</el-link>
+             <i v-if="scope.row.docker_image" class="iconfont icon-docker"/>
            </template>
          </el-table-column>
          <el-table-column label="User" width="110">
@@ -100,7 +101,10 @@
       v-loading="isLoadingDetail"
       size="50%">
       <span slot="title">
-        <span class="el-icon-view">&nbsp;&nbsp;{{currentRow? currentRow.name:'Please select one application'}}</span>
+        <span class="el-icon-view">
+          &nbsp;&nbsp;{{currentRow? currentRow.name:'Please select one application'}}
+          <i v-if="currentRow && currentRow.docker_image" class="iconfont icon-docker"/>
+        </span>
       </span>
       <div class="detail-card">
         <app-detail :record="currentRow"/>
@@ -269,5 +273,9 @@ export default {
   .detail-card{
     height: calc(100vh - 77px) !important;
     overflow-y: auto;
+  }
+  .docker-icon{
+    width:26px;
+    height:18px;
   }
 </style>

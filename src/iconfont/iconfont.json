@@ -20,6 +20,13 @@
       "unicode_decimal": 58954
     },
     {
+      "icon_id": "4361905",
+      "name": "docker",
+      "font_class": "docker",
+      "unicode": "e67f",
+      "unicode_decimal": 59007
+    },
+    {
       "icon_id": "6086536",
       "name": "doc",
       "font_class": "file",
@@ -32,6 +39,13 @@
       "font_class": "lock",
       "unicode": "e612",
       "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "7470494",
+      "name": "Docker",
+      "font_class": "docker-color",
+      "unicode": "e600",
+      "unicode_decimal": 58880
     },
     {
       "icon_id": "10371730",
