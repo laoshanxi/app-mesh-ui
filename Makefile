@@ -16,7 +16,7 @@ package:
 	
 run:
 	appc logon -u admin -x admin996
-	appc unreg appweb -f
+	appc unreg -n appweb -f
 	appc reg -n appweb -e APP_DOCKER_OPTS="-p 80:80 -p 443:443" -d appmanager-ui:1.0 -f
 tar:
 	docker save appmanager-ui:${VER}  -o  ./appmanager-ui.${VER}.tar
