@@ -37,11 +37,12 @@ module.exports = {
     'camelcase': [0, {
       'properties': 'always'
     }],
-    'comma-dangle': [2, 'never'],
-    'comma-spacing': [2, {
-      'before': false,
-      'after': true
-    }],
+    // json 最后一个属性是否可以有逗号
+    'comma-dangle': 0,
+    // 'comma-spacing': [2, {
+    //   'before': false,
+    //   'after': true
+    // }],
     'comma-style': [2, 'last'],
     'constructor-super': 2,
     'curly': [2, 'multi-line'],

@@ -22,8 +22,13 @@
       </el-button>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <div><img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"><span class="username-avatar">{{name}}</span></div>
-
+          <!-- <div><img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"><span class="username-avatar">{{name}}</span></div> -->
+          <div>
+            <el-avatar shape="circle" :size="40" :src="avatar">
+              <i class="el-icon-s-custom"/>
+            </el-avatar>
+            <span class="username-avatar">{{name}}</span>
+          </div>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -215,11 +220,12 @@ export default {
 
     .avatar-container {
       margin-right: 30px;
-
+      vertical-align: middle;
       .avatar-wrapper {
         margin-top: 0px;
         position: relative;
         cursor: pointer;
+        height: 42px;
 
         .user-avatar {
           vertical-align: middle;
@@ -230,13 +236,15 @@ export default {
         }
         .username-avatar {
           margin-left: 5px;
+          top: -15px;
+          position: relative;
         }
 
         .el-icon-caret-bottom {
           cursor: pointer;
           position: absolute;
           right: -20px;
-          top: 18px;
+          top: 15px;
           font-size: 12px;
         }
       }
