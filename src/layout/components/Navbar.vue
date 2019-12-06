@@ -125,31 +125,31 @@ export default {
     },
     switchHost(){
       this.$confirm(`Do you want to switch host to <${this.host}>?`, 'Tooltip', {
-	            confirmButtonText: 'Confirm',
-	            cancelButtonText: 'Cancel',
-	            type: 'warning'
-	          }).then(() => {
-              this.fullscreenLoading = true;
-	            this.certifedHost(()=>{
-	              this.$store.dispatch("settings/changeSetting", {key:"baseUrl", value:this.host}).then(() => {
-	                this.logonWithNewHost();
-	              }).catch(() => {
-	                this.fullscreenLoading = false;
-	              });
-	            });
-	          });
+	      confirmButtonText: 'Confirm',
+	      cancelButtonText: 'Cancel',
+	      type: 'warning'
+	    }).then(() => {
+        this.fullscreenLoading = true;
+	      this.certifedHost(()=>{
+	        this.$store.dispatch("settings/changeSetting", { key: "baseUrl", value: this.host }).then(() => {
+            this.logonWithNewHost();
+          }).catch(() => {
+            this.fullscreenLoading = false;
+          });
+        });
+      });
     },
     querySearch(queryString, cb) {
-            var restaurants = this.restaurants;
-            var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-            // 调用 callback 返回建议列表的数据
-            cb(results);
-          },
-          createFilter(queryString) {
-            return (restaurant) => {
-              return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-            };
-          },
+      var restaurants = this.restaurants;
+      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
+      // 调用 callback 返回建议列表的数据
+      cb(results);
+    },
+    createFilter(queryString) {
+      return (restaurant) => {
+        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },

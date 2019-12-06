@@ -162,16 +162,19 @@ module.exports = {
       }
     }],
     'padded-blocks': [2, 'never'],
-    'quotes': [2, 'single', {
-      'avoidEscape': true,
-      'allowTemplateLiterals': true
-    }],
-    'semi': [2, 'never'],
+    // 字符串引号使用规则,单引号,双引号,反引号
+    // 'quotes': [2, 'single', {
+    //   'avoidEscape': true,
+    //   'allowTemplateLiterals': true
+    // }],
+    // 结尾不允许使用分号[2, 'never'], 必须使用分号[2, 'always'], 忽略semi:0
+    'semi': 0,
     'semi-spacing': [2, {
       'before': false,
       'after': true
     }],
-    'space-before-blocks': [2, 'always'],
+    // 代码块,例如大括号,不允许有空格[2, 'never'], 必须有空格[2, 'always'], 忽略0
+    'space-before-blocks': 0,
     'space-before-function-paren': [2, 'never'],
     'space-in-parens': [2, 'never'],
     'space-infix-ops': 2,

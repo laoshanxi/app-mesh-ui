@@ -18,14 +18,14 @@
     <DescriptionList title="" col="24">
       <Description term="Memory">
         <div style="margin-left: 39px;">
-          <div class="chart-label">free {{record.mem_free_bytes | formatMemory}}</div>
+          <div class="chart-label-left">free {{record.mem_free_bytes | formatMemory}}</div>
           <div class="chart-div"><percentage-bar id="mem_usage" :data="formatMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
           <div class="chart-label">total {{record.mem_total_bytes | formatMemory}}</div>
         </div>
       </Description>
       <Description term="Swap memory">
         <el-row>
-          <div class="chart-label">free {{record.mem_freeSwap_bytes | formatMemory}}</div>
+          <div class="chart-label-left">free {{record.mem_freeSwap_bytes | formatMemory}}</div>
           <div class="chart-div"><percentage-bar id="mem_swap_usage" :data="formatSwapMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
           <div class="chart-label">total {{record.mem_totalSwap_bytes | formatMemory}}</div>
         </el-row>
@@ -194,6 +194,13 @@ export default {
 .chart-label {
   display: inline-block;
   position: relative;
+  top: -9px;
+}
+.chart-label-left {
+  display: inline-block;
+  position: relative;
+  text-align: right;
+  width: 100px;
   top: -9px;
 }
 </style>
