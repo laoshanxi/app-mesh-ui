@@ -30,7 +30,7 @@
 
          <el-table-column label="Permissions">
            <template slot-scope="scope">
-             {{ scope.row.permissions | formatEmpty }}
+             <el-tag type="info" style="margin:0px 5px 5px 0px;" v-for="permission in scope.row.permissions">{{permission}}</el-tag>
            </template>
          </el-table-column>
        </el-table>

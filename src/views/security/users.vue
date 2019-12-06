@@ -43,7 +43,7 @@
          </el-table-column>
          <el-table-column label="Roles">
            <template slot-scope="scope">
-             {{ scope.row.roles | formatEmpty }}
+             <el-tag type="info" style="margin:0px 5px 5px 0px;" v-for="role in scope.row.roles">{{role}}</el-tag>
            </template>
          </el-table-column>
        </el-table>
