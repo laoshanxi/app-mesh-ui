@@ -13,7 +13,13 @@
 	        :fetch-suggestions="querySearch"
 	      ></el-autocomplete>
       <el-button type="warning" icon="el-icon-sort" @click="switchHost()" v-loading.fullscreen.lock="fullscreenLoading">Switch</el-button>
-      <el-button icon="el-icon-refresh" @click="refresh()">Refresh</el-button>
+      <el-button icon="el-icon-refresh"
+          @click="refresh()"
+          type="text"
+          :loading="loading"
+          title="Refresh"
+          style="margin-right:10px;font-size:18px;font-weight: bold !important;">
+      </el-button>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <div><img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"><span class="username-avatar">{{name}}</span></div>
@@ -78,7 +84,8 @@ export default {
       'avatar',
       'name',
       'auth',
-      'baseUrl'
+      'baseUrl',
+      'loading'
     ])
   },
   methods: {
@@ -117,14 +124,20 @@ export default {
       })
     },
     switchHost(){
-      this.fullscreenLoading = true;
-      this.certifedHost(()=>{
-        this.$store.dispatch("settings/changeSetting", {key:"baseUrl", value:this.host}).then(() => {
-          this.logonWithNewHost();
-        }).catch(() => {
-          this.fullscreenLoading = false;
-        });
-      });
+      this.$confirm(`Do you want to switch host to <${this.host}>?`, 'Tooltip', {
+	            confirmButtonText: 'Confirm',
+	            cancelButtonText: 'Cancel',
+	            type: 'warning'
+	          }).then(() => {
+              this.fullscreenLoading = true;
+	            this.certifedHost(()=>{
+	              this.$store.dispatch("settings/changeSetting", {key:"baseUrl", value:this.host}).then(() => {
+	                this.logonWithNewHost();
+	              }).catch(() => {
+	                this.fullscreenLoading = false;
+	              });
+	            });
+	          });
     },
     querySearch(queryString, cb) {
             var restaurants = this.restaurants;
