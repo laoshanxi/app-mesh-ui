@@ -72,14 +72,9 @@
              <span v-else>-</span>
            </template>
          </el-table-column>
-         <el-table-column label="Command" width="150">
+         <el-table-column label="Command">
            <template slot-scope="scope">
              {{ scope.row.command | formatEmpty }}
-           </template>
-         </el-table-column>
-         <el-table-column label="Working Dir">
-           <template slot-scope="scope">
-             {{ scope.row.working_dir | formatEmpty }}
            </template>
          </el-table-column>
 
