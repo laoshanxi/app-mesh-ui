@@ -16,6 +16,7 @@
       <el-button icon="el-icon-refresh"
           @click="refresh()"
           type="text"
+
           :loading="loading"
           title="Refresh"
           style="margin-right:10px;font-size:18px;font-weight: bold !important;">
@@ -165,7 +166,11 @@ export default {
   }
 }
 </script>
-
+<style>
+  .el-button--text {
+    color: #606266;
+  }
+</style>
 <style lang="scss" scoped>
 .navbar {
   height: 50px;
