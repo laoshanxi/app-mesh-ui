@@ -19,14 +19,24 @@
       <Description term="Memory">
         <div style="margin-left: 39px;">
           <div class="chart-label-left">free {{record.mem_free_bytes | formatMemory}}</div>
-          <div class="chart-div"><percentage-bar id="mem_usage" :data="formatMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
+          <div class="chart-div">
+            <el-progress :text-inside="true" :stroke-width="25"
+              :percentage="parseFloat(((record.mem_total_bytes - record.mem_free_bytes)/record.mem_total_bytes * 100).toFixed(2))"
+              status="exception">
+            </el-progress>
+          </div>
           <div class="chart-label">total {{record.mem_total_bytes | formatMemory}}</div>
         </div>
       </Description>
       <Description term="Swap memory">
         <el-row>
           <div class="chart-label-left">free {{record.mem_freeSwap_bytes | formatMemory}}</div>
-          <div class="chart-div"><percentage-bar id="mem_swap_usage" :data="formatSwapMemUsageData()" :width="300" :padding="[0,5,0,5]"></percentage-bar></div>
+          <div class="chart-div">
+            <el-progress :text-inside="true" :stroke-width="25"
+              :percentage="parseFloat(((record.mem_totalSwap_bytes - record.mem_freeSwap_bytes)/record.mem_totalSwap_bytes * 100).toFixed(2))"
+              status="exception">
+            </el-progress>
+          </div>
           <div class="chart-label">total {{record.mem_totalSwap_bytes | formatMemory}}</div>
         </el-row>
       </Description>
@@ -63,7 +73,10 @@
         </el-table-column>
         <el-table-column label="Usage" width="200">
           <template slot-scope="scope">
-            <percentage-bar :id="scope.$index" :data="formatUsageData(scope.row)"></percentage-bar>
+            <el-progress :text-inside="true" :stroke-width="25"
+              :percentage="parseFloat((scope.row.usage * 100).toFixed(2))"
+              status="exception">
+            </el-progress>
           </template>
         </el-table-column>
         <el-table-column label="Mount point">
@@ -113,7 +126,6 @@
 import DescriptionList from "@/components/Descriptions";
 import Description from "@/components/Description";
 import PercentageBar from "@/components/Charts/PercentageBar";
-import G2 from '@antv/g2';
 export default {
   name:"Detail",
   props:[
@@ -194,13 +206,14 @@ export default {
 .chart-label {
   display: inline-block;
   position: relative;
-  top: -9px;
 }
 .chart-label-left {
   display: inline-block;
   position: relative;
   text-align: right;
   width: 100px;
-  top: -9px;
+}
+.el-progress-bar__outer{
+  background-color: #67c23a;
 }
 </style>

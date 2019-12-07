@@ -43,7 +43,6 @@
 import {getResources} from '@/api/resources';
 import hostService from '@/services/host'
 import detail from './detail'
-import G2 from '@antv/g2';
 
 export default {
   components:{
