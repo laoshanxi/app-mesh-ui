@@ -18,7 +18,10 @@
          :data="list"
          element-loading-text="Loading"
          border
-          style="width: 100%"
+         style="width: 100%"
+         height="100%"
+         class="fix-table"
+         :fit="true"
          highlight-current-row
          @current-change="currentRowChange"
        >
@@ -72,11 +75,11 @@
              <span v-else>-</span>
            </template>
          </el-table-column>
-         <el-table-column label="Command">
+         <af-table-column label="Command">
            <template slot-scope="scope">
              {{ scope.row.command | formatEmpty }}
            </template>
-         </el-table-column>
+         </af-table-column>
 
        </el-table>
     </el-row>

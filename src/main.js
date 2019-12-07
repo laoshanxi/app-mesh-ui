@@ -20,6 +20,8 @@ import * as filters from './filters' // global filters
 import JsonViewer from 'vue-json-viewer'
 Vue.use(JsonViewer);
 
+import AFTableColumn from 'af-table-column'// resolve column width issue
+Vue.use(AFTableColumn);
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

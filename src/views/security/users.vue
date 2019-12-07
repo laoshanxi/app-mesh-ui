@@ -20,6 +20,7 @@
          element-loading-text="Loading"
          border
          style="width: 100%"
+         class="fix-table"
          highlight-current-row
          @current-change="currentRowChange"
        >

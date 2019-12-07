@@ -91,3 +91,6 @@ tr.current-row>td {
     background-color: #E4E7ED !important;
 }
 
+.fix-table {
+  height: calc(100vh - 215px) !important;
+}

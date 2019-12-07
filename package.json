@@ -17,6 +17,7 @@
   "dependencies": {
     "@antv/data-set": "^0.10.2",
     "@antv/g2": "^3.5.9",
+    "af-table-column": "^1.0.3",
     "axios": "0.18.1",
     "element-ui": "^2.12.0",
     "github-markdown-css": "^3.0.1",
