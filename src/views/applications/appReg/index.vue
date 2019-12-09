@@ -59,6 +59,12 @@
        <el-form-item label="Docker image" prop="docker_image">
          <el-input v-model="registerForm.docker_image"></el-input>
        </el-form-item>
+       <el-form-item label="Docker options" prop="APP_DOCKER_OPTS">
+         <el-input v-model="registerForm.APP_DOCKER_OPTS"></el-input>
+       </el-form-item>
+       <el-form-item label="Docker image pull timeout" prop="APP_DOCKER_IMG_PULL_TIMEOUT">
+         <el-input v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT"></el-input>
+       </el-form-item>
        <el-form-item label="Pid(for attach)" prop="pid">
          <el-input type="number" v-model="registerForm.pid"></el-input>
        </el-form-item>
@@ -139,6 +145,8 @@ export default {
           memory_mb:null,
           memory_virt_mb:null
         },
+        APP_DOCKER_IMG_PULL_TIMEOUT:null,
+        APP_DOCKER_OPTS:'',
         envs:[],
         posix_timezone:'',
         cache_lines:null,

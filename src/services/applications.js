@@ -118,6 +118,17 @@ export default {
           data.daily_limitation.daily_end = vueComp.daily_time_range[1];
         }
 
+        if(data.APP_DOCKER_OPTS && data.APP_DOCKER_OPTS.length > 0){
+          data.env = !data.env ? {} : data.env;
+          data.env["APP_DOCKER_OPTS"] = data.APP_DOCKER_OPTS;
+          delete data.APP_DOCKER_OPTS;
+        }
+        if(data.APP_DOCKER_IMG_PULL_TIMEOUT && data.APP_DOCKER_IMG_PULL_TIMEOUT.length > 0){
+          data.env = !data.env ? {} : data.env;
+          data.env["APP_DOCKER_IMG_PULL_TIMEOUT"] = data.APP_DOCKER_IMG_PULL_TIMEOUT;
+          delete data.APP_DOCKER_IMG_PULL_TIMEOUT;
+        }
+
         removeEmptyProperties(data);
         formatData(data);
 
