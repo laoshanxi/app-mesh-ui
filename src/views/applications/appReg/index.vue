@@ -67,7 +67,7 @@
        <el-form-item label="Docker options" prop="APP_DOCKER_OPTS">
          <el-input v-model="registerForm.APP_DOCKER_OPTS"></el-input>
        </el-form-item>
-       <el-form-item label="Docker image timeout" prop="APP_DOCKER_IMG_PULL_TIMEOUT">
+       <el-form-item label="Image pull timeout" prop="APP_DOCKER_IMG_PULL_TIMEOUT">
          <el-input v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT"></el-input> S
        </el-form-item>
        <el-divider></el-divider>
