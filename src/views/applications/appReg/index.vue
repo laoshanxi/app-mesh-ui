@@ -56,19 +56,20 @@
        <el-form-item label="Output cache lines" prop="cache_lines">
          <el-input type="number" v-model="registerForm.cache_lines"></el-input>
        </el-form-item>
+       <el-form-item label="Pid(for attach)" prop="pid">
+         <el-input type="number" v-model="registerForm.pid"></el-input>
+       </el-form-item>
+	   
+	   <el-divider></el-divider>
        <el-form-item label="Docker image" prop="docker_image">
          <el-input v-model="registerForm.docker_image"></el-input>
        </el-form-item>
        <el-form-item label="Docker options" prop="APP_DOCKER_OPTS">
          <el-input v-model="registerForm.APP_DOCKER_OPTS"></el-input>
        </el-form-item>
-       <el-form-item label="Docker image pull timeout" prop="APP_DOCKER_IMG_PULL_TIMEOUT">
+       <el-form-item label="Docker image timeout" prop="APP_DOCKER_IMG_PULL_TIMEOUT">
          <el-input v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT"></el-input>
        </el-form-item>
-       <el-form-item label="Pid(for attach)" prop="pid">
-         <el-input type="number" v-model="registerForm.pid"></el-input>
-       </el-form-item>
-
        <el-divider></el-divider>
        <el-form-item label="Start time" prop="start_time"
          >
