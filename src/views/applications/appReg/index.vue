@@ -68,7 +68,7 @@
          <el-input v-model="registerForm.APP_DOCKER_OPTS"></el-input>
        </el-form-item>
        <el-form-item label="Docker image timeout" prop="APP_DOCKER_IMG_PULL_TIMEOUT">
-         <el-input v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT"></el-input>
+         <el-input v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT"></el-input> S
        </el-form-item>
        <el-divider></el-divider>
        <el-form-item label="Start time" prop="start_time"
