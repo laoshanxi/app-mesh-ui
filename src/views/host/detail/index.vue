@@ -125,7 +125,7 @@
 <script>
 import DescriptionList from "@/components/Descriptions";
 import Description from "@/components/Description";
-import PercentageBar from "@/components/Charts/PercentageBar";
+
 export default {
   name:"Detail",
   props:[
@@ -133,8 +133,7 @@ export default {
   ],
   components:{
     DescriptionList,
-    Description,
-    PercentageBar
+    Description
   },
   data(){
     return {
