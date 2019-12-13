@@ -53,6 +53,13 @@
       "font_class": "role",
       "unicode": "e606",
       "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "10949346",
+      "name": "Prometheus",
+      "font_class": "Prometheus",
+      "unicode": "e670",
+      "unicode_decimal": 58992
     }
   ]
 }

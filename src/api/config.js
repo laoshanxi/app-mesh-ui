@@ -14,3 +14,10 @@ export function updateConfig(data) {
     data: data
   })
 }
+
+export function getPrometheus() {
+  return request({
+    url: '/metrics',
+    method: 'GET'
+  })
+}

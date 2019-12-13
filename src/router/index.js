@@ -85,7 +85,7 @@ export const constantRoutes = [
       }
     ]
   },
-
+  
   {
     path: '/applications',
     component: Layout,
@@ -173,7 +173,18 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/prometheus',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Prometheus',
+        component: () => import('@/views/prometheus/index'),
+        meta: { title: 'Prometheus', icon: 'Prometheus' }
+      }
+    ]
+  },
 
   { path: '/refresh', component: () => import('@/views/refresh'), hidden: true },
   // 404 page must be placed at the end !!!
