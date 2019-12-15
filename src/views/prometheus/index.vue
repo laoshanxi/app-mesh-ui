@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { getPrometheus } from '@/api/config.js'
+import configServices from '@/services/config.js'
 export default {
   name: 'Prometheus',
   data(){
@@ -28,14 +28,7 @@ export default {
     }
   },
   mounted () {
-    this.loading = true;
-    getPrometheus().then((res)=>{
-      this.loading = false;
-      this.content = res.data;
-    }, (res)=>{
-      this.loading = false;
-      this.$message.error('Get prometheus monitor failed. ' + res.data, 5000);
-    });
+    configServices.getPrometheus(this);
   }
 }
 </script>
