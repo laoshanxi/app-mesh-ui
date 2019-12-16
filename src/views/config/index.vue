@@ -5,7 +5,7 @@
         <el-tabs type="border-card">
           <el-tab-pane style="minWidth:600px;">
             <span slot="label"><i class="el-icon-s-operation"></i> Configuration</span>
-            <el-form ref="form" :model="form" label-width="200px">
+            <el-form ref="form" :model="form" label-width="260px">
               <el-form-item label="Description" prop="Description">
                 <el-input v-model="form.Description"></el-input>
               </el-form-item>
@@ -46,7 +46,7 @@
               <el-form-item label="Rest listen address" prop="RestListenAddress">
                 <el-input v-model="form.RestListenAddress"></el-input>
               </el-form-item>
-              <el-form-item label="RestListen port" prop="RestListenPort">
+              <el-form-item label="Rest listen port" prop="RestListenPort">
                 <el-input v-model="form.RestListenPort"></el-input>
               </el-form-item>
               <el-form-item label="SSL certificate file" prop="SSLCertificateFile">
@@ -67,6 +67,10 @@
               <el-form-item label="Schedule interval seconds" prop="ScheduleIntervalSeconds">
                 <el-input-number v-model="form.ScheduleIntervalSeconds"></el-input-number>
               </el-form-item>
+              <el-form-item label="Prometheus exporter listen port" prop="PrometheusExporterListenPort">
+                <el-input v-model="form.PrometheusExporterListenPort"></el-input>
+              </el-form-item>
+
 
               <el-form-item>
                 <el-button size="small" type="primary" @click.prevent="saveConfig()">Submit</el-button>
@@ -102,7 +106,8 @@ export default {
         SSLCertificateFile: "",
         SSLCertificateKeyFile: "",
         SSLEnabled: "",
-        ScheduleIntervalSeconds: ""
+        ScheduleIntervalSeconds: "",
+        PrometheusExporterListenPort: ""
       },
       configData:null,
       options:[{
