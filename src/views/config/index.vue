@@ -47,7 +47,7 @@
                 <el-input v-model="form.RestListenAddress"></el-input>
               </el-form-item>
               <el-form-item label="Rest listen port" prop="RestListenPort">
-                <el-input-number v-model="form.RestListenPort" min="1024" max="65534"></el-input-number>
+                <el-input-number v-model="form.RestListenPort" :min="1024" :max="65534"></el-input-number>
               </el-form-item>
               <el-form-item label="SSL certificate file" prop="SSLCertificateFile">
                 <el-input v-model="form.SSLCertificateFile"></el-input>
@@ -68,7 +68,7 @@
                 <el-input-number v-model="form.ScheduleIntervalSeconds"></el-input-number>
               </el-form-item>
               <el-form-item label="Prometheus exporter listen port" prop="PrometheusExporterListenPort">
-                <el-input-number v-model="form.PrometheusExporterListenPort" min="0" max="65534"></el-input-number>
+                <el-input-number v-model="form.PrometheusExporterListenPort" :min="0" :max="65534"></el-input-number>
               </el-form-item>
 
 
@@ -102,12 +102,12 @@ export default {
         LogLevel: "",
         RestEnabled: "",
         RestListenAddress: "",
-        RestListenPort: "",
+        RestListenPort: null,
         SSLCertificateFile: "",
         SSLCertificateKeyFile: "",
         SSLEnabled: "",
         ScheduleIntervalSeconds: "",
-        PrometheusExporterListenPort: ""
+        PrometheusExporterListenPort: 0
       },
       configData:null,
       options:[{
