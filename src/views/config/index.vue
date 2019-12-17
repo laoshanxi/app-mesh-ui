@@ -68,7 +68,7 @@
                 <el-input-number v-model="form.ScheduleIntervalSeconds"></el-input-number>
               </el-form-item>
               <el-form-item label="Prometheus exporter listen port" prop="PrometheusExporterListenPort">
-                <el-input-number v-model="form.PrometheusExporterListenPort" min="1024" max="65534"></el-input-number>
+                <el-input-number v-model="form.PrometheusExporterListenPort" min="0" max="65534"></el-input-number>
               </el-form-item>
 
 
