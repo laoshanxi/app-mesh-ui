@@ -15,7 +15,7 @@ package:
 	docker build -t appmanager-ui:${VER} -f ./Dockerfile .
 	
 run:
-	appc logon -u admin -x admin996
+	appc logon -u admin -x Admin123
 	appc unreg -n appweb -f
 	appc reg -n appweb -e APP_DOCKER_OPTS="-p 80:80 -p 443:443" -d appmanager-ui:1.0 -f
 tar:
