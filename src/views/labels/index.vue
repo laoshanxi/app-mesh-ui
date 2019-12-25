@@ -99,6 +99,7 @@ export default {
     },
     refresh(){
       this.labels = [];
+      this.isEdit = false;
       labelsService.getLabels(this);
     },
     addLabel(){
