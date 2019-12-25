@@ -1,63 +1,78 @@
 <template>
   <div class="app-container" style="clear:both;">
-    <el-row>
-      <el-col :span="24">
-        <el-tabs type="border-card">
-          <el-tab-pane style="minWidth:600px;">
-            <span slot="label"><i class="el-icon-s-flag"></i> Labels</span>
-            <el-form ref="form" :model="form" label-width="80px">
-              <el-row v-for="(label, index) in form.labels">
-                <el-col style="width:300px">
-                  <el-form-item :label="'Label ' + index"
-                    :prop="'labels.' + index + '.key'"
-                    :rules="{
-                      required: true, message: 'Label name is not empty', trigger: 'blur'
-                    }"
-                    >
-                    <el-input v-model="label.key" style="width:150px;"></el-input>
-                    =
-                  </el-form-item>
-                </el-col>
-                <el-col style="width:350px">
-                  <el-form-item  label-width="0px"
-                    :prop="'labels.' + index + '.value'"
-                    :rules="{
-                      required: true, message: 'Label value is not empty', trigger: 'blur'
-                    }"
-                    >
-                    <el-input v-model="label['value']" style="width:200px;margin-right: 10px;"></el-input>
-                    <el-button @click.prevent="removeLabel(label)" icon="el-icon-delete"></el-button>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-
-              <el-form-item label="No Labels" v-if="!form.labels || form.labels.length==0">
-              </el-form-item>
-
-              <el-form-item>
-                <el-button size="small" @click.prevent="addLabel()">Add Label</el-button>
-                <el-button size="small" type="primary" @click.prevent="saveLabels()">Submit</el-button>
-              </el-form-item>
-            </el-form>
-          </el-tab-pane>
-
-        </el-tabs>
-
-
-      </el-col>
+    <el-row style="color: #909399;">
+      <h4>Labels</h4>
     </el-row>
+    <el-row>
+      <el-button-group>
+        <el-button @click="addLabel()" type="primary" icon="el-icon-plus" :disabled="isEdit">Add</el-button>
+      </el-button-group>
+    </el-row>
+    <el-row>
+       <el-table
+         :key="tableKey"
+         v-loading="listLoading"
+         :data="labels"
+         element-loading-text="Loading"
+         border
+         style="width: 100%"
+         height="100%"
+         class="fix-table"
+         highlight-current-row
+         @current-change="currentRowChange"
+       >
+
+         <el-table-column label="Key" width="300">
+           <template slot-scope="scope">
+            <el-input
+                v-if="scope.row.isEdit"
+                size="mini"
+                placeholder="Please enter key"
+                v-model="scope.row.key">
+            </el-input>
+            <span v-else>{{ scope.row.key }}</span>
+           </template>
+         </el-table-column>
+
+         <el-table-column label="Value">
+           <template slot-scope="scope">
+              <el-input
+                  v-if="scope.row.isEdit"
+                  size="mini"
+                  placeholder="Please enter value"
+                  v-model="scope.row.value">
+              </el-input>
+              <span v-else>{{ scope.row.value }}</span>
+           </template>
+         </el-table-column>
+         <el-table-column label="Action" width="260">
+           <template slot-scope="scope">
+              <el-button @click="editLabel(scope.row)" type="text" icon="el-icon-edit" :disabled="isEdit" v-if="!scope.row.isEdit">Edit</el-button>
+              <el-button @click="cancelUpdate(scope.row)" type="text" icon="el-icon-save" v-if="scope.row.isEdit">Cancel</el-button>
+              <el-button @click="updateLabel(scope.row)" type="text" icon="el-icon-save" v-if="scope.row.isEdit">Save</el-button>
+              <el-button @click="removeLabel(scope.row)" type="text" icon="el-icon-delete" :disabled="isEdit" v-if="!scope.row.isNew">Remove</el-button>
+           </template>
+         </el-table-column>
+       </el-table>
+    </el-row>
+
   </div>
 </template>
 
 <script>
-import lablesService from '@/services/labels'
+import labelsService from '@/services/labels'
 
 export default {
   data() {
     return {
-      form: {
-        labels: []
-      }
+      labels: [],
+      key:"",
+      value:"",
+      tableKey:0,
+      isSelected:false,
+      listLoading: false,
+      isEdit: false,
+      currentRow: null,
     }
   },
   mounted() {
@@ -65,25 +80,49 @@ export default {
 
   },
   methods: {
-    refresh(){
-      this.form.labels = [];
-      lablesService.getLabels(this);
+    editLabel(row){
+      this.isEdit = true;
+      this.$set(row, "isEdit", true);
     },
-    removeLabel(item){
-      var index = this.form.labels.indexOf(item)
-      if (index !== -1) {
-        this.form.labels.splice(index, 1);
+    cancelUpdate(row){
+      this.isEdit = false;
+      this.$set(row, "isEdit", false);
+      if(row.isNew){
+        this.labels.splice(row.index, 1);
       }
     },
+    updateLabel(row){
+      labelsService.updateLabel(this, row);
+    },
+    removeLabel(row){
+      labelsService.deleteLabel(this, row);
+    },
+    refresh(){
+      this.labels = [];
+      labelsService.getLabels(this);
+    },
     addLabel(){
-      this.form.labels.push({
-        key : "",
-        value : ""
+      let index = this.labels.length;
+      this.labels.push({
+        key:'',
+        value:'',
+        isEdit: true,
+        isNew: true,
+        index: index
       });
+      this.isEdit = true;
     },
     saveLabels(){
-      lablesService.saveLabels(this);
-    }
+      labelsService.saveLabels(this);
+    },
+    currentRowChange(currentRow, oldCurrentRow){
+      this.currentRow = currentRow;
+      if(!currentRow){
+        this.isSelected = false;
+        return;
+      }
+      this.isSelected = true;
+    },
   }
 }
 </script>
@@ -92,4 +131,10 @@ export default {
 .line{
   text-align: center;
 }
+  .el-table th.gutter{
+    display: table-cell!important;
+  }
+  .el-row{
+    margin-bottom: 8px;
+  }
 </style>

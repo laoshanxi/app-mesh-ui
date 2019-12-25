@@ -14,3 +14,17 @@ export function updateLabels(data) {
     data: data
   })
 }
+
+export function updateLabel(labelKey, labelValue) {
+  return request({
+    url: '/label/' + labelKey + '?value=' + labelValue,
+    method: 'PUT'
+  })
+}
+
+export function deleteLabel(labelKey) {
+  return request({
+    url: '/label/' + labelKey,
+    method: 'DELETE'
+  })
+}
