@@ -9,7 +9,9 @@ export default {
           value : res.data[p]
         });
       }
+      vueComp.listLoading = false;
     }, (res)=>{
+      vueComp.listLoading = false;
       vueComp.$message.error('Get labels failed. ' + res.data, 5000);
     });
   },
@@ -22,11 +24,12 @@ export default {
       vueComp.$message.error('Label value is not empty.', 5000);
       return;
     }
+    vueComp.listLoading = true;
     updateLabel(row.key, row.value).then((res)=>{
       vueComp.$message.success('Label update successfully.', 5000);
       vueComp.refresh();
     }, (res)=>{
-    
+      vueComp.listLoading = false;
     });
   },
   deleteLabel: function(vueComp, row){
@@ -35,6 +38,7 @@ export default {
               cancelButtonText: 'Cancel',
               type: 'warning'
             }).then(() => {
+              vueComp.listLoading = true;
               deleteLabel(row.key).then((res)=>{
                 vueComp.$message({
                   type: 'success',
@@ -43,6 +47,7 @@ export default {
                 vueComp.refresh();
               },(res)=>{
                 console.info(res);
+                vueComp.listLoading = false;
               });
             });
   },
