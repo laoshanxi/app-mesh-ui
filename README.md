@@ -58,12 +58,19 @@ appc reg -n appweb -e APP_DOCKER_OPTS="-p 6066:80" -c "nginx -g 'daemon off;'" -
 
 ## Demo
 
-<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/applications.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/configuration.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/host.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/labels.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/remote_shell.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/users.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/1.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/2.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/3.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/4.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/5.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/6.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/7.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/8.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/9.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/a.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/b.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/c.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/d.png" />
 
 ## Browsers support
 
