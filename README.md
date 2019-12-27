@@ -71,6 +71,7 @@ appc reg -n appweb -e APP_DOCKER_OPTS="-p 6066:80" -c "nginx -g 'daemon off;'" -
 <img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/b.png" />
 <img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/c.png" />
 <img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/d.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/e.png" />
 
 ## Browsers support
 
