@@ -42,17 +42,9 @@ function getOutputValue(vueComp, data){
 export default {
   connectHost: function(vueComp){
     vueComp.connected = 1;
-    vueComp.shellContents.push({
-        content: "# Connecting remote host..."
-    });
     vueComp.shellApp.command = vueComp.command + '""';
     runApp(vueComp.timeout, true, vueComp.shellApp).then((res)=>{
       vueComp.connected = 2;
-      vueComp.shellContents.push(
-        {
-          content: "# Connected remote host successfully."
-        }
-      );
       runFinished(vueComp);
     }, (res)=>{
       vueComp.connected = 0;
