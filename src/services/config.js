@@ -41,8 +41,7 @@ export default {
   getPrometheus: function(vueComp){
     vueComp.loading = true;
     getConfig().then((res)=>{
-      let url = store.getters.baseUrl.replace(/^https/g, "http")
-        .replace(/:\d+\/?/g, ":" + res.data.PrometheusExporterListenPort) + "/metrics";
+      let url = store.getters.baseUrl + "/metrics";
       axios.get(url).then((res)=>{
         vueComp.loading = false;
         vueComp.content = res.data;
