@@ -48,6 +48,11 @@
 
            </template>
          </el-table-column>
+		 <el-table-column label="Health" width="100">
+           <template slot-scope="scope">
+             {{ scope.row.health | formatEmpty }}
+           </template>
+         </el-table-column>
          <el-table-column label="PID" width="100">
            <template slot-scope="scope">
              {{ scope.row.pid | formatEmpty }}

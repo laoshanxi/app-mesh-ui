@@ -8,6 +8,15 @@
        <el-form-item label="Command line" prop="command">
          <el-input v-model="registerForm.command"></el-input>
        </el-form-item>
+	   <el-form-item label="Initial command" prop="init_command">
+         <el-input v-model="registerForm.init_command"></el-input>
+       </el-form-item>
+	   <el-form-item label="Finish command" prop="fini_command">
+         <el-input v-model="registerForm.fini_command"></el-input>
+       </el-form-item>
+	   <el-form-item label="Healthcheck command" prop="health_check_cmd">
+         <el-input v-model="registerForm.health_check_cmd"></el-input>
+       </el-form-item>
        <el-form-item label="Working dir" prop="working_dir">
          <el-input v-model="registerForm.working_dir"></el-input>
        </el-form-item>

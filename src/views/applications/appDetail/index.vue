@@ -19,6 +19,11 @@
     <DescriptionList title="" col="12">
       <Description term="Command">{{record.command | formatEmpty}}</Description>
       <Description term="Working dir">{{record.working_dir | formatEmpty}}</Description>
+	  
+	  <Description term="Initial command">{{record.init_command | formatEmpty}}</Description>
+	  <Description term="Finish command">{{record.fini_command | formatEmpty}}</Description>
+	  <Description term="Health">{{record.health | formatEmpty}}</Description>
+	  <Description term="Healthcheck command">{{record.health_check_cmd | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="24">
       <Description term="Comments">{{record.comments | formatEmpty}}</Description>
