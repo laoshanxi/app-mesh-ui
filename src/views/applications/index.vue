@@ -32,6 +32,14 @@
              <i v-if="scope.row.docker_image" class="iconfont icon-docker"/>
            </template>
          </el-table-column>
+		 
+		 <el-table-column label="Health" width="60">
+           <template slot-scope="scope">
+		     <i class="el-icon-warning" style="color: #f56c6c;font-size: 18px; vertical-align: middle;" v-if="scope.row.health == 0"></i>
+             <i class="el-icon-success" style="color: #b3e19d;font-size: 18px; vertical-align: middle;" v-else></i>
+           </template>
+         </el-table-column>
+		 
          <el-table-column label="User" width="110">
            <template slot-scope="scope">
              {{ scope.row.user | formatEmpty }}
@@ -48,11 +56,7 @@
 
            </template>
          </el-table-column>
-		 <el-table-column label="Health" width="100">
-           <template slot-scope="scope">
-             {{ scope.row.health | formatEmpty }}
-           </template>
-         </el-table-column>
+		 
          <el-table-column label="PID" width="100">
            <template slot-scope="scope">
              {{ scope.row.pid | formatEmpty }}

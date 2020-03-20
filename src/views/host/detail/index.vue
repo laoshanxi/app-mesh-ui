@@ -33,7 +33,7 @@
           <div class="chart-label-left">free {{record.mem_freeSwap_bytes | formatMemory}}</div>
           <div class="chart-div">
             <el-progress :text-inside="true" :stroke-width="25"
-              :percentage="parseFloat(((record.mem_totalSwap_bytes - record.mem_freeSwap_bytes)/record.mem_totalSwap_bytes * 100).toFixed(2))"
+              :percentage="record.mem_totalSwap_bytes <= 0 ? 0 : parseFloat(((record.mem_totalSwap_bytes - record.mem_freeSwap_bytes)/record.mem_totalSwap_bytes * 100).toFixed(2))"
               status="exception">
             </el-progress>
           </div>
