@@ -33,10 +33,10 @@
            </template>
          </el-table-column>
 		 
-		 <el-table-column label="Health" width="60">
+		 <el-table-column label="Health" width="65">
            <template slot-scope="scope">
 		     <i class="el-icon-warning" style="color: #f56c6c;font-size: 18px; vertical-align: middle;" v-if="scope.row.health == 0"></i>
-             <i class="el-icon-success" style="color: #b3e19d;font-size: 18px; vertical-align: middle;" v-else></i>
+             <i class="el-icon-success" style="color: #85ce61;font-size: 18px; vertical-align: middle;" v-else></i>
            </template>
          </el-table-column>
 		 
