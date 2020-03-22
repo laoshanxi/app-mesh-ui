@@ -2,6 +2,7 @@
   <el-card class="box-card" v-if="record">
     <DescriptionList title="Basic information" col="24">
       <Description term="Name">{{record.name | formatEmpty}}</Description>
+	  <Description term="Command">{{record.command | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
       <Description term="Status">
@@ -16,9 +17,6 @@
       </Description>
       <Description term="User">{{record.user | formatEmpty}}</Description>
     </DescriptionList>
-	<DescriptionList title="" col="12">
-	  <Description term="Command">{{record.command | formatEmpty}}</Description>
-	</DescriptionList>
     <DescriptionList title="" col="12">
       <Description term="Working dir">{{record.working_dir | formatEmpty}}</Description>
 	  <Description term="Initial cmd">{{record.init_command | formatEmpty}}</Description>
