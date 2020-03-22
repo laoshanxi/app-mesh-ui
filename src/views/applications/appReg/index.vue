@@ -2,32 +2,20 @@
   <div>
     <el-card shadow="never" class="register-card">
      <el-form :model="registerForm" ref="regForm" :rules="regRules" label-width="160px">
-       <el-form-item label="Name" prop="name">
+       
+	   <el-form-item label="Name" prop="name">
          <el-input v-model="registerForm.name"></el-input>
        </el-form-item>
        <el-form-item label="Command line" prop="command">
          <el-input v-model="registerForm.command"></el-input>
        </el-form-item>
-	   <el-form-item label="Initial command" prop="init_command">
-         <el-input v-model="registerForm.init_command"></el-input>
-       </el-form-item>
-	   <el-form-item label="Finish command" prop="fini_command">
-         <el-input v-model="registerForm.fini_command"></el-input>
-       </el-form-item>
-	   <el-form-item label="Healthcheck command" prop="health_check_cmd">
-         <el-input v-model="registerForm.health_check_cmd"></el-input>
-       </el-form-item>
-       <el-form-item label="Working dir" prop="working_dir">
+	   <el-form-item label="Working dir" prop="working_dir">
          <el-input v-model="registerForm.working_dir"></el-input>
        </el-form-item>
-       <el-form-item label="Comments" prop="comments">
+	   <el-form-item label="Comments" prop="comments">
          <el-input v-model="registerForm.comments"></el-input>
        </el-form-item>
-       <el-divider></el-divider>
-       <el-form-item label="Start user" prop="user">
-         <el-input v-model="registerForm.user"></el-input>
-       </el-form-item>
-       <el-form-item label="Status">
+	   <el-form-item label="Status">
          <el-switch
            v-model="registerForm.status"
            active-text="Enabled"
@@ -36,7 +24,34 @@
            :inactive-value="0">
          </el-switch>
        </el-form-item>
-       <el-form-item label="Daily limitation">
+	   <el-divider></el-divider>
+	   
+	   <el-form-item label="Initial cmd" prop="init_command">
+         <el-input v-model="registerForm.init_command"></el-input>
+       </el-form-item>
+	   <el-form-item label="Finish cmd" prop="fini_command">
+         <el-input v-model="registerForm.fini_command"></el-input>
+       </el-form-item>
+	   <el-form-item label="Healthcheck cmd" prop="health_check_cmd">
+         <el-input v-model="registerForm.health_check_cmd"></el-input>
+       </el-form-item>
+	   
+       <el-divider></el-divider>
+	    <el-form-item label="Start time" prop="start_time">
+         <el-date-picker
+               v-model="registerForm.start_time" value-format="yyyy-MM-dd HH:mm:ss"
+               type="datetime"
+               placeholder="">
+         </el-date-picker>
+       </el-form-item>
+	   <el-form-item label="End time" prop="end_time">
+         <el-date-picker
+               v-model="registerForm.end_time" value-format="yyyy-MM-dd HH:mm:ss"
+               type="datetime"
+               placeholder="">
+         </el-date-picker>
+       </el-form-item>
+	   <el-form-item label="Daily limitation">
            <el-time-picker
                is-range
                v-model="daily_time_range"
@@ -46,7 +61,16 @@
                end-placeholder="End time">
            </el-time-picker>
        </el-form-item>
-
+	   <el-form-item label="Posix timezone" prop="posix_timezone">
+         <el-input v-model="registerForm.posix_timezone"></el-input>
+       </el-form-item>
+	   <el-divider></el-divider>
+	   
+       <el-form-item label="Running user" prop="user">
+         <el-input v-model="registerForm.user"></el-input>
+       </el-form-item>
+       
+       
        <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
          <el-input type="number" v-model="registerForm.resource_limit.cpu_shares"></el-input>
        </el-form-item>
@@ -59,9 +83,7 @@
        <el-divider></el-divider>
 
 
-       <el-form-item label="Posix timezone" prop="posix_timezone">
-         <el-input v-model="registerForm.posix_timezone"></el-input>
-       </el-form-item>
+       
        <el-form-item label="Output cache lines" prop="cache_lines">
          <el-input type="number" v-model="registerForm.cache_lines"></el-input>
        </el-form-item>
@@ -80,14 +102,7 @@
          <el-input v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT"></el-input> S
        </el-form-item>
        <el-divider></el-divider>
-       <el-form-item label="Start time" prop="start_time"
-         >
-         <el-date-picker
-               v-model="registerForm.start_time" value-format="yyyy-MM-dd HH:mm:ss"
-               type="datetime"
-               placeholder="">
-         </el-date-picker>
-       </el-form-item>
+      
        <el-form-item label="Start interval" prop="start_interval_seconds"
          >
          <el-input type="number" v-model="registerForm.start_interval_seconds"></el-input> S
@@ -103,7 +118,9 @@
            :inactive-value="false">
          </el-switch>
        </el-form-item>
-       <el-divider></el-divider>
+	   
+       <el-divider></el-divider>       
+	   
        <el-form-item
            v-for="(env, index) in registerForm.envs"
            :label="'Env ' + index"

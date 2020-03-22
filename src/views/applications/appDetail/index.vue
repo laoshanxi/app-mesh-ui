@@ -20,14 +20,16 @@
       <Description term="Command">{{record.command | formatEmpty}}</Description>
       <Description term="Working dir">{{record.working_dir | formatEmpty}}</Description>
 	  
-	  <Description term="Initial command">{{record.init_command | formatEmpty}}</Description>
-	  <Description term="Finish command">{{record.fini_command | formatEmpty}}</Description>
+	  <Description term="Initial cmd">{{record.init_command | formatEmpty}}</Description>
+	  <Description term="Finish cmd">{{record.fini_command | formatEmpty}}</Description>
 	  <Description term="Health">{{record.health | formatEmpty}}</Description>
-	  <Description term="Healthcheck command">{{record.health_check_cmd | formatEmpty}}</Description>
+	  <Description term="Healthcheck cmd">{{record.health_check_cmd | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="24">
       <Description term="Comments">{{record.comments | formatEmpty}}</Description>
+	  <Description term="Start time">{{record.start_time | formatEmpty}}</Description>
       <Description term="Docker image">{{record.docker_image | formatEmpty}}</Description>
+	  <Description term="End time">{{record.end_time | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
 
@@ -43,7 +45,6 @@
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="Short running App infomation" col="12">
-      <Description term="Start time">{{record.start_time | formatEmpty}}</Description>
       <Description term="Next start time">{{record.next_start_time | formatEmpty}}</Description>
       <Description term="Start interval seconds (S)">{{record.start_interval_seconds | formatEmpty}}</Description>
       <Description term="Start tnterval timeout (S)">{{record.start_interval_timeout | formatEmpty}}</Description>
