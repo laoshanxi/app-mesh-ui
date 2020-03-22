@@ -16,16 +16,17 @@
       </Description>
       <Description term="User">{{record.user | formatEmpty}}</Description>
     </DescriptionList>
+	<DescriptionList title="" col="12">
+	  <Description term="Command">{{record.command | formatEmpty}}</Description>
+	</DescriptionList>
     <DescriptionList title="" col="12">
-      <Description term="Command">{{record.command | formatEmpty}}</Description>
       <Description term="Working dir">{{record.working_dir | formatEmpty}}</Description>
-	  
 	  <Description term="Initial cmd">{{record.init_command | formatEmpty}}</Description>
 	  <Description term="Finish cmd">{{record.fini_command | formatEmpty}}</Description>
 	  <Description term="Health">{{record.health | formatEmpty}}</Description>
 	  <Description term="Healthcheck cmd">{{record.health_check_cmd | formatEmpty}}</Description>
     </DescriptionList>
-    <DescriptionList title="" col="24">
+    <DescriptionList title="" col="12">
       <Description term="Comments">{{record.comments | formatEmpty}}</Description>
 	  <Description term="Start time">{{record.start_time | formatEmpty}}</Description>
       <Description term="Docker image">{{record.docker_image | formatEmpty}}</Description>
