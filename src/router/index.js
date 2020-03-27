@@ -1,10 +1,10 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import Vue from "vue";
+import Router from "vue-router";
 
-Vue.use(Router)
+Vue.use(Router);
 
 /* Layout */
-import Layout from '@/layout'
+import Layout from "@/layout";
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -32,177 +32,197 @@ import Layout from '@/layout'
  */
 export const constantRoutes = [
   {
-    path: '/login',
-    component: () => import('@/views/login/index'),
+    path: "/login",
+    component: () => import("@/views/login/index"),
     hidden: true
   },
 
   {
-    path: '/404',
-    component: () => import('@/views/404'),
+    path: "/404",
+    component: () => import("@/views/404"),
     hidden: true
   },
 
   {
-    path: '/',
+    path: "/",
     component: Layout,
-    redirect: '/host/index',
+    redirect: "/applications/index"
   },
   {
-    path: '/',
+    path: "/",
     component: Layout,
-    redirect: '/401',
+    redirect: "/401",
     hidden: true,
-    children: [{
-      path: '401',
-      name: '401',
-      component: () => import('@/views/errors/401'),
-      meta: { title: 'No Permission' },
-      hidden: true
-    }]
-  },
-  {
-    path: '/',
-    component: Layout,
-    redirect: '/home',
-    children: [{
-      path: 'home',
-      name: 'Home',
-      component: () => import('@/views/home/index'),
-      meta: { title: 'Home', icon: 'home' },
-      hidden: true
-    }]
-  },
-  {
-    path: '/host',
-    component: Layout,
     children: [
       {
-        path: 'index',
-        name: 'Host',
-        component: () => import('@/views/host/index'),
-        meta: { title: 'Host', icon: 'host' }
+        path: "401",
+        name: "401",
+        component: () => import("@/views/errors/401"),
+        meta: { title: "No Permission" },
+        hidden: true
       }
     ]
   },
-  
   {
-    path: '/applications',
+    path: "/",
     component: Layout,
-    children: [{
-      path: 'index',
-      name: 'Applications',
-      component: () => import('@/views/applications/index'),
-      meta: { title: 'Applications', icon: 'application' }
-    }]
+    redirect: "/home",
+    children: [
+      {
+        path: "home",
+        name: "Home",
+        component: () => import("@/views/home/index"),
+        meta: { title: "Home", icon: "home" },
+        hidden: true
+      }
+    ]
   },
   {
-    path: '/shell',
+    path: "/applications",
     component: Layout,
-    children: [{
-      path: 'index',
-      name: 'Remote Shell',
-      component: () => import('@/views/shell/index'),
-      meta: { title: 'Remote Shell', icon: 'shell' }
-    }]
+    children: [
+      {
+        path: "index",
+        name: "Applications",
+        component: () => import("@/views/applications/index"),
+        meta: { title: "Applications", icon: "application" }
+      }
+    ]
+  },
+  {
+    path: "/host",
+    component: Layout,
+    children: [
+      {
+        path: "index",
+        name: "Host",
+        component: () => import("@/views/host/index"),
+        meta: { title: "Host", icon: "host" }
+      }
+    ]
+  },
+  {
+    path: "/shell",
+    component: Layout,
+    children: [
+      {
+        path: "index",
+        name: "Remote Shell",
+        component: () => import("@/views/shell/index"),
+        meta: { title: "Remote Shell", icon: "shell" }
+      }
+    ]
   },
 
   {
-    path: '/files',
+    path: "/files",
     component: Layout,
     children: [
       {
-        path: 'index',
-        name: 'File Management',
-        component: () => import('@/views/files/index'),
-        meta: { title: 'File Management', icon: 'files' }
+        path: "index",
+        name: "File Management",
+        component: () => import("@/views/files/index"),
+        meta: { title: "File Management", icon: "files" }
       }
     ]
   },
   {
-    path: '/labels',
+    path: "/labels",
     component: Layout,
     children: [
       {
-        path: 'index',
-        name: 'Labels',
-        component: () => import('@/views/labels/index'),
-        meta: { title: 'Labels', icon: 'label' }
+        path: "index",
+        name: "Labels",
+        component: () => import("@/views/labels/index"),
+        meta: { title: "Labels", icon: "label" }
       }
     ]
   },
   {
-    path: '/config',
+    path: "/config",
     component: Layout,
     children: [
       {
-        path: 'index',
-        name: 'Config',
-        component: () => import('@/views/config/index'),
-        meta: { title: 'Configuration', icon: 'config' }
+        path: "index",
+        name: "Config",
+        component: () => import("@/views/config/index"),
+        meta: { title: "Configuration", icon: "config" }
       }
     ]
   },
   {
-    path: '/security',
+    path: "/security",
     component: Layout,
-    redirect: '/security/changePwd',
-    name: 'Security',
+    redirect: "/security/changePwd",
+    name: "Security",
     meta: {
-      title: 'Security',
-      icon: 'security'
+      title: "Security",
+      icon: "security"
     },
     children: [
       {
-        path: 'changePwd',
-        name: 'ChangePwd',
-        component: () => import('@/views/security/changePwd'),
-        meta: { title: 'Change Password', icon: 'password' }
+        path: "changePwd",
+        name: "ChangePwd",
+        component: () => import("@/views/security/changePwd"),
+        meta: { title: "Change Password", icon: "password" }
       },
       {
-        path: 'users',
-        name: 'Users',
-        component: () => import('@/views/security/users'),
-        meta: { title: 'Users', icon: 'user',roles: ['lock-user', 'unlock-user'] }
+        path: "users",
+        name: "Users",
+        component: () => import("@/views/security/users"),
+        meta: {
+          title: "Users",
+          icon: "user",
+          roles: ["lock-user", "unlock-user"]
+        }
       },
       {
-        path: 'roles',
-        name: 'Roles',
-        component: () => import('@/views/security/roles'),
-        meta: { title: 'Roles', icon: 'role',roles: ['lock-user', 'unlock-user'] }
+        path: "roles",
+        name: "Roles",
+        component: () => import("@/views/security/roles"),
+        meta: {
+          title: "Roles",
+          icon: "role",
+          roles: ["lock-user", "unlock-user"]
+        }
       }
     ]
   },
   {
-    path: '/prometheus',
+    path: "/prometheus",
     component: Layout,
     children: [
       {
-        path: 'index',
-        name: 'Prometheus',
-        component: () => import('@/views/prometheus/index'),
-        meta: { title: 'Prometheus', icon: 'Prometheus' }
+        path: "index",
+        name: "Prometheus",
+        component: () => import("@/views/prometheus/index"),
+        meta: { title: "Prometheus", icon: "Prometheus" }
       }
     ]
   },
 
-  { path: '/refresh', component: () => import('@/views/refresh'), hidden: true },
+  {
+    path: "/refresh",
+    component: () => import("@/views/refresh"),
+    hidden: true
+  },
   // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
-]
+  { path: "*", redirect: "/404", hidden: true }
+];
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    // mode: 'history', // require service support
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  });
 
-const router = createRouter()
+const router = createRouter();
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter()
-  router.matcher = newRouter.matcher // reset router
+  const newRouter = createRouter();
+  router.matcher = newRouter.matcher; // reset router
 }
 
-export default router
+export default router;
