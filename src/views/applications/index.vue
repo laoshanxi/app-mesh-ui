@@ -19,14 +19,14 @@
           >Edit</el-button
         >
       </el-button-group>
+      <el-button
+        @click="btnClick('delete')"
+        type="danger"
+        icon="el-icon-delete"
+        :disabled="!isSelected"
+        >Delete</el-button
+      >
       <el-button-group>
-        <el-button
-          @click="btnClick('delete')"
-          type="danger"
-          icon="el-icon-delete"
-          :disabled="!isSelected"
-          >Delete</el-button
-        >
         <el-button
           @click="btnClick('enable')"
           type="success"

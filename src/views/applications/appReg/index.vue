@@ -9,7 +9,7 @@
         label-width="160px"
       >
         <el-form-item label="Name" prop="name">
-          <el-input v-model="registerForm.name" :disabled="isEdit"></el-input>
+          <el-input v-model="registerForm.name"></el-input>
         </el-form-item>
         <el-form-item label="Command line" prop="command">
           <el-input v-model="registerForm.command"></el-input>
@@ -201,8 +201,7 @@ export default {
         command: [
           { required: true, message: "Command is not empty", trigger: "blur" }
         ]
-      },
-      isEdit: false
+      }
     };
   },
   props: ["propForm"],
@@ -226,10 +225,8 @@ export default {
   methods: {
     setFromWithProps() {
       if (Object.keys(this.propForm).length !== 0) {
-        this.isEdit = true;
         this.registerForm = this.merge(this.propForm, this.registerForm);
       } else {
-        this.isEdit = false;
         this.resetForm();
       }
     },
