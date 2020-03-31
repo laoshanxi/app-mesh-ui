@@ -9,10 +9,8 @@
 ## Build Setup
 
 ```bash
-# clone the project
 git clone https://github.com/laoshanxi/app-manager-ui.git
 
-# enter the project directory
 cd app-manager-ui
 
 # build
@@ -24,7 +22,7 @@ make run
 
 Visit http://localhost
 
-## Build Docker image package
+## Build Docker image
 ```bash
 make tar
 ```
