@@ -1,7 +1,8 @@
 <template>
   <el-card class="box-card" v-if="record">
-    <DescriptionList title="Basic information" col="24">
+    <DescriptionList title="Basic information" col="12">
       <Description term="Name">{{record.name | formatEmpty}}</Description>
+	  <Description term="Reg time">{{record.register_time | formatEmpty}}</Description>
 	  <Description term="Command">{{record.command | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
@@ -25,10 +26,10 @@
 	  <Description term="Healthcheck cmd">{{record.health_check_cmd | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
-      <Description term="Comments">{{record.comments | formatEmpty}}</Description>
-	  <Description term="Start time">{{record.start_time | formatEmpty}}</Description>
       <Description term="Docker image">{{record.docker_image | formatEmpty}}</Description>
-	  <Description term="End time">{{record.end_time | formatEmpty}}</Description>
+      <Description term="Comments">{{record.comments | formatEmpty}}</Description>
+      <Description term="Start time">{{record.start_time | formatEmpty}}</Description>
+      <Description term="End time">{{record.end_time | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
 
