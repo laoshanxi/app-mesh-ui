@@ -70,7 +70,7 @@
             </el-link>
             <i v-if="scope.row.docker_image" class="iconfont icon-docker" />
             <i
-              v-if="scope.row.comments === '_CONSUL_APP_'"
+              v-if="scope.row.cloud == 1"
               class="el-icon-cloudy"
             />
           </template>
