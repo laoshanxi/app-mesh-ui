@@ -4,6 +4,7 @@
       <Description term="Name">{{record.name | formatEmpty}}</Description>
 	  <Description term="Reg time">{{record.register_time | formatEmpty}}</Description>
 	  <Description term="Command">{{record.command | formatEmpty}}</Description>
+	  <Description term="User">{{record.user | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
       <Description term="Status">
@@ -16,7 +17,7 @@
           </el-tag>
         </div>
       </Description>
-      <Description term="User">{{record.user | formatEmpty}}</Description>
+	  <Description term="Cloud">{{record.cloud | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
       <Description term="Working dir">{{record.working_dir | formatEmpty}}</Description>
