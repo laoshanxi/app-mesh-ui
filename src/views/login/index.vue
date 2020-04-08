@@ -116,7 +116,7 @@ export default {
     certifedHost(callback){
       request({
         url: this.loginForm.host,
-        timeout: 3000,
+        timeout: 10000,
         method: 'GET'
       }).then((res)=>{
         console.info("Certified");

@@ -200,6 +200,25 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: "/cluster",
+    component: Layout,
+    redirect: "/cluster/nodes",
+    name: "Cluster",
+    alwaysShow: true,
+    meta: {
+      title: "Cluster",
+      icon: "cluster"
+    },
+    children: [
+      {
+        path: "nodes",
+        name: "Nodes",
+        component: () => import("@/views/cluster/nodes"),
+        meta: { title: "Nodes", icon: "nodes" }
+      }
+    ]
+  },
 
   {
     path: "/refresh",
