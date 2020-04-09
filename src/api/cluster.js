@@ -21,3 +21,9 @@ export const getTask = (baseUrl,params)=>{
         params
     })
 }
+export const deleteTask = (baseUrl,name)=>{
+    return request({
+        url:`${baseUrl}${requestUrl}/task/${name}`,
+        method:'delete'
+    })
+}

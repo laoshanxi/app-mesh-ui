@@ -81,7 +81,7 @@ export default {
       
     },
     formatData(data){
-       if(!data) return []
+      if(!data) return []
       const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
       return decodedData.map((e,index) => {
         const {
