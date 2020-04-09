@@ -212,11 +212,11 @@ export default {
   text-align: right;
   width: 100px;
 }
-.el-progress-bar__outer{
+/* .el-progress-bar__outer{
   background-color: #67c23a;
   border-radius: 2px;
 }
 .el-progress-bar__inner{
   border-radius: 2px;
-}
+} */
 </style>

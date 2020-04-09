@@ -47,3 +47,11 @@
 .el-range-separator {
   box-sizing: content-box;
 }
+
+.el-progress-bar__outer{
+  background-color: #67c23a;
+  border-radius: 2px;
+}
+.el-progress-bar__inner{
+  border-radius: 2px;
+}
