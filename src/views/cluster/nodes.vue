@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row style="color: #909399;">
-      <h4>Nodes</h4>
+      <h4>Leader: <span>{{ leader }}</span></h4>
     </el-row>
     <el-row>
       <el-table :data="tableData" style="width: 100%" border>
@@ -55,34 +55,32 @@
   </div>
 </template>
 <script>
-import { getConfig } from "@/api/config";
+import {getLeader,getNodes} from "@/api/cluster"
+import mixin from './mixin'
 import request from "@/utils/request";
 export default {
   name: "Nodes",
+  mixins:[mixin],
   data() {
     return {
       queryData: null,
       tableData:[],
-      apiBaseUrl:''
+      leader:''
     }
   },
-  created() {
-    this.fetchData().then(res => {
-      this.tableData = this.getTableData(res)
-    });
-  },
   methods: {
-    async fetchData() {
-      const { data:cfgData } = await getConfig()
-      const {
-        Consul: { url }
-      } = cfgData  
-      this.apiBaseUrl = url // delete api need
-      const hostPath = "/v1/kv/appmgr/nodes?recurse=true"
-      const { data } = await request.get(`${url}${hostPath}`)
-      return data
+    fetchData() {
+      const {apiBaseUrl} = this
+      getLeader(apiBaseUrl,{raw:true}).then(res=>{
+        this.leader = res.data
+      })
+      getNodes(apiBaseUrl,{recurse:true}).then(res=>{
+        const { data } = res
+        this.tableData = this.formatData(data)
+      })
+      
     },
-    getTableData(data){
+    formatData(data){
        if(!data) return []
       const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
       return decodedData.map((e,index) => {
@@ -95,7 +93,7 @@ export default {
           }
         } = e
         const usage = (totalMem-freeMem)/totalMem
-        const update = new Date(data[index].Flags)
+        const update = new Date(data[index].Flags * 1000 )
         return {hostName,cpuCores,freeMem,totalMem,usage,update}
       })
     },

@@ -216,6 +216,12 @@ export const constantRoutes = [
         name: "Nodes",
         component: () => import("@/views/cluster/nodes"),
         meta: { title: "Nodes", icon: "nodes" }
+      },
+      {
+        path: "task",
+        name: "Task",
+        component: () => import("@/views/cluster/task"),
+        meta: { title: "Task", icon: "task" }
       }
     ]
   },
