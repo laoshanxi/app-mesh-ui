@@ -6,12 +6,22 @@
     
     <el-row>
       <el-table :data="tableData" style="width: 100%" border>
-        <el-table-column prop="name" label="Name" />
+        <el-table-column prop="name" label="Name">
+          <template slot-scope="scope">
+            {{ scope.row.name | formatName }}
+          </template>
+        </el-table-column>
         <el-table-column prop="replication" label="Replication" />
         <el-table-column prop="port" label="Port" />
-        <el-table-column prop="content" label="Application" >
+        <el-table-column prop="content" label="Application">
+          <template slot-scope="scope">
+            <pre>{{ scope.row.content }}</pre>
+          </template>
         </el-table-column>
         <el-table-column prop="condition" label="Condition">
+          <template slot-scope="scope">
+            <pre>{{ scope.row.condition }}</pre>
+          </template>
         </el-table-column>
         <el-table-column label="Action" width="260">
           <template slot-scope="scope">
@@ -47,7 +57,6 @@ export default {
             const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
             return decodedData.map((e,index) => {
               e.name = data[index].Key
-              
               e.content = JSON.stringify(e.content,null,4)
               e.condition = JSON.stringify(e.condition,null,4)
               return e

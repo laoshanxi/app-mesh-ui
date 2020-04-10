@@ -21,7 +21,14 @@ export default {
      
            this.apiBaseUrl = url // delete api need
            return Promise.resolve(this.apiBaseUrl)
-         }
+        }
+    },
+    filters:{
+        formatName(name){
+            if(!name) return ''
+            const strs =  name.split('/')
+            return strs[strs.length -1]
+        }
     }
 
 }

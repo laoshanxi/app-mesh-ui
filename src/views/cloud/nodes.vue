@@ -8,7 +8,7 @@
         <el-table-column prop="hostName" label="Host">
           <template slot-scope="scope">
             <a :href="scope.row.hostName" style="text-decoration:underline;color:#409EFF;" target="_blank">
-              {{ scope.row.hostName }}
+              {{ scope.row.hostName | formatName }}
             </a>
           </template>
         </el-table-column>
@@ -85,7 +85,6 @@ export default {
       const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
       return decodedData.map((e,index) => {
         const {
-          label: { HOST_NAME: hostName },
           resource: {
             cpu_cores: cpuCores,
             mem_free_bytes: freeMem,
@@ -94,6 +93,7 @@ export default {
         } = e
         const usage = (totalMem-freeMem)/totalMem
         const update = new Date(data[index].Flags * 1000 )
+        const hostName = data[index].Key
         return {hostName,cpuCores,freeMem,totalMem,usage,update}
       })
     },

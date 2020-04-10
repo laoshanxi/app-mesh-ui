@@ -90,6 +90,31 @@ export const constantRoutes = [
     ]
   },
   {
+    path: "/cloud",
+    component: Layout,
+    redirect: "/cloud/nodes",
+    name: "Cloud",
+    alwaysShow: true,
+    meta: {
+      title: "Cloud",
+      icon: "cloud"
+    },
+    children: [
+      {
+        path: "nodes",
+        name: "Nodes",
+        component: () => import("@/views/cloud/nodes"),
+        meta: { title: "Nodes", icon: "nodes" }
+      },
+      {
+        path: "task",
+        name: "Task",
+        component: () => import("@/views/cloud/task"),
+        meta: { title: "Task", icon: "task" }
+      }
+    ]
+  },
+  {
     path: "/host",
     component: Layout,
     children: [
@@ -113,16 +138,15 @@ export const constantRoutes = [
       }
     ]
   },
-
   {
-    path: "/files",
+    path: "/prometheus",
     component: Layout,
     children: [
       {
         path: "index",
-        name: "File Management",
-        component: () => import("@/views/files/index"),
-        meta: { title: "File Management", icon: "files" }
+        name: "Prometheus",
+        component: () => import("@/views/prometheus/index"),
+        meta: { title: "Prometheus", icon: "Prometheus" }
       }
     ]
   },
@@ -135,18 +159,6 @@ export const constantRoutes = [
         name: "Labels",
         component: () => import("@/views/labels/index"),
         meta: { title: "Labels", icon: "label" }
-      }
-    ]
-  },
-  {
-    path: "/config",
-    component: Layout,
-    children: [
-      {
-        path: "index",
-        name: "Config",
-        component: () => import("@/views/config/index"),
-        meta: { title: "Configuration", icon: "config" }
       }
     ]
   },
@@ -189,42 +201,34 @@ export const constantRoutes = [
     ]
   },
   {
-    path: "/prometheus",
+    path: "/config",
     component: Layout,
     children: [
       {
         path: "index",
-        name: "Prometheus",
-        component: () => import("@/views/prometheus/index"),
-        meta: { title: "Prometheus", icon: "Prometheus" }
+        name: "Config",
+        component: () => import("@/views/config/index"),
+        meta: { title: "Configuration", icon: "config" }
       }
     ]
   },
   {
-    path: "/cluster",
+    path: "/files",
     component: Layout,
-    redirect: "/cluster/nodes",
-    name: "Cluster",
-    alwaysShow: true,
-    meta: {
-      title: "Cluster",
-      icon: "cluster"
-    },
     children: [
       {
-        path: "nodes",
-        name: "Nodes",
-        component: () => import("@/views/cluster/nodes"),
-        meta: { title: "Nodes", icon: "nodes" }
-      },
-      {
-        path: "task",
-        name: "Task",
-        component: () => import("@/views/cluster/task"),
-        meta: { title: "Task", icon: "task" }
+        path: "index",
+        name: "File Management",
+        component: () => import("@/views/files/index"),
+        meta: { title: "File Management", icon: "files" }
       }
     ]
   },
+ 
+  
+
+ 
+
 
   {
     path: "/refresh",
