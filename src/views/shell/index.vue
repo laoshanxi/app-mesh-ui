@@ -27,7 +27,9 @@
         <i class="el-icon-delete" @click="clearScreen"></i>
       </el-button-group>
       <div class="shell-content">
-        <div v-for="line in shellContents" class="shell-line"><pre>{{line.content}}</pre></div>
+        <div v-for="line in shellContents" class="shell-line">
+          <pre :class="{'command':line.type=='command'}">{{line.content}}</pre>
+        </div>
       </div>
       <div class="shell-command" >
         <el-button v-if="connected==0" @click="connectHost()">Re-connect</el-button>
@@ -121,7 +123,8 @@
         this.commands.push(this.input);
         this.shellContents.push(
           {
-            content: "# " +this.input
+            content: "# " +this.input,
+            type: "command"
           }
         );
         this.inputDisabled = true;
@@ -173,6 +176,10 @@
   }
   .shell-line > pre{
     margin: 0px;
+  }
+
+  .shell-content > .command{
+    color: #67C23A;
   }
 
 </style>
