@@ -178,7 +178,7 @@
     margin: 0px;
   }
 
-  .shell-content > .command{
+  .shell-line > .command{
     color: #67C23A;
   }
 
