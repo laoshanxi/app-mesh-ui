@@ -51,7 +51,7 @@ npm run lint -- --fix
 # option1 : shell process
 appc reg -c "sh -c 'docker rm -f appweb; docker run --rm -p 8443:443 -v /opt/appmanager/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmanager/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro --name appweb appmanager-ui:1.0'" -n appweb -f
 # option2 : native docker process
-appc reg -n appweb -e APP_DOCKER_OPTS="-p 8443:443 -v /opt/appmanager/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmanager/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -c "nginx -g 'daemon off;'" -d appmanager-ui:1.0 -f
+appc reg -n appweb -e APP_DOCKER_OPTS="--net=host -v /opt/appmanager/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmanager/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -c "nginx -g 'daemon off;'" -d appmanager-ui:1.0 -f
 ```
 
 ## Demo
