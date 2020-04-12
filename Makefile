@@ -31,6 +31,6 @@ dev:
 	
 clean:
 	-docker rm -f appweb
-	-docker rmi -f appmgr-ui:${VER}
+	-docker rmi -f ${DOCKER_IMG_NAME}
 	rm -rf ./*.tar ./*.gz
 	#rm -rf ./node_modules
