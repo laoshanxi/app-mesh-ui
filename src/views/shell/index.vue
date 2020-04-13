@@ -1,6 +1,6 @@
 <template>
 
-  <el-card>
+  <el-card @keyup.native="clearScreenByKeyUp" @keydown.native="clearScreenByKeyDown">
     <el-row slot="header">
       <el-col :span="3" style="text-align: center;height: 38px; line-height: 38px;">
         <el-switch
@@ -22,15 +22,17 @@
       <el-col :span="9">
       </el-col>
     </el-row>
-    <div class="shell-div" ref="shell_div">
+    <div class="shell-div" ref="shell_div" @click="moveFocus">
       <el-button-group class="buttonsArea">
         <i class="el-icon-delete" @click="clearScreen"></i>
       </el-button-group>
       <div class="shell-content">
-        <div v-for="line in shellContents" class="shell-line"><pre>{{line.content}}</pre></div>
+        <div v-for="line in shellContents" class="shell-line">
+          <pre :class="{'command':line.type=='command'}">{{line.content}}</pre>
+        </div>
       </div>
       <div class="shell-command" >
-        <el-button v-if="connected==0" @click="connectHost()">Re-connect</el-button>
+        <el-button v-if="connected==0" @click.stop="connectHost()">Re-connect</el-button>
 
         <el-input ref="input" :disabled="inputDisabled" v-if="connected==2" class="shell-input" v-model="input"
           @keyup.enter.native="runShell()"
@@ -52,6 +54,7 @@
     data(){
       return {
         timeout:10,
+        control:false,
         marks: {
                   10: '10s',
                   20: '20s',
@@ -92,6 +95,21 @@
       clearScreen(){
         this.shellContents = [];
       },
+      clearScreenByKeyDown(e){
+        if(e.key=='Control'){
+          this.control = true;
+        }else if(this.control && e.key=='c'){
+          this.clearScreen();
+        }
+      },
+      clearScreenByKeyUp(e){
+        if(e.key=='Control'){
+          this.control = false;
+        }
+      },
+      moveFocus(){
+        this.$refs["input"].focus();
+      },
       upCommand(){
         if(this.commands.length==0){
           return;
@@ -121,7 +139,8 @@
         this.commands.push(this.input);
         this.shellContents.push(
           {
-            content: "# " +this.input
+            content: "# " +this.input,
+            type: "command"
           }
         );
         this.inputDisabled = true;
@@ -173,6 +192,10 @@
   }
   .shell-line > pre{
     margin: 0px;
+  }
+
+  .shell-line > .command{
+    color: #67C23A;
   }
 
 </style>

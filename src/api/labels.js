@@ -2,14 +2,14 @@ import request from '@/utils/request'
 
 export function getLabels() {
   return request({
-    url: '/labels',
+    url: '/appmgr/labels',
     method: 'GET',
   })
 }
 
 export function updateLabels(data) {
   return request({
-    url: '/labels',
+    url: '/appmgr/labels',
     method: 'POST',
     data: data
   })
@@ -17,14 +17,14 @@ export function updateLabels(data) {
 
 export function updateLabel(labelKey, labelValue) {
   return request({
-    url: '/label/' + labelKey + '?value=' + labelValue,
+    url: '/appmgr/label/' + labelKey + '?value=' + labelValue,
     method: 'PUT'
   })
 }
 
 export function deleteLabel(labelKey) {
   return request({
-    url: '/label/' + labelKey,
+    url: '/appmgr/label/' + labelKey,
     method: 'DELETE'
   })
 }
