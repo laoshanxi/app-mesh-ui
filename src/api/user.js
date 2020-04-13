@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export function login(data) {
   data["expire_seconds"] = 60 * 60 * 8;
   return request({
-    url: '/login',
+    url: '/appmgr/login',
     method: 'post',
     headers: data
   })
@@ -11,27 +11,27 @@ export function login(data) {
 
 export function getPermissions() {
   return request({
-    url: '/auth/permissions',
+    url: '/appmgr/auth/permissions',
     method: 'get'
   })
 }
 
 export function locked(username) {
   return request({
-    url: '/user/' + username + '/lock',
+    url: '/appmgr/user/' + username + '/lock',
     method: 'post',
   })
 }
 export function unlocked(username) {
   return request({
-    url: '/user/' + username + '/unlock',
+    url: '/appmgr/user/' + username + '/unlock',
     method: 'post',
   })
 }
 
 export function getInfo(token) {
   return request({
-    url: '/user/info',
+    url: '/appmgr/user/info',
     method: 'get',
     params: { token }
   })
@@ -39,7 +39,7 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: '/user/logout',
+    url: '/appmgr/user/logout',
     method: 'post'
   })
 }

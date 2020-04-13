@@ -2,28 +2,28 @@ import request from '@/utils/request'
 
 export function getApplications() {
   return request({
-    url: '/app-manager/applications',
+    url: '/appmgr/applications',
     method: 'get'
   })
 }
 
 export function getApplicationByName(appname) {
   return request({
-    url: '/app/'+appname,
+    url: '/appmgr/app/'+appname,
     method: 'get'
   })
 }
 
 export function getAppLog(appname) {
   return request({
-    url: `/app/${appname}/output?keep_history=1`,
+    url: `/appmgr/app/${appname}/output?keep_history=1`,
     method: 'get'
   })
 }
 
 export function registerApplication(appName, data) {
   return request({
-    url: '/app/' + appName,
+    url: '/appmgr/app/' + appName,
     method: 'PUT',
     data: data
   })
@@ -31,7 +31,7 @@ export function registerApplication(appName, data) {
 
 export function registerShApp(appName, data) {
   return request({
-    url: '/app/sh/' + appName,
+    url: '/appmgr/app/sh/' + appName,
     method: 'PUT',
     data: data
   })
@@ -39,28 +39,28 @@ export function registerShApp(appName, data) {
 
 export function deleteApplication(appName) {
   return request({
-    url: '/app/' + appName,
+    url: '/appmgr/app/' + appName,
     method: 'DELETE'
   })
 }
 
 export function enableApp(appName) {
   return request({
-    url: '/app/' + appName + '/enable',
+    url: '/appmgr/app/' + appName + '/enable',
     method: 'POST'
   })
 }
 
 export function disableApp(appName) {
   return request({
-    url: '/app/' + appName + '/disable',
+    url: '/appmgr/app/' + appName + '/disable',
     method: 'POST'
   })
 }
 
 export function runApp(timeout, sync, options) {
   return request({
-    url: '/app/' + (sync ? 'syncrun' : 'run') + '?timeout=' + timeout,
+    url: '/appmgr/app/' + (sync ? 'syncrun' : 'run') + '?timeout=' + timeout,
     method: 'POST',
     data: options
   })
@@ -68,7 +68,7 @@ export function runApp(timeout, sync, options) {
 
 export function getOutput(appName, pid) {
   return request({
-    url: '/app/' + appName + '/run/output?process_uuid='+pid,
+    url: '/appmgr/app/' + appName + '/run/output?process_uuid='+pid,
     method: 'GET'
   })
 }
