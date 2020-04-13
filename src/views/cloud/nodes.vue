@@ -70,11 +70,10 @@ export default {
   },
   methods: {
     fetchData() {
-      const {apiBaseUrl} = this
-      getLeader(apiBaseUrl,{raw:true}).then(res=>{
+      getLeader({raw:true}).then(res=>{
         this.leader = res.data
       })
-      getNodes(apiBaseUrl,{recurse:true}).then(res=>{
+      getNodes({recurse:true}).then(res=>{
         const { data } = res
         this.tableData = this.formatData(data)
       })

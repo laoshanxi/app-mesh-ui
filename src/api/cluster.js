@@ -1,29 +1,36 @@
 import request from '@/utils/request'
 const requestUrl = '/v1/kv/appmgr'
-export const getLeader = (baseUrl,params)=>{
+export const getLeader = (params)=>{
     return request({
-        url:`${baseUrl}${requestUrl}/leader`,
+        url:`${requestUrl}/leader`,
         method:'get',
         params
     })
 }
-export const getNodes = (baseUrl,params)=>{
+export const getNodes = (params)=>{
     return request({
-        url:`${baseUrl}${requestUrl}/nodes`,
+        url:`${requestUrl}/nodes`,
         method:'get',
         params
     })
 }
-export const getTask = (baseUrl,params)=>{
+export const getTask = (params)=>{
     return request({
-        url:`${baseUrl}${requestUrl}/task`,
+        url:`${requestUrl}/task`,
         method:'get',
         params
     })
 }
-export const deleteTask = (baseUrl,name)=>{
+export const deleteTask = (name)=>{
     return request({
-        url:`${baseUrl}${requestUrl}/task/${name}`,
+        url:`${requestUrl}/task/${name}`,
         method:'delete'
+    })
+}
+export const addTask = (params)=>{
+    return request({
+        url:`${requestUrl}/task`,
+        method:'put',
+        data:params
     })
 }
