@@ -1,4 +1,4 @@
-import {getConfig, updateConfig} from '@/api/config'
+import {getConfig, getPrometheus, updateConfig} from '@/api/config'
 import axios from 'axios'
 import store from '@/store'
 
@@ -40,15 +40,9 @@ export default {
   },
   getPrometheus: function(vueComp){
     vueComp.loading = true;
-    getConfig().then((res)=>{
-      let url = store.getters.baseUrl + "/metrics";
-      axios.get(url).then((res)=>{
+    getPrometheus().then((res)=>{
         vueComp.loading = false;
         vueComp.content = res.data;
-      }).catch((res)=>{
-        vueComp.loading = false;
-        vueComp.$message.error('Get prometheus monitor failed. ' + res, 5000);
-      });
     }, (res)=>{
       vueComp.loading = false;
       vueComp.$message.error('Get configuration failed. ' + res.data, 5000);
