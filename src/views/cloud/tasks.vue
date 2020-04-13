@@ -63,8 +63,7 @@ export default {
     },
     methods:{
         fetchData(){
-            const {apiBaseUrl} = this
-            getTask(apiBaseUrl,{recurse:true}).then(res=>{
+            getTask({recurse:true}).then(res=>{
                 this.tableData = this.formatData(res.data)
             })
         },
@@ -85,7 +84,7 @@ export default {
               cancelButtonText: 'Cancel',
               type: 'warning'
             }).then(async () => {
-              const {data} = await deleteTask(this.apiBaseUrl,row.name)
+              const {data} = await deleteTask(row.name)
               if (data) {
                 const index = this.tableData.findIndex(e=>e.name === row.name)
                 this.tableData.splice(index,1)
@@ -93,8 +92,8 @@ export default {
             })
         },
         addTask(){
-           const {apiBaseUrl,jsonStr} = this
-          addTask(apiBaseUrl,jsonStr).then(res=>{
+           const {jsonStr} = this
+          addTask(jsonStr).then(res=>{
             if(res.data){
               this.drawer = false
               this.$message({
