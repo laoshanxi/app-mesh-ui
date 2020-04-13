@@ -3,17 +3,30 @@
     <el-row style="color: #909399;">
       <h4>Task</h4>
     </el-row>
-    
+    <el-row style="margin-bottom:8px;">
+      <el-button-group>
+        <el-button @click="drawer=true" type="primary" icon="el-icon-plus">Add</el-button>
+      </el-button-group>
+    </el-row>
+    <!-- add drawer -->
+    <el-drawer title="Add Task" :visible.sync="drawer">
+      <el-card shadow="never">
+          <el-row style="margin-bottom:8px;"><el-input type="textarea" autosize v-model="jsonStr"></el-input></el-row>
+          <el-row><el-button type="primary" @click="addTask">Add</el-button>
+          <el-button @click="drawer = false">Cancel</el-button></el-row>
+      </el-card>
+      
+    </el-drawer>
     <el-row>
-      <el-table :data="tableData" style="width: 100%" border>
+      <el-table :data="tableData" style="width: 100%" border v-loading="dataOk">
         <el-table-column prop="name" label="Name">
           <template slot-scope="scope">
             {{ scope.row.name | formatName }}
           </template>
         </el-table-column>
-        <el-table-column prop="replication" label="Replication" />
-        <el-table-column prop="port" label="Port" />
-        <el-table-column prop="content" label="Application">
+        <el-table-column prop="replication" label="Replication" width="100" />
+        <el-table-column prop="port" label="Port" width="100" />
+        <el-table-column prop="content" label="Application" >
           <template slot-scope="scope">
             <pre>{{ scope.row.content }}</pre>
           </template>
@@ -23,7 +36,7 @@
             <pre>{{ scope.row.condition }}</pre>
           </template>
         </el-table-column>
-        <el-table-column label="Action" width="260">
+        <el-table-column label="Action">
           <template slot-scope="scope">
             <el-button type="text" icon="el-icon-delete" @click="removeLabel(scope.row)">
               Remove
@@ -36,13 +49,16 @@
 </template>
 <script>
 import mixin from './mixin'
-import {getTask,deleteTask} from '@/api/cluster'
+import {getTask,deleteTask,addTask} from '@/api/cluster'
 export default {
     name:"Task",
     mixins:[mixin],
     data(){
         return {
-            tableData:[]
+            tableData:[],
+            dataOk:false,
+            drawer:false,
+            jsonStr:null
         }
     },
     methods:{
@@ -54,7 +70,8 @@ export default {
         },
         formatData(data){
             if(!data) return []
-            const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
+            const filterByPath = data.filter(e=>!(/task$/).test(e.Key))//filter data by task's path
+            const decodedData = filterByPath.map(e=>JSON.parse(atob(e.Value)))
             return decodedData.map((e,index) => {
               e.name = data[index].Key
               e.content = JSON.stringify(e.content,null,4)
@@ -62,7 +79,7 @@ export default {
               return e
             })
         },
-         removeLabel(row){
+        removeLabel(row){
           this.$confirm(`Do you want to remove the host <${row.name}> ?`, 'Tooltip', {
               confirmButtonText: 'Confirm',
               cancelButtonText: 'Cancel',
@@ -74,7 +91,29 @@ export default {
                 this.tableData.splice(index,1)
               }
             })
+        },
+        addTask(){
+           const {apiBaseUrl,jsonStr} = this
+          addTask(apiBaseUrl,jsonStr).then(res=>{
+            if(res.data){
+              this.drawer = false
+              this.$message({
+                type:'success',
+                message:"add task successful"
+              })
+              this.fetchData()
+            }
+          })
         }
+        
     }
 }
 </script>
+<style lang="scss" scoped>
+.add-task-body {
+  padding: 0 20px;
+  .add-task-title {
+    margin: 0;
+  }
+}
+</style>
