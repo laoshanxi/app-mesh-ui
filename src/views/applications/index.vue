@@ -13,7 +13,7 @@
         >
         <el-button
           @click="btnClick('update')"
-          type="primary"
+          type="success"
           icon="el-icon-edit"
           :disabled="!isSelected"
           >Edit</el-button

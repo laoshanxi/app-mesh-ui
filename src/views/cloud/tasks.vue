@@ -1,8 +1,5 @@
 <template>
   <div class="app-container">
-    <el-row style="color: #909399;">
-      <h4>Task</h4>
-    </el-row>
     <el-row style="margin-bottom:8px;">
       <el-button-group>
         <el-button @click="drawer=true" type="primary" icon="el-icon-plus">Add</el-button>
@@ -10,12 +7,13 @@
     </el-row>
     <!-- add drawer -->
     <el-drawer title="Add Task" :visible.sync="drawer">
-      <el-card shadow="never">
-          <el-row style="margin-bottom:8px;"><el-input type="textarea" autosize v-model="jsonStr"></el-input></el-row>
-          <el-row><el-button type="primary" @click="addTask">Add</el-button>
-          <el-button @click="drawer = false">Cancel</el-button></el-row>
-      </el-card>
-      
+      <div shadow="never" class="add-task-card">
+          <el-row style="margin-bottom:8px;"><el-input type="textarea"  v-model="jsonStr"></el-input></el-row>
+          <div class="btn-group">
+            <el-button type="primary" @click="addTask">Add</el-button>
+            <el-button @click="drawer = false">Cancel</el-button>
+          </div>
+      </div>
     </el-drawer>
     <el-row>
       <el-table :data="tableData" style="width: 100%" border v-loading="dataOk">
@@ -109,10 +107,22 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.add-task-body {
-  padding: 0 20px;
-  .add-task-title {
-    margin: 0;
+.add-task-card {
+  height: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  &>div:nth-child(1) /deep/ {
+    flex: 1;
+    .el-textarea {
+      height: 100%;
+      > textarea {
+        height: 100%;
+      }
+    }
+  }
+  .btn-group {
+    text-align: right;
   }
 }
 </style>

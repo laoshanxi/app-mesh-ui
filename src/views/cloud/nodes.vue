@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row style="color: #909399;">
-      <h4>Leader: <span>{{ leader }}</span></h4>
+      <h4>Leader: <span style="color:#67c23a;">{{ leader }}</span></h4>
     </el-row>
     <el-row>
       <el-table :data="tableData" style="width: 100%" border>
