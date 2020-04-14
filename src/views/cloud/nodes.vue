@@ -8,7 +8,7 @@
         <el-table-column prop="hostName" label="Host">
           <template slot-scope="scope">
             <a :href="scope.row.hostName" style="text-decoration:underline;color:#409EFF;" target="_blank">
-              {{ scope.row.hostName | formatName }}
+              {{ scope.row.hostName }}
             </a>
           </template>
         </el-table-column>
@@ -73,8 +73,7 @@ export default {
       getLeader({raw:true}).then(res=>{
         this.leader = res.data
       }).catch(err=>{
-        console.log(err);
-        
+        console.log(err)
       })
       getNodes({recurse:true}).then(res=>{
         const { data } = res
@@ -95,7 +94,7 @@ export default {
         } = e
         const usage = (totalMem-freeMem)/totalMem
         const update = new Date(data[index].Flags * 1000 )
-        const hostName = data[index].Key
+        const hostName = this.formatName(data[index].Key)
         return {hostName,cpuCores,freeMem,totalMem,usage,update}
       })
     },
