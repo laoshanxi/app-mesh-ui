@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-row style="color: #909399;">
-      <h4>Leader: <span style="color:#67c23a;">{{ leader }}</span></h4>
+      <h4>Leader: <el-tag :type="'success'">{{leader}}</el-tag></h4>
     </el-row>
     <el-row>
       <el-table :data="tableData" style="width: 100%" border>
@@ -36,7 +36,7 @@
         <el-table-column prop="cpuCores" label="Cpu cores">
           <template slot-scope="scope">
             {{ scope.row.cpuCores }}
-          </template>  
+          </template>
         </el-table-column>
         <el-table-column label="Update time" prop="update">
           <template slot-scope="scope">
@@ -74,13 +74,13 @@ export default {
         this.leader = res.data
       }).catch(err=>{
         console.log(err);
-        
+
       })
       getNodes({recurse:true}).then(res=>{
         const { data } = res
         this.tableData = this.formatData(data)
       })
-      
+
     },
     formatData(data){
       if(!data) return []
@@ -111,7 +111,7 @@ export default {
              this.tableData.splice(index,1)
           }
         })
-      
+
     }
   }
 }

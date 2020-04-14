@@ -6,71 +6,123 @@
           <el-tab-pane style="minWidth:600px;">
             <span slot="label"><i class="el-icon-s-operation"></i> Configuration</span>
             <el-form ref="form" :model="form" label-width="260px">
-              <el-form-item label="Description" prop="Description">
-                <el-input v-model="form.Description"></el-input>
-              </el-form-item>
-              <el-form-item label="Http thread pool size" prop="HttpThreadPoolSize">
-                <el-input-number v-model="form.HttpThreadPoolSize"></el-input-number>
-              </el-form-item>
-              <el-form-item label="JWT enabled" prop="JWTEnabled">
-                <el-switch
-                  v-model="form.JWTEnabled"
-                  active-text="Yes"
-                  :active-value="true"
-                  inactive-text="No"
-                  :inactive-value="false">
-                </el-switch>
-              </el-form-item>
-              <el-form-item label="JWT redirect url" prop="JWTRedirectUrl">
-                <el-input v-model="form.JWTRedirectUrl"></el-input>
-              </el-form-item>
-              <el-form-item label="Log level" prop="LogLevel">
-                <el-select v-model="form.LogLevel" placeholder="Please select">
-                    <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="Rest enabled" prop="RestEnabled">
-                <el-switch
-                  v-model="form.RestEnabled"
-                  active-text="Yes"
-                  :active-value="true"
-                  inactive-text="No"
-                  :inactive-value="false">
-                </el-switch>
-              </el-form-item>
-              <el-form-item label="Rest listen address" prop="RestListenAddress">
-                <el-input v-model="form.RestListenAddress"></el-input>
-              </el-form-item>
-              <el-form-item label="Rest listen port" prop="RestListenPort">
-                <el-input-number v-model="form.RestListenPort" :min="1024" :max="65534"></el-input-number>
-              </el-form-item>
-              <el-form-item label="SSL certificate file" prop="SSLCertificateFile">
-                <el-input v-model="form.SSLCertificateFile"></el-input>
-              </el-form-item>
-              <el-form-item label="SSL certificate key file" prop="SSLCertificateKeyFile">
-                <el-input v-model="form.SSLCertificateKeyFile"></el-input>
-              </el-form-item>
-              <el-form-item label="SSL enabled" prop="SSLEnabled">
-                <el-switch
-                  v-model="form.SSLEnabled"
-                  active-text="Yes"
-                  :active-value="true"
-                  inactive-text="No"
-                  :inactive-value="false">
-                </el-switch>
-              </el-form-item>
-              <el-form-item label="Schedule interval seconds" prop="ScheduleIntervalSeconds">
-                <el-input-number v-model="form.ScheduleIntervalSeconds"></el-input-number>
-              </el-form-item>
-              <el-form-item label="Prometheus exporter listen port" prop="PrometheusExporterListenPort">
-                <el-input-number v-model="form.PrometheusExporterListenPort" :min="0" :max="65534"></el-input-number>
-              </el-form-item>
+              <el-collapse v-model="activeNames">
+                <el-collapse-item title="Basic" name="1">
+                  <el-form-item label="Description" prop="Description">
+                    <el-input v-model="form.Description"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Log level" prop="LogLevel">
+                    <el-select v-model="form.LogLevel" placeholder="Please select">
+                        <el-option
+                          v-for="item in options"
+                          :key="item.value"
+                          :label="item.label"
+                          :value="item.value">
+                        </el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="Schedule interval seconds" prop="ScheduleIntervalSeconds">
+                    <el-input-number v-model="form.ScheduleIntervalSeconds"></el-input-number>
+                  </el-form-item>
+                </el-collapse-item>
+                <el-collapse-item title="Rest" name="2">
+                  <el-form-item label="Http thread pool size" prop="REST.HttpThreadPoolSize">
+                    <el-input-number v-model="form.REST.HttpThreadPoolSize"></el-input-number>
+                  </el-form-item>
+                  <el-form-item label="Prometheus exporter listen port" prop="REST.PrometheusExporterListenPort">
+                    <el-input-number v-model="form.REST.PrometheusExporterListenPort" :min="0" :max="65534"></el-input-number>
+                  </el-form-item>
+                  <el-form-item label="Rest enabled" prop="REST.RestEnabled">
+                    <el-switch
+                      v-model="form.REST.RestEnabled"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false">
+                    </el-switch>
+                  </el-form-item>
+                  <el-form-item label="Rest listen address" prop="REST.RestListenAddress">
+                    <el-input v-model="form.REST.RestListenAddress"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Rest listen port" prop="REST.RestListenPort">
+                    <el-input-number v-model="form.REST.RestListenPort" :min="1024" :max="65534"></el-input-number>
+                  </el-form-item>
+                  <el-form-item label="SSL certificate file" prop="REST.SSL.SSLCertificateFile">
+                    <el-input v-model="form.REST.SSL.SSLCertificateFile"></el-input>
+                  </el-form-item>
+                  <el-form-item label="SSL certificate key file" prop="REST.SSL.SSLCertificateKeyFile">
+                    <el-input v-model="form.REST.SSL.SSLCertificateKeyFile"></el-input>
+                  </el-form-item>
+                  <el-form-item label="SSL enabled" prop="REST.SSL.SSLEnabled">
+                    <el-switch
+                      v-model="form.REST.SSL.SSLEnabled"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false">
+                    </el-switch>
+                  </el-form-item>
+                </el-collapse-item>
+                <el-collapse-item title="Security" name="3">
+                  <el-form-item label="JWT enabled" prop="Security.JWTEnabled">
+                    <el-switch
+                      v-model="form.Security.JWTEnabled"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false">
+                    </el-switch>
+                  </el-form-item>
+                  <el-form-item label="JWT redirect url" prop="Security.JWTRedirectUrl">
+                    <el-input v-model="form.Security.JWTRedirectUrl"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Encrypt Key" prop="Security.EncryptKey">
+                    <el-switch
+                      v-model="form.Security.EncryptKey"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false">
+                    </el-switch>
+                  </el-form-item>
 
+                </el-collapse-item>
+                <el-collapse-item title="Consul" name="4">
+                  <el-form-item label="Data center" prop="Consul.datacenter">
+                    <el-input v-model="form.Consul.datacenter"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Is master" prop="Consul.is_master">
+                    <el-switch
+                      v-model="form.Consul.is_master"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false">
+                    </el-switch>
+                  </el-form-item>
+                  <el-form-item label="Is node" prop="Consul.is_node">
+                    <el-switch
+                      v-model="form.Consul.is_node"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false">
+                    </el-switch>
+                  </el-form-item>
+                  <el-form-item label="Report interval" prop="Consul.report_interval">
+                    <el-input-number v-model="form.Consul.report_interval"></el-input-number>
+                  </el-form-item>
+                  <el-form-item label="Schedule interval" prop="Consul.schedule_interval">
+                    <el-input-number v-model="form.Consul.schedule_interval"></el-input-number>
+                  </el-form-item>
+                  <el-form-item label="Session TTL" prop="Consul.session_TTL">
+                    <el-input-number v-model="form.Consul.session_TTL"></el-input-number>
+                  </el-form-item>
+                  <el-form-item label="URL" prop="Consul.url">
+                    <el-input v-model="form.Consul.url"></el-input>
+                  </el-form-item>
+                </el-collapse-item>
+              </el-collapse>
 
               <el-form-item>
                 <el-button size="small" type="primary" @click.prevent="saveConfig()">Submit</el-button>
@@ -94,20 +146,37 @@ export default {
   data() {
     return {
       loading:false,
+      activeNames:['1','2','3','4'],
       form: {
         Description: "",
-        HttpThreadPoolSize: "",
-        JWTEnabled: "",
-        JWTRedirectUrl: "",
+        REST:{
+          HttpThreadPoolSize: "",
+          RestEnabled: "",
+          RestListenAddress: "",
+          RestListenPort: null,
+          PrometheusExporterListenPort: 0,
+          SSL:{
+            SSLCertificateFile: "",
+            SSLCertificateKeyFile: "",
+            SSLEnabled: "",
+          }
+        },
+        Security:{
+          JWTEnabled: "",
+          JWTRedirectUrl: "",
+          EncryptKey:false,
+        },
         LogLevel: "",
-        RestEnabled: "",
-        RestListenAddress: "",
-        RestListenPort: null,
-        SSLCertificateFile: "",
-        SSLCertificateKeyFile: "",
-        SSLEnabled: "",
         ScheduleIntervalSeconds: "",
-        PrometheusExporterListenPort: 0
+        Consul:{
+          datacenter:"",
+          is_master:false,
+          is_node:false,
+          report_interval:null,
+          schedule_interval:null,
+          session_TTL:null,
+          url:""
+        }
       },
       configData:null,
       options:[{
