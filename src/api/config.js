@@ -15,7 +15,7 @@ export function updateConfig(data) {
   })
 }
 
-export function getPrometheus() {
+export function getPrometheusData() {
   return request({
     url: '/appmgr/metrics',
     method: 'GET'
