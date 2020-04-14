@@ -1,4 +1,4 @@
-import {getConfig, getPrometheus, updateConfig} from '@/api/config'
+import {getConfig, getPrometheusData, updateConfig} from '@/api/config'
 import axios from 'axios'
 import store from '@/store'
 
@@ -40,9 +40,9 @@ export default {
   },
   getPrometheus: function(vueComp){
     vueComp.loading = true;
-    getPrometheus().then((res)=>{
-        vueComp.loading = false;
-        vueComp.content = res.data;
+    getPrometheusData().then((res)=>{
+      vueComp.loading = false;
+      vueComp.content = res.data;
     }, (res)=>{
       vueComp.loading = false;
       vueComp.$message.error('Get configuration failed. ' + res.data, 5000);
