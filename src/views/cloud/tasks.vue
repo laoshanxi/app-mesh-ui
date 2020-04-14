@@ -47,7 +47,8 @@
 </template>
 <script>
 import mixin from './mixin'
-import {getTask,deleteTask,addTask} from '@/api/cluster'
+import defaultTask from './task.json'
+import {getTask,deleteTask,addTask} from '@/api/cloud'
 export default {
     name:"Task",
     mixins:[mixin],
@@ -56,7 +57,7 @@ export default {
             tableData:[],
             dataOk:false,
             drawer:false,
-            jsonStr:null
+            jsonStr:JSON.stringify(defaultTask,null,4)
         }
     },
     methods:{
@@ -70,7 +71,7 @@ export default {
             const filterByPath = data.filter(e=>!(/task$/).test(e.Key))//filter data by task's path
             const decodedData = filterByPath.map(e=>JSON.parse(atob(e.Value)))
             return decodedData.map((e,index) => {
-              e.name = data[index].Key
+              e.name = filterByPath[index].Key
               e.content = JSON.stringify(e.content,null,4)
               e.condition = JSON.stringify(e.condition,null,4)
               return e
@@ -90,8 +91,9 @@ export default {
             })
         },
         addTask(){
-           const {jsonStr} = this
-          addTask(jsonStr).then(res=>{
+          const {jsonStr} = this
+          const {content:{name}} =JSON.parse(jsonStr)
+          addTask(jsonStr,name).then(res=>{
             if(res.data){
               this.drawer = false
               this.$message({

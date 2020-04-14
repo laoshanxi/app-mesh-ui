@@ -1,4 +1,4 @@
-import { getConfig } from "@/api/config"
+
 export default {
     created() {
         this.fetchData()

@@ -55,7 +55,7 @@
   </div>
 </template>
 <script>
-import {getLeader,getNodes} from "@/api/cluster"
+import {getLeader,getNodes} from "@/api/cloud"
 import mixin from './mixin'
 import request from "@/utils/request";
 export default {
@@ -72,6 +72,9 @@ export default {
     fetchData() {
       getLeader({raw:true}).then(res=>{
         this.leader = res.data
+      }).catch(err=>{
+        console.log(err);
+        
       })
       getNodes({recurse:true}).then(res=>{
         const { data } = res

@@ -1,0 +1,12 @@
+{
+    "replication": 3,
+    "port": 6666,
+    "content": {
+        "name": "myapp",
+        "command": "sleep 30"
+    },
+    "condition": {
+        "arch": "x86_64",
+        "os_version": "centos7.6"
+    }
+}

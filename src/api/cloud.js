@@ -27,9 +27,9 @@ export const deleteTask = (name)=>{
         method:'delete'
     })
 }
-export const addTask = (params)=>{
+export const addTask = (params,name)=>{
     return request({
-        url:`${requestUrl}/task`,
+        url:`${requestUrl}/task/${name}`,
         method:'put',
         data:params
     })
