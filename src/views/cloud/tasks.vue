@@ -34,7 +34,7 @@
             <pre>{{ scope.row.condition }}</pre>
           </template>
         </el-table-column>
-        <el-table-column label="Action">
+        <el-table-column label="">
           <template slot-scope="scope">
             <el-button type="text" icon="el-icon-delete" @click="removeLabel(scope.row)">
               Remove
