@@ -112,6 +112,9 @@
                   <el-form-item label="Schedule interval" prop="Consul.schedule_interval">
                     <el-input-number v-model="form.Consul.schedule_interval"></el-input-number>
                   </el-form-item>
+				  <el-form-item label="Enable security syncup" prop="Consul.schedule_interval">
+                    <el-input-number v-model="form.Consul.enable_consul_security_interval"></el-input-number>
+                  </el-form-item>
                   <el-form-item label="Session TTL" prop="Consul.session_TTL">
                     <el-input-number v-model="form.Consul.session_TTL"></el-input-number>
                   </el-form-item>
@@ -171,6 +174,7 @@ export default {
           report_interval:null,
           schedule_interval:null,
           session_TTL:null,
+          enable_consul_security_interval:null,
           url:""
         }
       },
