@@ -73,7 +73,7 @@
                       :inactive-value="false">
                     </el-switch>
                   </el-form-item>
-                  <el-form-item label="Encrypt or not" prop="Security.EncryptKey">
+                  <el-form-item label="Encrypt key" prop="Security.EncryptKey">
                     <el-switch
                       v-model="form.Security.EncryptKey"
                       active-text="Yes"
