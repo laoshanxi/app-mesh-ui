@@ -5,7 +5,7 @@
     </el-row>
     <el-row>
       <el-table :data="tableData" style="width: 100%" border>
-        <el-table-column prop="hostName" label="Host" width="200">
+        <el-table-column prop="hostName" label="Host" width="300">
           <template slot-scope="scope">
             <a :href="scope.row.hostName" style="text-decoration:underline;color:#409EFF;" target="_blank">
               {{ scope.row.hostName }}

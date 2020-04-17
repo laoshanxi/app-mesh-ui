@@ -70,6 +70,8 @@ appc reg -n appweb -e APP_DOCKER_OPTS="--net=host -v /opt/appmanager/ssl/server.
 <img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/c.png" />
 <img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/d.png" />
 <img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/e.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/f.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/g.png" />
 
 ## Browsers support
 
