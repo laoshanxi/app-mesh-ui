@@ -3,7 +3,7 @@ export default {
     created() {
         this.fetchData()
     },
-    filters:{
+    methods:{
         formatName(name){
             if(!name) return ''
             const strs =  name.split('/')

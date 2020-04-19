@@ -19,7 +19,7 @@
       <el-table :data="tableData" style="width: 100%" border v-loading="dataOk">
         <el-table-column prop="name" label="Name">
           <template slot-scope="scope">
-            {{ scope.row.name | formatName }}
+            {{ scope.row.name }}
           </template>
         </el-table-column>
         <el-table-column prop="replication" label="Replication" width="100" />
@@ -34,7 +34,7 @@
             <pre>{{ scope.row.condition }}</pre>
           </template>
         </el-table-column>
-        <el-table-column label="Action">
+        <el-table-column label="">
           <template slot-scope="scope">
             <el-button type="text" icon="el-icon-delete" @click="removeLabel(scope.row)">
               Remove
@@ -71,7 +71,7 @@ export default {
             const filterByPath = data.filter(e=>!(/task$/).test(e.Key))//filter data by task's path
             const decodedData = filterByPath.map(e=>JSON.parse(atob(e.Value)))
             return decodedData.map((e,index) => {
-              e.name = filterByPath[index].Key
+              e.name = this.formatName(filterByPath[index].Key)
               e.content = JSON.stringify(e.content,null,4)
               e.condition = JSON.stringify(e.condition,null,4)
               return e

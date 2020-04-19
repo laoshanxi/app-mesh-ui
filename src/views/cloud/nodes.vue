@@ -5,24 +5,24 @@
     </el-row>
     <el-row>
       <el-table :data="tableData" style="width: 100%" border>
-        <el-table-column prop="hostName" label="Host">
+        <el-table-column prop="hostName" label="Host" width="300">
           <template slot-scope="scope">
             <a :href="scope.row.hostName" style="text-decoration:underline;color:#409EFF;" target="_blank">
-              {{ scope.row.hostName | formatName }}
+              {{ scope.row.hostName }}
             </a>
           </template>
         </el-table-column>
-        <el-table-column prop="freeMem" label="Memory free">
+        <el-table-column prop="freeMem" label="Free memory">
           <template slot-scope="scope">
             {{ scope.row.freeMem | formatMemory }}
           </template>
         </el-table-column>
-        <el-table-column prop="totalMem" label="Memory total">
+        <el-table-column prop="totalMem" label="Total memory">
           <template slot-scope="scope">
             {{ scope.row.totalMem | formatMemory }}
           </template>
         </el-table-column>
-        <el-table-column label="Usage" width="200">
+        <el-table-column label="Memory usage" width="200">
           <template slot-scope="scope">
             <el-progress
               :text-inside="true"
@@ -38,12 +38,12 @@
             {{ scope.row.cpuCores }}
           </template>
         </el-table-column>
-        <el-table-column label="Update time" prop="update">
+        <el-table-column label="Refresh time" prop="update">
           <template slot-scope="scope">
             {{ scope.row.update | parseTime }}
           </template>
         </el-table-column>
-        <el-table-column label="Action" width="260">
+        <el-table-column label="" width="260">
           <template slot-scope="scope">
             <el-button type="text" icon="el-icon-delete" @click="removeLabel(scope.row)">
               Remove
@@ -73,8 +73,7 @@ export default {
       getLeader({raw:true}).then(res=>{
         this.leader = res.data
       }).catch(err=>{
-        console.log(err);
-
+        console.log(err)
       })
       getNodes({recurse:true}).then(res=>{
         const { data } = res
@@ -95,7 +94,7 @@ export default {
         } = e
         const usage = (totalMem-freeMem)/totalMem
         const update = new Date(data[index].Flags * 1000 )
-        const hostName = data[index].Key
+        const hostName = this.formatName(data[index].Key)
         return {hostName,cpuCores,freeMem,totalMem,usage,update}
       })
     },

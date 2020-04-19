@@ -21,7 +21,7 @@
                         </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="Schedule interval seconds" prop="ScheduleIntervalSeconds">
+                  <el-form-item label="Schedule period seconds" prop="ScheduleIntervalSeconds">
                     <el-input-number v-model="form.ScheduleIntervalSeconds"></el-input-number>
                   </el-form-item>
                 </el-collapse-item>
@@ -73,10 +73,7 @@
                       :inactive-value="false">
                     </el-switch>
                   </el-form-item>
-                  <el-form-item label="JWT redirect url" prop="Security.JWTRedirectUrl">
-                    <el-input v-model="form.Security.JWTRedirectUrl"></el-input>
-                  </el-form-item>
-                  <el-form-item label="Encrypt Key" prop="Security.EncryptKey">
+                  <el-form-item label="Encrypt key" prop="Security.EncryptKey">
                     <el-switch
                       v-model="form.Security.EncryptKey"
                       active-text="Yes"
@@ -88,10 +85,10 @@
 
                 </el-collapse-item>
                 <el-collapse-item title="Consul" name="4">
-                  <el-form-item label="Data center" prop="Consul.datacenter">
+                  <el-form-item label="DataCenter" prop="Consul.datacenter">
                     <el-input v-model="form.Consul.datacenter"></el-input>
                   </el-form-item>
-                  <el-form-item label="Is master" prop="Consul.is_master">
+                  <el-form-item label="Master node" prop="Consul.is_master">
                     <el-switch
                       v-model="form.Consul.is_master"
                       active-text="Yes"
@@ -100,7 +97,7 @@
                       :inactive-value="false">
                     </el-switch>
                   </el-form-item>
-                  <el-form-item label="Is node" prop="Consul.is_node">
+                  <el-form-item label="Worker node" prop="Consul.is_node">
                     <el-switch
                       v-model="form.Consul.is_node"
                       active-text="Yes"
@@ -115,10 +112,13 @@
                   <el-form-item label="Schedule interval" prop="Consul.schedule_interval">
                     <el-input-number v-model="form.Consul.schedule_interval"></el-input-number>
                   </el-form-item>
+				  <el-form-item label="Enable security syncup" prop="Consul.schedule_interval">
+                    <el-input-number v-model="form.Consul.enable_consul_security_interval"></el-input-number>
+                  </el-form-item>
                   <el-form-item label="Session TTL" prop="Consul.session_TTL">
                     <el-input-number v-model="form.Consul.session_TTL"></el-input-number>
                   </el-form-item>
-                  <el-form-item label="URL" prop="Consul.url">
+                  <el-form-item label="Consul URL" prop="Consul.url">
                     <el-input v-model="form.Consul.url"></el-input>
                   </el-form-item>
                 </el-collapse-item>
@@ -163,7 +163,6 @@ export default {
         },
         Security:{
           JWTEnabled: "",
-          JWTRedirectUrl: "",
           EncryptKey:false,
         },
         LogLevel: "",
@@ -175,6 +174,7 @@ export default {
           report_interval:null,
           schedule_interval:null,
           session_TTL:null,
+          enable_consul_security_interval:null,
           url:""
         }
       },
