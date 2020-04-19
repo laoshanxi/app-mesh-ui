@@ -11,7 +11,7 @@ export function login(data) {
 
 export function getPermissions() {
   return request({
-    url: '/appmgr/auth/permissions',
+    url: '/appmgr/user/permissions',
     method: 'get'
   })
 }
