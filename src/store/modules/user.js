@@ -1,4 +1,4 @@
-import { login, logout, getInfo, getPermissions } from '@/api/user'
+import { login, logout, getInfo, getUserPermissions } from '@/api/user'
 import { getToken, setToken, removeToken, setUser, getUser, removeUser } from '@/utils/auth'
 import { resetRouter } from '@/router'
 import { Base64 } from 'js-base64'
@@ -55,7 +55,7 @@ const actions = {
         commit('SET_ACCOUNT', user.username);
         commit('SET_AUTH', user.auth);
         commit('SET_AVATAR', user.avatar);
-        getPermissions().then(res=>{
+        getUserPermissions().then(res=>{
           user.permissions = res.data;
           commit('SET_PERMISSIONS', res.data);
           setUser(user);

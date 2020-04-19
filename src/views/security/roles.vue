@@ -37,13 +37,30 @@
          </el-table-column>
        </el-table>
     </el-row>
+    <el-drawer
+      custom-class="right-drawer"
+      title="Update role permissions"
+      :visible.sync="permissionsVisible"
+      size="60%"
+    >
+      <permissions
+        @close="permissionsVisible = false"
+        @success="updatePermissionsSuccess()"
+        :propForm="selectedForm"
+      ></permissions>
+    </el-drawer>
   </div>
 </template>
 
 <script>
 import {getConfig} from '@/api/config'
+import {getRoles} from '@/api/roles'
+import permissions from './permissions'
 
 export default {
+  components: {
+    permissions,
+  },
   data() {
     return {
       tableKey:0,
@@ -52,20 +69,25 @@ export default {
       listLoading: false,
 
       currentRow: null,
+      permissionsVisible: false,
+      selectedForm: {}
     }
   },
   mounted(){
     this.refreshData();
   },
   methods: {
+    updatePermissionsSuccess(){
+      this.refreshData();
+    },
     refreshData(){
       this.list = [];
-      getConfig().then((res)=>{
-        if(res && res.data && res.data.Roles){
-          for(let p in res.data.Roles){
+      getRoles().then((res)=>{
+        if(res && res.data && res.data){
+          for(let p in res.data){
             this.list.push({
               name: p,
-              permissions: res.data.Roles[p],
+              permissions: res.data[p],
             });
           }
         }
@@ -86,7 +108,12 @@ export default {
           return;
         }
         case "permissions": {
-          this.$alert("Nothing here", "Permissions");
+          // this.$alert("Nothing here", "Permissions");
+          this.selectedForm = {
+            name: this.currentRow.name,
+            permissions: this.currentRow.permissions
+          };
+          this.permissionsVisible = true;
           return;
         }
       }

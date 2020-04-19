@@ -6,7 +6,7 @@
     <el-row>
       <el-button-group>
       <el-button @click="btnClick('new')" type="primary" icon="el-icon-plus" >New</el-button>
-      <el-button @click="btnClick('delete')" type="danger" icon="el-icon-delete" :disabled="!isSelected">Delete</el-button>
+      <el-button @click="delUser()" type="danger" icon="el-icon-delete" :disabled="!isSelected">Delete</el-button>
       <el-button @click="locked()" type="warning" icon="el-icon-lock" :disabled="!isSelected || isLocked">Lock</el-button>
       <el-button @click="unlocked()" type="success" icon="el-icon-unlock" :disabled="!isSelected || !isLocked">Unlock</el-button>
       <el-button @click="btnClick('roles')" type="success" icon="iconfont icon-role" :disabled="!isSelected">Roles</el-button>
@@ -50,14 +50,29 @@
          </el-table-column>
        </el-table>
     </el-row>
+    <el-drawer
+      custom-class="right-drawer"
+      title="Add User"
+      :visible.sync="userFormVisible"
+      size="60%"
+    >
+      <user-form
+        @close="userFormVisible = false"
+        @success="addUserSuccess()"
+        :propForm="selectedForm"
+      ></user-form>
+    </el-drawer>
   </div>
 </template>
 
 <script>
-import {getConfig} from '@/api/config'
-import {locked, unlocked} from '@/api/user'
+import {locked, unlocked, getUsers, addUser, delUser} from '@/api/user'
+import UserForm from './userForm'
 
 export default {
+  components: {
+    UserForm,
+  },
   data() {
     return {
       tableKey:0,
@@ -67,6 +82,8 @@ export default {
       listLoading: false,
 
       currentRow: null,
+      userFormVisible: false,
+      selectedForm: {}
     }
   },
   mounted(){
@@ -75,29 +92,29 @@ export default {
   methods: {
     refreshData(){
       this.list = [];
-      getConfig().then((res)=>{
-        if(res && res.data && res.data.JWT){
-          for(let p in res.data.JWT){
+      getUsers().then((res)=>{
+        if(res && res.data){
+          for(let p in res.data){
             this.list.push({
               name: p,
-              locked: res.data.JWT[p].locked,
-              roles: res.data.JWT[p].roles,
+              locked: res.data[p].locked,
+              roles: res.data[p].roles,
             });
           }
         }
-      }, (res)=>{
+      },(res)=>{
 
       });
     },
     btnClick(action){
       switch (action){
         case "new": {
-          // this.registerFormVisible = true;
-          this.$alert("Nothing here", "New");
+          this.selectedForm = {};
+          this.userFormVisible = true;
           return;
         }
         case "delete": {
-          this.$alert("Nothing here", "Delete");
+          this.delUser();
           return;
         }
         case "roles": {
@@ -105,6 +122,25 @@ export default {
           return;
         }
       }
+    },
+    addUserSuccess(){
+      this.refreshData();
+    },
+    delUser(){
+      this.$confirm(`Do you want to delete the user <${this.currentRow.name}>?`, 'Tooltip', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+      }).then(() => {
+        this.listLoading = true;
+        delUser(this.currentRow.name).then((res)=>{
+          this.$message.success('User '+ this.currentRow.name+' had deleted.', 5000);
+          this.refreshData();
+          this.listLoading = false;
+        }, (res)=>{
+          this.listLoading = false;
+        });
+      });
     },
     locked(){
       this.$confirm(`Do you want to lock the user <${this.currentRow.name}>?`, 'Tooltip', {
@@ -162,5 +198,24 @@ export default {
   }
   .el-row{
     margin-bottom: 8px;
+  }
+  .register-card {
+    height: calc(100vh - 136px) !important;
+    overflow-y: auto;
+  }
+  .register-card .el-input {
+    width: 350px;
+    margin-right: 10px;
+  }
+  .right-drawer .dialog-footer {
+    border-top: 1px solid #bfcbd9;
+    background-color: #ffffff;
+    width: 100%;
+    position: absolute;
+    bottom: 0px;
+    text-align: right;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 30px;
   }
 </style>

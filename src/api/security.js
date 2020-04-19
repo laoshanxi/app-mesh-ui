@@ -7,3 +7,10 @@ export function updatePwd(user, data) {
     headers: data
   })
 }
+
+export function getPermissions() {
+  return request({
+    url: '/appmgr/permissions',
+    method: 'get'
+  })
+}

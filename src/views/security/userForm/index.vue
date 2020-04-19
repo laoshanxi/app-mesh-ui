@@ -1,0 +1,178 @@
+<template>
+  <div>
+    <!-- {{ form }} -->
+    <el-card shadow="never" class="register-card">
+      <el-form
+        :model="userForm"
+        ref="userFormDom"
+        :rules="userRules"
+        label-width="160px"
+      >
+        <el-form-item label="Name" prop="name">
+          <el-input v-model="userForm.name"></el-input>
+        </el-form-item>
+        <el-form-item label="Password" prop="key">
+          <el-input v-model="userForm.key"></el-input>
+        </el-form-item>
+        <el-form-item label="Is locked" prop="locked">
+          <el-switch
+            v-model="userForm.locked"
+            active-text="Locked"
+            :active-value="true"
+            inactive-text="Unlocked"
+            :inactive-value="false"
+          ></el-switch>
+        </el-form-item>
+        <el-form-item label="Roles" prop="roles">
+          <el-transfer
+              filterable
+              filter-placeholder="Filter"
+              :titles="['All roles', 'User roles']"
+              v-model="userForm.roles"
+              :data="roles">
+          </el-transfer>
+        </el-form-item>
+
+      </el-form>
+    </el-card>
+    <div class="dialog-footer">
+      <el-button @click="cancel()">Cancel</el-button>
+      <el-button @click="reset()">Reset</el-button>
+      <el-button type="primary" @click="saveRole()">Save</el-button>
+    </div>
+  </div>
+</template>
+
+<script>
+import {getRoles} from "@/api/roles";
+import {addUser} from "@/api/user";
+
+export default {
+  name: "UserForm",
+  data() {
+    return {
+      userForm: {
+        name:"",
+        key:"",
+        locked:false,
+        roles:[]
+      },
+      roles:[],
+      userRules: {
+        name: [
+          { required: true, message: "Name is not empty", trigger: "blur" }
+        ],
+        key: [
+          { required: true, message: "Password is not empty", trigger: "blur" }
+        ]
+      }
+    };
+  },
+  props: ["propForm"],
+  created() {
+    this.resetForm();
+    this.setFromWithProps();
+    this.initRoles();
+  },
+  mounted() {
+  },
+  watch: {
+    propForm: {
+      handler: function(val, old) {
+        if (val === old) {
+          return;
+        }
+
+        this.setFromWithProps();
+      },
+      immediate: false
+    }
+  },
+  methods: {
+    initRoles(){
+      getRoles().then((res)=>{
+        if(res.data){
+          for(let p in res.data){
+            this.roles.push({
+              label:p,
+              key:p,
+              pinyin:p,
+            });
+          }
+        }
+      }).then((res)=>{
+
+      });
+    },
+    setFromWithProps() {
+      if (Object.keys(this.propForm).length !== 0) {
+        this.userForm = this.merge(this.propForm, this.userForm);
+      } else {
+        this.resetForm();
+      }
+    },
+    resetForm() {
+      this.userForm = {
+        name:"",
+        key:"",
+        locked:false,
+        roles:[]
+      };
+    },
+    cancel() {
+      this.$emit("close");
+    },
+    reset() {
+      this.$refs.userFormDom.resetFields();
+    },
+
+    saveRole() {
+      //applications.addRole(this);
+      console.info(this.userForm);
+      addUser(this.userForm).then((res)=>{
+        this.$message.success('User '+this.userForm.name+' add successfully.', 5000);
+        this.$emit("success");
+        this.cancel();
+      }).then((res)=>{
+
+      });
+    },
+
+    merge(local, origin) {
+      for (var key in local) {
+        origin[key] =
+          origin[key] && origin[key].toString() === "[object Object]"
+            ? this.merge(origin[key], local[key])
+            : (origin[key] = local[key]);
+      }
+      return origin;
+    }
+  }
+};
+</script>
+
+<style scoped>
+.register-card {
+  height: calc(100vh - 136px) !important;
+  overflow-y: auto;
+}
+.register-card .el-input {
+  width: 350px;
+  margin-right: 10px;
+}
+.right-drawer .dialog-footer {
+  border-top: 1px solid #bfcbd9;
+  background-color: #ffffff;
+  width: 100%;
+  position: absolute;
+  bottom: 0px;
+  text-align: right;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 30px;
+}
+.detail-card {
+  height: calc(100vh - 77px) !important;
+  overflow-y: auto;
+}
+</style>

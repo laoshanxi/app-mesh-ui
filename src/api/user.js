@@ -9,9 +9,9 @@ export function login(data) {
   })
 }
 
-export function getPermissions() {
+export function getUserPermissions() {
   return request({
-    url: '/appmgr/auth/permissions',
+    url: '/appmgr/user/permissions',
     method: 'get'
   })
 }
@@ -41,5 +41,27 @@ export function logout() {
   return request({
     url: '/appmgr/user/logout',
     method: 'post'
+  })
+}
+
+export function addUser(user) {
+  return request({
+    url: '/appmgr/user/'+user.name,
+    method: 'PUT',
+    data: user
+  })
+}
+
+export function delUser(user) {
+  return request({
+    url: '/appmgr/user/'+user,
+    method: 'DELETE'
+  })
+}
+
+export function getUsers() {
+  return request({
+    url: '/appmgr/users',
+    method: 'GET'
   })
 }

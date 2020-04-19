@@ -222,3 +222,9 @@ export default {
   text-align: center;
 }
 </style>
+<style>
+.el-collapse-item__header{
+  font-size:14px;
+  font-weight: bold;
+}
+</style>
