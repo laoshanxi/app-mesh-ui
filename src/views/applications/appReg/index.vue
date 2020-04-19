@@ -17,6 +17,9 @@
         <el-form-item label="Working dir" prop="working_dir">
           <el-input v-model="registerForm.working_dir"></el-input>
         </el-form-item>
+		<el-form-item label="Stdout file" prop="stdout_file">
+          <el-input v-model="registerForm.stdout_file"></el-input>
+        </el-form-item>
         <el-form-item label="Comments" prop="comments">
           <el-input v-model="registerForm.comments"></el-input>
         </el-form-item>

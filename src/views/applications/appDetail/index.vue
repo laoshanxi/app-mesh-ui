@@ -4,7 +4,8 @@
       <Description term="Name">{{record.name | formatEmpty}}</Description>
 	  <Description term="Reg time">{{record.register_time | formatEmpty}}</Description>
 	  <Description term="Command">{{record.command | formatEmpty}}</Description>
-	  <Description term="User">{{record.user | formatEmpty}}</Description>
+	  <Description term="Stdout">{{record.user | formatEmpty}}</Description>
+	  <Description term="User">{{record.stdout_file | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
       <Description term="Status">
