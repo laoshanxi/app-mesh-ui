@@ -91,6 +91,7 @@ export default {
   },
   methods: {
     refreshData(){
+      this.listLoading = true;
       this.list = [];
       getUsers().then((res)=>{
         if(res && res.data){
@@ -102,8 +103,9 @@ export default {
             });
           }
         }
+        this.listLoading = false;
       },(res)=>{
-
+        this.listLoading = false;
       });
     },
     btnClick(action){

@@ -81,6 +81,7 @@ export default {
       this.refreshData();
     },
     refreshData(){
+      this.listLoading = true;
       this.list = [];
       getRoles().then((res)=>{
         if(res && res.data && res.data){
@@ -91,8 +92,9 @@ export default {
             });
           }
         }
+        this.listLoading = false;
       }, (res)=>{
-
+        this.listLoading = false;
       });
     },
     btnClick(action){
