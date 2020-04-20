@@ -131,7 +131,6 @@ export default {
         delRole(this.currentRow.name).then((res)=>{
           this.$message.success('Role '+ this.currentRow.name+' had deleted.', 5000);
           this.refreshData();
-          this.listLoading = false;
         }, (res)=>{
           this.listLoading = false;
         });

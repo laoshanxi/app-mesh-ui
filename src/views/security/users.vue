@@ -138,7 +138,6 @@ export default {
         delUser(this.currentRow.name).then((res)=>{
           this.$message.success('User '+ this.currentRow.name+' had deleted.', 5000);
           this.refreshData();
-          this.listLoading = false;
         }, (res)=>{
           this.listLoading = false;
         });
