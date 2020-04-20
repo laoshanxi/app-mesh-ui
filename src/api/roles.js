@@ -7,6 +7,13 @@ export function getRoles() {
   })
 }
 
+export function delRole(role) {
+  return request({
+    url: '/appmgr/role/' + role,
+    method: 'DELETE'
+  })
+}
+
 export function updateRolePermissions(role, permissions) {
   return request({
     url: '/appmgr/role/' + role,

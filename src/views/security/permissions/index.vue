@@ -9,7 +9,8 @@
         label-width="160px"
       >
         <el-form-item label="Role">
-          {{propForm.name}}
+          <label v-if="propForm.name!=null && propForm.name.length>0">{{propForm.name}}</label>
+          <el-input v-if="propForm.name==null || propForm.name.length==0" v-model="permissionForm.name"></el-input>
         </el-form-item>
         <el-form-item label="Permissions" prop="permissions">
           <el-transfer
@@ -105,8 +106,13 @@ export default {
     },
 
     savePermissions() {
-      updateRolePermissions(this.propForm.name, this.permissionForm.permissions).then((res)=>{
-        this.$message.success('Role '+this.propForm.name+' update successfully.', 5000);
+      updateRolePermissions(this.permissionForm.name, this.permissionForm.permissions).then((res)=>{
+        if(this.propForm.name==null){
+          this.$message.success('Role '+this.permissionForm.name+' add successfully.', 5000);
+        }else{
+          this.$message.success('Role '+this.permissionForm.name+' update successfully.', 5000);
+        }
+
         this.$emit("success");
         this.cancel();
       }).then((res)=>{

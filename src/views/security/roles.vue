@@ -39,7 +39,7 @@
     </el-row>
     <el-drawer
       custom-class="right-drawer"
-      title="Update role permissions"
+      :title="selectedForm.name==null ? 'Add role' : 'Update role permissions'"
       :visible.sync="permissionsVisible"
       size="60%"
     >
@@ -54,7 +54,7 @@
 
 <script>
 import {getConfig} from '@/api/config'
-import {getRoles} from '@/api/roles'
+import {getRoles, delRole} from '@/api/roles'
 import permissions from './permissions'
 
 export default {
@@ -100,11 +100,12 @@ export default {
       switch (action){
         case "new": {
           // this.registerFormVisible = true;
-          this.$alert("Nothing here", "New");
+          this.selectedForm = {};
+          this.permissionsVisible = true;
           return;
         }
         case "delete": {
-          this.$alert("Nothing here", "Delete");
+          this.delRole();
           return;
         }
         case "permissions": {
@@ -117,6 +118,22 @@ export default {
           return;
         }
       }
+    },
+    delRole(){
+      this.$confirm(`Do you want to delete the role <${this.currentRow.name}>?`, 'Tooltip', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+      }).then(() => {
+        this.listLoading = true;
+        delRole(this.currentRow.name).then((res)=>{
+          this.$message.success('Role '+ this.currentRow.name+' had deleted.', 5000);
+          this.refreshData();
+          this.listLoading = false;
+        }, (res)=>{
+          this.listLoading = false;
+        });
+      });
     },
     currentRowChange(currentRow, oldCurrentRow){
       this.currentRow = currentRow;
