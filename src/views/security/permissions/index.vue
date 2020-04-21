@@ -20,6 +20,8 @@
               v-model="permissionForm.permissions"
               :data="permissions">
           </el-transfer>
+          <br/>
+          <el-input v-model="newPermission"></el-input><el-button @click="addNewPermission">Add new permission</el-button>
         </el-form-item>
 
       </el-form>
@@ -44,9 +46,11 @@ export default {
         permissions:[]
       },
       permissions:[],
+      permissionsMap:{},
       permissionRules: {
 
-      }
+      },
+      newPermission:"",
     };
   },
   props: ["propForm"],
@@ -80,11 +84,22 @@ export default {
               key:permission,
               pinyin:permission,
             });
+            this.permissionsMap[permission] = permission;
           }
         }
       }).then((res)=>{
 
       });
+    },
+    addNewPermission(){
+      if(this.permissionsMap[this.newPermission]==null){
+        this.permissions.splice(0,0,{
+                label: this.newPermission,
+                key: this.newPermission,
+                pinyin: this.newPermission,
+              });
+      }
+      this.newPermission = "";
     },
     setFromWithProps() {
       if (Object.keys(this.propForm).length !== 0) {
