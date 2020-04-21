@@ -185,7 +185,7 @@ export const constantRoutes = [
         meta: {
           title: "Users",
           icon: "user",
-          roles: ["lock-user", "unlock-user"]
+          roles: ["user-list"]
         }
       },
       {
@@ -195,7 +195,7 @@ export const constantRoutes = [
         meta: {
           title: "Roles",
           icon: "role",
-          roles: ["lock-user", "unlock-user"]
+          roles: ["role-view"]
         }
       }
     ]
