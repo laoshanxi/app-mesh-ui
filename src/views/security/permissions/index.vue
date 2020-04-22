@@ -21,8 +21,7 @@
               v-model="permissionForm.permissions"
               :data="permissions">
           </el-transfer>
-          <br/>
-          <el-input v-model="newPermission"></el-input><el-button @click="addNewPermission">Add new permission</el-button>
+          <el-input v-model="newPermission" style="margin-top:10px;"></el-input><el-button @click="addNewPermission">Add new permission</el-button>
           <br/><span style="color:#909399;">* Note: Multiple permissions separated by commas</span>
         </el-form-item>
 
@@ -189,6 +188,6 @@ export default {
     height: 296px;
   }
   .permission-transfer .el-transfer-panel {
-    width: 280px;
+    width: 222px;
   }
 </style>
