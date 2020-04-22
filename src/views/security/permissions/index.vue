@@ -22,6 +22,7 @@
           </el-transfer>
           <br/>
           <el-input v-model="newPermission"></el-input><el-button @click="addNewPermission">Add new permission</el-button>
+          <br/><span style="color:#909399;">* Note: Multiple permissions separated by commas</span>
         </el-form-item>
 
       </el-form>
@@ -92,13 +93,18 @@ export default {
       });
     },
     addNewPermission(){
-      if(this.permissionsMap[this.newPermission]==null){
-        this.permissions.splice(0,0,{
-                label: this.newPermission,
-                key: this.newPermission,
-                pinyin: this.newPermission,
-              });
+      let newPermissions = this.newPermission.split(",");
+      for(let i=0;i<newPermissions.length;i++){
+        let permission = newPermissions[i];
+        if(this.permissionsMap[permission]==null){
+          this.permissions.splice(0,0,{
+                  label: permission,
+                  key: permission,
+                  pinyin: permission,
+                });
+        }
       }
+
       this.newPermission = "";
     },
     setFromWithProps() {
