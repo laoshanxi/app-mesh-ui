@@ -14,6 +14,7 @@
         </el-form-item>
         <el-form-item label="Permissions" prop="permissions">
           <el-transfer
+              class="permission-transfer"
               filterable
               filter-placeholder="Filter"
               :titles="['All permissions', 'Role permissions']"
@@ -178,4 +179,16 @@ export default {
   height: calc(100vh - 77px) !important;
   overflow-y: auto;
 }
+
+</style>
+<style>
+  .permission-transfer, .el-transfer-panel{
+    height:400px;
+  }
+  .el-transfer-panel__body, .el-transfer-panel__list.is-filterable {
+    height: 296px;
+  }
+  .permission-transfer .el-transfer-panel {
+    width: 280px;
+  }
 </style>
