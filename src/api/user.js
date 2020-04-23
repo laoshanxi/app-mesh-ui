@@ -44,7 +44,7 @@ export function logout() {
   })
 }
 
-export function addUser(user) {
+export function saveUser(user) {
   return request({
     url: '/appmgr/user/'+user.name,
     method: 'PUT',

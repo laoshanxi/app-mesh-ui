@@ -120,7 +120,12 @@ export default {
           return;
         }
         case "roles": {
-          this.$alert("Nothing here", "Roles");
+          this.selectedForm = {
+            name: this.currentRow.name,
+            roles: this.currentRow.roles,
+            locked: this.currentRow.locked,
+          };
+          this.userFormVisible = true;
           return;
         }
       }

@@ -9,12 +9,13 @@
         label-width="160px"
       >
         <el-form-item label="Name" prop="name">
-          <el-input v-model="userForm.name"></el-input>
+          <label v-if="propForm.name!=null && propForm.name.length>0">{{propForm.name}}</label>
+          <el-input v-if="propForm.name==null || propForm.name.length==0" v-model="userForm.name"></el-input>
         </el-form-item>
-        <el-form-item label="Password" prop="key">
+        <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Password" prop="key">
           <el-input v-model="userForm.key"></el-input>
         </el-form-item>
-        <el-form-item label="Is locked" prop="locked">
+        <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Is locked" prop="locked">
           <el-switch
             v-model="userForm.locked"
             active-text="Locked"
@@ -45,7 +46,7 @@
 
 <script>
 import {getRoles} from "@/api/roles";
-import {addUser} from "@/api/user";
+import {saveUser} from "@/api/user";
 
 export default {
   name: "UserForm",
@@ -128,9 +129,12 @@ export default {
 
     saveRole() {
       //applications.addRole(this);
-      console.info(this.userForm);
-      addUser(this.userForm).then((res)=>{
-        this.$message.success('User '+this.userForm.name+' add successfully.', 5000);
+      saveUser(this.userForm).then((res)=>{
+        if(this.propForm.name==null){
+          this.$message.success('User '+this.userForm.name+' add successfully.', 5000);
+        }else{
+          this.$message.success('User '+this.userForm.name+' update successfully.', 5000);
+        }
         this.$emit("success");
         this.cancel();
       }).then((res)=>{
