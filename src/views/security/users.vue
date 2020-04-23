@@ -52,7 +52,7 @@
     </el-row>
     <el-drawer
       custom-class="right-drawer"
-      title="Add User"
+      :title="selectedForm.name==null ? 'Add user' : 'Update user roles'"
       :visible.sync="userFormVisible"
       size="60%"
     >
