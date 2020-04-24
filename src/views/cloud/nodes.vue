@@ -38,7 +38,7 @@
             {{ scope.row.cpuCores }}
           </template>
         </el-table-column>
-        <el-table-column label="Refresh time" prop="update">
+        <el-table-column label="Refresh time" prop="update" width="200">
           <template slot-scope="scope">
             {{ scope.row.update | parseTime }}
           </template>
