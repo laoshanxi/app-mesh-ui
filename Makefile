@@ -8,7 +8,7 @@ all:
 	make package
 
 buildnode:
-	docker run --rm --privileged -v `pwd`:/opt --workdir /opt node:${NODE_VER} sh -c "npm install; npm run build:prod"
+	docker run --rm --privileged --net=host -v `pwd`:/opt --workdir /opt node:${NODE_VER} sh -c "npm install; npm run build:prod"
 	
 package:
 	- docker rm -f appweb
