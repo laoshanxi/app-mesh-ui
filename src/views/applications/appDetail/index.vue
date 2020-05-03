@@ -29,7 +29,7 @@
     </DescriptionList>
     <DescriptionList title="" col="12">
       <Description term="Docker image">{{record.docker_image | formatEmpty}}</Description>
-      <Description term="Comments">{{record.comments | formatEmpty}}</Description>
+      <Description term="Metadata">{{record.metadata | formatEmpty}}</Description>
       <Description term="Start time">{{record.start_time | formatEmpty}}</Description>
       <Description term="End time">{{record.end_time | formatEmpty}}</Description>
     </DescriptionList>

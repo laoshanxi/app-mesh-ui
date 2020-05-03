@@ -20,8 +20,8 @@
 		<el-form-item label="Stdout file" prop="stdout_file">
           <el-input v-model="registerForm.stdout_file"></el-input>
         </el-form-item>
-        <el-form-item label="Comments" prop="comments">
-          <el-input v-model="registerForm.comments"></el-input>
+        <el-form-item label="Metadata" prop="metadata">
+          <el-input v-model="registerForm.metadata"></el-input>
         </el-form-item>
         <el-form-item label="Status">
           <el-switch
@@ -240,7 +240,7 @@ export default {
         working_dir: "",
 
         user: "",
-        comments: "",
+        metadata: "",
         status: 1, //0 disabled, 1 enabled
         daily_limitation: {
           daily_start: "",

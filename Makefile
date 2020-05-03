@@ -1,5 +1,5 @@
 RELEASE_DIR=./release
-VER=1.8.0
+VER=1.8.1
 NODE_VER=10.17.0-jessie
 DOCKER_IMG_NAME=appmgr-ui:${VER}
 
