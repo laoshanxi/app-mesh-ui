@@ -49,7 +49,7 @@ Use host mode networking for Nginx reverse proxy (need accept host 8443 port)
 ```bash
 tar zxvf appmgr-ui.1.8.0.tar.gz
 docker load -i appmgr-ui.1.8.0.tar
-appc reg -n appweb -e APP_DOCKER_OPTS="--net=host -v /opt/appmanager/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmanager/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -c "nginx -g 'daemon off;'" -d appmgr-ui:1.8.0 -f
+appc reg -n appweb -e APP_DOCKER_OPTS="--net=host -v /opt/appmanager/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmanager/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -c "nginx -g 'daemon off;'" -d appmgr-ui:1.8.1 -f
 ```
 
 ## Demo
