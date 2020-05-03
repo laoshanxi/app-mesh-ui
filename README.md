@@ -45,7 +45,7 @@ npm run lint -- --fix
 
 
 ## Deploy
-Use host mode networking for Nginx reverse proxy (need accept host 8443 port)
+Use host mode networking for Nginx reverse proxy (need accept host 443 port)
 ```bash
 tar zxvf appmgr-ui.1.8.0.tar.gz
 docker load -i appmgr-ui.1.8.0.tar
