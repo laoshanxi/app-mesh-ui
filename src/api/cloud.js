@@ -9,27 +9,27 @@ export const getLeader = (params)=>{
 }
 export const getNodes = (params)=>{
     return request({
-        url:`${requestUrl}/cloud/nodes`,
+        url:`${requestUrl}/cluster/nodes`,
         method:'get',
         params
     })
 }
 export const getTask = (params)=>{
     return request({
-        url:`${requestUrl}/cloud/tasks`,
+        url:`${requestUrl}/cluster/tasks`,
         method:'get',
         params
     })
 }
 export const deleteTask = (name)=>{
     return request({
-        url:`${requestUrl}/cloud/tasks/${name}`,
+        url:`${requestUrl}/cluster/tasks/${name}`,
         method:'delete'
     })
 }
 export const addTask = (params,name)=>{
     return request({
-        url:`${requestUrl}/cloud/tasks/${name}`,
+        url:`${requestUrl}/cluster/tasks/${name}`,
         method:'put',
         data:params
     })
