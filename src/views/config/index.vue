@@ -106,7 +106,7 @@
                       :inactive-value="false">
                     </el-switch>
                   </el-form-item>
-				  <el-form-item label="Enable security syncup" prop="Consul.enable_consul_security">
+				  <el-form-item label="Enable Consul security" prop="Consul.enable_consul_security">
                     <el-switch
                       v-model="form.Consul.enable_consul_security"
                       active-text="Yes"
