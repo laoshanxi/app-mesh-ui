@@ -45,7 +45,7 @@
         </el-table-column>
         <el-table-column label="" width="260">
           <template slot-scope="scope">
-            <el-button type="text" icon="el-icon-delete" @click="removeLabel(scope.row)">
+            <el-button type="text" icon="el-icon-delete" @click="removeNode(scope.row)">
               Remove
             </el-button>
           </template>
@@ -88,7 +88,7 @@ export default {
         const {
           resource: {
             cpu_cores: cpuCores,
-            mem_free_bytes: freeMem,
+            mem_free_bytes: totalMem,
             mem_total_bytes: totalMem
           }
         } = e
@@ -98,13 +98,13 @@ export default {
         return {hostName,cpuCores,freeMem,totalMem,usage,update}
       })
     },
-    removeLabel(row){
+    removeNode(row){
       this.$confirm(`Do you want to remove the host <${row.hostName}> ?`, 'Tooltip', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(async () => {
-          const {data} = await request.delete(`${this.apiBaseUrl}/v1/kv/appmgr/nodes/${row.hostName}`)
+          const {data} = await request.delete(`${this.apiBaseUrl}/v1/kv/appmgr/cluster/nodes/${row.hostName}`)
           if (data) {
              const index = this.tableData.findIndex(e=>e.hostName === row.hostName)
              this.tableData.splice(index,1)
