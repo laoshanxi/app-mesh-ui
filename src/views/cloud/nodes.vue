@@ -55,7 +55,7 @@
   </div>
 </template>
 <script>
-import {getLeader,getNodes} from "@/api/cloud"
+import {getLeader,getNodes,deleteNode} from "@/api/cloud"
 import mixin from './mixin'
 import request from "@/utils/request";
 export default {
@@ -98,20 +98,19 @@ export default {
         return {hostName,cpuCores,freeMem,totalMem,usage,update}
       })
     },
-    removeNode(row){
-      this.$confirm(`Do you want to remove the host <${row.hostName}> ?`, 'Tooltip', {
-          confirmButtonText: 'Confirm',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(async () => {
-          const {data} = await request.delete(`${this.apiBaseUrl}/v1/kv/appmgr/cluster/nodes/${row.hostName}`)
-          if (data) {
-             const index = this.tableData.findIndex(e=>e.hostName === row.hostName)
-             this.tableData.splice(index,1)
-          }
-        })
-
-    }
+	removeNode(row){
+	  this.$confirm(`Do you want to remove the host <${row.hostName}> ?`, 'Tooltip', {
+		  confirmButtonText: 'Confirm',
+		  cancelButtonText: 'Cancel',
+		  type: 'warning'
+		}).then(async () => {
+		  const {data} = await deleteNode(row.hostName)
+		  if (data) {
+			const index = this.tableData.findIndex(e=>e.hostName === row.hostName)
+			this.tableData.splice(index,1)
+		  }
+		})
+	}
   }
 }
 </script>

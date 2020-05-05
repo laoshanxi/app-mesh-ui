@@ -14,6 +14,12 @@ export const getNodes = (params)=>{
         params
     })
 }
+export const deleteNode = (name)=>{
+    return request({
+        url:`${requestUrl}/cluster/nodes/${name}`,
+        method:'delete'
+    })
+}
 export const getTask = (params)=>{
     return request({
         url:`${requestUrl}/cluster/tasks`,
