@@ -1,5 +1,5 @@
 RELEASE_DIR=./release
-VER=1.8.0
+VER=1.8.1
 NODE_VER=10.17.0-jessie
 DOCKER_IMG_NAME=appmgr-ui:${VER}
 
@@ -8,7 +8,7 @@ all:
 	make package
 
 buildnode:
-	docker run --rm --privileged -v `pwd`:/opt --workdir /opt node:${NODE_VER} sh -c "npm install; npm run build:prod"
+	docker run --rm --privileged --net=host -v `pwd`:/opt --workdir /opt node:${NODE_VER} sh -c "npm install; npm run build:prod"
 	
 package:
 	- docker rm -f appweb

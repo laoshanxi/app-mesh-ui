@@ -36,7 +36,7 @@
         </el-table-column>
         <el-table-column label="">
           <template slot-scope="scope">
-            <el-button type="text" icon="el-icon-delete" @click="removeLabel(scope.row)">
+            <el-button type="text" icon="el-icon-delete" @click="removeTask(scope.row)">
               Remove
             </el-button>
           </template>
@@ -77,8 +77,8 @@ export default {
               return e
             })
         },
-        removeLabel(row){
-          this.$confirm(`Do you want to remove the host <${row.name}> ?`, 'Tooltip', {
+        removeTask(row){
+          this.$confirm(`Do you want to remove the task <${row.name}> ?`, 'Tooltip', {
               confirmButtonText: 'Confirm',
               cancelButtonText: 'Cancel',
               type: 'warning'

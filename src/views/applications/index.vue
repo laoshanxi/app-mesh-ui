@@ -69,10 +69,8 @@
               {{ scope.row.name }}
             </el-link>
             <i v-if="scope.row.docker_image" class="iconfont icon-docker" />
-            <i
-              v-if="scope.row.cloud == 1"
-              class="el-icon-cloudy"
-            />
+            <i v-if="scope.row.metadata == 'cloud-app'" class="el-icon-cloudy" />
+			<i v-if="scope.row.metadata == 'system-internal'" class="el-icon-setting" />
           </template>
         </el-table-column>
 

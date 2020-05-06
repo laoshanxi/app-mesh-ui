@@ -38,14 +38,14 @@
             {{ scope.row.cpuCores }}
           </template>
         </el-table-column>
-        <el-table-column label="Refresh time" prop="update">
+        <el-table-column label="Refresh time" prop="update" width="200">
           <template slot-scope="scope">
             {{ scope.row.update | parseTime }}
           </template>
         </el-table-column>
         <el-table-column label="" width="260">
           <template slot-scope="scope">
-            <el-button type="text" icon="el-icon-delete" @click="removeLabel(scope.row)">
+            <el-button type="text" icon="el-icon-delete" @click="removeNode(scope.row)">
               Remove
             </el-button>
           </template>
@@ -55,7 +55,7 @@
   </div>
 </template>
 <script>
-import {getLeader,getNodes} from "@/api/cloud"
+import {getLeader,getNodes,deleteNode} from "@/api/cloud"
 import mixin from './mixin'
 import request from "@/utils/request";
 export default {
@@ -88,7 +88,7 @@ export default {
         const {
           resource: {
             cpu_cores: cpuCores,
-            mem_free_bytes: freeMem,
+            mem_total_bytes: freeMem,
             mem_total_bytes: totalMem
           }
         } = e
@@ -98,20 +98,19 @@ export default {
         return {hostName,cpuCores,freeMem,totalMem,usage,update}
       })
     },
-    removeLabel(row){
-      this.$confirm(`Do you want to remove the host <${row.hostName}> ?`, 'Tooltip', {
-          confirmButtonText: 'Confirm',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(async () => {
-          const {data} = await request.delete(`${this.apiBaseUrl}/v1/kv/appmgr/nodes/${row.hostName}`)
-          if (data) {
-             const index = this.tableData.findIndex(e=>e.hostName === row.hostName)
-             this.tableData.splice(index,1)
-          }
-        })
-
-    }
+	removeNode(row){
+	  this.$confirm(`Do you want to remove the host <${row.hostName}> ?`, 'Tooltip', {
+		  confirmButtonText: 'Confirm',
+		  cancelButtonText: 'Cancel',
+		  type: 'warning'
+		}).then(async () => {
+		  const {data} = await deleteNode(row.hostName)
+		  if (data) {
+			const index = this.tableData.findIndex(e=>e.hostName === row.hostName)
+			this.tableData.splice(index,1)
+		  }
+		})
+	}
   }
 }
 </script>

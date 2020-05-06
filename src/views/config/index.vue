@@ -106,14 +106,17 @@
                       :inactive-value="false">
                     </el-switch>
                   </el-form-item>
-                  <el-form-item label="Report interval" prop="Consul.report_interval">
-                    <el-input-number v-model="form.Consul.report_interval"></el-input-number>
+				  <el-form-item label="Sync Consul user role" prop="Consul.enable_consul_security">
+                    <el-switch
+                      v-model="form.Consul.enable_consul_security"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false">
+                    </el-switch>
                   </el-form-item>
-                  <el-form-item label="Schedule interval" prop="Consul.schedule_interval">
-                    <el-input-number v-model="form.Consul.schedule_interval"></el-input-number>
-                  </el-form-item>
-				  <el-form-item label="Enable security syncup" prop="Consul.schedule_interval">
-                    <el-input-number v-model="form.Consul.enable_consul_security_interval"></el-input-number>
+                  <el-form-item label="Consul Docker image" prop="Consul.consul_docker_img">
+                    <el-input v-model="form.Consul.consul_docker_img"></el-input>
                   </el-form-item>
                   <el-form-item label="Session TTL" prop="Consul.session_TTL">
                     <el-input-number v-model="form.Consul.session_TTL"></el-input-number>
@@ -171,10 +174,9 @@ export default {
           datacenter:"",
           is_master:false,
           is_node:false,
-          report_interval:null,
-          schedule_interval:null,
+          consul_docker_img:"",
           session_TTL:null,
-          enable_consul_security_interval:null,
+          enable_consul_security:false,
           url:""
         }
       },
