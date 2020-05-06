@@ -70,7 +70,7 @@
             </el-link>
             <i v-if="scope.row.docker_image" class="iconfont icon-docker" />
             <i
-              v-if="scope.row.cloud == 1"
+              v-if="scope.row.metadata == 'cloud-app'"
               class="el-icon-cloudy"
             />
           </template>
