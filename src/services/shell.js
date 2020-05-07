@@ -15,6 +15,11 @@ function runFinished(vueComp){
     });
 }
 function refreshShellContents(vueComp,content){
+    let command = vueComp.input;
+    command = command.replace(/^ +/g, "");
+    if(command.indexOf("cd ") == 0){
+      vueComp.shellApp.working_dir = content;
+    }
     vueComp.shellContents.push({
         content: content
     });
@@ -56,7 +61,12 @@ export default {
     });
   },
   run: function(vueComp){
-    vueComp.shellApp.command = vueComp.command + '" ' + vueComp.input + '"';
+    let command = vueComp.input;
+    command = command.replace(/^ +/g, "");
+    if(command.indexOf("cd ") == 0){
+      command = command + ";pwd";
+    }
+    vueComp.shellApp.command = vueComp.command + '" ' + command + '"';
     let shell = vueComp.$refs['shell_div'];
     vueComp.$nextTick(() => {
       shell.scrollTop = shell.scrollHeight;
