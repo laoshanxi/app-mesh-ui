@@ -6,28 +6,14 @@
 <img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/diagram.png"width=434 height=334/>
 </div>
 
-## Build Setup
-
-```bash
-git clone https://github.com/laoshanxi/app-manager-ui.git
-
-cd app-manager-ui
-
-# build
-make
-
-# develop
-make run
-```
-
-Visit http://localhost
 
 ## Build Docker image
 ```bash
+make
 make tar
 ```
 
-## Develop
+## Develop environment
 
 ```bash
 # preview the release environment effect
