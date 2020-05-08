@@ -11,6 +11,9 @@
                   <el-form-item label="Description" prop="Description">
                     <el-input v-model="form.Description"></el-input>
                   </el-form-item>
+				  <el-form-item label="Version" prop="Version">
+                    <el-input v-model="form.Version" readonly="true"></el-input>
+                  </el-form-item>
                   <el-form-item label="Log level" prop="LogLevel">
                     <el-select v-model="form.LogLevel" placeholder="Please select">
                         <el-option
@@ -151,6 +154,7 @@ export default {
       loading:false,
       activeNames:['1','2','3','4'],
       form: {
+        Version: "",
         Description: "",
         REST:{
           HttpThreadPoolSize: "",
