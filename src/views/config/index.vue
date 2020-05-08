@@ -8,11 +8,11 @@
             <el-form ref="form" :model="form" label-width="260px">
               <el-collapse v-model="activeNames">
                 <el-collapse-item title="Basic" name="1">
-                  <el-form-item label="Description" prop="Description">
-                    <el-input v-model="form.Description"></el-input>
-                  </el-form-item>
 				  <el-form-item label="Version" prop="Version">
                     <el-input v-model="form.Version" readonly="true" :disabled="true"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Description" prop="Description">
+                    <el-input v-model="form.Description"></el-input>
                   </el-form-item>
                   <el-form-item label="Log level" prop="LogLevel">
                     <el-select v-model="form.LogLevel" placeholder="Please select">
