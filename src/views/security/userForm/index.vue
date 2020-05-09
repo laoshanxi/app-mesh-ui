@@ -15,6 +15,9 @@
         <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Password" prop="key">
           <el-input v-model="userForm.key"></el-input>
         </el-form-item>
+        <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Metadata" prop="metadata">
+          <el-input v-model="userForm.metadata"></el-input>
+        </el-form-item>
         <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Is locked" prop="locked">
           <el-switch
             v-model="userForm.locked"
@@ -55,6 +58,7 @@ export default {
       userForm: {
         name:"",
         key:"",
+		metadata:"",
         locked:false,
         roles:[]
       },
@@ -116,6 +120,7 @@ export default {
       this.userForm = {
         name:"",
         key:"",
+		metadata:"",
         locked:false,
         roles:[]
       };
