@@ -118,9 +118,6 @@
                       :inactive-value="false">
                     </el-switch>
                   </el-form-item>
-                  <el-form-item label="Consul Docker image" prop="Consul.consul_docker_img">
-                    <el-input v-model="form.Consul.consul_docker_img"></el-input>
-                  </el-form-item>
                   <el-form-item label="Session TTL" prop="Consul.session_TTL">
                     <el-input-number v-model="form.Consul.session_TTL"></el-input-number>
                   </el-form-item>
@@ -178,7 +175,6 @@ export default {
           datacenter:"",
           is_master:false,
           is_node:false,
-          consul_docker_img:"",
           session_TTL:null,
           enable_consul_security:false,
           url:""
