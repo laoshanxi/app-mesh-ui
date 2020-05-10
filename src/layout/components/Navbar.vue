@@ -65,6 +65,8 @@ import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import { MessageBox, Message } from 'element-ui'
 import request from '@/utils/request'
+import EventBus from '@/utils/event.bus.js'
+import {EVENTS} from '@/utils/constants.js'
 
 export default {
   data(){
@@ -81,6 +83,10 @@ export default {
   created() {
     this.host = this.$store.getters.baseUrl;
     this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
+    EventBus.$on(EVENTS.SWITCH_HOST, (host)=>{
+      this.host = host;
+      this.switchHost();
+    });
   },
   mounted(){
   },
@@ -116,6 +122,14 @@ export default {
         }
       });
     },
+    gotoApplication(){
+      this.$router.replace({
+        path: '/applications/index',
+        query: {
+          t: Date.now()
+        }
+      });
+    },
     logonWithNewHost(){
       this.$store.dispatch('user/login', {username:this.name, password:this.auth}).then(() => {
         Message({
@@ -124,7 +138,7 @@ export default {
           duration: 5 * 1000
         });
         this.fullscreenLoading = false;
-        this.refresh();
+        this.gotoApplication();
       }).catch(() => {
         this.fullscreenLoading = false;
       })

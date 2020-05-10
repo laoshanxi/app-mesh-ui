@@ -7,9 +7,13 @@
       <el-table :data="tableData" style="width: 100%" border>
         <el-table-column prop="hostName" label="Host" width="300">
           <template slot-scope="scope">
-            <a :href="scope.row.hostName" style="text-decoration:underline;color:#409EFF;" target="_blank">
+            <el-link
+              :underline="true"
+              @click="switchHost(scope.row.hostName)"
+              title="Switch Host"
+            >
               {{ scope.row.hostName }}
-            </a>
+            </el-link>
           </template>
         </el-table-column>
         <el-table-column prop="freeMem" label="Free memory">
@@ -58,6 +62,9 @@
 import {getLeader,getNodes,deleteNode} from "@/api/cloud"
 import mixin from './mixin'
 import request from "@/utils/request";
+import EventBus from '@/utils/event.bus.js'
+import {EVENTS} from '@/utils/constants.js'
+
 export default {
   name: "Nodes",
   mixins:[mixin],
@@ -69,6 +76,9 @@ export default {
     }
   },
   methods: {
+    switchHost(host){
+      EventBus.$emit(EVENTS.SWITCH_HOST, `https://${host}:6060`);
+    },
     fetchData() {
       getLeader({raw:true}).then(res=>{
         this.leader = res.data
