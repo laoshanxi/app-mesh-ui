@@ -23,7 +23,20 @@
           </template>
         </el-table-column>
         <el-table-column prop="replication" label="Replication" width="100" />
-        <el-table-column prop="port" label="Port" width="100" />
+        <el-table-column prop="scheduleNumber" label="Schedule Number" width="150">
+          <template slot-scope="scope">
+            <el-tag hit v-if="scope.row.scheduleNumber == scope.row.replication" :type="'success'">
+              {{scope.row.scheduleNumber}}
+            </el-tag>
+            <el-tag hit v-else :type="'warning'">{{scope.row.scheduleNumber}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="scheduleHosts" label="Schedule Hosts" width="150">
+          <template slot-scope="scope">
+            {{ scope.row.scheduleHosts }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="port" label="Port" width="80" />
         <el-table-column prop="content" label="Application" >
           <template slot-scope="scope">
             <pre>{{ scope.row.content }}</pre>
@@ -34,7 +47,7 @@
             <pre>{{ scope.row.condition }}</pre>
           </template>
         </el-table-column>
-        <el-table-column label="">
+        <el-table-column label="Action" width="120" >
           <template slot-scope="scope">
             <el-button type="text" icon="el-icon-delete" @click="removeTask(scope.row)">
               Remove
@@ -48,7 +61,7 @@
 <script>
 import mixin from './mixin'
 import defaultTask from './task.json'
-import {getTask,deleteTask,addTask} from '@/api/cloud'
+import {getTask,deleteTask,addTask,getScheduleResult} from '@/api/cloud'
 export default {
     name:"Task",
     mixins:[mixin],
@@ -63,8 +76,34 @@ export default {
     methods:{
         fetchData(){
             getTask({recurse:true}).then(res=>{
-                this.tableData = this.formatData(res.data)
+                this.tableData = this.formatData(res.data);
+                this.tableData.map((e,index) => {
+                  e["scheduleNumber"] = 0;
+                  e["scheduleHosts"] = [];
+                });
+                getScheduleResult().then(res=>{
+                  this.formatScheduleResult(res.data);
+                });
             })
+        },
+        formatScheduleResult(data){
+            if(!data) return
+            let taskMap = {};
+            const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
+            decodedData.map((e,index) => {
+              let hostList = taskMap[e[0].app];
+              if(hostList==null){
+                hostList = [];
+                taskMap[e[0].app] = hostList;
+              }
+              hostList.push(this.formatName(data[index].Key));
+              return e
+            })
+            this.tableData.map((e,index) => {
+              e["scheduleNumber"] = taskMap[e.name] ? taskMap[e.name].length : 0;
+              e["scheduleHosts"] = taskMap[e.name] ? taskMap[e.name] : [];
+            });
+            return taskMap;
         },
         formatData(data){
             if(!data) return []
@@ -104,7 +143,7 @@ export default {
             }
           })
         }
-        
+
     }
 }
 </script>

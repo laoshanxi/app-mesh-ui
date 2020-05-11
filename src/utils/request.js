@@ -22,7 +22,11 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['Authorization'] = "Bearer " + getToken()
     }
-    config.baseURL = store.getters.baseUrl;
+    if(config.curBaseUrl) {
+      config.baseURL = config.curBaseUrl;
+    }else{
+      config.baseURL = store.getters.baseUrl;
+    }
     return config
   },
   error => {

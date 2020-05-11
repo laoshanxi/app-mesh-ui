@@ -1,42 +1,54 @@
 import request from '@/utils/request'
 const requestUrl = '/v1/kv/appmgr'
+
+let requestForBaseUrl = (config)=>{
+  config.curBaseUrl = window.location.href.replace(/^(https?:\/\/[^/]+).*$/g, "$1");
+  return request(config);
+}
 export const getLeader = (params)=>{
-    return request({
+    return requestForBaseUrl({
         url:`${requestUrl}/leader`,
         method:'get',
         params
     })
 }
 export const getNodes = (params)=>{
-    return request({
+    return requestForBaseUrl({
         url:`${requestUrl}/cluster/nodes`,
         method:'get',
         params
     })
 }
 export const deleteNode = (name)=>{
-    return request({
+    return requestForBaseUrl({
         url:`${requestUrl}/cluster/nodes/${name}`,
         method:'delete'
     })
 }
 export const getTask = (params)=>{
-    return request({
+    return requestForBaseUrl({
         url:`${requestUrl}/cluster/tasks`,
         method:'get',
         params
     })
 }
 export const deleteTask = (name)=>{
-    return request({
+    return requestForBaseUrl({
         url:`${requestUrl}/cluster/tasks/${name}`,
         method:'delete'
     })
 }
 export const addTask = (params,name)=>{
-    return request({
+    return requestForBaseUrl({
         url:`${requestUrl}/cluster/tasks/${name}`,
         method:'put',
         data:params
+    })
+}
+
+export const getScheduleResult = ()=>{
+    return requestForBaseUrl({
+        url:`${requestUrl}/v1/kv/appmgr/topology?recurse=true`,
+        method:'get',
     })
 }
