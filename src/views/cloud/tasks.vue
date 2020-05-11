@@ -76,17 +76,17 @@ export default {
     methods:{
         fetchData(){
             getTask({recurse:true}).then(res=>{
-                this.tableData = this.formatData(res.data);
-                this.tableData.map((e,index) => {
+                let _tableData = this.formatData(res.data);
+                _tableData.map((e,index) => {
                   e["scheduleNumber"] = 0;
                   e["scheduleHosts"] = [];
                 });
                 getScheduleResult().then(res=>{
-                  this.formatScheduleResult(res.data);
+                  this.tableData = this.formatScheduleResult(res.data, _tableData);
                 });
             })
         },
-        formatScheduleResult(data){
+        formatScheduleResult(data, tData){
             if(!data) return
             let taskMap = {};
             const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
@@ -99,12 +99,12 @@ export default {
               hostList.push(this.formatName(data[index].Key));
               return e
             })
-            this.tableData.map((e,index) => {
-              this.$set(e,'scheduleNumber', taskMap[e.name] ? taskMap[e.name].length : 0);
-              this.$set(e,'scheduleHosts', taskMap[e.name] ? taskMap[e.name] : []);
+            tData.map((e,index) => {
+              e["scheduleNumber"] = taskMap[e.name] ? taskMap[e.name].length : 0;
+              e["scheduleHosts"] = taskMap[e.name] ? taskMap[e.name] : [];
               return e;
             });
-            return taskMap;
+            return tData;
         },
         formatData(data){
             if(!data) return []
