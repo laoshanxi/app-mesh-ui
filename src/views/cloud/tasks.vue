@@ -91,10 +91,11 @@ export default {
             let taskMap = {};
             const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
             decodedData.map((e,index) => {
-              let hostList = taskMap[e[0][0].app];
+              console.info(e)
+              let hostList = taskMap[e[0].app];
               if(hostList==null){
                 hostList = [];
-                taskMap[e[0][0].app] = hostList;
+                taskMap[e[0].app] = hostList;
               }
               hostList.push(this.formatName(data[index].Key));
               return e
