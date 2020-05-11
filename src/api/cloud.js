@@ -48,7 +48,7 @@ export const addTask = (params,name)=>{
 
 export const getScheduleResult = ()=>{
     return requestForBaseUrl({
-        url:`${requestUrl}/v1/kv/appmgr/topology?recurse=true`,
+        url:`${requestUrl}/topology?recurse=true`,
         method:'get',
     })
 }
