@@ -89,9 +89,11 @@ export default {
             })
         },
         formatScheduleResult(data){
+          console.info(data)
             if(!data) return
             let taskMap = {};
             const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
+            console.info(decodedData)
             decodedData.map((e,index) => {
               let hostList = taskMap[e[0].app];
               if(hostList==null){
