@@ -82,6 +82,8 @@ export default {
                   e["scheduleHosts"] = [];
                 });
                 getScheduleResult().then(res=>{
+                  console.info(res);
+                  debugger
                   this.formatScheduleResult(res.data);
                 });
             })
