@@ -82,23 +82,19 @@ export default {
                   e["scheduleHosts"] = [];
                 });
                 getScheduleResult().then(res=>{
-                  console.info(res);
-                  debugger
                   this.formatScheduleResult(res.data);
                 });
             })
         },
         formatScheduleResult(data){
-          console.info(data)
             if(!data) return
             let taskMap = {};
             const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
-            console.info(decodedData)
             decodedData.map((e,index) => {
-              let hostList = taskMap[e[0].app];
+              let hostList = taskMap[e[0][0].app];
               if(hostList==null){
                 hostList = [];
-                taskMap[e[0].app] = hostList;
+                taskMap[e[0][0].app] = hostList;
               }
               hostList.push(this.formatName(data[index].Key));
               return e
