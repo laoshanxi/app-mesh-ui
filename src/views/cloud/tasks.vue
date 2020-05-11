@@ -103,8 +103,10 @@ export default {
               return e
             })
             this.tableData.map((e,index) => {
+              console.info(e)
               e["scheduleNumber"] = taskMap[e.name] ? taskMap[e.name].length : 0;
               e["scheduleHosts"] = taskMap[e.name] ? taskMap[e.name] : [];
+              return e;
             });
             return taskMap;
         },
