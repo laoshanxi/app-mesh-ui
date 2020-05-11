@@ -73,6 +73,7 @@ export default {
     return {
       restaurants:[],
       host:"",
+      lastHost:"",
       fullscreenLoading: false
     };
   },
@@ -84,6 +85,7 @@ export default {
     this.host = this.$store.getters.baseUrl;
     this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
     EventBus.$on(EVENTS.SWITCH_HOST, (host)=>{
+      this.lastHost = this.host;
       this.host = host;
       this.switchHost();
     });
@@ -157,6 +159,10 @@ export default {
             this.fullscreenLoading = false;
           });
         });
+      }).catch(()=>{
+        if(this.lastHost && this.lastHost.length>0){
+          this.host = this.lastHost;
+        }
       });
     },
     querySearch(queryString, cb) {
