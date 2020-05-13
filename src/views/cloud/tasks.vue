@@ -176,4 +176,9 @@ export default {
     text-align: right;
   }
 }
+pre{
+      font-size: 14px;
+      color: #606266;
+      font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Arial,sans-serif;
+}
 </style>
