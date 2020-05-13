@@ -83,6 +83,9 @@ export default {
                 });
                 getScheduleResult().then(res=>{
                   this.tableData = this.formatScheduleResult(res.data, _tableData);
+                }).catch(res=>{
+                  console.info(res);
+                  this.tableData = _tableData;
                 });
             })
         },
@@ -91,12 +94,18 @@ export default {
             let taskMap = {};
             const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
             decodedData.map((e,index) => {
-              let hostList = taskMap[e[0].app];
-              if(hostList==null){
-                hostList = [];
-                taskMap[e[0].app] = hostList;
+              let hostName = this.formatName(data[index].Key);
+              if(e instanceof Array){
+                e.map((e1, i)=>{
+                  let hostList = taskMap[e1.app];
+                  if(hostList==null){
+                    hostList = [];
+                    taskMap[e1.app] = hostList;
+                  }
+                  hostList.push(hostName);
+                });
               }
-              hostList.push(this.formatName(data[index].Key));
+
               return e
             })
             tData.map((e,index) => {
