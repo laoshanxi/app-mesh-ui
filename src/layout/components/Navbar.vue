@@ -43,9 +43,9 @@
               <i class="iconfont icon-github"></i>Github
             </el-dropdown-item>
           </a>
-          <a target="_blank" href="https://github.com/laoshanxi/app-manager-ui">
+          <a target="_blank" href="https://195.123.228.208/ui/dc1/kv">
             <el-dropdown-item>
-              <i class="el-icon-mobile-phone"></i>GUI
+              <i class="el-icon-mobile-phone"></i>Consul
             </el-dropdown-item>
           </a>
           <el-dropdown-item divided>
