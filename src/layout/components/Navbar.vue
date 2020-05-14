@@ -43,7 +43,7 @@
               <i class="iconfont icon-github"></i>Github
             </el-dropdown-item>
           </a>
-          <a target="_blank" href="https://195.123.228.208/ui/dc1/kv">
+          <a target="_blank" href="/ui/dc1/kv">
             <el-dropdown-item>
               <i class="el-icon-mobile-phone"></i>Consul
             </el-dropdown-item>
