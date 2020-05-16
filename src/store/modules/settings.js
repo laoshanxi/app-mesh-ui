@@ -2,14 +2,15 @@ import defaultSettings from '@/settings'
 import {setDataLocalStorage, getDataLocalStorage} from '@/utils/localStorage'
 import constants from '@/utils/constants'
 
-const { showSettings, fixedHeader, sidebarLogo, baseUrl } = defaultSettings
+const { showSettings, fixedHeader, sidebarLogo, baseUrl, title } = defaultSettings
 
 const state = {
-  baseUrl: getDataLocalStorage(constants.BASE_URL),
+  baseUrl: getDataLocalStorage(constants.BASE_URL) || baseUrl,
   apiUrls: getDataLocalStorage(constants.API_URLS),
   showSettings: showSettings,
   fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo
+  sidebarLogo: sidebarLogo,
+  title: title,
 }
 
 const mutations = {
