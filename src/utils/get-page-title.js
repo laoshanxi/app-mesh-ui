@@ -1,6 +1,6 @@
 import defaultSettings from '@/settings'
 
-const title = defaultSettings.title || 'Application Mesh'
+const title = defaultSettings.title || 'App Mesh'
 
 export default function getPageTitle(pageTitle) {
   if (pageTitle) {

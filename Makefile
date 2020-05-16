@@ -1,7 +1,7 @@
 RELEASE_DIR=./release
-VER=1.8.1
+VER=1.8.2
 NODE_VER=10.17.0-jessie
-DOCKER_IMG_NAME=appmgr-ui:${VER}
+DOCKER_IMG_NAME=appmesh-ui:${VER}
 
 all:
 	make buildnode
@@ -22,8 +22,8 @@ run:
 	# use host mode for nginx reverse proxy redirect to 6060/8500
 	appc reg -n appweb -e APP_DOCKER_OPTS="--net=host -v /opt/appmanager/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmanager/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -c "nginx -g 'daemon off;'" -d ${DOCKER_IMG_NAME} -f
 tar:
-	docker save appmgr-ui:${VER} -o ./appmgr-ui.${VER}.tar
-	tar czvf appmgr-ui.${VER}.tar.gz appmgr-ui.${VER}.tar
+	docker save appmesh-ui:${VER} -o ./appmesh-ui.${VER}.tar
+	tar czvf appmesh-ui.${VER}.tar.gz appmesh-ui.${VER}.tar
 
 dev:
 	git pull

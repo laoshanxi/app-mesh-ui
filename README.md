@@ -1,9 +1,9 @@
-# Web GUI for Applicaton Manager
+# Web GUI for App Mesh
 
-[Applicaton Manager](https://github.com/laoshanxi/app-manager)
+[App Mesh](https://github.com/laoshanxi/app-mesh)
 
 <div align=center>
-<img src="https://raw.githubusercontent.com/laoshanxi/app-manager-ui/master/doc/diagram.png"width=434 height=334/>
+<img src="https://raw.githubusercontent.com/laoshanxi/app-mesh-ui/master/doc/diagram.png"width=434 height=334/>
 </div>
 
 
@@ -33,9 +33,9 @@ npm run lint -- --fix
 ## Deploy
 Use host mode networking for Nginx reverse proxy (need accept host 443 port)
 ```bash
-tar zxvf appmgr-ui.1.8.1.tar.gz
-docker load -i appmgr-ui.1.8.1.tar
-appc reg -n appweb -e APP_DOCKER_OPTS="--net=host -v /opt/appmanager/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmanager/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -c "nginx -g 'daemon off;'" -d appmgr-ui:1.8.1 -f
+tar zxvf appmesh-ui.1.8.1.tar.gz
+docker load -i appmesh-ui.1.8.1.tar
+appc reg -n appweb -e APP_DOCKER_OPTS="--net=host -v /opt/appmanager/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmanager/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -c "nginx -g 'daemon off;'" -d appmesh-ui:1.8.1 -f
 ```
 
 ## Demo
@@ -67,6 +67,6 @@ Modern browsers and Internet Explorer 10+.
 
 ## License
 
-[MIT](https://github.com/laoshanxi/app-manager-ui/LICENSE) license.
+[MIT](https://github.com/laoshanxi/app-mesh-ui/LICENSE) license.
 
 Copyright (c) 2019-present lip0091981

@@ -38,7 +38,7 @@
               <i class="iconfont icon-lock"></i>Change Password
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/laoshanxi/app-manager">
+          <a target="_blank" href="https://github.com/laoshanxi/app-mesh">
             <el-dropdown-item>
               <i class="iconfont icon-github"></i>Github
             </el-dropdown-item>

@@ -1,7 +1,7 @@
 {
-  "name": "applicationManager",
+  "name": "app-mesh",
   "version": "4.2.1",
-  "description": "Application Manager",
+  "description": "App Mesh",
   "author": "Pan <panfree23@gmail.com>",
   "license": "MIT",
   "scripts": {

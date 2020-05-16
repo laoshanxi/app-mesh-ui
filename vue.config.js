@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'Application Manager' // page title
+const name = defaultSettings.title || 'App Mesh' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.

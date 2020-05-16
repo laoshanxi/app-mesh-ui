@@ -1,3 +1,3 @@
-# Web GUI for Applicaton Manager
+# Web GUI for App Mesh
 
-[Applicaton Manager](https://github.com/laoshanxi/app-manager)
+[App Mesh](https://github.com/laoshanxi/app-mesh)

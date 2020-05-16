@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Application Mesh',
+  title: 'App Mesh',
 
   /**
    * @type {boolean} true | false
