@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getResources() {
   return request({
-    url: '/appmgr/resources',
+    url: '/appmesh/resources',
     method: 'GET'
   })
 }

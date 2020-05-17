@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function upload(filepath, data) {
   return request({
-    url: '/appmgr/file/upload',
+    url: '/appmesh/file/upload',
     method: 'POST',
     headers:{
       "file_path" : filepath,
@@ -14,7 +14,7 @@ export function upload(filepath, data) {
 
 export function download(filepath) {
   return request({
-    url: '/appmgr/file/download',
+    url: '/appmesh/file/download',
     method: 'GET',
     headers:{
       "file_path" : filepath

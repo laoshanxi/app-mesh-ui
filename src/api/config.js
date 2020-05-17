@@ -2,14 +2,14 @@ import request from '@/utils/request'
 
 export function getConfig() {
   return request({
-    url: '/appmgr/config',
+    url: '/appmesh/config',
     method: 'GET',
   })
 }
 
 export function updateConfig(data) {
   return request({
-    url: '/appmgr/config',
+    url: '/appmesh/config',
     method: 'POST',
     data: data
   })
@@ -17,7 +17,7 @@ export function updateConfig(data) {
 
 export function getPrometheusData() {
   return request({
-    url: '/appmgr/metrics',
+    url: '/appmesh/metrics',
     method: 'GET'
   })
 }

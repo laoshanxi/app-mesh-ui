@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-const requestUrl = '/v1/kv/appmgr'
+const requestUrl = '/v1/kv/appmesh'
 
 let requestForBaseUrl = (config)=>{
   config.curBaseUrl = window.location.href.replace(/^(https?:\/\/[^/]+).*$/g, "$1");

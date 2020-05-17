@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function updatePwd(user, data) {
   return request({
-    url: '/appmgr/user/'+user+'/passwd',
+    url: '/appmesh/user/'+user+'/passwd',
     method: 'POST',
     headers: data
   })
@@ -10,7 +10,7 @@ export function updatePwd(user, data) {
 
 export function getPermissions() {
   return request({
-    url: '/appmgr/permissions',
+    url: '/appmesh/permissions',
     method: 'get'
   })
 }

@@ -40,22 +40,22 @@ appc reg -n appweb -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem
 
 ## Demo
 
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/1.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/2.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/3.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/4.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/5.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/6.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/7.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/8.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/9.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/a.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/b.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/c.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/d.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/e.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/f.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmgr/g.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/1.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/2.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/3.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/4.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/5.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/6.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/7.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/8.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/9.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/a.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/b.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/c.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/d.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/e.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/f.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/g.png" />
 
 ## Browsers support
 
