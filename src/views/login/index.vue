@@ -83,10 +83,10 @@ export default {
       loginForm: {
         username: '',
         password: '',
-        host:"https://localhost:6060"
+        host:window.location.origin
       },
       restaurants:[{
-        value:"https://localhost:6060"
+        value:window.location.origin
       }],
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
