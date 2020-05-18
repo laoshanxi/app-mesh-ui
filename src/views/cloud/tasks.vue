@@ -87,7 +87,9 @@ export default {
                   console.info(res);
                   this.tableData = _tableData;
                 });
-            })
+            }).catch(res=>{
+                  console.info(res);
+            });
         },
         formatScheduleResult(data, tData){
             if(!data) return
