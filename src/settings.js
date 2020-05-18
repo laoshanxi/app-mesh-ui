@@ -12,6 +12,6 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: true,
+  sidebarLogo: true
   // baseUrl: window.location.origin
 }
