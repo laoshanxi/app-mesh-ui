@@ -111,6 +111,12 @@ export const constantRoutes = [
         name: "Tasks",
         component: () => import("@/views/cloud/tasks"),
         meta: { title: "Tasks", icon: "task" }
+      },
+      {
+        path: "services",
+        name: "Services",
+        component: () => import("@/views/cloud/services"),
+        meta: { title: "Services", icon: "services" }
       }
     ]
   },
