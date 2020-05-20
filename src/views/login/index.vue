@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">App Mesh Login</h3>
       </div>
 
       <el-form-item prop="host">
@@ -83,10 +83,10 @@ export default {
       loginForm: {
         username: '',
         password: '',
-        host:"https://localhost:6060"
+        host:window.location.origin
       },
       restaurants:[{
-        value:"https://localhost:6060"
+        value:window.location.origin
       }],
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
