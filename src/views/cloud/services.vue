@@ -1,6 +1,6 @@
 <template>
   <div class="services">
-    <iframe src="https://appmesh.ddns.net:8443/ui/dc1/services" frameborder="0" scrolling="auto"></iframe>
+    <iframe src="/ui/dc1/services" frameborder="0" scrolling="auto"></iframe>
   </div>
 </template>
 <script>
