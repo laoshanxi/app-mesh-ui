@@ -32,6 +32,14 @@
             :inactive-value="0"
           ></el-switch>
         </el-form-item>
+		
+		<el-form-item label="Permission" prop="registerForm.permission">
+          <el-input
+            type="number"
+            v-model="registerForm.permission"
+          ></el-input>
+        </el-form-item>
+		
         <el-divider></el-divider>
 
         <el-form-item label="Initial cmd" prop="init_command">
@@ -240,6 +248,7 @@ export default {
         working_dir: "",
 
         exec_user: "",
+        permission: 0,
         metadata: "",
         status: 1, //0 disabled, 1 enabled
         daily_limitation: {
