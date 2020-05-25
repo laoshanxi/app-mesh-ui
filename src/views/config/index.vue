@@ -28,6 +28,9 @@
                     <el-input-number v-model="form.ScheduleIntervalSeconds"></el-input-number>
                   </el-form-item>
                 </el-collapse-item>
+				<el-form-item label="Default exec user" prop="DefaultExecUser">
+                    <el-input v-model="form.DefaultExecUser"></el-input>
+                  </el-form-item>
                 <el-collapse-item title="Rest" name="2">
                   <el-form-item label="Http thread pool size" prop="REST.HttpThreadPoolSize">
                     <el-input-number v-model="form.REST.HttpThreadPoolSize"></el-input-number>
@@ -153,6 +156,7 @@ export default {
       form: {
         Version: "",
         Description: "",
+		DefaultExecUser: "",
         REST:{
           HttpThreadPoolSize: "",
           RestEnabled: "",
