@@ -179,12 +179,6 @@ export const constantRoutes = [
     },
     children: [
       {
-        path: "changePwd",
-        name: "ChangePwd",
-        component: () => import("@/views/security/changePwd"),
-        meta: { title: "Change Password", icon: "password" }
-      },
-      {
         path: "users",
         name: "Users",
         component: () => import("@/views/security/users"),
@@ -203,6 +197,12 @@ export const constantRoutes = [
           icon: "role",
           roles: ["role-view"]
         }
+      },
+      {
+        path: "changePwd",
+        name: "ChangePwd",
+        component: () => import("@/views/security/changePwd"),
+        meta: { title: "Change password", icon: "password" }
       }
     ]
   },

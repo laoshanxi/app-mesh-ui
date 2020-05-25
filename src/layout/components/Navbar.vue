@@ -35,7 +35,7 @@
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/security/changePwd">
             <el-dropdown-item>
-              <i class="iconfont icon-lock"></i>Change Password
+              <i class="iconfont icon-lock"></i>Change password
             </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://github.com/laoshanxi/app-mesh">
