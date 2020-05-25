@@ -248,7 +248,7 @@ export default {
         working_dir: "",
 
         exec_user: "",
-        permission: 0,
+        permission: null,
         metadata: "",
         status: 1, //0 disabled, 1 enabled
         daily_limitation: {
