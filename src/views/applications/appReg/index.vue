@@ -76,8 +76,8 @@
         </el-form-item>
         <el-divider></el-divider>
 
-        <el-form-item label="Running user" prop="user">
-          <el-input v-model="registerForm.user"></el-input>
+        <el-form-item label="Exec user" prop="exec_user">
+          <el-input v-model="registerForm.exec_user"></el-input>
         </el-form-item>
 
         <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
@@ -239,7 +239,7 @@ export default {
         command: "",
         working_dir: "",
 
-        user: "",
+        exec_user: "",
         metadata: "",
         status: 1, //0 disabled, 1 enabled
         daily_limitation: {

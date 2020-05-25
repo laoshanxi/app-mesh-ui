@@ -5,7 +5,8 @@
 	  <Description term="Reg time">{{record.register_time | formatEmpty}}</Description>
 	  <Description term="Command">{{record.command | formatEmpty}}</Description>
 	  <Description term="Stdout">{{record.stdout_file | formatEmpty}}</Description>
-	  <Description term="User">{{record.user | formatEmpty}}</Description>
+	  <Description term="ExecUser">{{record.exec_user | formatEmpty}}</Description>
+	  <Description term="Owner">{{record.owner | formatEmpty}}</Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
       <Description term="Status">
