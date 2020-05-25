@@ -31,6 +31,12 @@
              {{ scope.row.name }}
            </template>
          </el-table-column>
+		 
+		 <el-table-column label="Group" width="200">
+           <template slot-scope="scope">
+             {{ scope.row.group }}
+           </template>
+         </el-table-column>
 
          <el-table-column class-name="status-col" label="Status" width="110">
            <template slot-scope="scope">
@@ -98,6 +104,7 @@ export default {
           for(let p in res.data){
             this.list.push({
               name: p,
+			  group: res.data[p].group,
               locked: res.data[p].locked,
               roles: res.data[p].roles,
             });
