@@ -6,17 +6,6 @@
         <h3 class="title">App Mesh Login</h3>
       </div>
 
-      <el-form-item prop="host">
-        <span class="svg-container">
-          <svg-icon icon-class="host" />
-        </span>
-        <el-autocomplete
-            class="inline-input"
-            v-model="loginForm.host"
-            :fetch-suggestions="querySearch"
-          ></el-autocomplete>
-      </el-form-item>
-
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -73,8 +62,8 @@ export default {
       }
     }
     const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+      if (value.length < 5) {
+        callback(new Error('The password can not be less than 5 digits'))
       } else {
         callback()
       }
@@ -109,57 +98,16 @@ export default {
     this.loginForm.host = this.$store.getters.baseUrl ? this.$store.getters.baseUrl : window.location.origin;
     this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
   },
-  mounted(){
-    this.certifedHost();
-  },
+
   methods: {
-    certifedHost(callback){
-      request({
-        url: this.loginForm.host,
-        timeout: 10000,
-        method: 'GET'
-      }).then((res)=>{
-        console.info("Certified");
-        this.loading = false;
-        callback ? callback() : '';
-      }, (res)=>{
-        this.loading = false;
-        window.open(this.$store.getters.baseUrl);
-      });
-    },
-    addHost(){
-      let createFilter=function(queryString) {
-        return (restaurant) => {
-          return (restaurant.value.toLowerCase().trim()==queryString.toLowerCase().trim());
-        };
-      }
-      if(this.restaurants.filter(createFilter(this.loginForm.host)).length==0){
-        this.restaurants.push({
-          value: this.loginForm.host
-        });
-      }
-    },
     switchHost(){
       this.loading = true;
       this.$store.dispatch("settings/changeSetting", {key:"baseUrl", value:this.loginForm.host}).then(() => {
-        this.certifedHost(()=>{
-          this.handleLogin();
-        });
+        this.handleLogin();
       }).catch(() => {
         this.loading = false
       });
     },
-    querySearch(queryString, cb) {
-            var restaurants = this.restaurants;
-            var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-            // 调用 callback 返回建议列表的数据
-            cb(results);
-          },
-          createFilter(queryString) {
-            return (restaurant) => {
-              return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-            };
-          },
     showPwd() {
       if (this.passwordType === 'password') {
         this.passwordType = ''
