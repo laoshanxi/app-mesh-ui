@@ -93,11 +93,6 @@
             scope.row.owner | formatEmpty
           }}</template>
         </el-table-column>
-        <el-table-column label="Exec user" width="100">
-          <template slot-scope="scope">{{
-            scope.row.exec_user | formatEmpty
-          }}</template>
-        </el-table-column>
         <el-table-column class-name="status-col" label="State" width="110">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status == 1" :type="'success'"

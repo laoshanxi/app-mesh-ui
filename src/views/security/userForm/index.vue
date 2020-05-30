@@ -18,6 +18,9 @@
         <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Metadata" prop="metadata">
           <el-input v-model="userForm.metadata"></el-input>
         </el-form-item>
+		<el-form-item v-if="propForm.name==null || propForm.name.length==0" label="ExecUser" prop="exec_user">
+          <el-input v-model="userForm.exec_user"></el-input>
+        </el-form-item>
         <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Group" prop="group">
           <el-select
               v-model="userForm.group"
@@ -74,6 +77,7 @@ export default {
         name:"",
         key:"",
         group:"",
+		exec_user:"",
         metadata:"",
         locked:false,
         roles:[]
@@ -146,6 +150,7 @@ export default {
         name:"",
         key:"",
 		group:"",
+		exec_user:"",
 		metadata:"",
         locked:false,
         roles:[]

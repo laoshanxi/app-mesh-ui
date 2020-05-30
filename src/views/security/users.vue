@@ -37,6 +37,12 @@
              {{ scope.row.group }}
            </template>
          </el-table-column>
+		 
+         <el-table-column label="ExecUser" width="200">
+           <template slot-scope="scope">
+             {{ scope.row.exec_user }}
+           </template>
+         </el-table-column>
 
          <el-table-column class-name="status-col" label="Status" width="110">
            <template slot-scope="scope">
@@ -105,6 +111,7 @@ export default {
             this.list.push({
               name: p,
 			  group: res.data[p].group,
+			  exec_user: res.data[p].exec_user,
               locked: res.data[p].locked,
               roles: res.data[p].roles,
             });

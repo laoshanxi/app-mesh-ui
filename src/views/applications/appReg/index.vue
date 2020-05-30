@@ -102,10 +102,6 @@
         </el-form-item>
         <el-divider></el-divider>
 
-        <el-form-item label="Exec user" prop="exec_user">
-          <el-input v-model="registerForm.exec_user"></el-input>
-        </el-form-item>
-
         <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
           <el-input-number :min="0"
             v-model="registerForm.resource_limit.cpu_shares"
@@ -261,7 +257,6 @@ export default {
         command: "",
         working_dir: "",
 
-        exec_user: "",
         permission: null,
         otherPermission:3,
         groupPermission:3,
