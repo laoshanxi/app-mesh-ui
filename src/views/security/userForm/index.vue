@@ -18,8 +18,20 @@
         <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Metadata" prop="metadata">
           <el-input v-model="userForm.metadata"></el-input>
         </el-form-item>
-		 <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Group" prop="group">
-          <el-input v-model="userForm.group"></el-input>
+        <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Group" prop="group">
+          <el-select
+              v-model="userForm.group"
+              filterable
+              allow-create
+              placeholder="Please select the group">
+              <el-option
+                v-for="item in groups"
+                :key="item"
+                :label="item"
+                :value="item">
+                {{item}}
+              </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Is locked" prop="locked">
           <el-switch
@@ -52,7 +64,7 @@
 
 <script>
 import {getRoles} from "@/api/roles";
-import {saveUser} from "@/api/user";
+import {saveUser, getGroups} from "@/api/user";
 
 export default {
   name: "UserForm",
@@ -61,12 +73,13 @@ export default {
       userForm: {
         name:"",
         key:"",
-		group:"",
-		metadata:"",
+        group:"",
+        metadata:"",
         locked:false,
         roles:[]
       },
       roles:[],
+      groups:[],
       userRules: {
         name: [
           { required: true, message: "Name is not empty", trigger: "blur" }
@@ -83,7 +96,8 @@ export default {
     this.setFromWithProps();
     this.initRoles();
   },
-  mounted() {
+  updated() {
+    this.initGroup();
   },
   watch: {
     propForm: {
@@ -98,6 +112,13 @@ export default {
     }
   },
   methods: {
+    initGroup(){
+      getGroups().then(res=>{
+        if(res.data){
+          this.groups = res.data;
+        }
+      }).then(()=>{});
+    },
     initRoles(){
       getRoles().then((res)=>{
         if(res.data){
@@ -170,7 +191,7 @@ export default {
   height: calc(100vh - 136px) !important;
   overflow-y: auto;
 }
-.register-card .el-input {
+.register-card .el-input , .register-card .el-select {
   width: 350px;
   margin-right: 10px;
 }

@@ -17,7 +17,7 @@
         <el-form-item label="Working dir" prop="working_dir">
           <el-input v-model="registerForm.working_dir"></el-input>
         </el-form-item>
-		<el-form-item label="Stdout file" prop="stdout_file">
+        <el-form-item label="Stdout file" prop="stdout_file">
           <el-input v-model="registerForm.stdout_file"></el-input>
         </el-form-item>
         <el-form-item label="Metadata" prop="metadata">
@@ -32,14 +32,32 @@
             :inactive-value="0"
           ></el-switch>
         </el-form-item>
-		
-		<el-form-item label="Permission" prop="registerForm.permission">
-          <el-input
-            type="number"
-            v-model="registerForm.permission"
-          ></el-input>
+
+        <el-form-item label="Permission">
+          <el-row>
+            <el-col :span="2">Other:</el-col>
+            <el-col :span="22">
+              <el-radio-group v-model="registerForm.otherPermission">
+                    <el-radio-button label="0">All</el-radio-button>
+                    <el-radio-button label="1">Deny</el-radio-button>
+                    <el-radio-button label="2">Read</el-radio-button>
+                    <el-radio-button label="3">Write</el-radio-button>
+              </el-radio-group>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="2">Group:</el-col>
+            <el-col :span="22">
+              <el-radio-group v-model="registerForm.groupPermission">
+                    <el-radio-button label="0">All</el-radio-button>
+                    <el-radio-button label="1">Deny</el-radio-button>
+                    <el-radio-button label="2">Read</el-radio-button>
+                    <el-radio-button label="3">Write</el-radio-button>
+              </el-radio-group>
+            </el-col>
+          </el-row>
         </el-form-item>
-		
+
         <el-divider></el-divider>
 
         <el-form-item label="Initial cmd" prop="init_command">
@@ -89,35 +107,30 @@
         </el-form-item>
 
         <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
-          <el-input
-            type="number"
+          <el-input-number :min="0"
             v-model="registerForm.resource_limit.cpu_shares"
-          ></el-input>
+          ></el-input-number>
         </el-form-item>
         <el-form-item label="Physical memory" prop="resource_limit.memory_mb">
-          <el-input
-            type="number"
+          <el-input-number :min="0"
             v-model="registerForm.resource_limit.memory_mb"
-          ></el-input
-          >Mi
+          ></el-input-number>Mi
         </el-form-item>
         <el-form-item
           label="Virtual memory"
           prop="resource_limit.memory_virt_mb"
         >
-          <el-input
-            type="number"
+          <el-input-number :min="0"
             v-model="registerForm.resource_limit.memory_virt_mb"
-          ></el-input
-          >Mi
+          ></el-input-number>Mi
         </el-form-item>
         <el-divider></el-divider>
 
         <el-form-item label="Output cache lines" prop="cache_lines">
-          <el-input type="number" v-model="registerForm.cache_lines"></el-input>
+          <el-input-number :min="0" v-model="registerForm.cache_lines"></el-input-number>
         </el-form-item>
         <el-form-item label="Pid(for attach)" prop="pid">
-          <el-input type="number" v-model="registerForm.pid"></el-input>
+          <el-input-number :min="0" v-model="registerForm.pid"></el-input-number>
         </el-form-item>
 
         <el-divider></el-divider>
@@ -131,28 +144,26 @@
           label="Image pull timeout"
           prop="APP_DOCKER_IMG_PULL_TIMEOUT"
         >
-          <el-input
+          <el-input-number :min="0"
             v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT"
-          ></el-input
+          ></el-input-number
           >S
         </el-form-item>
         <el-divider></el-divider>
 
         <el-form-item label="Start interval" prop="start_interval_seconds">
-          <el-input
-            type="number"
+          <el-input-number :min="0"
             v-model="registerForm.start_interval_seconds"
-          ></el-input
+          ></el-input-number
           >S
         </el-form-item>
         <el-form-item
           label="Start interval timeout"
           prop="start_interval_timeout"
         >
-          <el-input
-            type="number"
+          <el-input-number :min="0"
             v-model="registerForm.start_interval_timeout"
-          ></el-input
+          ></el-input-number
           >S
         </el-form-item>
         <el-form-item label="Keep running" prop="keep_running">
@@ -249,6 +260,8 @@ export default {
 
         exec_user: "",
         permission: null,
+        otherPermission:null,
+        groupPermission:null,
         metadata: "",
         status: 1, //0 disabled, 1 enabled
         daily_limitation: {
@@ -299,6 +312,7 @@ export default {
       }
     },
     registerApp() {
+      this.permission = (this.otherPermission ? this.otherPermission : "") + "" + (this.groupPermission ? this.groupPermission : "");
       applications.registerApp(this);
     },
 
@@ -320,7 +334,7 @@ export default {
   height: calc(100vh - 136px) !important;
   overflow-y: auto;
 }
-.register-card .el-input {
+.register-card .el-input, .register-card .el-input-number {
   width: 350px;
   margin-right: 10px;
 }

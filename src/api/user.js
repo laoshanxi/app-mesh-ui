@@ -65,3 +65,10 @@ export function getUsers() {
     method: 'GET'
   })
 }
+
+export function getGroups() {
+  return request({
+    url: '/appmesh/user/groups',
+    method: 'GET'
+  })
+}
