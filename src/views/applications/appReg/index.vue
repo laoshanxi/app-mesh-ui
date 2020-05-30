@@ -38,7 +38,7 @@
             <el-col :span="2">Other:</el-col>
             <el-col :span="22">
               <el-radio-group v-model="registerForm.otherPermission">
-                    <el-radio-button label="0">All</el-radio-button>
+                    <!-- <el-radio-button label="0">All</el-radio-button> -->
                     <el-radio-button label="1">Deny</el-radio-button>
                     <el-radio-button label="2">Read</el-radio-button>
                     <el-radio-button label="3">Write</el-radio-button>
@@ -49,7 +49,7 @@
             <el-col :span="2">Group:</el-col>
             <el-col :span="22">
               <el-radio-group v-model="registerForm.groupPermission">
-                    <el-radio-button label="0">All</el-radio-button>
+                    <!-- <el-radio-button label="0">All</el-radio-button> -->
                     <el-radio-button label="1">Deny</el-radio-button>
                     <el-radio-button label="2">Read</el-radio-button>
                     <el-radio-button label="3">Write</el-radio-button>
@@ -248,6 +248,9 @@ export default {
     setFromWithProps() {
       if (Object.keys(this.propForm).length !== 0) {
         this.registerForm = this.merge(this.propForm, this.registerForm);
+        let permission = this.registerForm.permission + "";
+        this.registerForm.otherPermission = permission.length==2 ? permission.substring(0,1) : 3;
+        this.registerForm.groupPermission = permission.length==2 ? permission.substring(1,2) : 3;
       } else {
         this.resetForm();
       }
@@ -260,8 +263,8 @@ export default {
 
         exec_user: "",
         permission: null,
-        otherPermission:null,
-        groupPermission:null,
+        otherPermission:3,
+        groupPermission:3,
         metadata: "",
         status: 1, //0 disabled, 1 enabled
         daily_limitation: {
@@ -312,7 +315,9 @@ export default {
       }
     },
     registerApp() {
-      this.permission = (this.otherPermission ? this.otherPermission : "") + "" + (this.groupPermission ? this.groupPermission : "");
+      let other = this.registerForm.otherPermission ? this.registerForm.otherPermission : "3";
+      let group = this.registerForm.groupPermission ? this.registerForm.groupPermission : "3";
+      this.registerForm.permission = other + group;
       applications.registerApp(this);
     },
 
