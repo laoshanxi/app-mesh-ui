@@ -33,7 +33,7 @@
         </el-table-column>
         <el-table-column prop="scheduleHosts" label="Schedule Hosts" width="150">
           <template slot-scope="scope">
-            {{ scope.row.scheduleHosts }}
+			<pre>{{ scope.row.scheduleHosts }}</pre>
           </template>
         </el-table-column>
         <el-table-column prop="port" label="Port" width="80" />
