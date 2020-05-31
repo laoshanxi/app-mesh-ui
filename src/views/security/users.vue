@@ -51,7 +51,7 @@
            </template>
          </el-table-column>
 		 
-         <el-table-column label="ExecUser" width="150">
+         <el-table-column label="Exec user" width="150">
            <template slot-scope="scope">
              {{ scope.row.exec_user }}
            </template>
