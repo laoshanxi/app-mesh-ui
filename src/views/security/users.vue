@@ -6,10 +6,12 @@
     <el-row>
       <el-button-group>
       <el-button @click="btnClick('new')" type="primary" icon="el-icon-plus" >New</el-button>
+      <el-button @click="btnClick('update')" type="success" icon="iconfont icon-role" :disabled="!isSelected">Update</el-button>
       <el-button @click="delUser()" type="danger" icon="el-icon-delete" :disabled="!isSelected">Delete</el-button>
+      </el-button-group>
+      <el-button-group>
       <el-button @click="locked()" type="warning" icon="el-icon-lock" :disabled="!isSelected || isLocked">Lock</el-button>
       <el-button @click="unlocked()" type="success" icon="el-icon-unlock" :disabled="!isSelected || !isLocked">Unlock</el-button>
-      <el-button @click="btnClick('roles')" type="success" icon="iconfont icon-role" :disabled="!isSelected">Roles</el-button>
       </el-button-group>
     </el-row>
     <el-row>
@@ -26,21 +28,27 @@
          @current-change="currentRowChange"
        >
 
-         <el-table-column label="User" width="200">
+         <el-table-column label="User" width="150">
            <template slot-scope="scope">
              {{ scope.row.name }}
            </template>
          </el-table-column>
 		 
-		 <el-table-column label="Group" width="200">
+		 <el-table-column label="Group" width="150">
            <template slot-scope="scope">
              {{ scope.row.group }}
            </template>
          </el-table-column>
 		 
-         <el-table-column label="ExecUser" width="200">
+         <el-table-column label="ExecUser" width="150">
            <template slot-scope="scope">
              {{ scope.row.exec_user }}
+           </template>
+         </el-table-column>
+		 
+		 <el-table-column label="Metadata">
+           <template slot-scope="scope">
+             {{ scope.row.metadata }}
            </template>
          </el-table-column>
 
@@ -64,7 +72,7 @@
     </el-row>
     <el-drawer
       custom-class="right-drawer"
-      :title="selectedForm.name==null ? 'Add user' : 'Update user roles'"
+      :title="selectedForm.name==null ? 'Add user' : 'Update user'"
       :visible.sync="userFormVisible"
       size="60%"
     >
@@ -114,6 +122,7 @@ export default {
 			  exec_user: res.data[p].exec_user,
               locked: res.data[p].locked,
               roles: res.data[p].roles,
+              metadata: res.data[p].metadata,
             });
           }
         }
@@ -133,11 +142,14 @@ export default {
           this.delUser();
           return;
         }
-        case "roles": {
+        case "update": {
           this.selectedForm = {
             name: this.currentRow.name,
             roles: this.currentRow.roles,
             locked: this.currentRow.locked,
+            group: this.currentRow.group,
+            exec_user: this.currentRow.exec_user,
+            metadata: this.currentRow.metadata,
           };
           this.userFormVisible = true;
           return;
