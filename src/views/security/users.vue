@@ -33,6 +33,17 @@
              {{ scope.row.name }}
            </template>
          </el-table-column>
+
+         <el-table-column class-name="status-col" label="Status" width="110">
+           <template slot-scope="scope">
+             <el-tag v-if="scope.row.locked" :type="'danger'">
+               Locked
+             </el-tag>
+             <el-tag v-else :type="'success'">
+               Active
+             </el-tag>
+           </template>
+         </el-table-column>
 		 
 		 <el-table-column label="Group" width="150">
            <template slot-scope="scope">
@@ -52,17 +63,7 @@
            </template>
          </el-table-column>
 
-         <el-table-column class-name="status-col" label="Status" width="110">
-           <template slot-scope="scope">
-             <el-tag v-if="scope.row.locked" :type="'danger'">
-               Locked
-             </el-tag>
-             <el-tag v-else :type="'success'">
-               Normal
-             </el-tag>
 
-           </template>
-         </el-table-column>
          <el-table-column label="Roles">
            <template slot-scope="scope">
              <el-tag type="info" style="margin:0px 5px 5px 0px;" v-for="role in scope.row.roles">{{role}}</el-tag>
