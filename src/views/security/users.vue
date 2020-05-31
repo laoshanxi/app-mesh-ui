@@ -6,7 +6,7 @@
     <el-row>
       <el-button-group>
       <el-button @click="btnClick('new')" type="primary" icon="el-icon-plus" >New</el-button>
-      <el-button @click="btnClick('update')" type="success" icon="iconfont icon-role" :disabled="!isSelected">Update</el-button>
+      <el-button @click="btnClick('update')" type="success" icon="iconfont icon-role" :disabled="!isSelected">Edit</el-button>
       <el-button @click="delUser()" type="danger" icon="el-icon-delete" :disabled="!isSelected">Delete</el-button>
       </el-button-group>
       <el-button-group>
