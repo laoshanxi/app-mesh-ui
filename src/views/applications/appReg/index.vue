@@ -17,12 +17,7 @@
         <el-form-item label="Working dir" prop="working_dir">
           <el-input v-model="registerForm.working_dir"></el-input>
         </el-form-item>
-        <el-form-item label="Stdout file" prop="stdout_file">
-          <el-input v-model="registerForm.stdout_file"></el-input>
-        </el-form-item>
-        <el-form-item label="Metadata" prop="metadata">
-          <el-input v-model="registerForm.metadata"></el-input>
-        </el-form-item>
+
         <el-form-item label="Status">
           <el-switch
             v-model="registerForm.status"
@@ -35,17 +30,6 @@
 
         <el-form-item label="Permission">
           <el-row>
-            <el-col :span="2">Other:</el-col>
-            <el-col :span="22">
-              <el-radio-group v-model="registerForm.otherPermission">
-                    <!-- <el-radio-button label="0">All</el-radio-button> -->
-                    <el-radio-button label="1">Deny</el-radio-button>
-                    <el-radio-button label="2">Read</el-radio-button>
-                    <el-radio-button label="3">Write</el-radio-button>
-              </el-radio-group>
-            </el-col>
-          </el-row>
-          <el-row>
             <el-col :span="2">Group:</el-col>
             <el-col :span="22">
               <el-radio-group v-model="registerForm.groupPermission">
@@ -56,8 +40,24 @@
               </el-radio-group>
             </el-col>
           </el-row>
+          <el-row>
+            <el-col :span="2">Other:</el-col>
+            <el-col :span="22">
+              <el-radio-group v-model="registerForm.otherPermission">
+                    <!-- <el-radio-button label="0">All</el-radio-button> -->
+                    <el-radio-button label="1">Deny</el-radio-button>
+                    <el-radio-button label="2">Read</el-radio-button>
+                    <el-radio-button label="3">Write</el-radio-button>
+              </el-radio-group>
+            </el-col>
+          </el-row>
         </el-form-item>
-
+        <el-form-item label="stdout file" prop="stdout_file">
+          <el-input v-model="registerForm.stdout_file"></el-input>
+        </el-form-item>
+        <el-form-item label="Metadata" prop="metadata">
+          <el-input v-model="registerForm.metadata"></el-input>
+        </el-form-item>
         <el-divider></el-divider>
 
         <el-form-item label="Initial cmd" prop="init_command">
@@ -69,8 +69,34 @@
         <el-form-item label="Healthcheck cmd" prop="health_check_cmd">
           <el-input v-model="registerForm.health_check_cmd"></el-input>
         </el-form-item>
-
+		
         <el-divider></el-divider>
+		
+        <el-form-item label="Start interval" prop="start_interval_seconds">
+          <el-input-number :min="0"
+            v-model="registerForm.start_interval_seconds"
+          ></el-input-number
+          >S
+        </el-form-item>
+        <el-form-item
+          label="Start interval timeout"
+          prop="start_interval_timeout"
+        >
+          <el-input-number :min="0"
+            v-model="registerForm.start_interval_timeout"
+          ></el-input-number
+          >S
+        </el-form-item>
+        <el-form-item label="Keep running" prop="keep_running">
+          <el-switch
+            v-model="registerForm.keep_running"
+            :active-value="true"
+            :inactive-value="false"
+          ></el-switch>
+        </el-form-item>
+		
+        <el-divider></el-divider>
+		
         <el-form-item label="Start time" prop="start_time">
           <el-date-picker
             v-model="registerForm.start_time"
@@ -145,30 +171,7 @@
           ></el-input-number
           >S
         </el-form-item>
-        <el-divider></el-divider>
 
-        <el-form-item label="Start interval" prop="start_interval_seconds">
-          <el-input-number :min="0"
-            v-model="registerForm.start_interval_seconds"
-          ></el-input-number
-          >S
-        </el-form-item>
-        <el-form-item
-          label="Start interval timeout"
-          prop="start_interval_timeout"
-        >
-          <el-input-number :min="0"
-            v-model="registerForm.start_interval_timeout"
-          ></el-input-number
-          >S
-        </el-form-item>
-        <el-form-item label="Keep running" prop="keep_running">
-          <el-switch
-            v-model="registerForm.keep_running"
-            :active-value="true"
-            :inactive-value="false"
-          ></el-switch>
-        </el-form-item>
 
         <el-divider></el-divider>
 
