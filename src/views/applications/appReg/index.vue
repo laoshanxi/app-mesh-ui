@@ -30,7 +30,7 @@
 
         <el-form-item label="Permission">
           <el-row>
-            <el-col :span="2">Group:</el-col>
+            <el-col :span="2">Group user:</el-col>
             <el-col :span="22">
               <el-radio-group v-model="registerForm.groupPermission">
                     <!-- <el-radio-button label="0">All</el-radio-button> -->
@@ -41,7 +41,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="2">Other:</el-col>
+            <el-col :span="2">Other user:</el-col>
             <el-col :span="22">
               <el-radio-group v-model="registerForm.otherPermission">
                     <!-- <el-radio-button label="0">All</el-radio-button> -->
@@ -60,7 +60,7 @@
         </el-form-item>
         <el-divider></el-divider>
 
-        <el-form-item label="Initial cmd" prop="init_command">
+        <el-form-item label="Init cmd" prop="init_command">
           <el-input v-model="registerForm.init_command"></el-input>
         </el-form-item>
         <el-form-item label="Finish cmd" prop="fini_command">
@@ -76,7 +76,7 @@
           <el-input-number :min="0"
             v-model="registerForm.start_interval_seconds"
           ></el-input-number
-          >S
+          >S (for short running app)
         </el-form-item>
         <el-form-item
           label="Start interval timeout"
