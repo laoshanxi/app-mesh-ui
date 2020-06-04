@@ -138,9 +138,9 @@ export const constantRoutes = [
     children: [
       {
         path: "index",
-        name: "Remote Shell",
+        name: "WebShell",
         component: () => import("@/views/shell/index"),
-        meta: { title: "Remote Shell", icon: "shell" }
+        meta: { title: "WebShell", icon: "shell" }
       }
     ]
   },
