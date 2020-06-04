@@ -30,7 +30,7 @@
 
         <el-form-item label="Permission">
           <el-row>
-            <el-col :span="2">Group user:</el-col>
+            <el-col :span="2">Group:</el-col>
             <el-col :span="22">
               <el-radio-group v-model="registerForm.groupPermission">
                     <!-- <el-radio-button label="0">All</el-radio-button> -->
@@ -41,7 +41,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="2">Other user:</el-col>
+            <el-col :span="2">Other:</el-col>
             <el-col :span="22">
               <el-radio-group v-model="registerForm.otherPermission">
                     <!-- <el-radio-button label="0">All</el-radio-button> -->
