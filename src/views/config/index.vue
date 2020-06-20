@@ -27,8 +27,11 @@
                   <el-form-item label="Schedule period seconds" prop="ScheduleIntervalSeconds">
                     <el-input-number v-model="form.ScheduleIntervalSeconds"></el-input-number>
                   </el-form-item>
-				  <el-form-item label="Default exec user" prop="DefaultExecUser">
+                <el-form-item label="Default exec user" prop="DefaultExecUser">
                     <el-input v-model="form.DefaultExecUser"></el-input>
+                  </el-form-item>
+                <el-form-item label="Working dir" prop="WorkingDirectory">
+                    <el-input v-model="form.WorkingDirectory"></el-input>
                   </el-form-item>
                 </el-collapse-item>
 				
@@ -157,7 +160,8 @@ export default {
       form: {
         Version: "",
         Description: "",
-		DefaultExecUser: "",
+        DefaultExecUser: "",
+        WorkingDirectory: "",
         REST:{
           HttpThreadPoolSize: "",
           RestEnabled: "",
