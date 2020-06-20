@@ -47,7 +47,7 @@ function getOutputValue(vueComp, data){
 export default {
   connectHost: function(vueComp){
     vueComp.connected = 1;
-    vueComp.shellApp.command = vueComp.command + '""';
+    vueComp.shellApp.command = '""';
     runApp(vueComp.timeout, true, vueComp.shellApp).then((res)=>{
       vueComp.connected = 2;
       runFinished(vueComp);
@@ -66,7 +66,7 @@ export default {
     if(command.indexOf("cd ") == 0){
       command = command + ";pwd";
     }
-    vueComp.shellApp.command = vueComp.command + '" ' + command + '"';
+    vueComp.shellApp.command = command;
     let shell = vueComp.$refs['shell_div'];
     vueComp.$nextTick(() => {
       shell.scrollTop = shell.scrollHeight;

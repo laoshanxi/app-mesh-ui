@@ -27,6 +27,14 @@
 	  <Description term="Finish cmd">{{record.fini_command | formatEmpty}}</Description>
 	  <Description term="Health">{{record.health | formatEmpty}}</Description>
 	  <Description term="Healthcheck cmd">{{record.health_check_cmd | formatEmpty}}</Description>
+    <Description term="Shell mode">
+        <el-tag v-if="record.shell_mode==1" :type="'success'">
+          Yes
+        </el-tag>
+        <el-tag v-else :type="'info'">
+          No
+        </el-tag>
+      </Description>
     </DescriptionList>
     <DescriptionList title="" col="12">
       <Description term="Docker image">{{record.docker_image | formatEmpty}}</Description>

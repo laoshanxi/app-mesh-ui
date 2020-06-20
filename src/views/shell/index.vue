@@ -69,12 +69,12 @@
         input : "",
         inputDisabled:false,
         isSync:true,
-        command:'sh -c ',
         shellApp : {
           command:'',
+          shell_mode: true,
           working_dir:'/tmp'
         },
-        connected : 0//0,未连接；1，连接中；2，已连接
+        connected : 0 //0,not-connected；1，connecting；2，connected
       }
     },
     created(){

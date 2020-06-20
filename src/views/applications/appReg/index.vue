@@ -14,6 +14,14 @@
         <el-form-item label="Command line" prop="command">
           <el-input v-model="registerForm.command"></el-input>
         </el-form-item>
+        <el-form-item label="Shell mode" prop="shell_mode">
+          <el-switch
+            v-model="registerForm.shell_mode"
+            :active-value="true"
+            :inactive-value="false"
+          ></el-switch>
+        </el-form-item>
+
         <el-form-item label="Working dir" prop="working_dir">
           <el-input v-model="registerForm.working_dir"></el-input>
         </el-form-item>
