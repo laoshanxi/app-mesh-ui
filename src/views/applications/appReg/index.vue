@@ -267,7 +267,7 @@ export default {
         name: "",
         command: "",
         working_dir: "",
-
+        shell_mode: false,
         permission: null,
         otherPermission:3,
         groupPermission:3,
