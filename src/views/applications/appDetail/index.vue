@@ -4,7 +4,6 @@
       <Description term="Name">{{record.name | formatEmpty}}</Description>
 	  <Description term="Reg time">{{record.register_time | formatEmpty}}</Description>
 	  <Description term="Command">{{record.command | formatEmpty}}</Description>
-	  <Description term="stdout">{{record.stdout_file | formatEmpty}}</Description>
 	  <Description term="Owner">{{record.owner | formatEmpty}}</Description>
 	  <Description term="Permission">{{record.permission | formatEmpty}}</Description>
     </DescriptionList>
@@ -76,7 +75,6 @@
       <Description term="Phisical memory (Mi)">{{record.resource_limit? record.resource_limit.memory_mb:'-'}}</Description>
       <Description term="Virtual memory (Mi)">{{record.resource_limit? record.resource_limit.memory_virt_mb:'-'}}</Description>
       <Description term="CPU shares">{{record.resource_limit? record.resource_limit.cpu_shares:'-'}}</Description>
-      <Description term="Output cache lines">{{record.cache_lines | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="Environment variables" col="24" v-if="record.env">

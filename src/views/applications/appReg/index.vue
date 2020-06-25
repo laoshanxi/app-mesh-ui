@@ -153,9 +153,6 @@
         </el-form-item>
         <el-divider></el-divider>
 
-        <el-form-item label="Output cache lines" prop="cache_lines">
-          <el-input-number :min="0" v-model="registerForm.cache_lines"></el-input-number>
-        </el-form-item>
         <el-form-item label="Pid(for attach)" prop="pid">
           <el-input-number :min="0" v-model="registerForm.pid"></el-input-number>
         </el-form-item>
@@ -283,7 +280,6 @@ export default {
         APP_DOCKER_OPTS: "",
         envs: [],
         posix_timezone: "",
-        cache_lines: null,
         docker_image: "",
         pid: null,
 
