@@ -60,9 +60,6 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="stdout file" prop="stdout_file">
-          <el-input v-model="registerForm.stdout_file"></el-input>
-        </el-form-item>
         <el-form-item label="Metadata" prop="metadata">
           <el-input v-model="registerForm.metadata"></el-input>
         </el-form-item>
