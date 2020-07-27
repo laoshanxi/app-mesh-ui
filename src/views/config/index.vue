@@ -98,7 +98,7 @@
                   <el-form-item label="DataCenter" prop="Consul.datacenter">
                     <el-input v-model="form.Consul.datacenter"></el-input>
                   </el-form-item>
-                  <el-form-item label="Master node" prop="Consul.is_main">
+                  <el-form-item label="Main node" prop="Consul.is_main">
                     <el-switch
                       v-model="form.Consul.is_main"
                       active-text="Yes"
