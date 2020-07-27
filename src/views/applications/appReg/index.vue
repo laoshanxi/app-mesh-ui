@@ -63,6 +63,13 @@
         <el-form-item label="Metadata" prop="metadata">
           <el-input v-model="registerForm.metadata"></el-input>
         </el-form-item>
+		
+		<el-form-item label="stdout cache size" prop="registerForm.stdout_cache_size">
+          <el-input-number :min="0"
+            v-model="registerForm.stdout_cache_size"
+          ></el-input-number>
+        </el-form-item>
+		
         <el-divider></el-divider>
 
         <el-form-item label="Init cmd" prop="init_command">
@@ -266,6 +273,7 @@ export default {
         otherPermission:3,
         groupPermission:3,
         metadata: "",
+		stdout_cache_size: 0,
         status: 1, //0 disabled, 1 enabled
         daily_limitation: {
           daily_start: "",
