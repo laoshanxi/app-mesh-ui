@@ -75,6 +75,7 @@
       <Description term="Phisical memory (Mi)">{{record.resource_limit? record.resource_limit.memory_mb:'-'}}</Description>
       <Description term="Virtual memory (Mi)">{{record.resource_limit? record.resource_limit.memory_virt_mb:'-'}}</Description>
       <Description term="CPU shares">{{record.resource_limit? record.resource_limit.cpu_shares:'-'}}</Description>
+      <Description term="stdout cache size">{{record.stdout_cache_size | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="Environment variables" col="24" v-if="record.env">
