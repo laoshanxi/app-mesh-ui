@@ -98,9 +98,9 @@
                   <el-form-item label="DataCenter" prop="Consul.datacenter">
                     <el-input v-model="form.Consul.datacenter"></el-input>
                   </el-form-item>
-                  <el-form-item label="Master node" prop="Consul.is_master">
+                  <el-form-item label="Master node" prop="Consul.is_main">
                     <el-switch
-                      v-model="form.Consul.is_master"
+                      v-model="form.Consul.is_main"
                       active-text="Yes"
                       :active-value="true"
                       inactive-text="No"
@@ -182,7 +182,7 @@ export default {
         ScheduleIntervalSeconds: "",
         Consul:{
           datacenter:"",
-          is_master:false,
+          is_main:false,
           is_node:false,
           session_TTL:null,
           enable_consul_security:false,
