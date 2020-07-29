@@ -51,8 +51,8 @@
         <span v-if="record.last_start_time">{{ record.last_start_time | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
         <span v-else>-</span>
       </Description>
-      <Description term="Container id">{{record.container_id | formatEmpty}}</Description>
       <Description term="Stdout number">{{record.stdout_cache_num | formatEmpty}}</Description>
+	  <Description term="Container id">{{record.container_id | formatEmpty}}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="Short running App infomation" col="12">
