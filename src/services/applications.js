@@ -20,13 +20,22 @@ export default {
       vueComp.isLoadingDetail = false;
     })
   },
-  getAppLogByName: function(vueComp, name){
+  getAppLogByName: function(vueComp, name, pageNo){
     vueComp.isLoadingLog = true
-    getAppLog(name).then(response => {
+    getAppLog(name, pageNo).then(response => {
       vueComp.appLogInfo = response.data;
       vueComp.isLoadingLog = false
     }, res => {
       vueComp.isLoadingLog = false;
+    })
+  },
+  getAppLogForLogPage: function(vueComp, name, pageNo){
+    vueComp.$emit("startLoading");
+    vueComp.isLoadingLog = true
+    getAppLog(name, pageNo).then(response => {
+      vueComp.$emit("loadingDone", response.data);
+    }, res => {
+      vueComp.$emit("loadingDone", null);
     })
   },
 

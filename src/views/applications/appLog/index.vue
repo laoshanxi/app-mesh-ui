@@ -1,18 +1,40 @@
 <template>
   <el-card class="box-card">
+    <el-pagination
+      background
+      @current-change="getAppLogByName"
+      layout="prev, pager, next"
+      :current-page.sync="curPage"
+      :page-size="1"
+      :total="app.stdout_cache_num">
+    </el-pagination>
     <pre class="log">{{loginfo ? loginfo : 'No log'}}</pre>
   </el-card>
 </template>
 
 <script>
+import applications from "@/services/applications";
 export default {
   name:"AppLog",
+  data(){
+    return {
+      curPage:1,
+    };
+  },
   props:[
+    "app",
     "loginfo"
   ],
   mounted(){
+    this.curPage=1;
   },
   methods:{
+    initCurPage(){
+      this.curPage=1;
+    },
+    getAppLogByName(index) {
+      applications.getAppLogForLogPage(this, this.app.name, index-1);
+    }
   }
 }
 </script>

@@ -26,7 +26,7 @@
         >Delete</el-button
       >
       </el-button-group>
-      
+
       <el-button-group>
         <el-button
           @click="btnClick('enable')"
@@ -124,7 +124,7 @@
         >
           <template slot-scope="scope">
             <span v-if="scope.row.last_start_time">
-              <el-link :underline="true" @click="showLog()" title="Show log">
+              <el-link :underline="true" @click="showLog(scope.row)" title="Show log">
                 <i class="el-icon-document"></i>
                 <i class="el-icon-time" style="margin-right: 5px;" />
                 {{
@@ -190,7 +190,7 @@
         >
       </span>
       <div class="detail-card">
-        <app-log :loginfo="appLogInfo" />
+        <app-log ref="appLog" :loginfo="appLogInfo" :app="currentRow" @startLoading="isLoadingLog=true" @loadingDone="logChange"/>
       </div>
     </el-drawer>
   </div>
@@ -246,6 +246,10 @@ export default {
     this.fetchData();
   },
   methods: {
+    logChange(loginfo){
+      this.isLoadingLog=false;
+      this.appLogInfo=loginfo;
+    },
     regSuccess() {
       this.registerFormVisible = false;
       this.fetchData();
@@ -253,11 +257,19 @@ export default {
     showDetail() {
       this.isShowDetail = true;
     },
-    showLog() {
+    showLog(curRow) {
+      this.appLogInfo = null;
+      this.currentRow = null;
+      this.currentRow = curRow;
+      console.info(this);
+      if(this.$refs["appLog"]){
+        this.$refs["appLog"].initCurPage();
+      }
       this.isShowLog = true;
-      setTimeout(() => {
-        this.getAppLogByName(this.currentRow.name);
-      }, 500);
+      if(curRow.stdout_cache_num==0){
+        return;
+      }
+      this.getAppLogByName(this.currentRow.name);
     },
 
     btnClick(action) {
@@ -314,7 +326,7 @@ export default {
       applications.getAppByName(this, name);
     },
     getAppLogByName(name) {
-      applications.getAppLogByName(this, name);
+      applications.getAppLogByName(this, name, 0);
     }
   }
 };

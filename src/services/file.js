@@ -14,5 +14,5 @@ export default {
     }, (res)=>{
       vueComp.$message.error('File '+ vueComp.downloadForm.filepath +' download failed. ' + res.data, 5000);
     });
-  }
+  },
 }

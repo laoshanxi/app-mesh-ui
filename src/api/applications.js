@@ -14,7 +14,16 @@ export function getApplicationByName(appname) {
   })
 }
 
-export function getAppLog(appname) {
+export function getAppLog(appname, pageNo) {
+  if(pageNo || pageNo===0){
+    return request({
+      url: `/appmesh/app/${appname}/output?keep_history=1`,
+      headers:{
+        "stdout_index" : pageNo
+      },
+      method: 'get'
+    })
+  }
   return request({
     url: `/appmesh/app/${appname}/output?keep_history=1`,
     method: 'get'
