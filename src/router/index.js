@@ -206,18 +206,18 @@ export const constantRoutes = [
       }
     ]
   },
-  //{
-  //  path: "/files",
-  //  component: Layout,
-  //  children: [
-  //    {
-  //      path: "index",
-  //      name: "File Management",
-  //      component: () => import("@/views/files/index"),
-  //      meta: { title: "File Management", icon: "files" }
-  //    }
-  //  ]
-  //},
+  {
+    path: "/files",
+    component: Layout,
+    children: [
+      {
+        path: "index",
+        name: "File Management",
+        component: () => import("@/views/files/index"),
+        meta: { title: "File Management", icon: "files" }
+      }
+    ]
+  },
   {
     path: "/config",
     component: Layout,
