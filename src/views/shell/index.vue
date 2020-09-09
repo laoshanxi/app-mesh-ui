@@ -149,7 +149,7 @@
         shellService.run(this);
       },
       download(obj){
-        fileService.downloadFile(this, obj.dir + "/" + obj.fileName);
+        fileService.downloadFile(this, obj.dir.trim() + "/" + obj.fileName);
       }
     }
   }
