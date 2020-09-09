@@ -1,6 +1,8 @@
 <template>
 
-  <el-card @keyup.native="clearScreenByKeyUp" @keydown.native="clearScreenByKeyDown">
+  <el-card v-loading="loading"
+    element-loading-text="Downloading"
+    @keyup.native="clearScreenByKeyUp" @keydown.native="clearScreenByKeyDown">
     <el-row slot="header">
       <el-col :span="3" style="text-align: center;height: 38px; line-height: 38px;">
         <el-switch
@@ -55,6 +57,7 @@
     name: 'Shell',
     data(){
       return {
+        loading: false,
         timeout:10,
         control:false,
         marks: {
@@ -148,8 +151,8 @@
         this.inputDisabled = true;
         shellService.run(this);
       },
-      download(obj){
-        fileService.downloadFile(this, obj.dir.trim() + "/" + obj.fileName);
+      async download(obj){
+        await fileService.downloadFile(this, obj.dir.trim() + "/" + obj.fileName);
       }
     }
   }

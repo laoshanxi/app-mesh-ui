@@ -15,8 +15,10 @@ export default {
       vueComp.$message.error('File '+ vueComp.downloadForm.filepath +' download failed. ' + res.data, 5000);
     });
   },
-  downloadFile: function(vueComp, fileName){
-    download(fileName).then((res)=>{
+  downloadFile: async function(vueComp, fileName){
+    try{
+      vueComp.loading = true;
+      let res = await download(fileName);
       var aLink = document.createElement('a');
       var blob = new Blob([res.data]);
       var evt = document.createEvent("HTMLEvents");
@@ -25,8 +27,10 @@ export default {
       aLink.href = URL.createObjectURL(blob);
       aLink.dispatchEvent(evt);
       aLink.click();
-    }, (res)=>{
-      vueComp.$message.error('File '+ fileName +' download failed. ' + res.data, 5000);
-    });
+      vueComp.loading = false;
+    }catch(e){
+      vueComp.loading = false;
+      vueComp.$message.error('File '+ fileName +' download failed. ' + e, 5000);
+    }
   },
 }
