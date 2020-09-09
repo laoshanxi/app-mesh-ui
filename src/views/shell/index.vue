@@ -28,7 +28,8 @@
       </el-button-group>
       <div class="shell-content">
         <div v-for="line in shellContents" class="shell-line">
-          <pre :class="{'command':line.type=='command'}">{{line.content}}</pre>
+          <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{line.content}}</pre>
+          <pre v-else :class="{'command':line.type=='command'}">{{line.content}}</pre>
         </div>
       </div>
       <div class="shell-command" >
@@ -48,6 +49,7 @@
 
 <script>
   import shellService from '@/services/shell'
+  import fileService from '@/services/file'
 
   export default {
     name: 'Shell',
@@ -145,6 +147,9 @@
         );
         this.inputDisabled = true;
         shellService.run(this);
+      },
+      download(obj){
+        fileService.downloadFile(this, obj.dir + "/" + obj.fileName);
       }
     }
   }
@@ -196,6 +201,10 @@
 
   .shell-line > .command{
     color: #67C23A;
+  }
+  .shell-line > .file{
+    color: #67C23A;
+    cursor: pointer;
   }
 
 </style>

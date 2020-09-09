@@ -20,9 +20,45 @@ function refreshShellContents(vueComp,content){
     if(command.indexOf("cd ") == 0){
       vueComp.shellApp.working_dir = content;
     }
-    vueComp.shellContents.push({
-        content: content
-    });
+    content = content + "";
+    if(content.indexOf("ls:")!==0 && (command.indexOf("ls ") == 0 || command == "ls")){
+      let dir = vueComp.shellApp.working_dir;
+      let tmpCommand = command;
+      if(command != "ls"){
+        tmpCommand = tmpCommand.replace(/ \-[a-z]/g, ' ').replace(/ls /g, '').replace(' ', '');
+        if(tmpCommand.indexOf("/")==0){
+          dir = tmpCommand;
+        }else{
+          dir += "/" + tmpCommand;
+        }
+      }
+
+      let contentList = content.split(/[\n\r]/g);
+      contentList[contentList.length-1].length==0 ? contentList.pop() : "";
+      contentList.map((item,index)=>{
+        let fileName = item;
+        if(command.indexOf(" -l") > 0){
+          fileName = item.substring(item.lastIndexOf(" ")+1);
+        }
+        if(command.indexOf(" -l") > 0 && index === 0){
+          vueComp.shellContents.push({
+              content: item
+          });
+        }else{
+          vueComp.shellContents.push({
+              content: item,
+              dir: dir,
+              fileName: fileName,
+              type: "file"
+          });
+        }
+      });
+    }else{
+      vueComp.shellContents.push({
+          content: content
+      });
+    }
+
     let shell = vueComp.$refs['shell_div'];
     vueComp.$nextTick(() => {
       shell.scrollTop = shell.scrollHeight;
