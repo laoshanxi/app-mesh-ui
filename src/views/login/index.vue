@@ -6,38 +6,38 @@
         <h3 class="title">App Mesh Login</h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="UserName">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
+          ref="UserName"
+          v-model="loginForm.UserName"
           placeholder="Username"
-          name="username"
+          name="UserName"
           type="text"
           tabindex="1"
           auto-complete="on"
         />
       </el-form-item>
 
-      <el-form-item prop="password">
+      <el-form-item prop="Password">
         <span class="svg-container">
-          <svg-icon icon-class="password" />
+          <svg-icon icon-class="Password" />
         </span>
         <el-input
           :key="passwordType"
-          ref="password"
-          v-model="loginForm.password"
+          ref="Password"
+          v-model="loginForm.Password"
           :type="passwordType"
           placeholder="Password"
-          name="password"
+          name="Password"
           tabindex="2"
           auto-complete="on"
           @keyup.enter.native="switchHost"
         />
         <span class="show-pwd" @click="showPwd">
-          <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          <svg-icon :icon-class="passwordType === 'Password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
 
@@ -63,26 +63,26 @@ export default {
     }
     const validatePassword = (rule, value, callback) => {
       if (value.length < 5) {
-        callback(new Error('The password can not be less than 5 digits'))
+        callback(new Error('The Password can not be less than 5 digits'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: '',
-        password: '',
+        UserName: '',
+        Password: '',
         host:window.location.origin
       },
       restaurants:[{
         value:window.location.origin
       }],
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        UserName: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        Password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
-      passwordType: 'password',
+      passwordType: 'Password',
       redirect: undefined
     }
   },
@@ -109,13 +109,13 @@ export default {
       });
     },
     showPwd() {
-      if (this.passwordType === 'password') {
+      if (this.passwordType === 'Password') {
         this.passwordType = ''
       } else {
-        this.passwordType = 'password'
+        this.passwordType = 'Password'
       }
       this.$nextTick(() => {
-        this.$refs.password.focus()
+        this.$refs.Password.focus()
       })
     },
     handleLogin() {

@@ -23,19 +23,19 @@
       </el-button>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <!-- <div><img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"><span class="username-avatar">{{name}}</span></div> -->
+          <!-- <div><img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"><span class="UserName-avatar">{{name}}</span></div> -->
           <div>
             <el-avatar shape="circle" :size="40" :src="avatar">
               <i class="el-icon-s-custom"/>
             </el-avatar>
-            <span class="username-avatar">{{name}}</span>
+            <span class="UserName-avatar">{{name}}</span>
           </div>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/security/changePwd">
             <el-dropdown-item>
-              <i class="iconfont icon-lock"></i>Change password
+              <i class="iconfont icon-lock"></i>Change Password
             </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://github.com/laoshanxi/app-mesh">
@@ -133,7 +133,7 @@ export default {
       });
     },
     logonWithNewHost(){
-      this.$store.dispatch('user/login', {username:this.name, password:this.auth}).then(() => {
+      this.$store.dispatch('user/login', {UserName:this.name, Password:this.auth}).then(() => {
         Message({
           message: 'Switch host to ' + this.host,
           type: 'success',
@@ -259,7 +259,7 @@ export default {
           height: 40px;
           border-radius: 10px;
         }
-        .username-avatar {
+        .UserName-avatar {
           margin-left: 5px;
           top: -15px;
           position: relative;

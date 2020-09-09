@@ -202,7 +202,7 @@ export const constantRoutes = [
         path: "changePwd",
         name: "ChangePwd",
         component: () => import("@/views/security/changePwd"),
-        meta: { title: "Change password", icon: "password" }
+        meta: { title: "Change Password", icon: "Password" }
       }
     ]
   },

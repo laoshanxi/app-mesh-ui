@@ -4,19 +4,19 @@
       <el-col :span="24">
         <el-tabs type="border-card">
           <el-tab-pane style="minWidth:600px;">
-            <span slot="label"><i class="el-icon-key"></i> Change password</span>
+            <span slot="label"><i class="el-icon-key"></i> Change Password</span>
             <el-form ref="form" :model="form" label-width="200px">
-              <el-form-item label="New password" prop="newPwd"
+              <el-form-item label="New Password" prop="newPwd"
                 :rules="{
-                  required: true, message: 'New password is empty', trigger: 'blur'
+                  required: true, message: 'New Password is empty', trigger: 'blur'
                 }">
-                <el-input type="password" v-model="form.newPwd"></el-input>
+                <el-input type="Password" v-model="form.newPwd"></el-input>
               </el-form-item>
-              <el-form-item label="Confirm password" prop="confirmPwd"
+              <el-form-item label="Confirm Password" prop="confirmPwd"
                 :rules="{
                   required: true, validator: validatePass2, trigger: 'blur'
                 }">
-                <el-input type="password" v-model="form.confirmPwd"></el-input>
+                <el-input type="Password" v-model="form.confirmPwd"></el-input>
               </el-form-item>
 
               <el-form-item>
@@ -53,9 +53,9 @@ export default {
   methods: {
     validatePass2(rule, value, callback) {
             if (value === '') {
-              callback(new Error('Confirm password is empty'));
+              callback(new Error('Confirm Password is empty'));
             } else if (value !== this.form.newPwd) {
-              callback(new Error('New password and confirm password are inconsistent'));
+              callback(new Error('New Password and confirm Password are inconsistent'));
             } else {
               callback();
             }
@@ -67,7 +67,7 @@ export default {
       this.$refs["form"].validate((valid) => {
         this.loading = true;
         if (valid) {
-          updatePwd(this.$store.getters.name, {new_password:Base64.encode(this.form.newPwd)}).then((res)=>{
+          updatePwd(this.$store.getters.name, {NewPassword:Base64.encode(this.form.newPwd)}).then((res)=>{
             this.$message.success('Password update successfully.', 5000);
             this.loading = false;
           }, (res)=>{

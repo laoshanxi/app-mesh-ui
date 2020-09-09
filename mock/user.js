@@ -29,14 +29,14 @@ export default [
     url: '/user/login',
     type: 'post',
     response: config => {
-      const { username } = config.body
-      const token = tokens[username]
+      const { UserName } = config.body
+      const token = tokens[UserName]
 
       // mock error
       if (!token) {
         return {
           code: 60204,
-          message: 'Account and password are incorrect.'
+          message: 'Account and Password are incorrect.'
         }
       }
 

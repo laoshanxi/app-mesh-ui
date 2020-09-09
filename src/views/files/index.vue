@@ -97,7 +97,7 @@ export default {
       this.$message.error('File '+ this.form.filename +' upload failed. ' + err.message, 5000);
     },
     submitUpload() {
-      this.headers["file_path"] = encodeURI(this.form.filepath + this.form.filename);
+      this.headers["FilePath"] = encodeURI(this.form.filepath + this.form.filename);
       this.headers['Authorization'] = "Bearer " + getToken();
       this.$refs.upload.submit();
     },

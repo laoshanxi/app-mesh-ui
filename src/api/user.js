@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 export function login(data) {
-  data["expire_seconds"] = 60 * 60 * 8;
+  data["ExpireSeconds"] = 60 * 60 * 8;
   return request({
     url: '/appmesh/login',
     method: 'post',
@@ -16,15 +16,15 @@ export function getUserPermissions() {
   })
 }
 
-export function locked(username) {
+export function locked(UserName) {
   return request({
-    url: '/appmesh/user/' + username + '/lock',
+    url: '/appmesh/user/' + UserName + '/lock',
     method: 'post',
   })
 }
-export function unlocked(username) {
+export function unlocked(UserName) {
   return request({
-    url: '/appmesh/user/' + username + '/unlock',
+    url: '/appmesh/user/' + UserName + '/unlock',
     method: 'post',
   })
 }

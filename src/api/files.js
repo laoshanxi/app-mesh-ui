@@ -5,7 +5,7 @@ export function upload(filepath, data) {
     url: '/appmesh/file/upload',
     method: 'POST',
     headers:{
-      "file_path" : filepath,
+      "FilePath" : filepath,
       'Content-Type': 'multipart/form-data'
     },
     data: data
@@ -17,7 +17,7 @@ export function download(filepath) {
     url: '/appmesh/file/download',
     method: 'GET',
     headers:{
-      "file_path" : filepath
+      "FilePath" : filepath
     },
     responseType: 'blob'
   })

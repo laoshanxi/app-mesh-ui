@@ -38,21 +38,21 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { UserName, Password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: Base64.encode(username.trim()), password: Base64.encode(password) }).then(response => {
+      login({ UserName: Base64.encode(UserName.trim()), Password: Base64.encode(Password) }).then(response => {
         const { data } = response;
         let user = {
-          token: data.access_token,
+          token: data.AccessToken,
           name: data.profile.name,
-          account: username,
-          auth: password,
+          account: UserName,
+          auth: Password,
           avatar: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
         };
         setToken(user.token);
         commit('SET_TOKEN', user.token);
         commit('SET_NAME', user.name);
-        commit('SET_ACCOUNT', user.username);
+        commit('SET_ACCOUNT', user.UserName);
         commit('SET_AUTH', user.auth);
         commit('SET_AVATAR', user.avatar);
         getUserPermissions().then(res=>{
