@@ -86,7 +86,7 @@
 
         <el-form-item label="Start interval" prop="start_interval_seconds">
 
-          <el-input v-model="registerForm.start_interval_seconds"></el-input> (for short running app)
+          <el-input v-model="registerForm.start_interval_seconds"></el-input> (ISO 8601 durations or seconds)
         </el-form-item>
         <el-form-item
           label="Start interval timeout"
