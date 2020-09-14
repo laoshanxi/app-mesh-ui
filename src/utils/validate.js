@@ -17,3 +17,4 @@ export function isExternal(path) {
 export function validUsername(str) {
   return true;
 }
+

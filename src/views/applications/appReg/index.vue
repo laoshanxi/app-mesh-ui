@@ -63,13 +63,13 @@
         <el-form-item label="Metadata" prop="metadata">
           <el-input v-model="registerForm.metadata"></el-input>
         </el-form-item>
-		
+
 		<el-form-item label="stdout cache size" prop="registerForm.stdout_cache_size">
           <el-input-number :min="0"
             v-model="registerForm.stdout_cache_size"
           ></el-input-number>
         </el-form-item>
-		
+
         <el-divider></el-divider>
 
         <el-form-item label="Init cmd" prop="init_command">
@@ -81,14 +81,12 @@
         <el-form-item label="Healthcheck cmd" prop="health_check_cmd">
           <el-input v-model="registerForm.health_check_cmd"></el-input>
         </el-form-item>
-		
+
         <el-divider></el-divider>
-		
+
         <el-form-item label="Start interval" prop="start_interval_seconds">
-          <el-input-number :min="0"
-            v-model="registerForm.start_interval_seconds"
-          ></el-input-number
-          >S (for short running app)
+
+          <el-input v-model="registerForm.start_interval_seconds"></el-input> (for short running app)
         </el-form-item>
         <el-form-item
           label="Start interval timeout"
@@ -106,9 +104,9 @@
             :inactive-value="false"
           ></el-switch>
         </el-form-item>
-		
+
         <el-divider></el-divider>
-		
+
         <el-form-item label="Start time" prop="start_time">
           <el-date-picker
             v-model="registerForm.start_time"
@@ -230,6 +228,9 @@ export default {
         ],
         command: [
           { required: true, message: "Command is not empty", trigger: "blur" }
+        ],
+        start_interval_seconds: [
+          { pattern:/^P((([0-9]+Y)?([0-9]+M)?([0-9]+D)?(T([0-9]+H)?([0-9]+M)?([0-9]+S)?)?)|([0-9]+W))$/g, message: "Start interval seconds is invalid.", trigger: "blur" }
         ]
       }
     };
