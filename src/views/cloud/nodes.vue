@@ -1,7 +1,10 @@
 <template>
   <div class="app-container">
     <el-row style="color: #909399;">
-      <h4>Leader: <el-tag :type="'success'">{{leader}}</el-tag></h4>
+      <h4>
+        Leader:
+        <el-tag :type="'success'">{{leader}}</el-tag>
+      </h4>
     </el-row>
     <el-row>
       <el-table :data="tableData" style="width: 100%" border>
@@ -11,20 +14,14 @@
               :underline="true"
               @click="switchHost(scope.row.hostName)"
               title="Switch Host"
-            >
-              {{ scope.row.hostName }}
-            </el-link>
+            >{{ scope.row.hostName }}</el-link>
           </template>
         </el-table-column>
         <el-table-column prop="freeMem" label="Free memory">
-          <template slot-scope="scope">
-            {{ scope.row.freeMem | formatMemory }}
-          </template>
+          <template slot-scope="scope">{{ scope.row.freeMem | formatMemory }}</template>
         </el-table-column>
         <el-table-column prop="totalMem" label="Total memory">
-          <template slot-scope="scope">
-            {{ scope.row.totalMem | formatMemory }}
-          </template>
+          <template slot-scope="scope">{{ scope.row.totalMem | formatMemory }}</template>
         </el-table-column>
         <el-table-column label="Memory usage" width="200">
           <template slot-scope="scope">
@@ -38,20 +35,14 @@
           </template>
         </el-table-column>
         <el-table-column prop="cpuCores" label="Cpu cores">
-          <template slot-scope="scope">
-            {{ scope.row.cpuCores }}
-          </template>
+          <template slot-scope="scope">{{ scope.row.cpuCores }}</template>
         </el-table-column>
         <el-table-column label="Refresh time" prop="update" width="200">
-          <template slot-scope="scope">
-            {{ scope.row.update | parseTime }}
-          </template>
+          <template slot-scope="scope">{{ scope.row.update | parseTime }}</template>
         </el-table-column>
-        <el-table-column label="" width="260">
+        <el-table-column label width="260">
           <template slot-scope="scope">
-            <el-button type="text" icon="el-icon-delete" @click="removeNode(scope.row)">
-              Remove
-            </el-button>
+            <el-button type="text" icon="el-icon-delete" @click="removeNode(scope.row)">Remove</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -59,68 +50,75 @@
   </div>
 </template>
 <script>
-import {getLeader,getNodes,deleteNode} from "@/api/cloud"
-import mixin from './mixin'
+import { getLeader, getNodes, deleteNode } from "@/api/cloud";
+import mixin from "./mixin";
 import request from "@/utils/request";
-import EventBus from '@/utils/event.bus.js'
-import {EVENTS} from '@/utils/constants.js'
+import EventBus from "@/utils/event.bus.js";
+import { EVENTS } from "@/utils/constants.js";
 
 export default {
   name: "Nodes",
-  mixins:[mixin],
+  mixins: [mixin],
   data() {
     return {
       queryData: null,
-      tableData:[],
-      leader:''
-    }
+      tableData: [],
+      leader: "",
+    };
   },
   methods: {
-    switchHost(host){
+    switchHost(host) {
       EventBus.$emit(EVENTS.SWITCH_HOST, `https://${host}:6060`);
     },
     fetchData() {
-      getLeader({raw:true}).then(res=>{
-        this.leader = res.data
-      }).catch(err=>{
-        console.log(err)
-      })
-      getNodes({recurse:true}).then(res=>{
-        const { data } = res
-        this.tableData = this.formatData(data)
-      })
-
+      getLeader({ raw: true })
+        .then((res) => {
+          this.leader = res.data;
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      getNodes({ recurse: true }).then((res) => {
+        const { data } = res;
+        this.tableData = this.formatData(data);
+      });
     },
-    formatData(data){
-      if(!data) return []
-      const decodedData = data.map(e=>JSON.parse(atob(e.Value)))
-      return decodedData.map((e,index) => {
+    formatData(data) {
+      if (!data) return [];
+      const decodedData = data.map((e) => JSON.parse(atob(e.Value)));
+      return decodedData.map((e, index) => {
         const {
           resource: {
             cpu_cores: cpuCores,
             mem_total_bytes: freeMem,
-            mem_total_bytes: totalMem
-          }
-        } = e
-        const usage = (totalMem-freeMem)/totalMem
-        const update = new Date(data[index].Flags * 1000 )
-        const hostName = this.formatName(data[index].Key)
-        return {hostName,cpuCores,freeMem,totalMem,usage,update}
-      })
+            mem_total_bytes: totalMem,
+          },
+        } = e;
+        const usage = (totalMem - freeMem) / totalMem;
+        const update = new Date(data[index].Flags * 1000);
+        const hostName = this.formatName(data[index].Key);
+        return { hostName, cpuCores, freeMem, totalMem, usage, update };
+      });
     },
-	removeNode(row){
-	  this.$confirm(`Do you want to remove the host <${row.hostName}> ?`, 'Tooltip', {
-		  confirmButtonText: 'Confirm',
-		  cancelButtonText: 'Cancel',
-		  type: 'warning'
-		}).then(async () => {
-		  const {data} = await deleteNode(row.hostName)
-		  if (data) {
-			const index = this.tableData.findIndex(e=>e.hostName === row.hostName)
-			this.tableData.splice(index,1)
-		  }
-		})
-	}
-  }
-}
+    removeNode(row) {
+      this.$confirm(
+        `Do you want to remove the host <${row.hostName}> ?`,
+        "Tooltip",
+        {
+          confirmButtonText: "Confirm",
+          cancelButtonText: "Cancel",
+          type: "warning",
+        }
+      ).then(async () => {
+        const { data } = await deleteNode(row.hostName);
+        if (data) {
+          const index = this.tableData.findIndex(
+            (e) => e.hostName === row.hostName
+          );
+          this.tableData.splice(index, 1);
+        }
+      });
+    },
+  },
+};
 </script>

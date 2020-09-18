@@ -4,27 +4,24 @@
   </div>
 </template>
 <script>
-
 export default {
-    name:"Services",
+  name: "Services",
 
-    data(){
-        return {
-            url:""
-        }
-    },
-    methods:{
-
-    }
-}
+  data() {
+    return {
+      url: "",
+    };
+  },
+  methods: {},
+};
 </script>
 <style lang="scss" scoped>
 .services {
   height: calc(100vh - 50px) !important;
   width: 100%;
 }
-iframe{
-  top:-48px;
+iframe {
+  top: -48px;
   position: absolute;
   height: calc(100vh) !important;
   width: 100%;

@@ -5,33 +5,31 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import axios from 'axios'
-import showdown from 'showdown'
-import readme from 'html-loader!markdown-loader?modules!@/README.md'
+import { mapGetters } from "vuex";
+import axios from "axios";
+import showdown from "showdown";
+import readme from "html-loader!markdown-loader?modules!@/README.md";
 
 export default {
-  name: 'Home',
-  data(){
+  name: "Home",
+  data() {
     return {
-      rd : readme,
-      html : ""
-    }
+      rd: readme,
+      html: "",
+    };
   },
   computed: {
-    ...mapGetters([
-      'name'
-    ])
+    ...mapGetters(["name"]),
   },
   components: {
-      showdown
+    showdown,
   },
-  mounted () {
+  mounted() {
     let converter = new showdown.Converter();
     let text = this.rd.toString();
     this.html = converter.makeHtml(text);
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>

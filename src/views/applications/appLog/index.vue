@@ -6,8 +6,8 @@
       layout="prev, pager, next"
       :current-page.sync="curPage"
       :page-size="1"
-      :total="app.stdout_cache_num">
-    </el-pagination>
+      :total="app.stdout_cache_num"
+    ></el-pagination>
     <pre class="log">{{loginfo ? loginfo : 'No log'}}</pre>
   </el-card>
 </template>
@@ -15,28 +15,25 @@
 <script>
 import applications from "@/services/applications";
 export default {
-  name:"AppLog",
-  data(){
+  name: "AppLog",
+  data() {
     return {
-      curPage:1,
+      curPage: 1,
     };
   },
-  props:[
-    "app",
-    "loginfo"
-  ],
-  mounted(){
-    this.curPage=1;
+  props: ["app", "loginfo"],
+  mounted() {
+    this.curPage = 1;
   },
-  methods:{
-    initCurPage(){
-      this.curPage=1;
+  methods: {
+    initCurPage() {
+      this.curPage = 1;
     },
     getAppLogByName(index) {
-      applications.getAppLogForLogPage(this, this.app.name, index-1);
-    }
-  }
-}
+      applications.getAppLogForLogPage(this, this.app.name, index - 1);
+    },
+  },
+};
 </script>
 
 <style>
@@ -45,10 +42,11 @@ export default {
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
 }
-.box-card .el-card__body{
-    height: calc(100vh - 80px) !important;
-    overflow: auto;
+.box-card .el-card__body {
+  height: calc(100vh - 80px) !important;
+  overflow: auto;
 }
 </style>

@@ -5,26 +5,19 @@
     </el-row>
     <el-row>
       <el-button-group>
-        <el-button
-          @click="btnClick('register')"
-          type="primary"
-          icon="el-icon-plus"
-          >Add</el-button
-        >
+        <el-button @click="btnClick('register')" type="primary" icon="el-icon-plus">Add</el-button>
         <el-button
           @click="btnClick('update')"
           type="success"
           icon="el-icon-edit"
           :disabled="!isSelected"
-          >Edit</el-button
-        >
-		<el-button
-        @click="btnClick('delete')"
-        type="danger"
-        icon="el-icon-delete"
-        :disabled="!isSelected"
-        >Delete</el-button
-      >
+        >Edit</el-button>
+        <el-button
+          @click="btnClick('delete')"
+          type="danger"
+          icon="el-icon-delete"
+          :disabled="!isSelected"
+        >Delete</el-button>
       </el-button-group>
 
       <el-button-group>
@@ -33,15 +26,13 @@
           type="success"
           icon="el-icon-open"
           :disabled="!isSelected || isEnabled"
-          >Enable</el-button
-        >
+        >Enable</el-button>
         <el-button
           @click="btnClick('disable')"
           type="warning"
           icon="el-icon-turn-off"
           :disabled="!isSelected || !isEnabled"
-          >Disable</el-button
-        >
+        >Disable</el-button>
       </el-button-group>
     </el-row>
     <el-row>
@@ -60,17 +51,13 @@
       >
         <el-table-column label="Name" width="200">
           <template slot-scope="scope">
-            <el-link
-              :underline="true"
-              @click="showDetail()"
-              title="Show application detail"
-            >
+            <el-link :underline="true" @click="showDetail()" title="Show application detail">
               <i class="el-icon-view"></i>
               {{ scope.row.name }}
             </el-link>
             <i v-if="scope.row.docker_image" class="iconfont icon-docker" />
             <i v-if="scope.row.metadata == 'cloud-app'" class="el-icon-cloudy" />
-			<i v-if="scope.row.metadata == 'system-internal'" class="el-icon-setting" />
+            <i v-if="scope.row.metadata == 'system-internal'" class="el-icon-setting" />
           </template>
         </el-table-column>
 
@@ -88,47 +75,49 @@
             ></i>
           </template>
         </el-table-column>
-		<el-table-column label="Owner" width="100">
-          <template slot-scope="scope">{{
+        <el-table-column label="Owner" width="100">
+          <template slot-scope="scope">
+            {{
             scope.row.owner | formatEmpty
-          }}</template>
+            }}
+          </template>
         </el-table-column>
         <el-table-column class-name="status-col" label="State" width="110">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status == 1" :type="'success'"
-              >Enabled</el-tag
-            >
+            <el-tag v-if="scope.row.status == 1" :type="'success'">Enabled</el-tag>
             <el-tag v-else :type="'info'">Disabled</el-tag>
           </template>
         </el-table-column>
 
         <el-table-column label="PID" width="100">
-          <template slot-scope="scope">{{
+          <template slot-scope="scope">
+            {{
             scope.row.pid | formatEmpty
-          }}</template>
+            }}
+          </template>
         </el-table-column>
         <el-table-column label="Memory" width="110">
-          <template slot-scope="scope">{{
+          <template slot-scope="scope">
+            {{
             scope.row.memory | formatMemory
-          }}</template>
+            }}
+          </template>
         </el-table-column>
         <el-table-column label="Return" width="110">
-          <template slot-scope="scope">{{
+          <template slot-scope="scope">
+            {{
             scope.row.return | formatEmpty
-          }}</template>
+            }}
+          </template>
         </el-table-column>
-        <el-table-column
-          prop="last_start_time"
-          label="Last Start Time"
-          width="200"
-        >
+        <el-table-column prop="last_start_time" label="Last Start Time" width="200">
           <template slot-scope="scope">
             <span v-if="scope.row.last_start_time">
               <el-link :underline="true" @click="showLog(scope.row)" title="Show log">
                 <i class="el-icon-document"></i>
                 <i class="el-icon-time" style="margin-right: 5px;" />
                 {{
-                  scope.row.last_start_time | parseTime("{y}-{m}-{d} {h}:{i}")
+                scope.row.last_start_time | parseTime("{y}-{m}-{d} {h}:{i}")
                 }}
               </el-link>
             </span>
@@ -136,9 +125,11 @@
           </template>
         </el-table-column>
         <af-table-column label="Command">
-          <template slot-scope="scope">{{
+          <template slot-scope="scope">
+            {{
             scope.row.command | formatEmpty
-          }}</template>
+            }}
+          </template>
         </af-table-column>
       </el-table>
     </el-row>
@@ -159,15 +150,11 @@
     </el-drawer>
 
     <!-- show application detail -->
-    <el-drawer
-      :visible.sync="isShowDetail"
-      v-loading="isLoadingDetail"
-      size="50%"
-    >
+    <el-drawer :visible.sync="isShowDetail" v-loading="isLoadingDetail" size="50%">
       <span slot="title">
         <span class="el-icon-view">
           &nbsp;&nbsp;{{
-            currentRow ? currentRow.name : "Please select one application"
+          currentRow ? currentRow.name : "Please select one application"
           }}
           <i
             v-if="currentRow && currentRow.docker_image"
@@ -183,14 +170,20 @@
     <!-- show application logs -->
     <el-drawer :visible.sync="isShowLog" v-loading="isLoadingLog" size="50%">
       <span slot="title">
-        <span class="el-icon-document"
-          >&nbsp;&nbsp;{{
-            currentRow ? currentRow.name : "Please select one application"
-          }}</span
-        >
+        <span class="el-icon-document">
+          &nbsp;&nbsp;{{
+          currentRow ? currentRow.name : "Please select one application"
+          }}
+        </span>
       </span>
       <div class="detail-card">
-        <app-log ref="appLog" :loginfo="appLogInfo" :app="currentRow" @startLoading="isLoadingLog=true" @loadingDone="logChange"/>
+        <app-log
+          ref="appLog"
+          :loginfo="appLogInfo"
+          :app="currentRow"
+          @startLoading="isLoadingLog=true"
+          @loadingDone="logChange"
+        />
       </div>
     </el-drawer>
   </div>
@@ -208,17 +201,17 @@ export default {
   components: {
     AppDetail,
     AppLog,
-    AppReg
+    AppReg,
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
         published: "success",
         draft: "gray",
-        deleted: "danger"
+        deleted: "danger",
       };
       return statusMap[status];
-    }
+    },
   },
   data() {
     return {
@@ -239,16 +232,16 @@ export default {
       currentRow: null,
       formLabelWidth: "100px",
       registerFormVisible: false,
-      selectedForm: {}
+      selectedForm: {},
     };
   },
   created() {
     this.fetchData();
   },
   methods: {
-    logChange(loginfo){
-      this.isLoadingLog=false;
-      this.appLogInfo=loginfo;
+    logChange(loginfo) {
+      this.isLoadingLog = false;
+      this.appLogInfo = loginfo;
     },
     regSuccess() {
       this.registerFormVisible = false;
@@ -262,11 +255,11 @@ export default {
       this.currentRow = null;
       this.currentRow = curRow;
       console.info(this);
-      if(this.$refs["appLog"]){
+      if (this.$refs["appLog"]) {
         this.$refs["appLog"].initCurPage();
       }
       this.isShowLog = true;
-      if(curRow.stdout_cache_num==0){
+      if (curRow.stdout_cache_num == 0) {
         return;
       }
       this.getAppLogByName(this.currentRow.name);
@@ -327,8 +320,8 @@ export default {
     },
     getAppLogByName(name) {
       applications.getAppLogByName(this, name, 0);
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss" scoped>

@@ -10,21 +10,25 @@
       >
         <el-form-item label="Role">
           <label v-if="propForm.name!=null && propForm.name.length>0">{{propForm.name}}</label>
-          <el-input v-if="propForm.name==null || propForm.name.length==0" v-model="permissionForm.name"></el-input>
+          <el-input
+            v-if="propForm.name==null || propForm.name.length==0"
+            v-model="permissionForm.name"
+          ></el-input>
         </el-form-item>
         <el-form-item label="Permissions" prop="permissions">
           <el-transfer
-              class="permission-transfer"
-              filterable
-              filter-placeholder="Filter"
-              :titles="['All permissions', 'Role permissions']"
-              v-model="permissionForm.permissions"
-              :data="permissions">
-          </el-transfer>
-          <el-input v-model="newPermission" style="margin-top:10px;"></el-input><el-button @click="addNewPermission">Add new permission</el-button>
-          <br/><span style="color:#909399;">* Note: Multiple permissions separated by commas</span>
+            class="permission-transfer"
+            filterable
+            filter-placeholder="Filter"
+            :titles="['All permissions', 'Role permissions']"
+            v-model="permissionForm.permissions"
+            :data="permissions"
+          ></el-transfer>
+          <el-input v-model="newPermission" style="margin-top:10px;"></el-input>
+          <el-button @click="addNewPermission">Add new permission</el-button>
+          <br />
+          <span style="color:#909399;">* Note: Multiple permissions separated by commas</span>
         </el-form-item>
-
       </el-form>
     </el-card>
     <div class="dialog-footer">
@@ -36,22 +40,20 @@
 </template>
 
 <script>
-import {updateRolePermissions} from "@/api/roles";
-import {getPermissions} from "@/api/security";
+import { updateRolePermissions } from "@/api/roles";
+import { getPermissions } from "@/api/security";
 
 export default {
   name: "RoleForm",
   data() {
     return {
       permissionForm: {
-        permissions:[]
+        permissions: [],
       },
-      permissions:[],
-      permissionsMap:{},
-      permissionRules: {
-
-      },
-      newPermission:"",
+      permissions: [],
+      permissionsMap: {},
+      permissionRules: {},
+      newPermission: "",
     };
   },
   props: ["propForm"],
@@ -63,45 +65,45 @@ export default {
   mounted() {},
   watch: {
     propForm: {
-      handler: function(val, old) {
+      handler: function (val, old) {
         if (val === old) {
           return;
         }
 
         this.setFromWithProps();
       },
-      immediate: false
-    }
+      immediate: false,
+    },
   },
   methods: {
-    initData(){
-      getPermissions().then((res)=>{
-        if(res.data){
-          let permission = null;
-          for(let i=0;i<res.data.length;i++){
-            permission = res.data[i];
-            this.permissions.push({
-              label:permission,
-              key:permission,
-              pinyin:permission,
-            });
-            this.permissionsMap[permission] = permission;
+    initData() {
+      getPermissions()
+        .then((res) => {
+          if (res.data) {
+            let permission = null;
+            for (let i = 0; i < res.data.length; i++) {
+              permission = res.data[i];
+              this.permissions.push({
+                label: permission,
+                key: permission,
+                pinyin: permission,
+              });
+              this.permissionsMap[permission] = permission;
+            }
           }
-        }
-      }).then((res)=>{
-
-      });
+        })
+        .then((res) => {});
     },
-    addNewPermission(){
+    addNewPermission() {
       let newPermissions = this.newPermission.split(",");
-      for(let i=0;i<newPermissions.length;i++){
+      for (let i = 0; i < newPermissions.length; i++) {
         let permission = newPermissions[i];
-        if(this.permissionsMap[permission]==null){
-          this.permissions.splice(0,0,{
-                  label: permission,
-                  key: permission,
-                  pinyin: permission,
-                });
+        if (this.permissionsMap[permission] == null) {
+          this.permissions.splice(0, 0, {
+            label: permission,
+            key: permission,
+            pinyin: permission,
+          });
         }
       }
 
@@ -116,7 +118,7 @@ export default {
     },
     resetForm() {
       this.permissionForm = {
-        permissions:[]
+        permissions: [],
       };
     },
     cancel() {
@@ -127,18 +129,27 @@ export default {
     },
 
     savePermissions() {
-      updateRolePermissions(this.permissionForm.name, this.permissionForm.permissions).then((res)=>{
-        if(this.propForm.name==null){
-          this.$message.success('Role '+this.permissionForm.name+' add successfully.', 5000);
-        }else{
-          this.$message.success('Role '+this.permissionForm.name+' update successfully.', 5000);
-        }
+      updateRolePermissions(
+        this.permissionForm.name,
+        this.permissionForm.permissions
+      )
+        .then((res) => {
+          if (this.propForm.name == null) {
+            this.$message.success(
+              "Role " + this.permissionForm.name + " add successfully.",
+              5000
+            );
+          } else {
+            this.$message.success(
+              "Role " + this.permissionForm.name + " update successfully.",
+              5000
+            );
+          }
 
-        this.$emit("success");
-        this.cancel();
-      }).then((res)=>{
-
-      });
+          this.$emit("success");
+          this.cancel();
+        })
+        .then((res) => {});
     },
 
     merge(local, origin) {
@@ -149,8 +160,8 @@ export default {
             : (origin[key] = local[key]);
       }
       return origin;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -178,16 +189,17 @@ export default {
   height: calc(100vh - 77px) !important;
   overflow-y: auto;
 }
-
 </style>
 <style>
-  .permission-transfer, .el-transfer-panel{
-    height:400px;
-  }
-  .el-transfer-panel__body, .el-transfer-panel__list.is-filterable {
-    height: 296px;
-  }
-  .permission-transfer .el-transfer-panel {
-    width: 222px;
-  }
+.permission-transfer,
+.el-transfer-panel {
+  height: 400px;
+}
+.el-transfer-panel__body,
+.el-transfer-panel__list.is-filterable {
+  height: 296px;
+}
+.permission-transfer .el-transfer-panel {
+  width: 222px;
+}
 </style>

@@ -2,38 +2,32 @@
   <div>
     <!-- {{ form }} -->
     <el-card shadow="never" class="register-card">
-      <el-form
-        :model="userForm"
-        ref="userFormDom"
-        :rules="userRules"
-        label-width="160px"
-      >
+      <el-form :model="userForm" ref="userFormDom" :rules="userRules" label-width="160px">
         <el-form-item label="Name" prop="name">
           <label v-if="propForm.name!=null && propForm.name.length>0">{{propForm.name}}</label>
           <el-input v-if="propForm.name==null || propForm.name.length==0" v-model="userForm.name"></el-input>
         </el-form-item>
-        <el-form-item v-if="propForm.name==null || propForm.name.length==0" label="Password" prop="key">
+        <el-form-item
+          v-if="propForm.name==null || propForm.name.length==0"
+          label="Password"
+          prop="key"
+        >
           <el-input v-model="userForm.key"></el-input>
         </el-form-item>
         <el-form-item label="Metadata" prop="metadata">
           <el-input v-model="userForm.metadata"></el-input>
         </el-form-item>
-		<el-form-item label="ExecUser" prop="exec_user">
+        <el-form-item label="ExecUser" prop="exec_user">
           <el-input v-model="userForm.exec_user"></el-input>
         </el-form-item>
         <el-form-item label="Group" prop="group">
           <el-select
-              v-model="userForm.group"
-              filterable
-              allow-create
-              placeholder="Please select the group">
-              <el-option
-                v-for="item in groups"
-                :key="item"
-                :label="item"
-                :value="item">
-                {{item}}
-              </el-option>
+            v-model="userForm.group"
+            filterable
+            allow-create
+            placeholder="Please select the group"
+          >
+            <el-option v-for="item in groups" :key="item" :label="item" :value="item">{{item}}</el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="Is locked" prop="locked">
@@ -47,14 +41,13 @@
         </el-form-item>
         <el-form-item label="Roles" prop="roles">
           <el-transfer
-              filterable
-              filter-placeholder="Filter"
-              :titles="['All roles', 'User roles']"
-              v-model="userForm.roles"
-              :data="roles">
-          </el-transfer>
+            filterable
+            filter-placeholder="Filter"
+            :titles="['All roles', 'User roles']"
+            v-model="userForm.roles"
+            :data="roles"
+          ></el-transfer>
         </el-form-item>
-
       </el-form>
     </el-card>
     <div class="dialog-footer">
@@ -66,32 +59,32 @@
 </template>
 
 <script>
-import {getRoles} from "@/api/roles";
-import {saveUser, getGroups} from "@/api/user";
+import { getRoles } from "@/api/roles";
+import { saveUser, getGroups } from "@/api/user";
 
 export default {
   name: "UserForm",
   data() {
     return {
       userForm: {
-        name:"",
-        key:"",
-        group:"",
-		exec_user:"",
-        metadata:"",
-        locked:false,
-        roles:[]
+        name: "",
+        key: "",
+        group: "",
+        exec_user: "",
+        metadata: "",
+        locked: false,
+        roles: [],
       },
-      roles:[],
-      groups:[],
+      roles: [],
+      groups: [],
       userRules: {
         name: [
-          { required: true, message: "Name is not empty", trigger: "blur" }
+          { required: true, message: "Name is not empty", trigger: "blur" },
         ],
         key: [
-          { required: true, message: "Password is not empty", trigger: "blur" }
-        ]
-      }
+          { required: true, message: "Password is not empty", trigger: "blur" },
+        ],
+      },
     };
   },
   props: ["propForm"],
@@ -105,38 +98,40 @@ export default {
   },
   watch: {
     propForm: {
-      handler: function(val, old) {
+      handler: function (val, old) {
         if (val === old) {
           return;
         }
 
         this.setFromWithProps();
       },
-      immediate: false
-    }
+      immediate: false,
+    },
   },
   methods: {
-    initGroup(){
-      getGroups().then(res=>{
-        if(res.data){
-          this.groups = res.data;
-        }
-      }).then(()=>{});
-    },
-    initRoles(){
-      getRoles().then((res)=>{
-        if(res.data){
-          for(let p in res.data){
-            this.roles.push({
-              label:p,
-              key:p,
-              pinyin:p,
-            });
+    initGroup() {
+      getGroups()
+        .then((res) => {
+          if (res.data) {
+            this.groups = res.data;
           }
-        }
-      }).then((res)=>{
-
-      });
+        })
+        .then(() => {});
+    },
+    initRoles() {
+      getRoles()
+        .then((res) => {
+          if (res.data) {
+            for (let p in res.data) {
+              this.roles.push({
+                label: p,
+                key: p,
+                pinyin: p,
+              });
+            }
+          }
+        })
+        .then((res) => {});
     },
     setFromWithProps() {
       if (Object.keys(this.propForm).length !== 0) {
@@ -147,13 +142,13 @@ export default {
     },
     resetForm() {
       this.userForm = {
-        name:"",
-        key:"",
-		group:"",
-		exec_user:"",
-		metadata:"",
-        locked:false,
-        roles:[]
+        name: "",
+        key: "",
+        group: "",
+        exec_user: "",
+        metadata: "",
+        locked: false,
+        roles: [],
       };
     },
     cancel() {
@@ -165,17 +160,23 @@ export default {
 
     saveRole() {
       //applications.addRole(this);
-      saveUser(this.userForm).then((res)=>{
-        if(this.propForm.name==null){
-          this.$message.success('User '+this.userForm.name+' add successfully.', 5000);
-        }else{
-          this.$message.success('User '+this.userForm.name+' update successfully.', 5000);
-        }
-        this.$emit("success");
-        this.cancel();
-      }).then((res)=>{
-
-      });
+      saveUser(this.userForm)
+        .then((res) => {
+          if (this.propForm.name == null) {
+            this.$message.success(
+              "User " + this.userForm.name + " add successfully.",
+              5000
+            );
+          } else {
+            this.$message.success(
+              "User " + this.userForm.name + " update successfully.",
+              5000
+            );
+          }
+          this.$emit("success");
+          this.cancel();
+        })
+        .then((res) => {});
     },
 
     merge(local, origin) {
@@ -186,8 +187,8 @@ export default {
             : (origin[key] = local[key]);
       }
       return origin;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -196,7 +197,8 @@ export default {
   height: calc(100vh - 136px) !important;
   overflow-y: auto;
 }
-.register-card .el-input , .register-card .el-select {
+.register-card .el-input,
+.register-card .el-select {
   width: 350px;
   margin-right: 10px;
 }

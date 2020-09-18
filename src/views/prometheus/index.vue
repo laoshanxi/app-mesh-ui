@@ -1,36 +1,34 @@
 <template>
-
   <div class="app-container" style="clear:both;" v-loading="loading">
-    <el-row >
+    <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
           <el-tab-pane>
-            <span slot="label"><i class="iconfont icon-Prometheus"></i> Prometheus</span>
+            <span slot="label">
+              <i class="iconfont icon-Prometheus"></i> Prometheus
+            </span>
             <pre class="log">{{content}}</pre>
           </el-tab-pane>
-
         </el-tabs>
-
-
       </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import configServices from '@/services/config.js'
+import configServices from "@/services/config.js";
 export default {
-  name: 'Prometheus',
-  data(){
+  name: "Prometheus",
+  data() {
     return {
-      content : "",
-      loading : true,
-    }
+      content: "",
+      loading: true,
+    };
   },
-  mounted () {
+  mounted() {
     configServices.getPrometheus(this);
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -39,10 +37,11 @@ export default {
   font-weight: 400;
   font-size: 14px;
   line-height: 24px;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
+    Microsoft YaHei, Arial, sans-serif;
 }
-.box-card .el-card__body{
-    height: calc(100vh - 80px) !important;
-    overflow: auto;
+.box-card .el-card__body {
+  height: calc(100vh - 80px) !important;
+  overflow: auto;
 }
 </style>
