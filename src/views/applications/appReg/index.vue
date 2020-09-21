@@ -55,7 +55,7 @@
           <el-input v-model="registerForm.metadata"></el-input>
         </el-form-item>
 
-        <el-form-item label="stdout cache size" prop="registerForm.stdout_cache_size">
+        <el-form-item label="stdout cache size" prop="stdout_cache_size">
           <el-input-number :min="0" v-model="registerForm.stdout_cache_size"></el-input-number>
         </el-form-item>
 
