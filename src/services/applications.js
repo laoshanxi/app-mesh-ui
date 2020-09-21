@@ -103,10 +103,10 @@ export default {
     }
     function formatData(data){
       if(data.cache_lines) data.cache_lines = parseInt(data.cache_lines);
-	  if(data.permission) data.permission = parseInt(data.permission);
+      if(data.permission) data.permission = parseInt(data.permission);
       if(data.pid) data.pid = parseInt(data.pid);
-      if(data.start_interval_seconds) data.start_interval_seconds = parseInt(data.start_interval_seconds);
-      if(data.start_interval_timeout) data.start_interval_timeout = parseInt(data.start_interval_timeout);
+      // if(data.start_interval_seconds) data.start_interval_seconds = parseInt(data.start_interval_seconds);
+      // if(data.start_interval_timeout) data.start_interval_timeout = parseInt(data.start_interval_timeout);
       if(data.resource_limit){
         if(data.resource_limit.cpu_shares) data.resource_limit.cpu_shares = parseInt(data.resource_limit.cpu_shares);
         if(data.resource_limit.memory_mb) data.resource_limit.memory_mb = parseInt(data.resource_limit.memory_mb);
