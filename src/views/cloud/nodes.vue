@@ -90,7 +90,7 @@ export default {
         const {
           resource: {
             cpu_cores: cpuCores,
-            mem_total_bytes: freeMem,
+            mem_free_bytes: freeMem,
             mem_total_bytes: totalMem,
           },
         } = e;
