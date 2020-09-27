@@ -1,3 +1,5 @@
+[![language.badge]][language.url] [![release.badge]][release.url] [![docker.badge]][docker.url]
+
 # Web GUI for App Mesh
 
 [App Mesh](https://github.com/laoshanxi/app-mesh)
@@ -70,3 +72,13 @@ Modern browsers and Internet Explorer 10+.
 [MIT](https://github.com/laoshanxi/app-mesh-ui/LICENSE) license.
 
 Copyright (c) 2019-present lip0091981
+
+
+[language.url]:   https://isocpp.org/
+[language.badge]: https://img.shields.io/badge/language-vue-blue.svg
+
+[release.url]:    https://github.com/laoshanxi/app-mesh/releases
+[release.badge]:  https://img.shields.io/github/v/release/laoshanxi/app-mesh-ui.svg
+
+[docker.url]:    https://hub.docker.com/repository/docker/laoshanxi/appmesh-ui
+[docker.badge]:  https://img.shields.io/docker/pulls/laoshanxi/appmesh-ui.svg
