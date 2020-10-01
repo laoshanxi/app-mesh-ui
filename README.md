@@ -75,7 +75,7 @@ Copyright (c) 2019-present lip0091981
 
 
 [language.url]:   https://nodejs.org/
-[language.badge]: https://img.shields.io/badge/language-vue-blue.svg
+[language.badge]: https://img.shields.io/badge/language-nodes.vue-blue.svg
 
 [release.url]:    https://github.com/laoshanxi/app-mesh/releases
 [release.badge]:  https://img.shields.io/github/v/release/laoshanxi/app-mesh-ui.svg

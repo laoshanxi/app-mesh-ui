@@ -1,9 +1,9 @@
 <template>
   <div class="app-container">
-    <el-row style="color: #909399;">
+    <el-row style="color: #909399">
       <h4>
         Leader:
-        <el-tag :type="'success'">{{leader}}</el-tag>
+        <el-tag :type="'success'">{{ leader }}</el-tag>
       </h4>
     </el-row>
     <el-row>
@@ -12,16 +12,21 @@
           <template slot-scope="scope">
             <el-link
               :underline="true"
-              @click="switchHost(scope.row.hostName)"
+              @click="switchHost(scope.row.appmeshUrl)"
               title="Switch Host"
-            >{{ scope.row.hostName }}</el-link>
+              >{{ scope.row.hostName }}</el-link
+            >
           </template>
         </el-table-column>
         <el-table-column prop="freeMem" label="Free memory">
-          <template slot-scope="scope">{{ scope.row.freeMem | formatMemory }}</template>
+          <template slot-scope="scope">{{
+            scope.row.freeMem | formatMemory
+          }}</template>
         </el-table-column>
         <el-table-column prop="totalMem" label="Total memory">
-          <template slot-scope="scope">{{ scope.row.totalMem | formatMemory }}</template>
+          <template slot-scope="scope">{{
+            scope.row.totalMem | formatMemory
+          }}</template>
         </el-table-column>
         <el-table-column label="Memory usage" width="200">
           <template slot-scope="scope">
@@ -38,11 +43,18 @@
           <template slot-scope="scope">{{ scope.row.cpuCores }}</template>
         </el-table-column>
         <el-table-column label="Refresh time" prop="update" width="200">
-          <template slot-scope="scope">{{ scope.row.update | parseTime }}</template>
+          <template slot-scope="scope">{{
+            scope.row.update | parseTime
+          }}</template>
         </el-table-column>
         <el-table-column label width="260">
           <template slot-scope="scope">
-            <el-button type="text" icon="el-icon-delete" @click="removeNode(scope.row)">Remove</el-button>
+            <el-button
+              type="text"
+              icon="el-icon-delete"
+              @click="removeNode(scope.row)"
+              >Remove</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
@@ -93,11 +105,20 @@ export default {
             mem_free_bytes: freeMem,
             mem_total_bytes: totalMem,
           },
+          appmesh: appmeshUrl,
         } = e;
         const usage = (totalMem - freeMem) / totalMem;
         const update = new Date(data[index].Flags * 1000);
         const hostName = this.formatName(data[index].Key);
-        return { hostName, cpuCores, freeMem, totalMem, usage, update };
+        return {
+          hostName,
+          cpuCores,
+          freeMem,
+          totalMem,
+          usage,
+          update,
+          appmeshUrl,
+        };
       });
     },
     removeNode(row) {

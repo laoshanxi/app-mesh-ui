@@ -1,14 +1,16 @@
 <template>
   <div class="app-container">
-    <el-row style="margin-bottom:8px;">
+    <el-row style="margin-bottom: 8px">
       <el-button-group>
-        <el-button @click="drawer=true" type="primary" icon="el-icon-plus">Add</el-button>
+        <el-button @click="drawer = true" type="primary" icon="el-icon-plus"
+          >Add</el-button
+        >
       </el-button-group>
     </el-row>
     <!-- add drawer -->
     <el-drawer title="Add Task" :visible.sync="drawer">
       <div shadow="never" class="add-task-card">
-        <el-row style="margin-bottom:8px;">
+        <el-row style="margin-bottom: 8px">
           <el-input type="textarea" v-model="jsonStr"></el-input>
         </el-row>
         <div class="btn-group">
@@ -23,17 +25,28 @@
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
         <el-table-column prop="replication" label="Replication" width="100" />
-        <el-table-column prop="scheduleNumber" label="Schedule Number" width="150">
+        <el-table-column
+          prop="scheduleNumber"
+          label="Schedule Number"
+          width="150"
+        >
           <template slot-scope="scope">
             <el-tag
               hit
               v-if="scope.row.scheduleNumber == scope.row.replication"
               :type="'success'"
-            >{{scope.row.scheduleNumber}}</el-tag>
-            <el-tag hit v-else :type="'warning'">{{scope.row.scheduleNumber}}</el-tag>
+              >{{ scope.row.scheduleNumber }}</el-tag
+            >
+            <el-tag hit v-else :type="'warning'">{{
+              scope.row.scheduleNumber
+            }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="scheduleHosts" label="Schedule Hosts" width="150">
+        <el-table-column
+          prop="scheduleHosts"
+          label="Schedule Hosts"
+          width="150"
+        >
           <template slot-scope="scope">
             <pre>{{ scope.row.scheduleHosts }}</pre>
           </template>
@@ -51,7 +64,12 @@
         </el-table-column>
         <el-table-column label="Action" width="120">
           <template slot-scope="scope">
-            <el-button type="text" icon="el-icon-delete" @click="removeTask(scope.row)">Remove</el-button>
+            <el-button
+              type="text"
+              icon="el-icon-delete"
+              @click="removeTask(scope.row)"
+              >Remove</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
