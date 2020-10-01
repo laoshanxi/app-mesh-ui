@@ -1,9 +1,9 @@
 <template>
-  <div class="app-container" style="clear:both;" v-loading="loading">
+  <div class="app-container" style="clear: both" v-loading="loading">
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
-          <el-tab-pane style="minWidth:600px;">
+          <el-tab-pane style="minwidth: 600px">
             <span slot="label">
               <i class="el-icon-s-operation"></i> Configuration
             </span>
@@ -11,13 +11,20 @@
               <el-collapse v-model="activeNames">
                 <el-collapse-item title="Basic" name="1">
                   <el-form-item label="Version" prop="Version">
-                    <el-input v-model="form.Version" readonly="true" :disabled="true"></el-input>
+                    <el-input
+                      v-model="form.Version"
+                      readonly="true"
+                      :disabled="true"
+                    ></el-input>
                   </el-form-item>
                   <el-form-item label="Description" prop="Description">
                     <el-input v-model="form.Description"></el-input>
                   </el-form-item>
                   <el-form-item label="Log level" prop="LogLevel">
-                    <el-select v-model="form.LogLevel" placeholder="Please select">
+                    <el-select
+                      v-model="form.LogLevel"
+                      placeholder="Please select"
+                    >
                       <el-option
                         v-for="item in options"
                         :key="item.value"
@@ -26,10 +33,18 @@
                       ></el-option>
                     </el-select>
                   </el-form-item>
-                  <el-form-item label="Schedule period seconds" prop="ScheduleIntervalSeconds">
-                    <el-input-number v-model="form.ScheduleIntervalSeconds"></el-input-number>
+                  <el-form-item
+                    label="Schedule period seconds"
+                    prop="ScheduleIntervalSeconds"
+                  >
+                    <el-input-number
+                      v-model="form.ScheduleIntervalSeconds"
+                    ></el-input-number>
                   </el-form-item>
-                  <el-form-item label="Default exec user" prop="DefaultExecUser">
+                  <el-form-item
+                    label="Default exec user"
+                    prop="DefaultExecUser"
+                  >
                     <el-input v-model="form.DefaultExecUser"></el-input>
                   </el-form-item>
                   <el-form-item label="Working dir" prop="WorkingDirectory">
@@ -38,8 +53,13 @@
                 </el-collapse-item>
 
                 <el-collapse-item title="Rest" name="2">
-                  <el-form-item label="Http thread pool size" prop="REST.HttpThreadPoolSize">
-                    <el-input-number v-model="form.REST.HttpThreadPoolSize"></el-input-number>
+                  <el-form-item
+                    label="Http thread pool size"
+                    prop="REST.HttpThreadPoolSize"
+                  >
+                    <el-input-number
+                      v-model="form.REST.HttpThreadPoolSize"
+                    ></el-input-number>
                   </el-form-item>
                   <el-form-item
                     label="Prometheus exporter listen port"
@@ -60,20 +80,37 @@
                       :inactive-value="false"
                     ></el-switch>
                   </el-form-item>
-                  <el-form-item label="Rest listen address" prop="REST.RestListenAddress">
+                  <el-form-item
+                    label="Rest listen address"
+                    prop="REST.RestListenAddress"
+                  >
                     <el-input v-model="form.REST.RestListenAddress"></el-input>
                   </el-form-item>
-                  <el-form-item label="Rest listen port" prop="REST.RestListenPort">
-                    <el-input-number v-model="form.REST.RestListenPort" :min="1024" :max="65534"></el-input-number>
+                  <el-form-item
+                    label="Rest listen port"
+                    prop="REST.RestListenPort"
+                  >
+                    <el-input-number
+                      v-model="form.REST.RestListenPort"
+                      :min="1024"
+                      :max="65534"
+                    ></el-input-number>
                   </el-form-item>
-                  <el-form-item label="SSL certificate file" prop="REST.SSL.SSLCertificateFile">
-                    <el-input v-model="form.REST.SSL.SSLCertificateFile"></el-input>
+                  <el-form-item
+                    label="SSL certificate file"
+                    prop="REST.SSL.SSLCertificateFile"
+                  >
+                    <el-input
+                      v-model="form.REST.SSL.SSLCertificateFile"
+                    ></el-input>
                   </el-form-item>
                   <el-form-item
                     label="SSL certificate key file"
                     prop="REST.SSL.SSLCertificateKeyFile"
                   >
-                    <el-input v-model="form.REST.SSL.SSLCertificateKeyFile"></el-input>
+                    <el-input
+                      v-model="form.REST.SSL.SSLCertificateKeyFile"
+                    ></el-input>
                   </el-form-item>
                   <el-form-item label="SSL enabled" prop="REST.SSL.SSLEnabled">
                     <el-switch
@@ -127,7 +164,10 @@
                       :inactive-value="false"
                     ></el-switch>
                   </el-form-item>
-                  <el-form-item label="Sync Consul user role" prop="Consul.enable_consul_security">
+                  <el-form-item
+                    label="Sync Consul user role"
+                    prop="Consul.enable_consul_security"
+                  >
                     <el-switch
                       v-model="form.Consul.enable_consul_security"
                       active-text="Yes"
@@ -137,7 +177,9 @@
                     ></el-switch>
                   </el-form-item>
                   <el-form-item label="Session TTL" prop="Consul.session_TTL">
-                    <el-input-number v-model="form.Consul.session_TTL"></el-input-number>
+                    <el-input-number
+                      v-model="form.Consul.session_TTL"
+                    ></el-input-number>
                   </el-form-item>
                   <el-form-item label="Consul URL" prop="Consul.url">
                     <el-input v-model="form.Consul.url"></el-input>
@@ -146,8 +188,15 @@
               </el-collapse>
 
               <el-form-item>
-                <el-button size="small" type="primary" @click.prevent="saveConfig()">Submit</el-button>
-                <el-button size="small" @click.prevent="reset()">Reset</el-button>
+                <el-button
+                  size="small"
+                  type="primary"
+                  @click.prevent="saveConfig()"
+                  >Submit</el-button
+                >
+                <el-button size="small" @click.prevent="reset()"
+                  >Reset</el-button
+                >
               </el-form-item>
             </el-form>
           </el-tab-pane>

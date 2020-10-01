@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     switchHost(host) {
-      EventBus.$emit(EVENTS.SWITCH_HOST, `https://${host}:6060`);
+      EventBus.$emit(EVENTS.SWITCH_HOST, `${host}`);
     },
     fetchData() {
       getLeader({ raw: true })
