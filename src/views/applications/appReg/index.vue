@@ -188,9 +188,6 @@ export default {
         name: [
           { required: true, message: "Name is not empty", trigger: "blur" },
         ],
-        command: [
-          { required: true, message: "Command is not empty", trigger: "blur" },
-        ],
         start_interval_seconds: [
           {
             pattern: /^P((([0-9]+Y)?([0-9]+M)?([0-9]+D)?(T([0-9]+H)?([0-9]+M)?([0-9]+S)?)?)|([0-9]+W))$/g,
