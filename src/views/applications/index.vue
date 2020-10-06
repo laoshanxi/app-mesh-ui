@@ -126,7 +126,7 @@
         <el-table-column
           prop="last_start_time"
           label="Last Start Time"
-          width="200"
+          width="260"
         >
           <template slot-scope="scope">
             <span v-if="scope.row.last_start_time">
