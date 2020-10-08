@@ -18,9 +18,9 @@ export default {
     if(resources && resources.fs){
       resources.fs.sort((a, b)=>{
         if(a.size < b.size){
-          return -1;
-        }else if(a.size > b.size){
           return 1;
+        }else if(a.size > b.size){
+          return -1;
         }else{
           if(a.mount_point < b.mount_point){
             return -1;
