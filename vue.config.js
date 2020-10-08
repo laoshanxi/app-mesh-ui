@@ -36,7 +36,7 @@ module.exports = {
       warnings: false,
       errors: true
     },
-    proxy:"https://195.123.228.208",
+    proxy:"https://124.114.76.136:20443",
     // proxy: {
     //   // change xxx-api/login => mock/login
     //   // detail: https://cli.vuejs.org/config/#devserver-proxy

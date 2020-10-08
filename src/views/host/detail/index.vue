@@ -53,7 +53,7 @@
         :key="1"
         :data="record.fs"
         border
-        :default-sort="{prop:'device'}"
+        :default-sort="{prop:'size'}"
         style="width: 100%"
         highlight-current-row
       >

@@ -3,14 +3,35 @@ import {getResources} from '@/api/resources';
 export default {
   getResources: function(vueComp){
     getResources().then((res)=>{
+      this.sortFS(res.data);
       vueComp.resources = res.data;
       vueComp.memoryData.push({
         time: vueComp.resources.systime.substring(11),
         memory: (vueComp.resources.mem_applications/1024).toFixed(0)
       });
+
     }, (res)=>{
 
     });
+  },
+  sortFS: function(resources){
+    if(resources && resources.fs){
+      resources.fs.sort((a, b)=>{
+        if(a.size < b.size){
+          return -1;
+        }else if(a.size > b.size){
+          return 1;
+        }else{
+          if(a.mount_point < b.mount_point){
+            return -1;
+          }else if(a.mount_point > b.mount_point){
+            return 1;
+          }else{
+            return 0;
+          }
+        }
+      });
+    }
   },
   getResourcesForChart: function(vueComp){
     getResources().then((res)=>{
