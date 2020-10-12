@@ -226,17 +226,23 @@ export default {
   methods: {
     setFromWithProps() {
       if (Object.keys(this.propForm).length !== 0) {
-        this.registerForm = this.merge(this.propForm, this.registerForm);
+        this.registerForm = this.merge(this.$clone(this.propForm), this.registerForm);
         let permission = this.registerForm.permission + "";
         this.registerForm.otherPermission =
           permission.length == 2 ? permission.substring(0, 1) : 3;
         this.registerForm.groupPermission =
           permission.length == 2 ? permission.substring(1, 2) : 3;
+        if(this.registerForm.daily_limitation){
+          this.daily_time_range = [this.registerForm.daily_limitation.daily_start, this.registerForm.daily_limitation.daily_end];
+        }else{
+          this.daily_time_range = null;
+        }
       } else {
         this.resetForm();
       }
     },
     resetForm() {
+      this.daily_time_range = null;
       this.registerForm = {
         name: "",
         command: "",
@@ -275,8 +281,7 @@ export default {
       this.$emit("close");
     },
     reset() {
-      this.$refs.regForm.resetFields();
-      this.registerForm.envs = [];
+      this.setFromWithProps();
     },
     addEnvReg() {
       this.registerForm.envs.push({
@@ -296,10 +301,10 @@ export default {
     },
     registerApp() {
       let other = this.registerForm.otherPermission
-        ? this.registerForm.otherPermission
+        ? this.registerForm.otherPermission + ""
         : "3";
       let group = this.registerForm.groupPermission
-        ? this.registerForm.groupPermission
+        ? this.registerForm.groupPermission + ""
         : "3";
       this.registerForm.permission = other + group;
       applications.registerApp(this);
@@ -309,7 +314,7 @@ export default {
       for (var key in local) {
         origin[key] =
           origin[key] && origin[key].toString() === "[object Object]"
-            ? this.merge(origin[key], local[key])
+            ? this.merge(local[key], origin[key])
             : (origin[key] = local[key]);
       }
       return origin;

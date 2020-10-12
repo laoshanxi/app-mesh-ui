@@ -22,6 +22,9 @@ Vue.use(JsonViewer);
 
 import AFTableColumn from 'af-table-column'// resolve column width issue
 Vue.use(AFTableColumn);
+
+import GlobalPlugin from './plugin/global.plugin.js'
+Vue.use(GlobalPlugin);
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

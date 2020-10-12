@@ -275,7 +275,6 @@ export default {
       this.appLogInfo = null;
       this.currentRow = null;
       this.currentRow = curRow;
-      console.info(this);
       if (this.$refs["appLog"]) {
         this.$refs["appLog"].initCurPage();
       }
@@ -314,6 +313,7 @@ export default {
     },
 
     currentRowChange(currentRow, oldCurrentRow) {
+      console.info(this.list, currentRow);
       this.currentRow = currentRow;
       if (!currentRow) {
         this.isSelected = false;
