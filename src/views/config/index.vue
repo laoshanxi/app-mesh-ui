@@ -50,7 +50,7 @@
                   <el-form-item label="Working dir" prop="WorkingDirectory">
                     <el-input v-model="form.WorkingDirectory"></el-input>
                   </el-form-item>
-                  <el-form-item label="Posix time zone for view" prop="TimeFormatPosixZone">
+                  <el-form-item label="Posix time zone for display" prop="TimeFormatPosixZone">
                     <el-input v-model="form.TimeFormatPosixZone"></el-input>
                   </el-form-item>
                 </el-collapse-item>
