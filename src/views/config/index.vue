@@ -50,6 +50,9 @@
                   <el-form-item label="Working dir" prop="WorkingDirectory">
                     <el-input v-model="form.WorkingDirectory"></el-input>
                   </el-form-item>
+                  <el-form-item label="Posix time zone for view" prop="TimeFormatPosixZone">
+                    <el-input v-model="form.TimeFormatPosixZone"></el-input>
+                  </el-form-item>
                 </el-collapse-item>
 
                 <el-collapse-item title="Rest" name="2">
@@ -184,6 +187,14 @@
                   <el-form-item label="Consul URL" prop="Consul.url">
                     <el-input v-model="form.Consul.url"></el-input>
                   </el-form-item>
+                  <el-form-item
+                    label="App Mesh Proxy URL"
+                    prop="Consul.appmesh_proxy_url"
+                  >
+                    <el-input
+                      v-model="form.Consul.appmesh_proxy_url"
+                    ></el-input>
+                  </el-form-item>
                 </el-collapse-item>
               </el-collapse>
 
@@ -237,6 +248,7 @@ export default {
         },
         LogLevel: "",
         ScheduleIntervalSeconds: "",
+        TimeFormatPosixZone: "",
         Consul: {
           datacenter: "",
           is_main: false,
@@ -244,6 +256,7 @@ export default {
           session_TTL: null,
           enable_consul_security: false,
           url: "",
+          appmesh_proxy_url: "",
         },
       },
       configData: null,
