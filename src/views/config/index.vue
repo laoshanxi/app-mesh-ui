@@ -50,7 +50,10 @@
                   <el-form-item label="Working dir" prop="WorkingDirectory">
                     <el-input v-model="form.WorkingDirectory"></el-input>
                   </el-form-item>
-                  <el-form-item label="Posix time zone for display" prop="TimeFormatPosixZone">
+                  <el-form-item
+                    label="Posix time zone for display"
+                    prop="TimeFormatPosixZone"
+                  >
                     <el-input v-model="form.TimeFormatPosixZone"></el-input>
                   </el-form-item>
                 </el-collapse-item>
@@ -99,6 +102,30 @@
                       :max="65534"
                     ></el-input-number>
                   </el-form-item>
+
+                  <el-form-item
+                    label="Separate REST Process"
+                    prop="REST.SeparateRestProcess"
+                  >
+                    <el-switch
+                      v-model="form.REST.SeparateRestProcess"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false"
+                    ></el-switch>
+                  </el-form-item>
+                  <el-form-item
+                    label="Separate REST TCP listen port"
+                    prop="REST.SeparateRestInternalPort"
+                  >
+                    <el-input-number
+                      v-model="form.REST.SeparateRestInternalPort"
+                      :min="1024"
+                      :max="65534"
+                    ></el-input-number>
+                  </el-form-item>
+
                   <el-form-item
                     label="SSL certificate file"
                     prop="REST.SSL.SSLCertificateFile"
@@ -231,11 +258,13 @@ export default {
         DefaultExecUser: "",
         WorkingDirectory: "",
         REST: {
-          HttpThreadPoolSize: "",
-          RestEnabled: "",
+          HttpThreadPoolSize: 6,
+          RestEnabled: true,
+          SeparateRestProcess: true,
+          SeparateRestInternalPort: 6059,
           RestListenAddress: "",
-          RestListenPort: null,
-          PrometheusExporterListenPort: 0,
+          RestListenPort: 6060,
+          PrometheusExporterListenPort: 6061,
           SSL: {
             SSLCertificateFile: "",
             SSLCertificateKeyFile: "",
@@ -243,11 +272,11 @@ export default {
           },
         },
         Security: {
-          JWTEnabled: "",
+          JWTEnabled: true,
           EncryptKey: false,
         },
         LogLevel: "",
-        ScheduleIntervalSeconds: "",
+        ScheduleIntervalSeconds: 2,
         TimeFormatPosixZone: "",
         Consul: {
           datacenter: "",
