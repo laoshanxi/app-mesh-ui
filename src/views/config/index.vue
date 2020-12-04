@@ -104,18 +104,6 @@
                   </el-form-item>
 
                   <el-form-item
-                    label="Separate REST Process"
-                    prop="REST.SeparateRestProcess"
-                  >
-                    <el-switch
-                      v-model="form.REST.SeparateRestProcess"
-                      active-text="Yes"
-                      :active-value="true"
-                      inactive-text="No"
-                      :inactive-value="false"
-                    ></el-switch>
-                  </el-form-item>
-                  <el-form-item
                     label="Separate REST TCP listen port"
                     prop="REST.SeparateRestInternalPort"
                   >
@@ -260,7 +248,6 @@ export default {
         REST: {
           HttpThreadPoolSize: 6,
           RestEnabled: true,
-          SeparateRestProcess: true,
           SeparateRestInternalPort: 6059,
           RestListenAddress: "",
           RestListenPort: 6060,
