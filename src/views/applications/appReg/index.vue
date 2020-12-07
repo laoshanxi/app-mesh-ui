@@ -55,8 +55,8 @@
           <el-input v-model="registerForm.metadata"></el-input>
         </el-form-item>
 
-        <el-form-item label="stdout cache size" prop="stdout_cache_size">
-          <el-input-number :min="0" v-model="registerForm.stdout_cache_size"></el-input-number>
+        <el-form-item label="stdout cache number" prop="stdout_cache_num">
+          <el-input-number :min="0" v-model="registerForm.stdout_cache_num"></el-input-number>
         </el-form-item>
 
         <el-divider></el-divider>
@@ -252,7 +252,7 @@ export default {
         otherPermission: 3,
         groupPermission: 3,
         metadata: "",
-        stdout_cache_size: 0,
+        stdout_cache_num: 0,
         status: 1, //0 disabled, 1 enabled
         daily_limitation: {
           daily_start: "",

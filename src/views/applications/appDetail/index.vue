@@ -115,8 +115,8 @@
       <Description term="CPU shares">{{
         record.resource_limit ? record.resource_limit.cpu_shares : "-"
       }}</Description>
-      <Description term="stdout cache size">{{
-        record.stdout_cache_size | formatEmpty
+      <Description term="stdout cache number">{{
+        record.stdout_cache_num | formatEmpty
       }}</Description>
     </DescriptionList>
     <el-divider></el-divider>
