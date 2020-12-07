@@ -11,8 +11,16 @@
 
 ## Build Docker image
 ```bash
+VER=1.9.0
+cd appmesh-ui/
 make
-make tar
+
+docker rmi laoshanxi/appmesh-ui:${VER} || true
+docker tag appmesh-ui:${VER} laoshanxi/appmesh-ui:${VER}
+docker push laoshanxi/appmesh-ui:${VER}
+
+docker tag laoshanxi/appmesh-ui:${VER} laoshanxi/appmesh-ui:latest
+docker push laoshanxi/appmesh-ui:latest
 ```
 
 ## Develop environment
@@ -35,9 +43,7 @@ npm run lint -- --fix
 ## Deploy
 Use host mode networking for Nginx reverse proxy (need accept host 443 port)
 ```bash
-tar zxvf appmesh-ui.1.9.0.tar.gz
-docker load -i appmesh-ui.1.9.0.tar
-appc reg -n appweb -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -c "nginx -g 'daemon off;'" -d laoshanxi/appmesh-ui:1.9.0 -f
+appc reg -n appweb --perm 11 -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -c "nginx -g 'daemon off;'" -d laoshanxi/appmesh-ui:1.9.0 -f
 ```
 
 ## Demo
