@@ -218,11 +218,8 @@
                   size="small"
                   type="primary"
                   @click.prevent="saveConfig()"
-                  >Submit</el-button
-                >
-                <el-button size="small" @click.prevent="reset()"
-                  >Reset</el-button
-                >
+                  >Submit</el-button>
+                <el-button size="small" @click.prevent="reset()">Reset</el-button>
               </el-form-item>
             </el-form>
           </el-tab-pane>

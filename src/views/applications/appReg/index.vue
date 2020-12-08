@@ -237,6 +237,16 @@ export default {
         }else{
           this.daily_time_range = null;
         }
+        if(this.registerForm.env){
+          this.registerForm.envs = [];
+          for(let env in this.registerForm.env){
+            this.registerForm.envs.push({
+              key: env,
+              name: env,
+              value: this.registerForm.env[env]
+            });
+          }
+        }
       } else {
         this.resetForm();
       }
