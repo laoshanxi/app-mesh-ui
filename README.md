@@ -5,7 +5,7 @@
 [App Mesh](https://github.com/laoshanxi/app-mesh)
 
 <div align=center>
-<img src="https://raw.githubusercontent.com/laoshanxi/app-mesh-ui/master/doc/diagram.png"width=434 height=334/>
+<img src="https://raw.githubusercontent.com/laoshanxi/app-mesh-ui/main/doc/diagram.png"width=434 height=334/>
 </div>
 
 
@@ -48,28 +48,28 @@ appc reg -n appweb --perm 11 -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/
 
 ## Demo
 
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/1.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/2.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/3.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/4.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/5.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/6.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/7.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/8.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/9.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/a.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/b.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/c.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/d.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/e.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/f.png" />
-<img src="https://raw.githubusercontent.com/laoshanxi/picture/master/appmesh/g.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/1.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/2.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/3.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/4.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/5.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/6.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/7.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/8.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/9.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/a.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/b.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/c.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/d.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/e.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/f.png" />
+<img src="https://raw.githubusercontent.com/laoshanxi/picture/main/appmesh/g.png" />
 
 ## Browsers support
 
 Modern browsers and Internet Explorer 10+.
 
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
+| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
 | --------- | --------- | --------- | --------- |
 | IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
 
