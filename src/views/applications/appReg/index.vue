@@ -225,6 +225,7 @@ export default {
   },
   methods: {
     setFromWithProps() {
+      this.registerForm.env = [];
       if (Object.keys(this.propForm).length !== 0) {
         this.registerForm = this.merge(this.$clone(this.propForm), this.registerForm);
         let permission = this.registerForm.permission + "";
