@@ -53,7 +53,11 @@ function refreshShellContents(vueComp,content){
           });
         }
       });
-    }else{
+      } else if(typeof(content) == 'object'){
+             vueComp.shellContents.push({
+             content: JSON.stringify(content)
+         });
+     }else {
       vueComp.shellContents.push({
           content: content
       });
