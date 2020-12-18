@@ -9,13 +9,13 @@ export function getApplications() {
 
 export function getApplicationByName(appname) {
   return request({
-    url: '/appmesh/app/'+appname,
+    url: '/appmesh/app/' + appname,
     method: 'get'
   })
 }
 
 export function getAppLog(appname, pageNo) {
-  if(pageNo || pageNo===0){
+  if (pageNo || pageNo === 0) {
     return request({
       url: `/appmesh/app/${appname}/output?keep_history=1&stdout_index=${pageNo}`,
       method: 'get'
@@ -68,13 +68,19 @@ export function runApp(timeout, sync, options) {
   return request({
     url: '/appmesh/app/' + (sync ? 'syncrun' : 'run') + '?timeout=' + timeout,
     method: 'POST',
-    data: options
+    data: options,
+    headers: {
+      "Accept": "text/plain"
+    }
   })
 }
 
 export function getOutput(appName, pid) {
   return request({
-    url: '/appmesh/app/' + appName + '/run/output?process_uuid='+pid,
-    method: 'GET'
+    url: '/appmesh/app/' + appName + '/run/output?process_uuid=' + pid,
+    method: 'GET',
+    headers: {
+      "Accept": "text/plain"
+    }
   })
 }
