@@ -1,4 +1,4 @@
-import { registerShApp, deleteApplication, runApp, getOutput } from '@/api/applications'
+import { runApp, getOutput } from '@/api/applications'
 
 function runFinished(vueComp) {
   vueComp.index = -1;
@@ -19,6 +19,13 @@ function refreshShellContents(vueComp, content) {
   command = command.replace(/^ +/g, "");
   if (command.indexOf("cd ") == 0) {
     vueComp.shellApp.working_dir = content;
+  }
+  if (typeof (content) == 'object') {
+    vueComp.shellContents.push({
+      type: "json",
+      content: content
+    });
+    return;
   }
   content = content + "";
   if (content.indexOf("ls:") !== 0 && (command.indexOf("ls ") == 0 || command == "ls")) {
@@ -52,10 +59,6 @@ function refreshShellContents(vueComp, content) {
           type: "file"
         });
       }
-    });
-  } else if (typeof (content) == 'object') {
-    vueComp.shellContents.push({
-      content: JSON.stringify(content)
     });
   } else {
     vueComp.shellContents.push({
