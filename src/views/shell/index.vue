@@ -22,6 +22,12 @@
       <div class="shell-content">
         <div v-for="line in shellContents" class="shell-line">
           <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{line.content}}</pre>
+          <json-viewer
+          boxed theme="my-awesome-json-theme"
+          v-if="line.type == 'json'"
+          :value="line.content"
+          style="line-height: 18px">
+          </json-viewer>
           <pre v-else :class="{'command':line.type=='command'}">{{line.content}}</pre>
         </div>
       </div>
@@ -204,5 +210,58 @@ export default {
 .shell-line > .file {
   color: #67c23a;
   cursor: pointer;
+}
+
+</style>
+<style lang="scss">
+.my-awesome-json-theme.boxed { border-color: #1B2948;}
+.my-awesome-json-theme {
+  background: #1B2948;
+  white-space: nowrap;
+  color: #999;
+  font-size: 14px;
+  font-family: Consolas, Menlo, Courier, monospace;
+  .jv-ellipsis {
+    color: #999;
+    display: inline-block;
+    line-height: 0.9;
+    font-size: 0.9em;
+    padding: 0px 4px 2px 4px;
+    border-radius: 3px;
+    vertical-align: 2px;
+    cursor: pointer;
+    user-select: none;
+  }
+  
+  .jv-container.jv-button { color: #49b3ff }
+  .jv-container.jv-key { color: #999 }
+  .jv-item {
+    &.jv-array { color: #999 }
+    &.jv-boolean { color: #fc1e70 }
+    &.jv-function { color: #067bca }
+    &.jv-number { color: #fc1e70 }
+    &.jv-number-float { color: #fc1e70 }
+    &.jv-number-integer { color: #fc1e70 }
+    &.jv-object { color: #999 }
+    &.jv-undefined { color: #e08331 }
+    &.jv-string {
+      color: #42b983;
+      word-break: break-word;
+      white-space: normal;
+    }
+  }
+  .jv-code {
+    .jv-toggle {
+      &:before {
+        padding: 0px 2px;
+        border-radius: 2px;
+      }
+      &:hover {
+        &:before {
+          background: #1B2948;
+        }
+      }
+    }
+  }
 }
 </style>
