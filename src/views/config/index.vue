@@ -173,9 +173,9 @@
                       :inactive-value="false"
                     ></el-switch>
                   </el-form-item>
-                  <el-form-item label="Worker node" prop="Consul.is_node">
+                  <el-form-item label="Worker node" prop="Consul.is_worker">
                     <el-switch
-                      v-model="form.Consul.is_node"
+                      v-model="form.Consul.is_worker"
                       active-text="Yes"
                       :active-value="true"
                       inactive-text="No"
@@ -183,7 +183,7 @@
                     ></el-switch>
                   </el-form-item>
                   <el-form-item
-                    label="Sync Consul user role"
+                    label="Store user role in Consul"
                     prop="Consul.enable_consul_security"
                   >
                     <el-switch
@@ -265,7 +265,7 @@ export default {
         Consul: {
           datacenter: "",
           is_main: false,
-          is_node: false,
+          is_worker: false,
           session_TTL: null,
           enable_consul_security: false,
           url: "",
