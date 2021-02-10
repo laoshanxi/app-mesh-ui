@@ -202,6 +202,12 @@
                   <el-form-item label="Consul URL" prop="Consul.url">
                     <el-input v-model="form.Consul.url"></el-input>
                   </el-form-item>
+                  <el-form-item label="Auth user" prop="Consul.user">
+                    <el-input v-model="form.Consul.user"></el-input>
+                  </el-form-item>
+                  <el-form-item label="Auth password" prop="Consul.pass">
+                    <el-input v-model="form.Consul.pass"></el-input>
+                  </el-form-item>
                   <el-form-item
                     label="App Mesh Proxy URL"
                     prop="Consul.appmesh_proxy_url"
@@ -218,8 +224,11 @@
                   size="small"
                   type="primary"
                   @click.prevent="saveConfig()"
-                  >Submit</el-button>
-                <el-button size="small" @click.prevent="reset()">Reset</el-button>
+                  >Submit</el-button
+                >
+                <el-button size="small" @click.prevent="reset()"
+                  >Reset</el-button
+                >
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -269,6 +278,8 @@ export default {
           session_TTL: null,
           enable_consul_security: false,
           url: "",
+          user: "",
+          pass: "",
           appmesh_proxy_url: "",
         },
       },
