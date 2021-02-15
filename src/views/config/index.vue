@@ -202,14 +202,14 @@
                   <el-form-item label="Consul URL" prop="Consul.url">
                     <el-input v-model="form.Consul.url"></el-input>
                   </el-form-item>
-                  <el-form-item label="Auth user" prop="Consul.user">
+                  <el-form-item label="Basic auth user" prop="Consul.user">
                     <el-input v-model="form.Consul.user"></el-input>
                   </el-form-item>
-                  <el-form-item label="Auth password" prop="Consul.pass">
+                  <el-form-item label="Basic auth password" prop="Consul.pass">
                     <el-input v-model="form.Consul.pass"></el-input>
                   </el-form-item>
                   <el-form-item
-                    label="App Mesh Proxy URL"
+                    label="App Mesh expose URL"
                     prop="Consul.appmesh_proxy_url"
                   >
                     <el-input
