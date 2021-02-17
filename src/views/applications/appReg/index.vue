@@ -76,6 +76,13 @@
         <el-form-item label="Start interval" prop="start_interval_seconds">
           <el-input v-model="registerForm.start_interval_seconds"></el-input>(ISO 8601 durations or seconds)
         </el-form-item>
+        <el-form-item label="Cron interval expr" prop="cron">
+          <el-switch
+            v-model="registerForm.cron"
+            :active-value="true"
+            :inactive-value="false"
+          ></el-switch>
+        </el-form-item>
         <el-form-item label="Start interval timeout" prop="start_interval_timeout">
           <el-input v-model="registerForm.start_interval_timeout"></el-input>(ISO 8601 durations or seconds)
         </el-form-item>
@@ -188,13 +195,6 @@ export default {
         name: [
           { required: true, message: "Name is not empty", trigger: "blur" },
         ],
-        start_interval_seconds: [
-          {
-            pattern: /^P((([0-9]+Y)?([0-9]+M)?([0-9]+D)?(T([0-9]+H)?([0-9]+M)?([0-9]+S)?)?)|([0-9]+W))$/g,
-            message: "Start interval seconds is invalid.",
-            trigger: "blur",
-          },
-        ],
         start_interval_timeout: [
           {
             pattern: /^P((([0-9]+Y)?([0-9]+M)?([0-9]+D)?(T([0-9]+H)?([0-9]+M)?([0-9]+S)?)?)|([0-9]+W))$/g,
@@ -282,6 +282,7 @@ export default {
         pid: null,
 
         start_interval_seconds: null,
+        cron: false,
         start_time: "",
         start_interval_timeout: null,
 
