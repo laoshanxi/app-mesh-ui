@@ -65,7 +65,7 @@
       }}</Description>
       <Description term="Last start time">
         <span v-if="record.last_start_time">{{
-          record.last_start_time | parseTime("{y}-{m}-{d} {h}:{i}")
+          record.last_start_time | formatEmpty
         }}</span>
         <span v-else>-</span>
       </Description>
