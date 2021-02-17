@@ -74,7 +74,7 @@
         <el-divider></el-divider>
 
         <el-form-item label="Start interval" prop="start_interval_seconds">
-          <el-input v-model="registerForm.start_interval_seconds"></el-input>(ISO 8601 durations or seconds)
+          <el-input v-model="registerForm.start_interval_seconds"></el-input>(ISO 8601 durations / seconds / cron expr)
         </el-form-item>
         <el-form-item label="Cron interval expr" prop="cron">
           <el-switch
