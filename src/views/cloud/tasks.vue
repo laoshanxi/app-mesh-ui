@@ -25,6 +25,7 @@
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
         <el-table-column prop="replication" label="Replication" width="100" />
+        <el-table-column prop="memoryMB" label="memoryMB" width="100" />
         <el-table-column
           prop="scheduleNumber"
           label="Schedule Number"

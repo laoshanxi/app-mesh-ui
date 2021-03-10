@@ -1,6 +1,7 @@
 {
     "replication": 3,
     "port": 6666,
+    "memoryMB": 1024,
     "content": {
         "name": "myapp",
         "shell_mode": true,
