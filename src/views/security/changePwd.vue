@@ -74,7 +74,7 @@ export default {
         this.loading = true;
         if (valid) {
           updatePwd(this.$store.getters.name, {
-            NewPassword: Base64.encode(this.form.newPwd),
+            "New-Password": Base64.encode(this.form.newPwd),
           }).then(
             (res) => {
               this.$message.success("Password update successfully.", 5000);

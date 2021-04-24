@@ -1,5 +1,5 @@
 RELEASE_DIR=./release
-VER=1.9.1
+VER=1.9.2
 NODE_VER=10.17.0-jessie
 DOCKER_IMG_NAME=appmesh-ui:${VER}
 

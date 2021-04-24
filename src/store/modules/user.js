@@ -40,10 +40,10 @@ const actions = {
   login({ commit }, userInfo) {
     const { UserName, Password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ UserName: Base64.encode(UserName.trim()), Password: Base64.encode(Password) }).then(response => {
+      login({ Username: Base64.encode(UserName.trim()), Password: Base64.encode(Password) }).then(response => {
         const { data } = response;
         let user = {
-          token: data.AccessToken,
+          token: data['Access-Token'],
           name: data.profile.name,
           account: UserName,
           auth: Password,

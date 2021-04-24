@@ -117,7 +117,7 @@ export default {
       );
     },
     submitUpload() {
-      this.headers["FilePath"] = encodeURI(
+      this.headers["File-Path"] = encodeURI(
         this.form.filepath + this.form.filename
       );
       this.headers["Authorization"] = "Bearer " + getToken();

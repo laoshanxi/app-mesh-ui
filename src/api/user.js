@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
 export function login(data) {
-  data["ExpireSeconds"] = 60 * 60 * 8;
+  data["Expire-Seconds"] = 60 * 60 * 8;
   return request({
     url: '/appmesh/login',
     method: 'post',
