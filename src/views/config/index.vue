@@ -50,12 +50,6 @@
                   <el-form-item label="Working dir" prop="WorkingDirectory">
                     <el-input v-model="form.WorkingDirectory"></el-input>
                   </el-form-item>
-                  <el-form-item
-                    label="Posix time zone for display"
-                    prop="TimeFormatPosixZone"
-                  >
-                    <el-input v-model="form.TimeFormatPosixZone"></el-input>
-                  </el-form-item>
                 </el-collapse-item>
 
                 <el-collapse-item title="Rest" name="2">
@@ -270,7 +264,6 @@ export default {
         },
         LogLevel: "",
         ScheduleIntervalSeconds: 2,
-        TimeFormatPosixZone: "",
         Consul: {
           datacenter: "",
           is_main: false,
