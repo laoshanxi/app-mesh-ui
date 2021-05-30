@@ -134,24 +134,21 @@
                     ></el-switch>
                   </el-form-item>
                 </el-collapse-item>
-                <el-collapse-item title="Security" name="3">
-                  <el-form-item label="JWT enabled" prop="Security.JWTEnabled">
+                <el-collapse-item title="JWT" name="3">
+                  <el-form-item label="JWT enabled" prop="REST.JWT.JWTEnabled">
                     <el-switch
-                      v-model="form.Security.JWTEnabled"
+                      v-model="form.REST.JWT.JWTEnabled"
                       active-text="Yes"
                       :active-value="true"
                       inactive-text="No"
                       :inactive-value="false"
                     ></el-switch>
                   </el-form-item>
-                  <el-form-item label="Encrypt key" prop="Security.EncryptKey">
-                    <el-switch
-                      v-model="form.Security.EncryptKey"
-                      active-text="Yes"
-                      :active-value="true"
-                      inactive-text="No"
-                      :inactive-value="false"
-                    ></el-switch>
+                  <el-form-item label="JWT Salt" prop="REST.JWT.JWTSalt">
+                    <el-input v-model="form.REST.JWT.JWTSalt"></el-input>
+                  </el-form-item>
+                  <el-form-item label="JWT Interface" prop="REST.JWT.SecurityInterface">
+                    <el-input v-model="form.REST.JWT.SecurityInterface"></el-input>
                   </el-form-item>
                 </el-collapse-item>
                 <el-collapse-item title="Consul" name="4">
@@ -257,10 +254,11 @@ export default {
             SSLCertificateKeyFile: "",
             SSLEnabled: "",
           },
-        },
-        Security: {
-          JWTEnabled: true,
-          EncryptKey: false,
+          JWT: {
+            JWTSalt: "",
+            JWTEnabled: false,
+            SecurityInterface: "",
+          },
         },
         LogLevel: "",
         ScheduleIntervalSeconds: 2,
