@@ -118,15 +118,20 @@
             {{ scope.row.memory | formatMemory }}
           </template>
         </el-table-column>
-        <el-table-column label="Return" width="110">
+        <el-table-column label="Return" width="70">
           <template slot-scope="scope">
             {{ scope.row.return | formatEmpty }}
+          </template>
+        </el-table-column>
+         <el-table-column label="Starts" width="70">
+          <template slot-scope="scope">
+            {{ scope.row.starts | formatEmpty }}
           </template>
         </el-table-column>
         <el-table-column
           prop="last_start_time"
           label="Last Start Time"
-          width="260"
+          width="220"
         >
           <template slot-scope="scope">
             <span v-if="scope.row.last_start_time">
