@@ -53,12 +53,12 @@
           </template>
         </el-table-column>
         <el-table-column prop="port" label="Port" width="80" />
-        <el-table-column prop="content" label="Application">
+        <el-table-column prop="content" label="Application" width="340">
           <template slot-scope="scope">
             <pre>{{ scope.row.content }}</pre>
           </template>
         </el-table-column>
-        <el-table-column prop="condition" label="Condition">
+        <el-table-column prop="condition" label="Condition" width="280">
           <template slot-scope="scope">
             <pre>{{ scope.row.condition }}</pre>
           </template>
@@ -97,57 +97,20 @@ export default {
       getTask({ recurse: true })
         .then((res) => {
           let _tableData = this.formatData(res.data);
-          _tableData.map((e, index) => {
-            e["scheduleNumber"] = 0;
-            e["scheduleHosts"] = [];
-          });
-          getScheduleResult()
-            .then((res) => {
-              this.tableData = this.formatScheduleResult(res.data, _tableData);
-            })
-            .catch((res) => {
-              console.info(res);
-              this.tableData = _tableData;
-            });
+          this.tableData = _tableData;
         })
         .catch((res) => {
           console.info(res);
         });
     },
-    formatScheduleResult(data, tData) {
-      if (!data) return;
-      let taskMap = {};
-      const decodedData = data.map((e) => JSON.parse(atob(e.Value)));
-      decodedData.map((e, index) => {
-        let hostName = this.formatName(data[index].Key);
-        if (e instanceof Array) {
-          e.map((e1, i) => {
-            let hostList = taskMap[e1.app];
-            if (hostList == null) {
-              hostList = [];
-              taskMap[e1.app] = hostList;
-            }
-            hostList.push(hostName);
-          });
-        }
-
-        return e;
-      });
-      tData.map((e, index) => {
-        e["scheduleNumber"] = taskMap[e.name] ? taskMap[e.name].length : 0;
-        e["scheduleHosts"] = taskMap[e.name] ? taskMap[e.name] : [];
-        return e;
-      });
-      return tData;
-    },
     formatData(data) {
       if (!data) return [];
-      const filterByPath = data.filter((e) => !/task$/.test(e.Key)); //filter data by task's path
-      const decodedData = filterByPath.map((e) => JSON.parse(atob(e.Value)));
-      return decodedData.map((e, index) => {
-        e.name = this.formatName(filterByPath[index].Key);
+      return Object.values(data).map((e, index) => {
+        e.name = this.formatName(e.content.name);
         e.content = JSON.stringify(e.content, null, 4);
         e.condition = JSON.stringify(e.condition, null, 4);
+        e["scheduleNumber"] = e.status ? Object.keys(e.status).length : 0;
+        e["scheduleHosts"] = e.status ? Object.keys(e.status) : [];
         return e;
       });
     },

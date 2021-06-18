@@ -13,34 +13,34 @@ export const getLeader = (params)=>{
     })
 }
 export const getNodes = (params)=>{
-    return requestForBaseUrl({
-        url:`${requestUrl}/cluster/nodes`,
+    return request({
+        url:`/appmesh/cloud/nodes`,
         method:'get',
-        params
+        params 
     })
 }
 export const deleteNode = (name)=>{
-    return requestForBaseUrl({
-        url:`${requestUrl}/cluster/nodes/${name}`,
+    return request({
+        url:`/appmesh/cloud/nodes/${name}`,
         method:'delete'
     })
 }
 export const getTask = (params)=>{
-    return requestForBaseUrl({
-        url:`${requestUrl}/cluster/tasks`,
+    return request({
+        url:`/appmesh/cloud/applications`,
         method:'get',
         params
     })
 }
 export const deleteTask = (name)=>{
-    return requestForBaseUrl({
-        url:`${requestUrl}/cluster/tasks/${name}`,
+    return request({
+        url:`/appmesh/cloud/app/${name}`,
         method:'delete'
     })
 }
 export const addTask = (params,name)=>{
-    return requestForBaseUrl({
-        url:`${requestUrl}/cluster/tasks/${name}`,
+    return request({
+        url:`/appmesh/cloud/app/${name}`,
         method:'put',
         data:params
     })

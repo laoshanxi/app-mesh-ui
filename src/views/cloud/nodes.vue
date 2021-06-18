@@ -47,24 +47,13 @@
             scope.row.update | parseTime
           }}</template>
         </el-table-column>
-        <el-table-column label width="260">
-          <template slot-scope="scope">
-            <el-button
-              type="text"
-              icon="el-icon-delete"
-              @click="removeNode(scope.row)"
-              >Remove</el-button
-            >
-          </template>
-        </el-table-column>
       </el-table>
     </el-row>
   </div>
 </template>
 <script>
-import { getLeader, getNodes, deleteNode } from "@/api/cloud";
+import { getNodes } from "@/api/cloud";
 import mixin from "./mixin";
-import request from "@/utils/request";
 import EventBus from "@/utils/event.bus.js";
 import { EVENTS } from "@/utils/constants.js";
 
@@ -83,33 +72,33 @@ export default {
       EventBus.$emit(EVENTS.SWITCH_HOST, `${host}`);
     },
     fetchData() {
-      getLeader({ raw: true })
-        .then((res) => {
-          this.leader = res.data;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
       getNodes({ recurse: true }).then((res) => {
         const { data } = res;
+        console.info(data);
         this.tableData = this.formatData(data);
       });
     },
     formatData(data) {
       if (!data) return [];
-      const decodedData = data.map((e) => JSON.parse(atob(e.Value)));
-      return decodedData.map((e, index) => {
+      return Object.values(data).map((e, index) => {
         const {
           resource: {
             cpu_cores: cpuCores,
             mem_free_bytes: freeMem,
             mem_total_bytes: totalMem,
           },
+          label: {
+            HOST_NAME: hostFullName,
+          },
+          leader: leader,
           appmesh: appmeshUrl,
         } = e;
-        const usage = (totalMem - freeMem) / totalMem;
-        const update = new Date(data[index].Flags * 1000);
-        const hostName = this.formatName(data[index].Key);
+        const usage = (totalMem - freeMem ? freeMem : totalMem) / totalMem;
+        const update = new Date();
+        const hostName = this.formatName(hostFullName);
+        if(leader){
+          this.leader = hostName;
+        }
         return {
           hostName,
           cpuCores,
@@ -119,25 +108,6 @@ export default {
           update,
           appmeshUrl,
         };
-      });
-    },
-    removeNode(row) {
-      this.$confirm(
-        `Do you want to remove the host <${row.hostName}> ?`,
-        "Tooltip",
-        {
-          confirmButtonText: "Confirm",
-          cancelButtonText: "Cancel",
-          type: "warning",
-        }
-      ).then(async () => {
-        const { data } = await deleteNode(row.hostName);
-        if (data) {
-          const index = this.tableData.findIndex(
-            (e) => e.hostName === row.hostName
-          );
-          this.tableData.splice(index, 1);
-        }
       });
     },
   },
