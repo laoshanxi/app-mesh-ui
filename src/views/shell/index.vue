@@ -24,7 +24,7 @@
           <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{line.content}}</pre>
           <json-viewer
           boxed theme="my-awesome-json-theme"
-          v-if="line.type == 'json'"
+          v-else-if="line.type == 'json'"
           :value="line.content"
           style="line-height: 18px">
           </json-viewer>
