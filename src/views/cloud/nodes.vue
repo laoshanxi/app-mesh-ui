@@ -42,11 +42,6 @@
         <el-table-column prop="cpuCores" label="Cpu cores">
           <template slot-scope="scope">{{ scope.row.cpuCores }}</template>
         </el-table-column>
-        <el-table-column label="Refresh time" prop="update" width="200">
-          <template slot-scope="scope">{{
-            scope.row.update | parseTime
-          }}</template>
-        </el-table-column>
       </el-table>
     </el-row>
   </div>
@@ -94,7 +89,6 @@ export default {
           appmesh: appmeshUrl,
         } = e;
         const usage = (totalMem - freeMem ? freeMem : totalMem) / totalMem;
-        const update = new Date();
         const hostName = this.formatName(hostFullName);
         if(leader){
           this.leader = hostName;
@@ -105,7 +99,6 @@ export default {
           freeMem,
           totalMem,
           usage,
-          update,
           appmeshUrl,
         };
       });
