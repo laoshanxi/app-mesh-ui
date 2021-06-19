@@ -152,21 +152,18 @@
                   </el-form-item>
                 </el-collapse-item>
                 <el-collapse-item title="Consul" name="4">
-                  <el-form-item label="DataCenter" prop="Consul.datacenter">
-                    <el-input v-model="form.Consul.datacenter"></el-input>
-                  </el-form-item>
-                  <el-form-item label="Main node" prop="Consul.is_main">
+                  <el-form-item label="Main node" prop="Consul.IsMainNode">
                     <el-switch
-                      v-model="form.Consul.is_main"
+                      v-model="form.Consul.IsMainNode"
                       active-text="Yes"
                       :active-value="true"
                       inactive-text="No"
                       :inactive-value="false"
                     ></el-switch>
                   </el-form-item>
-                  <el-form-item label="Worker node" prop="Consul.is_worker">
+                  <el-form-item label="Worker node" prop="Consul.IsWorkerNode">
                     <el-switch
-                      v-model="form.Consul.is_worker"
+                      v-model="form.Consul.IsWorkerNode"
                       active-text="Yes"
                       :active-value="true"
                       inactive-text="No"
@@ -175,36 +172,30 @@
                   </el-form-item>
                   <el-form-item
                     label="Store user role in Consul"
-                    prop="Consul.enable_consul_security"
+                    prop="Consul.EnableConsulSecurity"
                   >
                     <el-switch
-                      v-model="form.Consul.enable_consul_security"
+                      v-model="form.Consul.EnableConsulSecurity"
                       active-text="Yes"
                       :active-value="true"
                       inactive-text="No"
                       :inactive-value="false"
                     ></el-switch>
                   </el-form-item>
-                  <el-form-item label="Session TTL" prop="Consul.session_TTL">
+                  <el-form-item label="Session TTL" prop="Consul.SessionTTL">
                     <el-input-number
-                      v-model="form.Consul.session_TTL"
+                      v-model="form.Consul.SessionTTL"
                     ></el-input-number>
                   </el-form-item>
-                  <el-form-item label="Consul URL" prop="Consul.url">
-                    <el-input v-model="form.Consul.url"></el-input>
-                  </el-form-item>
-                  <el-form-item label="Basic auth user" prop="Consul.user">
-                    <el-input v-model="form.Consul.user"></el-input>
-                  </el-form-item>
-                  <el-form-item label="Basic auth password" prop="Consul.pass">
-                    <el-input v-model="form.Consul.pass"></el-input>
+                  <el-form-item label="Consul URL" prop="Consul.Url">
+                    <el-input v-model="form.Consul.Url"></el-input>
                   </el-form-item>
                   <el-form-item
                     label="App Mesh expose URL"
-                    prop="Consul.appmesh_proxy_url"
+                    prop="Consul.AppmeshProxyUrl"
                   >
                     <el-input
-                      v-model="form.Consul.appmesh_proxy_url"
+                      v-model="form.Consul.AppmeshProxyUrl"
                     ></el-input>
                   </el-form-item>
                 </el-collapse-item>
@@ -263,15 +254,12 @@ export default {
         LogLevel: "",
         ScheduleIntervalSeconds: 2,
         Consul: {
-          datacenter: "",
-          is_main: false,
-          is_worker: false,
-          session_TTL: null,
-          enable_consul_security: false,
-          url: "",
-          user: "",
-          pass: "",
-          appmesh_proxy_url: "",
+          IsMainNode: false,
+          IsWorkerNode: false,
+          SessionTTL: null,
+          EnableConsulSecurity: false,
+          Url: "",
+          AppmeshProxyUrl: "",
         },
       },
       configData: null,
