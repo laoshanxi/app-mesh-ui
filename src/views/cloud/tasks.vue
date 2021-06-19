@@ -158,10 +158,16 @@ export default {
   flex-direction: column;
   & > div:nth-child(1) /deep/ {
     flex: 1;
+    display: flex;
+    flex-direction: row;
     .el-textarea {
       height: 100%;
+      flex: 1;
+      max-width: 1000px !important;
       > textarea {
         height: 100%;
+        width: 100%;
+        max-width: 1000px !important;
       }
     }
   }
