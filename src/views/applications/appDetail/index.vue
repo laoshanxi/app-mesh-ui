@@ -63,6 +63,9 @@
       <Description term="Memory">{{
         record.memory | formatMemory
       }}</Description>
+      <Description term="CPU Usage">{{
+        record.cpu | formatMemory
+      }}</Description>
       <Description term="Last start time">
         <span v-if="record.last_start_time">{{
           record.last_start_time | formatEmpty
@@ -74,6 +77,12 @@
       }}</Description>
       <Description term="Container id">{{
         record.container_id | formatEmpty
+      }}</Description>
+      <Description term="Start number">{{
+        record.starts | formatEmpty
+      }}</Description>
+       <Description term="File descriptor">{{
+        record.fd | formatEmpty
       }}</Description>
       <Description term="Last error">{{ record.last_error }}</Description>
     </DescriptionList>
