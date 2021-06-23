@@ -32,7 +32,6 @@
       <Description term="Finish cmd">{{
         record.fini_command | formatEmpty
       }}</Description>
-      <Description term="Health">{{ record.health | formatEmpty }}</Description>
       <Description term="Healthcheck cmd">{{
         record.health_check_cmd | formatEmpty
       }}</Description>
@@ -59,6 +58,7 @@
 
     <DescriptionList title="Runtime infomation" col="12">
       <Description term="PID">{{ record.pid | formatEmpty }}</Description>
+      <Description term="Health">{{ record.health | formatEmpty }}</Description>
       <Description term="Return">{{ record.return | formatEmpty }}</Description>
       <Description term="Memory">{{
         record.memory | formatMemory
@@ -81,7 +81,7 @@
       <Description term="Start number">{{
         record.starts | formatEmpty
       }}</Description>
-       <Description term="File descriptor">{{
+      <Description term="File descriptor">{{
         record.fd | formatEmpty
       }}</Description>
       <Description term="Last error">{{ record.last_error }}</Description>
