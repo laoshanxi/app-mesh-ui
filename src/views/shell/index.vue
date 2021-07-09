@@ -101,6 +101,7 @@ export default {
   methods: {
     clearScreen() {
       this.shellContents = [];
+      this.input = "";
     },
     clearScreenByKeyDown(e) {
       if (e.key == "Control") {

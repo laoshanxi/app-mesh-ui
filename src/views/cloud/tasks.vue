@@ -80,7 +80,7 @@
 <script>
 import mixin from "./mixin";
 import defaultTask from "./task.json";
-import { getTask, deleteTask, addTask, getScheduleResult } from "@/api/cloud";
+import { getTask, deleteTask, addTask } from "@/api/cloud";
 export default {
   name: "Task",
   mixins: [mixin],
@@ -94,7 +94,7 @@ export default {
   },
   methods: {
     fetchData() {
-      getTask({ recurse: true })
+      getTask()
         .then((res) => {
           let _tableData = this.formatData(res.data);
           this.tableData = _tableData;

@@ -67,7 +67,7 @@ export default {
       EventBus.$emit(EVENTS.SWITCH_HOST, `${host}`);
     },
     fetchData() {
-      getNodes({ recurse: true }).then((res) => {
+      getNodes().then((res) => {
         const { data } = res;
         console.info(data);
         this.tableData = this.formatData(data);
