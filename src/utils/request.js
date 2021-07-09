@@ -7,7 +7,8 @@ import router from '@/router'
 // create an axios instance
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  baseURL: window.location.origin,
+  // baseURL: window.location.origin,
+  baseURL: "https://laoshanxi.imwork.net:26060",
   // withCredentials: true, // send cookies when cross-domain requests
   //timeout: 5000 // request timeout
 })
@@ -22,16 +23,15 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['Authorization'] = "Bearer " + getToken()
     }
-    if(config.curBaseUrl) {
-      config.baseURL = config.curBaseUrl;
-    }else{
-      config.baseURL = store.getters.baseUrl;
-    }
+    // if(config.curBaseUrl) {
+    //   config.baseURL = config.curBaseUrl;
+    // }else{
+    //   config.baseURL = store.getters.baseUrl;
+    // }
     return config
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
     return Promise.reject(error)
   }
 )
@@ -77,11 +77,9 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
     let errMessage = error.message;
-    if(error.response && error.response.data){
-      errMessage = errMessage + ": " + error.response.data;
-
+    if(error.response && error.response.data && error.response.data.message){
+      errMessage = errMessage + ": " + error.response.data.message;
     }
     error.message = errMessage;
     Message({
@@ -89,7 +87,7 @@ service.interceptors.response.use(
       type: 'error',
       duration: 5 * 1000
     })
-    if(error.response && error.response.data && error.response.data.indexOf("verification failed")>-1){
+    if(error.response && error.response.data && error.response.data.message && error.response.data.message.indexOf("verification failed")>-1){
       MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
         confirmButtonText: 'Re-Login',
         cancelButtonText: 'Cancel',
