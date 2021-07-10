@@ -148,7 +148,17 @@
                     <el-input v-model="form.REST.JWT.JWTSalt"></el-input>
                   </el-form-item>
                   <el-form-item label="JWT Interface" prop="REST.JWT.SecurityInterface">
-                    <el-input v-model="form.REST.JWT.SecurityInterface"></el-input>
+                    <el-select
+                      v-model="form.REST.JWT.SecurityInterface"
+                      placeholder="Please select"
+                    >
+                      <el-option
+                        v-for="item in JWTOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      ></el-option>
+                    </el-select>
                   </el-form-item>
                 </el-collapse-item>
                 <el-collapse-item title="Consul" name="4">
@@ -287,6 +297,16 @@ export default {
         {
           label: "ERROR",
           value: "ERROR",
+        },
+      ],
+      JWTOptions: [
+        {
+          label: "json",
+          value: "json",
+        },
+        {
+          label: "ldap",
+          value: "ldap",
         },
       ],
     };
