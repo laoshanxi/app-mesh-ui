@@ -7,8 +7,7 @@ import router from '@/router'
 // create an axios instance
 const service = axios.create({
   // baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  // baseURL: window.location.origin,
-  baseURL: "https://laoshanxi.imwork.net:26060",
+  baseURL: window.location.origin,
   // withCredentials: true, // send cookies when cross-domain requests
   //timeout: 5000 // request timeout
 })
@@ -23,11 +22,11 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['Authorization'] = "Bearer " + getToken()
     }
-    // if(config.curBaseUrl) {
-    //   config.baseURL = config.curBaseUrl;
-    // }else{
-    //   config.baseURL = store.getters.baseUrl;
-    // }
+    if(config.curBaseUrl) {
+      config.baseURL = config.curBaseUrl;
+    }else{
+      config.baseURL = store.getters.baseUrl;
+    }
     return config
   },
   error => {
