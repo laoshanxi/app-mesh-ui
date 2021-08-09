@@ -74,7 +74,7 @@ function refreshShellContents(vueComp, content) {
 }
 function getOutputValue(vueComp, data) {
   getOutput(data.name, data.process_uuid).then((res) => {
-    if (res.status == 201) {
+    if (res.headers.hasOwnProperty('Exit-Code')) {
       runFinished(vueComp);
     }
     if (res.data == "") {

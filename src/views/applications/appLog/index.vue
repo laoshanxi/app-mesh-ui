@@ -30,7 +30,7 @@ export default {
       this.curPage = 1;
     },
     getAppLogByName(index) {
-      applications.getAppLogForLogPage(this, this.app.name, index - 1);
+      applications.getAppLogForLogPage(this, this.app.name, index - 1, 0);
     },
   },
 };

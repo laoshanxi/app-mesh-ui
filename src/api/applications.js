@@ -14,15 +14,17 @@ export function getApplicationByName(appname) {
   })
 }
 
-export function getAppLog(appname, pageNo) {
-  if (pageNo || pageNo === 0) {
-    return request({
-      url: `/appmesh/app/${appname}/output?keep_history=1&stdout_index=${pageNo}`,
-      method: 'get'
-    })
+export function getAppLog(appname, pageNo, position) {
+  let pageIndex = 0
+  let pagePosition = 0
+  if (pageNo) {
+    pageIndex = pageNo
+  }
+  if (position) {
+    pagePosition = position
   }
   return request({
-    url: `/appmesh/app/${appname}/output?keep_history=1`,
+    url: `/appmesh/app/${appname}/output?stdout_index=${pageIndex}&stdout_position=${pagePosition}`,
     method: 'get'
   })
 }
