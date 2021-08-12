@@ -1,4 +1,4 @@
-import { runApp, getOutput } from '@/api/applications'
+import { runApp, getAppLog } from '@/api/applications'
 
 function runFinished(vueComp) {
   vueComp.index = -1;
@@ -73,14 +73,14 @@ function refreshShellContents(vueComp, content) {
   });
 }
 function getOutputValue(vueComp, data) {
-  getOutput(data.name, data.process_uuid).then((res) => {
+  getAppLog(data.name, 0, vueComp.outputPosition, data.process_uuid).then((res) => {
     if (res.headers.hasOwnProperty('Exit-Code')) {
       runFinished(vueComp);
     }
-    if (res.data == "") {
-      return;
+    if (res.data != "") {
+      refreshShellContents(vueComp, res.data);
     }
-    refreshShellContents(vueComp, res.data);
+    vueComp.outputPosition = res.headers["Output-Position"]
   }, (res) => {
     vueComp.shellContents.push({
       content: "# Failed: " + res.message
@@ -120,6 +120,7 @@ export default {
         refreshShellContents(vueComp, res.data);
         runFinished(vueComp);
       } else {
+        vueComp.outputPosition = "0"
         vueComp.timer = setInterval(() => {
           getOutputValue(vueComp, res.data);
         }, 1000);

@@ -14,7 +14,7 @@ export function getApplicationByName(appname) {
   })
 }
 
-export function getAppLog(appname, pageNo, position) {
+export function getAppLog(appName, pageNo, position, procUuid) {
   let pageIndex = 0
   let pagePosition = 0
   if (pageNo) {
@@ -24,7 +24,7 @@ export function getAppLog(appname, pageNo, position) {
     pagePosition = position
   }
   return request({
-    url: `/appmesh/app/${appname}/output?stdout_index=${pageIndex}&stdout_position=${pagePosition}`,
+    url: `/appmesh/app/${appName}/output?stdout_index=${pageIndex}&stdout_position=${pagePosition}&process_uuid=${procUuid}`,
     method: 'get'
   })
 }
@@ -71,16 +71,6 @@ export function runApp(timeout, sync, options) {
     url: '/appmesh/app/' + (sync ? 'syncrun' : 'run') + '?timeout=' + timeout,
     method: 'POST',
     data: options,
-    headers: {
-      "Accept": "text/plain"
-    }
-  })
-}
-
-export function getOutput(appName, pid) {
-  return request({
-    url: '/appmesh/app/' + appName + '/run/output?process_uuid=' + pid,
-    method: 'GET',
     headers: {
       "Accept": "text/plain"
     }

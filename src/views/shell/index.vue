@@ -79,6 +79,7 @@ export default {
       input: "",
       inputDisabled: false,
       isSync: true,
+      outputPosition: "0",
       shellApp: {
         command: "",
         shell_mode: true,
