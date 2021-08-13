@@ -78,9 +78,9 @@ function getOutputValue(vueComp, data) {
       runFinished(vueComp);
     }
     if (res.data != "") {
+      vueComp.outputPosition = res.headers["Output-Position"]
       refreshShellContents(vueComp, res.data);
     }
-    vueComp.outputPosition = res.headers["Output-Position"]
   }, (res) => {
     vueComp.shellContents.push({
       content: "# Failed: " + res.message
