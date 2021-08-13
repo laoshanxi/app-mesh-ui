@@ -43,7 +43,7 @@ npm run lint -- --fix
 ## Deploy
 Use host mode networking for Nginx reverse proxy (need accept host 443 port)
 ```bash
-appc reg -n appweb --perm 11 -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -c "nginx -g 'daemon off;'" -d laoshanxi/appmesh-ui:1.9.4 -f
+appc reg -n appweb --perm 11 -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d laoshanxi/appmesh-ui:1.9.4 -f
 ```
 
 ## Demo
