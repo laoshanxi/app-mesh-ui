@@ -74,11 +74,14 @@ function refreshShellContents(vueComp, content) {
 }
 function getOutputValue(vueComp, data) {
   getAppLog(data.name, 0, vueComp.outputPosition, data.process_uuid).then((res) => {
-    if (res.headers.hasOwnProperty('Exit-Code')) {
+    // console.log(res.headers)
+    // use lowercase header key here!!!
+    // https://stackoverflow.com/questions/63112580/upper-case-converted-to-lower-case-when-reading-response-header-in-node-express
+    if (res.headers.hasOwnProperty('exit-code')) {
       runFinished(vueComp);
     }
     if (res.data != "") {
-      vueComp.outputPosition = res.headers["Output-Position"]
+      vueComp.outputPosition = res.headers['output-position']
       refreshShellContents(vueComp, res.data);
     }
   }, (res) => {
