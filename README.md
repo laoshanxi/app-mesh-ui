@@ -42,8 +42,24 @@ npm run lint -- --fix
 
 ## Deploy
 Use host mode networking for Nginx reverse proxy (need accept host 443 port)
-```bash
+```shell
 appc reg -n appweb --perm 11 -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d laoshanxi/appmesh-ui:1.9.4 -f
+```
+Or use Docker native API way to manage container app:
+```shell
+tee appweb.json <<-'EOF'
+{
+    "Image": "ubuntu",
+    "HostConfig": {
+        "NetworkMode": "host",
+        "Binds": [
+            "/opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro",
+            "/opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro"
+        ]
+    }
+}
+EOF
+appc reg -n appweb --perm 11 -g @./appweb.json -d laoshanxi/appmesh-ui:1.9.4
 ```
 
 ## Demo
@@ -70,8 +86,8 @@ appc reg -n appweb --perm 11 -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/
 Modern browsers and Internet Explorer 10+.
 
 | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| --------- | --------- | --------- | --------- |
-| IE10, IE11, Edge| last 2 versions| last 2 versions| last 2 versions
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| IE10, IE11, Edge                                                                                                                                                                                              | last 2 versions                                                                                                                                                                                                 | last 2 versions                                                                                                                                                                                             | last 2 versions                                                                                                                                                                                             |
 
 ## License
 
