@@ -109,6 +109,15 @@
                   </el-form-item>
 
                   <el-form-item
+                    label="Docker REST Proxy Bind Address"
+                    prop="REST.DockerProxyListenAddr"
+                  >
+                    <el-input
+                      v-model="form.REST.DockerProxyListenAddr"
+                    ></el-input>
+                  </el-form-item>
+
+                  <el-form-item
                     label="SSL certificate file"
                     prop="REST.SSL.SSLCertificateFile"
                   >
@@ -147,7 +156,10 @@
                   <el-form-item label="JWT Salt" prop="REST.JWT.JWTSalt">
                     <el-input v-model="form.REST.JWT.JWTSalt"></el-input>
                   </el-form-item>
-                  <el-form-item label="JWT Interface" prop="REST.JWT.SecurityInterface">
+                  <el-form-item
+                    label="JWT Interface"
+                    prop="REST.JWT.SecurityInterface"
+                  >
                     <el-select
                       v-model="form.REST.JWT.SecurityInterface"
                       placeholder="Please select"
@@ -204,9 +216,7 @@
                     label="App Mesh expose URL"
                     prop="Consul.AppmeshProxyUrl"
                   >
-                    <el-input
-                      v-model="form.Consul.AppmeshProxyUrl"
-                    ></el-input>
+                    <el-input v-model="form.Consul.AppmeshProxyUrl"></el-input>
                   </el-form-item>
                 </el-collapse-item>
               </el-collapse>
@@ -247,6 +257,7 @@ export default {
           HttpThreadPoolSize: 6,
           RestEnabled: true,
           SeparateRestInternalPort: 6059,
+          DockerProxyListenAddr: "127.0.0.1:6058",
           RestListenAddress: "",
           RestListenPort: 6060,
           PrometheusExporterListenPort: 6061,
