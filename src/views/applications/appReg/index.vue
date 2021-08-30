@@ -60,13 +60,6 @@
         </el-form-item>
 
         <el-divider></el-divider>
-
-        <el-form-item label="Init cmd" prop="init_command">
-          <el-input v-model="registerForm.init_command"></el-input>
-        </el-form-item>
-        <el-form-item label="Finish cmd" prop="fini_command">
-          <el-input v-model="registerForm.fini_command"></el-input>
-        </el-form-item>
         <el-form-item label="Healthcheck cmd" prop="health_check_cmd">
           <el-input v-model="registerForm.health_check_cmd"></el-input>
         </el-form-item>

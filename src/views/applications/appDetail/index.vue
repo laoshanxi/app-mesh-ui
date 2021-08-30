@@ -26,12 +26,6 @@
       <Description term="Working dir">{{
         record.working_dir | formatEmpty
       }}</Description>
-      <Description term="Initial cmd">{{
-        record.init_command | formatEmpty
-      }}</Description>
-      <Description term="Finish cmd">{{
-        record.fini_command | formatEmpty
-      }}</Description>
       <Description term="Healthcheck cmd">{{
         record.health_check_cmd | formatEmpty
       }}</Description>
