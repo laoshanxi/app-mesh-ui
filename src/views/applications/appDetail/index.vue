@@ -88,13 +88,12 @@
       <Description term="Start interval seconds (S)">{{
         record.start_interval_seconds | formatEmpty
       }}</Description>
-      <Description term="Start tnterval timeout (S)">{{
-        record.start_interval_timeout | formatEmpty
+      <Description term="Retention (S)">{{
+        record.retention | formatEmpty
       }}</Description>
-      <Description term="Keep running">
-        <el-tag v-if="record.keep_running == 1" :type="'success'">Yes</el-tag>
-        <el-tag v-else :type="'info'">No</el-tag>
-      </Description>
+      <Description term="Exit behavior">{{
+        record.behavior.exit | formatEmpty
+      }}</Description>
     </DescriptionList>
     <el-divider></el-divider>
 
