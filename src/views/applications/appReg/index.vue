@@ -76,17 +76,19 @@
             :inactive-value="false"
           ></el-switch>
         </el-form-item>
-        <el-form-item label="Start interval timeout" prop="start_interval_timeout">
-          <el-input v-model="registerForm.start_interval_timeout"></el-input>(ISO 8601 durations or seconds)
+        <el-form-item label="Retention" prop="retention">
+          <el-input v-model="registerForm.retention"></el-input>(ISO 8601 durations or seconds)
         </el-form-item>
-        <el-form-item label="Keep running" prop="keep_running">
-          <el-switch
-            v-model="registerForm.keep_running"
-            :active-value="true"
-            :inactive-value="false"
-          ></el-switch>
+        <el-form-item label="Behavior" prop="behavior.exit">
+          <el-select v-model="registerForm.behavior.exit" placeholder="Please select">
+            <el-option
+              v-for="item in Behaviors"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
-
         <el-divider></el-divider>
 
         <el-form-item label="Start time" prop="start_time">
@@ -196,6 +198,24 @@ export default {
           },
         ],
       },
+      Behaviors: [
+        {
+          label: "standby",
+          value: "standby",
+        },
+        {
+          label: "restart",
+          value: "restart",
+        },
+        {
+          label: "keepalive",
+          value: "keepalive",
+        },
+        {
+          label: "remove",
+          value: "remove",
+        },
+      ],
     };
   },
   props: ["propForm"],
@@ -273,13 +293,14 @@ export default {
         posix_timezone: "",
         docker_image: "",
         pid: null,
-
         start_interval_seconds: null,
         cron: false,
         start_time: "",
-        start_interval_timeout: null,
-
-        keep_running: false, //0 no, 1 yes
+        end_time: "",
+        retention: 0,
+        behavior: {
+          exit: "standby",
+        }
       };
     },
     cancel() {
