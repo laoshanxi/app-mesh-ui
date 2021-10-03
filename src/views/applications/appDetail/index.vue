@@ -66,6 +66,12 @@
         }}</span>
         <span v-else>-</span>
       </Description>
+      <Description term="Last exit time">
+        <span v-if="record.last_exit_time">{{
+          record.last_exit_time | formatEmpty
+        }}</span>
+        <span v-else>-</span>
+      </Description>
       <Description term="Stdout number">{{
         record.stdout_cache_num | formatEmpty
       }}</Description>
