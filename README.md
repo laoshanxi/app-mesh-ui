@@ -93,8 +93,6 @@ Modern browsers and Internet Explorer 10+.
 
 [MIT](https://github.com/laoshanxi/app-mesh-ui/LICENSE) license.
 
-Copyright (c) 2019-present lip0091981
-
 
 [language.url]:   https://nodejs.org/
 [language.badge]: https://img.shields.io/badge/language-nodes.vue-blue.svg

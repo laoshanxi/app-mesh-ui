@@ -53,6 +53,15 @@
                 </el-collapse-item>
 
                 <el-collapse-item title="Rest" name="2">
+                  <el-form-item label="Rest enabled" prop="REST.RestEnabled">
+                    <el-switch
+                      v-model="form.REST.RestEnabled"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false"
+                    ></el-switch>
+                  </el-form-item>
                   <el-form-item
                     label="Http thread pool size"
                     prop="REST.HttpThreadPoolSize"
@@ -71,15 +80,7 @@
                       :max="65534"
                     ></el-input-number>
                   </el-form-item>
-                  <el-form-item label="Rest enabled" prop="REST.RestEnabled">
-                    <el-switch
-                      v-model="form.REST.RestEnabled"
-                      active-text="Yes"
-                      :active-value="true"
-                      inactive-text="No"
-                      :inactive-value="false"
-                    ></el-switch>
-                  </el-form-item>
+                  
                   <el-form-item
                     label="Rest listen address"
                     prop="REST.RestListenAddress"
@@ -97,7 +98,7 @@
                     ></el-input-number>
                   </el-form-item>
 
-                  <el-form-item label="Enable Seperate REST" prop="REST.SeparateRestProcess">
+                  <el-form-item label="TCP rest enabled" prop="REST.SeparateRestProcess">
                     <el-switch
                       v-model="form.REST.SeparateRestProcess"
                       active-text="Yes"
@@ -107,7 +108,7 @@
                     ></el-switch>
                   </el-form-item>
 
-                  <el-form-item label="Separate REST TCP listen port" prop="REST.SeparateRestInternalPort">
+                  <el-form-item label="TCP rest listen port" prop="REST.SeparateRestInternalPort">
                     <el-input-number
                       v-model="form.REST.SeparateRestInternalPort"
                       :min="1024"
@@ -116,12 +117,22 @@
                   </el-form-item>
 
                   <el-form-item
-                    label="Docker REST Proxy Bind Address"
+                    label="Docker rest agent URL"
                     prop="REST.DockerProxyListenAddr"
                   >
                     <el-input
                       v-model="form.REST.DockerProxyListenAddr"
                     ></el-input>
+                  </el-form-item>
+
+                  <el-form-item label="SSL enabled" prop="REST.SSL.SSLEnabled">
+                    <el-switch
+                      v-model="form.REST.SSL.SSLEnabled"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false"
+                    ></el-switch>
                   </el-form-item>
 
                   <el-form-item
@@ -140,15 +151,7 @@
                       v-model="form.REST.SSL.SSLCertificateKeyFile"
                     ></el-input>
                   </el-form-item>
-                  <el-form-item label="SSL enabled" prop="REST.SSL.SSLEnabled">
-                    <el-switch
-                      v-model="form.REST.SSL.SSLEnabled"
-                      active-text="Yes"
-                      :active-value="true"
-                      inactive-text="No"
-                      :inactive-value="false"
-                    ></el-switch>
-                  </el-form-item>
+                  
                 </el-collapse-item>
                 <el-collapse-item title="JWT" name="3">
                   <el-form-item label="JWT enabled" prop="REST.JWT.JWTEnabled">
@@ -181,7 +184,7 @@
                   </el-form-item>
                 </el-collapse-item>
                 <el-collapse-item title="Consul" name="4">
-                  <el-form-item label="Main node" prop="Consul.IsMainNode">
+                  <el-form-item label="Run as main node" prop="Consul.IsMainNode">
                     <el-switch
                       v-model="form.Consul.IsMainNode"
                       active-text="Yes"
@@ -190,7 +193,7 @@
                       :inactive-value="false"
                     ></el-switch>
                   </el-form-item>
-                  <el-form-item label="Worker node" prop="Consul.IsWorkerNode">
+                  <el-form-item label="Run as worker node" prop="Consul.IsWorkerNode">
                     <el-switch
                       v-model="form.Consul.IsWorkerNode"
                       active-text="Yes"
