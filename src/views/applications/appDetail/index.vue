@@ -68,7 +68,7 @@
       <Description term="Virtual memory (Mi)">{{ record.resource_limit ? record.resource_limit.memory_virt_mb : "-" }}</Description>
       <Description term="CPU shares">{{ record.resource_limit ? record.resource_limit.cpu_shares : "-" }}</Description>
       <Description term="Stdout number">{{ record.stdout_cache_num | formatEmpty }}</Description>
-      <Description term="Metadata">{{ record.metadata | formatEmpty }}</Description>
+      <Description term="Metadata"><pre>{{ record.metadata | formatEmpty }}</pre></Description>
     </DescriptionList>
     
     <el-divider></el-divider>

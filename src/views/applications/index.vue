@@ -133,26 +133,18 @@
             {{ scope.row.starts | formatEmpty }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="last_start_time"
-          label="Last Start Time"
-          width="230"
-        >
+
+        <el-table-column label="Age" width="70">
           <template slot-scope="scope">
-            <span v-if="scope.row.last_start_time">
-              <el-link
-                :underline="true"
-                @click="showLog(scope.row)"
-                title="Show log"
-              >
-                <i class="el-icon-document"></i>
-                <i class="el-icon-time" style="margin-right: 5px" />
-                {{ scope.row.last_start_time | formatEmpty }}
-              </el-link>
-            </span>
-            <span v-else>-</span>
+            {{ calcAge(scope.row) | formatEmpty }}
           </template>
         </el-table-column>
+        <el-table-column label="Duration" width="80">
+          <template slot-scope="scope">
+            {{ calcDuration(scope.row) | formatEmpty }}
+          </template>
+        </el-table-column>
+
         <af-table-column label="Command">
           <template slot-scope="scope">
             {{ scope.row.command | formatEmpty }}
@@ -352,6 +344,32 @@ export default {
     getAppLogByName(name) {
       applications.getAppLogByName(this, name, 0);
     },
+    //--------
+    calcAge(row){
+
+      return this.formatDuration(new Date() - this.parseDate(row.register_time))
+    },
+    calcDuration(row){
+      const start = this.parseDate(row.last_start_time)
+      const exit = this.parseDate(row.last_exit_time)
+      return this.formatDuration(exit - start)
+    },
+    parseDate(dateString){
+      if(!dateString) return new Date()
+      return new Date(`${dateString}:00`)
+    },
+    formatDuration(duration){
+      const dur = Math.floor(duration / 1000) //millisecodes to secodes
+      const days = Math.floor(dur / (3600 * 24))
+      const hours = Math.floor(dur / 3600) % 24;
+      const minutes = Math.floor(dur / 60) % 60;
+      const seconds = dur % 60;
+      const unit = ['d', 'h', 'm', 's'];
+      return [days, hours, minutes, seconds].map((e, index) => {
+        return `${e}${unit[index]}`
+      }).join("")
+    }
+
   },
 };
 </script>
