@@ -118,6 +118,11 @@
             {{ scope.row.memory | formatMemory }}
           </template>
         </el-table-column>
+        <el-table-column label="%Cpu" width="110">
+          <template slot-scope="scope">
+            {{ scope.row.cpu | formatEmpty }}
+          </template>
+        </el-table-column>
         <el-table-column label="Return" width="70">
           <template slot-scope="scope">
             {{ scope.row.return | formatEmpty }}
