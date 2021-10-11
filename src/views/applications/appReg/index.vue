@@ -6,6 +6,9 @@
         <el-form-item label="Name" prop="name">
           <el-input v-model="registerForm.name"></el-input>
         </el-form-item>
+        <el-form-item label="Description" prop="description">
+          <el-input v-model="registerForm.description"></el-input>
+        </el-form-item>
         <el-form-item label="Command line" prop="command">
           <el-input v-model="registerForm.command"></el-input>
         </el-form-item>

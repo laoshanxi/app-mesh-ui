@@ -31,6 +31,7 @@
       <Description term="Period run retention (S)">{{ record.retention | formatEmpty }}</Description>
       <Description term="Exit behavior">{{ record.behavior.exit | formatEmpty }}</Description>
       <Description term="Docker image">{{ record.docker_image | formatEmpty }}</Description>
+      <Description term="Description">{{ record.description | formatEmpty }}</Description>
     </DescriptionList>
 
     <el-divider></el-divider>
