@@ -6,42 +6,47 @@
     <el-row>
       <el-button-group>
         <el-button
-          @click="btnClick('register')"
           type="primary"
           icon="el-icon-plus"
-          >Add</el-button
+          @click="btnClick('register')"
         >
+          Add
+        </el-button>
         <el-button
-          @click="btnClick('update')"
           type="success"
           icon="el-icon-edit"
           :disabled="!isSelected"
-          >Edit</el-button
+          @click="btnClick('update')"
         >
+          Edit
+        </el-button>
         <el-button
-          @click="btnClick('delete')"
           type="danger"
           icon="el-icon-delete"
           :disabled="!isSelected"
-          >Delete</el-button
+          @click="btnClick('delete')"
         >
+          Delete
+        </el-button>
       </el-button-group>
 
       <el-button-group>
         <el-button
-          @click="btnClick('enable')"
           type="success"
           icon="el-icon-open"
           :disabled="!isSelected || isEnabled"
-          >Enable</el-button
+          @click="btnClick('enable')"
         >
+          Enable
+        </el-button>
         <el-button
-          @click="btnClick('disable')"
           type="warning"
           icon="el-icon-turn-off"
           :disabled="!isSelected || !isEnabled"
-          >Disable</el-button
+          @click="btnClick('disable')"
         >
+          Disable
+        </el-button>
       </el-button-group>
     </el-row>
     <el-row>
@@ -60,12 +65,8 @@
       >
         <el-table-column label="Name" width="200">
           <template slot-scope="scope">
-            <el-link
-              :underline="true"
-              @click="showDetail()"
-              title="Show application detail"
-            >
-              <i class="el-icon-view"></i>
+            <el-link :underline="true" :title="scope.row.desc" @click="showDetail()">
+              <i class="el-icon-view" />
               {{ scope.row.name }}
             </el-link>
             <i v-if="scope.row.docker_image" class="iconfont icon-docker" />
@@ -83,15 +84,15 @@
         <el-table-column label="Health" width="70">
           <template slot-scope="scope">
             <i
+              v-if="scope.row.health == 0"
               class="el-icon-success"
               style="color: #85ce61; font-size: 18px; vertical-align: middle"
-              v-if="scope.row.health == 0"
-            ></i>
+            />
             <i
+              v-else
               class="el-icon-warning"
               style="color: #f56c6c; font-size: 18px; vertical-align: middle"
-              v-else
-            ></i>
+            />
           </template>
         </el-table-column>
         <el-table-column label="Owner" width="100">
@@ -101,10 +102,15 @@
         </el-table-column>
         <el-table-column class-name="status-col" label="State" width="110">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.status == 1" :type="'success'"
-              >Enabled</el-tag
+            <el-tag
+              v-if="scope.row.status == 1"
+              :type="'success'"
             >
-            <el-tag v-else :type="'info'">Disabled</el-tag>
+              Enabled
+            </el-tag>
+            <el-tag v-else :type="'info'">
+              Disabled
+            </el-tag>
           </template>
         </el-table-column>
 
@@ -128,23 +134,25 @@
             {{ scope.row.return | formatEmpty }}
           </template>
         </el-table-column>
-         <el-table-column label="Starts" width="70">
+        <el-table-column label="Starts" width="70">
           <template slot-scope="scope">
             {{ scope.row.starts | formatEmpty }}
           </template>
         </el-table-column>
-        <el-table-column
-          prop="last_start_time"
-          label="Last Start Time"
-          width="230"
-        >
+        <el-table-column label="Age" width="120">
+          <template slot-scope="scope">
+            {{ scope.row.age | formatEmpty }}
+          </template>
+        </el-table-column>
+        <el-table-column label="Duration" width="120">
+          <template slot-scope="scope">
+            {{ scope.row.duration | formatEmpty }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="last_start_time" label="Last Start Time" width="230">
           <template slot-scope="scope">
             <span v-if="scope.row.last_start_time">
-              <el-link
-                :underline="true"
-                @click="showLog(scope.row)"
-                title="Show log"
-              >
+              <el-link :underline="true" @click="showLog(scope.row)" title="Show log">
                 <i class="el-icon-document"></i>
                 <i class="el-icon-time" style="margin-right: 5px" />
                 {{ scope.row.last_start_time | formatEmpty }}
@@ -170,23 +178,23 @@
       size="60%"
     >
       <app-reg
+        :prop-form="selectedForm"
         @close="registerFormVisible = false"
         @success="regSuccess()"
-        :propForm="selectedForm"
-      ></app-reg>
+      />
     </el-drawer>
 
     <!-- show application detail -->
     <el-drawer
-      :visible.sync="isShowDetail"
       v-loading="isLoadingDetail"
+      :visible.sync="isShowDetail"
       size="50%"
     >
       <span slot="title">
         <span class="el-icon-view">
           &nbsp;&nbsp;{{
-            currentRow ? currentRow.name : "Please select one application"
-          }}
+                        currentRow ? currentRow.name : "Please select one application"
+                      }}
           <i
             v-if="currentRow && currentRow.docker_image"
             class="iconfont icon-docker"
@@ -199,7 +207,7 @@
     </el-drawer>
 
     <!-- show application logs -->
-    <el-drawer :visible.sync="isShowLog" v-loading="isLoadingLog" size="50%">
+    <el-drawer v-loading="isLoadingLog" :visible.sync="isShowLog" size="50%">
       <span slot="title">
         <span class="el-icon-document">
           &nbsp;&nbsp;{{

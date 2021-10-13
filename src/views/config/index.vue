@@ -1,11 +1,11 @@
 <template>
-  <div class="app-container" style="clear: both" v-loading="loading">
+  <div v-loading="loading" class="app-container" style="clear: both">
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
           <el-tab-pane style="minwidth: 600px">
             <span slot="label">
-              <i class="el-icon-s-operation"></i> Configuration
+              <i class="el-icon-s-operation" /> Configuration
             </span>
             <el-form ref="form" :model="form" label-width="260px">
               <el-collapse v-model="activeNames">
@@ -15,10 +15,10 @@
                       v-model="form.Version"
                       readonly="true"
                       :disabled="true"
-                    ></el-input>
+                    />
                   </el-form-item>
                   <el-form-item label="Description" prop="Description">
-                    <el-input v-model="form.Description"></el-input>
+                    <el-input v-model="form.Description" />
                   </el-form-item>
                   <el-form-item label="Log level" prop="LogLevel">
                     <el-select
@@ -30,7 +30,7 @@
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
-                      ></el-option>
+                      />
                     </el-select>
                   </el-form-item>
                   <el-form-item
@@ -39,16 +39,16 @@
                   >
                     <el-input-number
                       v-model="form.ScheduleIntervalSeconds"
-                    ></el-input-number>
+                    />
                   </el-form-item>
                   <el-form-item
                     label="Default exec user"
                     prop="DefaultExecUser"
                   >
-                    <el-input v-model="form.DefaultExecUser"></el-input>
+                    <el-input v-model="form.DefaultExecUser" />
                   </el-form-item>
                   <el-form-item label="Working dir" prop="WorkingDirectory">
-                    <el-input v-model="form.WorkingDirectory"></el-input>
+                    <el-input v-model="form.WorkingDirectory" />
                   </el-form-item>
                 </el-collapse-item>
 
@@ -60,7 +60,7 @@
                       :active-value="true"
                       inactive-text="No"
                       :inactive-value="false"
-                    ></el-switch>
+                    />
                   </el-form-item>
                   <el-form-item
                     label="Http thread pool size"
@@ -68,7 +68,7 @@
                   >
                     <el-input-number
                       v-model="form.REST.HttpThreadPoolSize"
-                    ></el-input-number>
+                    />
                   </el-form-item>
                   <el-form-item
                     label="Prometheus exporter listen port"
@@ -78,14 +78,14 @@
                       v-model="form.REST.PrometheusExporterListenPort"
                       :min="0"
                       :max="65534"
-                    ></el-input-number>
+                    />
                   </el-form-item>
                   
                   <el-form-item
                     label="Rest listen address"
                     prop="REST.RestListenAddress"
                   >
-                    <el-input v-model="form.REST.RestListenAddress"></el-input>
+                    <el-input v-model="form.REST.RestListenAddress" />
                   </el-form-item>
                   <el-form-item
                     label="Rest listen port"
@@ -95,7 +95,7 @@
                       v-model="form.REST.RestListenPort"
                       :min="1024"
                       :max="65534"
-                    ></el-input-number>
+                    />
                   </el-form-item>
 
                   <el-form-item label="TCP rest enabled" prop="REST.SeparateRestProcess">
@@ -105,7 +105,7 @@
                       :active-value="true"
                       inactive-text="No"
                       :inactive-value="false"
-                    ></el-switch>
+                    />
                   </el-form-item>
 
                   <el-form-item label="TCP rest listen port" prop="REST.SeparateRestInternalPort">
@@ -113,7 +113,7 @@
                       v-model="form.REST.SeparateRestInternalPort"
                       :min="1024"
                       :max="65534"
-                    ></el-input-number>
+                    />
                   </el-form-item>
 
                   <el-form-item
@@ -122,7 +122,7 @@
                   >
                     <el-input
                       v-model="form.REST.DockerProxyListenAddr"
-                    ></el-input>
+                    />
                   </el-form-item>
 
                   <el-form-item label="SSL enabled" prop="REST.SSL.SSLEnabled">
@@ -132,7 +132,7 @@
                       :active-value="true"
                       inactive-text="No"
                       :inactive-value="false"
-                    ></el-switch>
+                    />
                   </el-form-item>
 
                   <el-form-item
@@ -141,7 +141,7 @@
                   >
                     <el-input
                       v-model="form.REST.SSL.SSLCertificateFile"
-                    ></el-input>
+                    />
                   </el-form-item>
                   <el-form-item
                     label="SSL certificate key file"
@@ -149,9 +149,8 @@
                   >
                     <el-input
                       v-model="form.REST.SSL.SSLCertificateKeyFile"
-                    ></el-input>
+                    />
                   </el-form-item>
-                  
                 </el-collapse-item>
                 <el-collapse-item title="JWT" name="3">
                   <el-form-item label="JWT enabled" prop="REST.JWT.JWTEnabled">
@@ -161,10 +160,10 @@
                       :active-value="true"
                       inactive-text="No"
                       :inactive-value="false"
-                    ></el-switch>
+                    />
                   </el-form-item>
                   <el-form-item label="JWT Salt" prop="REST.JWT.JWTSalt">
-                    <el-input v-model="form.REST.JWT.JWTSalt"></el-input>
+                    <el-input v-model="form.REST.JWT.JWTSalt" />
                   </el-form-item>
                   <el-form-item
                     label="JWT Interface"
@@ -179,7 +178,7 @@
                         :key="item.value"
                         :label="item.label"
                         :value="item.value"
-                      ></el-option>
+                      />
                     </el-select>
                   </el-form-item>
                 </el-collapse-item>
@@ -191,7 +190,7 @@
                       :active-value="true"
                       inactive-text="No"
                       :inactive-value="false"
-                    ></el-switch>
+                    />
                   </el-form-item>
                   <el-form-item label="Run as worker node" prop="Consul.IsWorkerNode">
                     <el-switch
@@ -200,7 +199,7 @@
                       :active-value="true"
                       inactive-text="No"
                       :inactive-value="false"
-                    ></el-switch>
+                    />
                   </el-form-item>
                   <el-form-item
                     label="Store user role in Consul"
@@ -212,41 +211,44 @@
                       :active-value="true"
                       inactive-text="No"
                       :inactive-value="false"
-                    ></el-switch>
+                    />
                   </el-form-item>
                   <el-form-item label="Session TTL" prop="Consul.SessionTTL">
                     <el-input-number
                       v-model="form.Consul.SessionTTL"
-                    ></el-input-number>
+                    />
                   </el-form-item>
                   <el-form-item label="Consul URL" prop="Consul.Url">
-                    <el-input v-model="form.Consul.Url"></el-input>
+                    <el-input v-model="form.Consul.Url" />
                   </el-form-item>
                   <el-form-item
                     label="App Mesh expose URL"
                     prop="Consul.AppmeshProxyUrl"
                   >
-                    <el-input v-model="form.Consul.AppmeshProxyUrl"></el-input>
+                    <el-input v-model="form.Consul.AppmeshProxyUrl" />
                   </el-form-item>
                 </el-collapse-item>
               </el-collapse>
-
-              <el-form-item>
-                <el-button
-                  size="small"
-                  type="primary"
-                  @click.prevent="saveConfig()"
-                  >Submit</el-button
-                >
-                <el-button size="small" @click.prevent="reset()"
-                  >Reset</el-button
-                >
-              </el-form-item>
             </el-form>
           </el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
+    <div class="control">
+      <el-button
+        size="small"
+        type="primary"
+        @click.prevent="saveConfig()"
+      >
+        Submit
+      </el-button>
+      <el-button
+        size="small"
+        @click.prevent="reset()"
+      >
+        Reset
+      </el-button>
+    </div>
   </div>
 </template>
 
@@ -359,5 +361,9 @@ export default {
 .el-collapse-item__header {
   font-size: 14px;
   font-weight: bold;
+}
+.control{
+  padding-top: 10px;
+  text-align: center;
 }
 </style>

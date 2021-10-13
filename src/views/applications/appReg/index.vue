@@ -54,15 +54,15 @@
             </el-col>
           </el-row>
         </el-form-item>
-        <el-form-item label="Metadata" prop="metadata">
-          <el-input v-model="registerForm.metadata"></el-input>
-        </el-form-item>
-
         <el-form-item label="stdout cache number" prop="stdout_cache_num">
           <el-input-number :min="0" v-model="registerForm.stdout_cache_num"></el-input-number>
         </el-form-item>
 
         <el-divider></el-divider>
+
+        <el-form-item label="Metadata" prop="metadata">
+          <el-input v-model="registerForm.metadata"></el-input>
+        </el-form-item>
         <el-form-item label="Healthcheck cmd" prop="health_check_cmd">
           <el-input v-model="registerForm.health_check_cmd"></el-input>
         </el-form-item>
@@ -272,6 +272,7 @@ export default {
       this.daily_time_range = null;
       this.registerForm = {
         name: "",
+        description: "",
         command: "",
         working_dir: "",
         shell_mode: false,
