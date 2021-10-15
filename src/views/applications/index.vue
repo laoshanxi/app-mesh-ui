@@ -128,7 +128,7 @@
             {{ scope.row.return | formatEmpty }}
           </template>
         </el-table-column>
-         <el-table-column label="Starts" width="70">
+        <el-table-column label="Starts" width="70">
           <template slot-scope="scope">
             {{ scope.row.starts | formatEmpty }}
           </template>
@@ -157,7 +157,7 @@
     <!-- <el-dialog title="Add Application" :visible.sync="registerFormVisible" fullscreen="false"> -->
     <el-drawer
       custom-class="right-drawer"
-      title="Add Application"
+      :title="drawerTitle"
       :visible.sync="registerFormVisible"
       size="60%"
     >
@@ -224,17 +224,17 @@ export default {
   components: {
     AppDetail,
     AppLog,
-    AppReg,
+    AppReg
   },
   filters: {
     statusFilter(status) {
       const statusMap = {
         published: "success",
         draft: "gray",
-        deleted: "danger",
+        deleted: "danger"
       };
       return statusMap[status];
-    },
+    }
   },
   data() {
     return {
@@ -256,6 +256,7 @@ export default {
       formLabelWidth: "100px",
       registerFormVisible: false,
       selectedForm: {},
+      drawerTitle: "Add Application"
     };
   },
   created() {
@@ -292,11 +293,13 @@ export default {
         case "register": {
           this.selectedForm = {};
           this.registerFormVisible = true;
+          this.drawerTitle = "Add Application";
           return;
         }
         case "update": {
           this.selectedForm = this.currentRow;
           this.registerFormVisible = true;
+          this.drawerTitle = "Edit Application";
           return;
         }
         case "delete": {
@@ -345,32 +348,34 @@ export default {
       applications.getAppLogByName(this, name, 0);
     },
     //--------
-    calcAge(row){
-
-      return this.formatDuration(new Date() - this.parseDate(row.register_time))
+    calcAge(row) {
+      return this.formatDuration(
+        new Date() - this.parseDate(row.register_time)
+      );
     },
-    calcDuration(row){
-      const start = this.parseDate(row.last_start_time)
-      const exit = this.parseDate(row.last_exit_time)
-      return this.formatDuration(exit - start)
+    calcDuration(row) {
+      const start = this.parseDate(row.last_start_time);
+      const exit = this.parseDate(row.last_exit_time);
+      return this.formatDuration(exit - start);
     },
-    parseDate(dateString){
-      if(!dateString) return new Date()
-      return new Date(`${dateString}:00`)
+    parseDate(dateString) {
+      if (!dateString) return new Date();
+      return new Date(`${dateString}:00`);
     },
-    formatDuration(duration){
-      const dur = Math.floor(duration / 1000) //millisecodes to secodes
-      const days = Math.floor(dur / (3600 * 24))
+    formatDuration(duration) {
+      const dur = Math.floor(duration / 1000); //millisecodes to secodes
+      const days = Math.floor(dur / (3600 * 24));
       const hours = Math.floor(dur / 3600) % 24;
       const minutes = Math.floor(dur / 60) % 60;
       const seconds = dur % 60;
-      const unit = ['d', 'h', 'm', 's'];
-      return [days, hours, minutes, seconds].map((e, index) => {
-        return `${e}${unit[index]}`
-      }).join("")
+      const unit = ["d", "h", "m", "s"];
+      return [days, hours, minutes, seconds]
+        .map((e, index) => {
+          return `${e}${unit[index]}`;
+        })
+        .join("");
     }
-
-  },
+  }
 };
 </script>
 <style lang="scss" scoped>
