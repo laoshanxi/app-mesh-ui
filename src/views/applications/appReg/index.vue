@@ -61,7 +61,7 @@
         <el-divider></el-divider>
 
         <el-form-item label="Metadata" prop="metadata">
-          <el-input v-model="registerForm.metadata"></el-input>
+          <el-input v-model="registerForm.metadata" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }" />
         </el-form-item>
         <el-form-item label="Healthcheck cmd" prop="health_check_cmd">
           <el-input v-model="registerForm.health_check_cmd"></el-input>
@@ -254,6 +254,9 @@ export default {
         }else{
           this.daily_time_range = null;
         }
+        if(typeof this.registerForm.metadata === 'object' || this.isJsonString(this.registerForm.metadata) !== false){
+          this.registerForm.metadata = JSON.stringify(this.registerForm.metadata, null, 2);
+        }
         if(this.registerForm.env){
           this.registerForm.envs = [];
           for(let env in this.registerForm.env){
@@ -349,6 +352,18 @@ export default {
       }
       return origin;
     },
+
+    isJsonString(str) {
+      try {
+          if (typeof JSON.parse(str) == "object") {
+              return true;
+          }
+      } catch(e) {
+      }
+      return false;
+    },
+
+
   },
 };
 </script>

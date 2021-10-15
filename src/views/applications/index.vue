@@ -171,12 +171,7 @@
 
     <!-- Add application dialog -->
     <!-- <el-dialog title="Add Application" :visible.sync="registerFormVisible" fullscreen="false"> -->
-    <el-drawer
-      custom-class="right-drawer"
-      title="Add Application"
-      :visible.sync="registerFormVisible"
-      size="60%"
-    >
+    <el-drawer custom-class="right-drawer" :title="drawerTitle" :visible.sync="registerFormVisible" size="60%">
       <app-reg
         :prop-form="selectedForm"
         @close="registerFormVisible = false"
@@ -272,6 +267,7 @@ export default {
       formLabelWidth: "100px",
       registerFormVisible: false,
       selectedForm: {},
+      drawerTitle: "Add Application"
     };
   },
   created() {
@@ -308,11 +304,13 @@ export default {
         case "register": {
           this.selectedForm = {};
           this.registerFormVisible = true;
+          this.drawerTitle = "Add Application";
           return;
         }
         case "update": {
           this.selectedForm = this.currentRow;
           this.registerFormVisible = true;
+          this.drawerTitle = "Edit Application";
           return;
         }
         case "delete": {
