@@ -2,7 +2,12 @@
   <div>
     <!-- {{ form }} -->
     <el-card shadow="never" class="register-card">
-      <el-form :model="registerForm" ref="regForm" :rules="regRules" label-width="160px">
+      <el-form
+        :model="registerForm"
+        ref="regForm"
+        :rules="regRules"
+        label-width="160px"
+      >
         <el-form-item label="Name" prop="name">
           <el-input v-model="registerForm.name"></el-input>
         </el-form-item>
@@ -10,7 +15,11 @@
           <el-input v-model="registerForm.command"></el-input>
         </el-form-item>
         <el-form-item label="Shell mode" prop="shell_mode">
-          <el-switch v-model="registerForm.shell_mode" :active-value="true" :inactive-value="false"></el-switch>
+          <el-switch
+            v-model="registerForm.shell_mode"
+            :active-value="true"
+            :inactive-value="false"
+          ></el-switch>
         </el-form-item>
 
         <el-form-item label="Working dir" prop="working_dir">
@@ -52,11 +61,18 @@
           </el-row>
         </el-form-item>
         <el-form-item label="Metadata" prop="metadata">
-          <el-input v-model="registerForm.metadata"></el-input>
+          <el-input
+            v-model="registerForm.metadata"
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 6 }"
+          />
         </el-form-item>
 
         <el-form-item label="stdout cache number" prop="stdout_cache_num">
-          <el-input-number :min="0" v-model="registerForm.stdout_cache_num"></el-input-number>
+          <el-input-number
+            :min="0"
+            v-model="registerForm.stdout_cache_num"
+          ></el-input-number>
         </el-form-item>
 
         <el-divider></el-divider>
@@ -67,7 +83,8 @@
         <el-divider></el-divider>
 
         <el-form-item label="Start interval" prop="start_interval_seconds">
-          <el-input v-model="registerForm.start_interval_seconds"></el-input>(ISO 8601 durations / seconds / cron expr)
+          <el-input v-model="registerForm.start_interval_seconds"></el-input
+          >(ISO 8601 durations / seconds / cron expr)
         </el-form-item>
         <el-form-item label="Cron interval expr" prop="cron">
           <el-switch
@@ -77,10 +94,14 @@
           ></el-switch>
         </el-form-item>
         <el-form-item label="Retention" prop="retention">
-          <el-input v-model="registerForm.retention"></el-input>(ISO 8601 durations or seconds)
+          <el-input v-model="registerForm.retention"></el-input>(ISO 8601
+          durations or seconds)
         </el-form-item>
         <el-form-item label="Behavior" prop="behavior.exit">
-          <el-select v-model="registerForm.behavior.exit" placeholder="Please select">
+          <el-select
+            v-model="registerForm.behavior.exit"
+            placeholder="Please select"
+          >
             <el-option
               v-for="item in Behaviors"
               :key="item.value"
@@ -123,18 +144,35 @@
         <el-divider></el-divider>
 
         <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
-          <el-input-number :min="0" v-model="registerForm.resource_limit.cpu_shares"></el-input-number>
+          <el-input-number
+            :min="0"
+            v-model="registerForm.resource_limit.cpu_shares"
+          ></el-input-number>
         </el-form-item>
         <el-form-item label="Physical memory" prop="resource_limit.memory_mb">
-          <el-input-number :min="0" v-model="registerForm.resource_limit.memory_mb"></el-input-number>Mi
+          <el-input-number
+            :min="0"
+            v-model="registerForm.resource_limit.memory_mb"
+          ></el-input-number
+          >Mi
         </el-form-item>
-        <el-form-item label="Virtual memory" prop="resource_limit.memory_virt_mb">
-          <el-input-number :min="0" v-model="registerForm.resource_limit.memory_virt_mb"></el-input-number>Mi
+        <el-form-item
+          label="Virtual memory"
+          prop="resource_limit.memory_virt_mb"
+        >
+          <el-input-number
+            :min="0"
+            v-model="registerForm.resource_limit.memory_virt_mb"
+          ></el-input-number
+          >Mi
         </el-form-item>
         <el-divider></el-divider>
 
         <el-form-item label="Pid(for attach)" prop="pid">
-          <el-input-number :min="0" v-model="registerForm.pid"></el-input-number>
+          <el-input-number
+            :min="0"
+            v-model="registerForm.pid"
+          ></el-input-number>
         </el-form-item>
 
         <el-divider></el-divider>
@@ -144,8 +182,15 @@
         <el-form-item label="Docker options" prop="APP_DOCKER_OPTS">
           <el-input v-model="registerForm.APP_DOCKER_OPTS"></el-input>
         </el-form-item>
-        <el-form-item label="Image pull timeout" prop="APP_DOCKER_IMG_PULL_TIMEOUT">
-          <el-input-number :min="0" v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT"></el-input-number>S
+        <el-form-item
+          label="Image pull timeout"
+          prop="APP_DOCKER_IMG_PULL_TIMEOUT"
+        >
+          <el-input-number
+            :min="0"
+            v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT"
+          ></el-input-number
+          >S
         </el-form-item>
 
         <el-divider></el-divider>
@@ -161,9 +206,13 @@
             trigger: 'blur'
           }"
         >
-          <el-input v-model="env.name" ref="envs" style="width:200px"></el-input>=
+          <el-input v-model="env.name" ref="envs" style="width:200px"></el-input
+          >=
           <el-input v-model="env.value" style="width:200px"></el-input>
-          <el-button @click.prevent="removeEnvReg(env)" icon="el-icon-delete"></el-button>
+          <el-button
+            @click.prevent="removeEnvReg(env)"
+            icon="el-icon-delete"
+          ></el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -188,34 +237,34 @@ export default {
       registerForm: {},
       regRules: {
         name: [
-          { required: true, message: "Name is not empty", trigger: "blur" },
+          { required: true, message: "Name is not empty", trigger: "blur" }
         ],
         start_interval_timeout: [
           {
             pattern: /^P((([0-9]+Y)?([0-9]+M)?([0-9]+D)?(T([0-9]+H)?([0-9]+M)?([0-9]+S)?)?)|([0-9]+W))$/g,
             message: "Start interval timeout seconds is invalid.",
-            trigger: "blur",
-          },
-        ],
+            trigger: "blur"
+          }
+        ]
       },
       Behaviors: [
         {
           label: "standby",
-          value: "standby",
+          value: "standby"
         },
         {
           label: "restart",
-          value: "restart",
+          value: "restart"
         },
         {
           label: "keepalive",
-          value: "keepalive",
+          value: "keepalive"
         },
         {
           label: "remove",
-          value: "remove",
-        },
-      ],
+          value: "remove"
+        }
+      ]
     };
   },
   props: ["propForm"],
@@ -226,34 +275,40 @@ export default {
   mounted() {},
   watch: {
     propForm: {
-      handler: function (val, old) {
+      handler: function(val, old) {
         if (val === old) {
           return;
         }
 
         this.setFromWithProps();
       },
-      immediate: false,
-    },
+      immediate: false
+    }
   },
   methods: {
     setFromWithProps() {
       this.registerForm.env = [];
       if (Object.keys(this.propForm).length !== 0) {
-        this.registerForm = this.merge(this.$clone(this.propForm), this.registerForm);
+        this.registerForm = this.merge(
+          this.$clone(this.propForm),
+          this.registerForm
+        );
         let permission = this.registerForm.permission + "";
         this.registerForm.otherPermission =
           permission.length == 2 ? permission.substring(0, 1) : 3;
         this.registerForm.groupPermission =
           permission.length == 2 ? permission.substring(1, 2) : 3;
-        if(this.registerForm.daily_limitation){
-          this.daily_time_range = [this.registerForm.daily_limitation.daily_start, this.registerForm.daily_limitation.daily_end];
-        }else{
+        if (this.registerForm.daily_limitation) {
+          this.daily_time_range = [
+            this.registerForm.daily_limitation.daily_start,
+            this.registerForm.daily_limitation.daily_end
+          ];
+        } else {
           this.daily_time_range = null;
         }
-        if(this.registerForm.env){
+        if (this.registerForm.env) {
           this.registerForm.envs = [];
-          for(let env in this.registerForm.env){
+          for (let env in this.registerForm.env) {
             this.registerForm.envs.push({
               key: env,
               name: env,
@@ -280,12 +335,12 @@ export default {
         status: 1, //0 disabled, 1 enabled
         daily_limitation: {
           daily_start: "",
-          daily_end: "",
+          daily_end: ""
         },
         resource_limit: {
           cpu_shares: null,
           memory_mb: null,
-          memory_virt_mb: null,
+          memory_virt_mb: null
         },
         APP_DOCKER_IMG_PULL_TIMEOUT: null,
         APP_DOCKER_OPTS: "",
@@ -299,7 +354,7 @@ export default {
         end_time: "",
         retention: null,
         behavior: {
-          exit: "standby",
+          exit: "standby"
         }
       };
     },
@@ -313,7 +368,7 @@ export default {
       this.registerForm.envs.push({
         name: "",
         value: "",
-        key: Date.now(),
+        key: Date.now()
       });
       setTimeout(() => {
         this.$refs["envs"][this.registerForm.envs.length - 1].focus();
@@ -344,8 +399,8 @@ export default {
             : (origin[key] = local[key]);
       }
       return origin;
-    },
-  },
+    }
+  }
 };
 </script>
 
