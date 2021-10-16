@@ -254,8 +254,10 @@ export default {
         }else{
           this.daily_time_range = null;
         }
-        if(typeof this.registerForm.metadata === 'object' || this.isJsonString(this.registerForm.metadata) !== false){
+        if(this.isJsonString(this.registerForm.metadata)){
           this.registerForm.metadata = JSON.stringify(this.registerForm.metadata, null, 2);
+        }else{
+          this.registerForm.metadata = this.propForm.metadata;
         }
         if(this.registerForm.env){
           this.registerForm.envs = [];
@@ -352,17 +354,20 @@ export default {
       }
       return origin;
     },
-
     isJsonString(str) {
-      try {
-          if (typeof JSON.parse(str) == "object") {
-              return true;
+      if (str) {
+        try {
+          if ((typeof JSON.parse(str)) === "object") {
+            return true;
           }
-      } catch(e) {
+        } catch (e) {}
+        if (Object.prototype.toString.call(str) === "[object Object]") {
+            return true;
+        }
+        return ((typeof str) === "object");
       }
       return false;
     },
-
 
   },
 };
