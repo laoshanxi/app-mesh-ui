@@ -82,7 +82,7 @@ export default {
       outputPosition: "0",
       shellApp: {
         command: "",
-        shell_mode: true,
+        shell: true,
         working_dir: "/tmp",
       },
       connected: 0, //0,not-connected；1，connecting；2，connected

@@ -36,7 +36,7 @@
         {{ record.working_dir | formatEmpty }}
       </Description>
       <Description term="Shell mode">
-        <el-tag v-if="record.shell_mode == 1" :type="'success'">
+        <el-tag v-if="record.shell == 1" :type="'success'">
           Yes
         </el-tag>
         <el-tag v-else :type="'info'">

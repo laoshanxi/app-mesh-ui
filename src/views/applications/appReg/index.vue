@@ -12,8 +12,8 @@
         <el-form-item label="Command line" prop="command">
           <el-input v-model="registerForm.command"></el-input>
         </el-form-item>
-        <el-form-item label="Shell mode" prop="shell_mode">
-          <el-switch v-model="registerForm.shell_mode" :active-value="true" :inactive-value="false"></el-switch>
+        <el-form-item label="Shell mode" prop="shell">
+          <el-switch v-model="registerForm.shell" :active-value="true" :inactive-value="false"></el-switch>
         </el-form-item>
 
         <el-form-item label="Working dir" prop="working_dir">
@@ -280,7 +280,7 @@ export default {
         description: "",
         command: "",
         working_dir: "",
-        shell_mode: false,
+        shell: false,
         permission: null,
         otherPermission: 3,
         groupPermission: 3,
