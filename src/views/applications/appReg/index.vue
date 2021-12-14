@@ -82,7 +82,7 @@
         <el-form-item label="Retention" prop="retention">
           <el-input v-model="registerForm.retention"></el-input>(ISO 8601 durations or seconds)
         </el-form-item>
-        <el-form-item label="Behavior" prop="behavior.exit">
+        <el-form-item label="Exit behavior" prop="behavior.exit">
           <el-select v-model="registerForm.behavior.exit" placeholder="Please select">
             <el-option
               v-for="item in Behaviors"
