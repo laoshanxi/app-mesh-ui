@@ -41,12 +41,20 @@
                       v-model="form.ScheduleIntervalSeconds"
                     />
                   </el-form-item>
-                  <el-form-item
-                    label="Default exec user"
-                    prop="DefaultExecUser"
-                  >
+                  <el-form-item label="Default exec user" prop="DefaultExecUser">
                     <el-input v-model="form.DefaultExecUser" />
                   </el-form-item>
+
+                  <el-form-item label="Disable exec user" prop="DisableExecUser">
+                    <el-switch 
+                      v-model="form.DisableExecUser"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false"
+                    />
+                  </el-form-item>
+
                   <el-form-item label="Working dir" prop="WorkingDirectory">
                     <el-input v-model="form.WorkingDirectory" />
                   </el-form-item>
@@ -264,6 +272,7 @@ export default {
         Version: "",
         Description: "",
         DefaultExecUser: "",
+        DisableExecUser: false,
         WorkingDirectory: "",
         REST: {
           HttpThreadPoolSize: 6,
