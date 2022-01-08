@@ -17,6 +17,9 @@
         <el-form-item label="Metadata" prop="metadata">
           <el-input v-model="userForm.metadata"></el-input>
         </el-form-item>
+        <el-form-item label="Email" prop="email">
+          <el-input v-model="userForm.email"></el-input>
+        </el-form-item>
         <el-form-item label="ExecUser" prop="exec_user">
           <el-input v-model="userForm.exec_user"></el-input>
         </el-form-item>
@@ -72,6 +75,7 @@ export default {
         group: "",
         exec_user: "",
         metadata: "",
+        email: "",
         locked: false,
         roles: [],
       },
@@ -147,6 +151,7 @@ export default {
         group: "",
         exec_user: "",
         metadata: "",
+        email: "",
         locked: false,
         roles: [],
       };

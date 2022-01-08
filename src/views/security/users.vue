@@ -69,6 +69,10 @@
         <el-table-column label="Metadata">
           <template slot-scope="scope">{{ scope.row.metadata }}</template>
         </el-table-column>
+        
+        <el-table-column label="Email">
+          <template slot-scope="scope">{{ scope.row.email }}</template>
+        </el-table-column>
 
         <el-table-column label="Roles">
           <template slot-scope="scope">
@@ -135,6 +139,7 @@ export default {
                 locked: res.data[p].locked,
                 roles: res.data[p].roles,
                 metadata: res.data[p].metadata,
+                email: res.data[p].email,
               });
             }
           }
@@ -164,6 +169,7 @@ export default {
             group: this.currentRow.group,
             exec_user: this.currentRow.exec_user,
             metadata: this.currentRow.metadata,
+            email: this.currentRow.email,
           };
           this.userFormVisible = true;
           return;
