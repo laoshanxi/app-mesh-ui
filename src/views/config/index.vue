@@ -143,6 +143,16 @@
                     />
                   </el-form-item>
 
+                  <el-form-item label="SSL verify peer" prop="REST.SSL.VerifyPeer">
+                    <el-switch
+                      v-model="form.REST.SSL.VerifyPeer"
+                      active-text="Yes"
+                      :active-value="true"
+                      inactive-text="No"
+                      :inactive-value="false"
+                    />
+                  </el-form-item>
+
                   <el-form-item
                     label="SSL certificate file"
                     prop="REST.SSL.SSLCertificateFile"
@@ -287,6 +297,7 @@ export default {
             SSLCertificateFile: "",
             SSLCertificateKeyFile: "",
             SSLEnabled: "",
+            VerifyPeer: false,
           },
           JWT: {
             JWTSalt: "",
