@@ -116,7 +116,12 @@
 
         <el-table-column label="PID" width="100">
           <template slot-scope="scope">
-            {{ scope.row.pid | formatEmpty }}
+            <span v-if="scope.row.pstree">
+              <el-link :underline="true" :title="scope.row.pstree">
+                 {{ scope.row.pid | formatEmpty }}
+              </el-link>
+            </span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column label="Memory" width="110">

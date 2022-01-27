@@ -1,5 +1,4 @@
 node_modules
 *.tar
 *.gz
-src
 tests

@@ -1,6 +1,6 @@
 RELEASE_DIR=./release
 VER=2.0.1
-NODE_VER=10.17.0-jessie
+NODE_VER=10.17.0-stretch
 DOCKER_IMG_NAME=appmesh-ui:${VER}
 
 all:
@@ -10,7 +10,7 @@ all:
 buildnode:
 	appc unreg -n appweb -f
 	- docker rm -f ui_build
-	docker run --name ui_build --rm --privileged --net=host -v `pwd`:/opt --workdir /opt node:${NODE_VER} sh -c "npm install; npm run build:prod"
+	docker run --name ui_build --rm -v `pwd`:/workspace --workdir /workspace node:${NODE_VER} sh -c "npm install; npm run build:prod"
 	
 package:
 	- docker rm -f appweb
@@ -26,7 +26,7 @@ push:
 	docker push laoshanxi/appmesh-ui:latest
 
 run:
-	appc logon -u admin -x Admin123
+	appc logon -u admin -x admin123
 	appc unreg -n appweb -f
 	# use host mode for nginx reverse proxy redirect to 6060/8500
 	appc reg -n appweb --perm 11 --exit restart -u root -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d "laoshanxi/appmesh-ui:${VER}" -f

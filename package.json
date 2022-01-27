@@ -1,8 +1,8 @@
 {
-  "name": "app-mesh",
-  "version": "4.2.1",
+  "name": "app-mesh-ui",
+  "version": "2.0.1",
   "description": "App Mesh",
-  "author": "Pan <panfree23@gmail.com>",
+  "author": "178029200@qq.com",
   "license": "MIT",
   "scripts": {
     "dev": "vue-cli-service serve",
