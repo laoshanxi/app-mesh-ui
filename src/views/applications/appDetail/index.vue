@@ -87,7 +87,7 @@
         {{ record.memory | formatMemory }}
       </Description>
       <Description term="CPU Usage">
-        {{ record.cpu | formatMemory }}
+        {{ record.cpu | formatCpu }}
       </Description>
       <Description term="Next start time">
         {{ record.next_start_time | formatEmpty }}

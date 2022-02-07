@@ -131,7 +131,7 @@
         </el-table-column>
         <el-table-column label="%Cpu" width="110">
           <template slot-scope="scope">
-            {{ scope.row.cpu | formatEmpty }}
+            {{ scope.row.cpu | formatCpu }}
           </template>
         </el-table-column>
         <el-table-column label="Return" width="70">

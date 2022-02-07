@@ -121,5 +121,12 @@ export function formatMemory(memory){
 	  let result = num > 1024 ? num / 1024 : num;
 	  return result > 1024 ? compute(result) : result;
 	}
-	return compute(memory).toFixed(2) + " " + units[index];
+	return compute(memory).toFixed(1) + " " + units[index];
+}
+
+export function formatCpu(cpu) {
+  if (!cpu) {
+    return "-";
+  }
+  return cpu.toFixed(1);
 }
