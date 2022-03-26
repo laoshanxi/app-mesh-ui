@@ -38,9 +38,9 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { UserName, Password } = userInfo
+    const { UserName, Totp, Password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ Username: Base64.encode(UserName.trim()), Password: Base64.encode(Password) }).then(response => {
+      login({ Username: Base64.encode(UserName.trim()), Totp: Base64.encode(Totp), Password: Base64.encode(Password) }).then(response => {
         const { data } = response;
         let user = {
           token: data['Access-Token'],

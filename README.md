@@ -11,7 +11,7 @@
 
 ## Build Docker image
 ```bash
-VER=2.0.1
+VER=2.0.2
 cd appmesh-ui/
 make
 
@@ -43,7 +43,7 @@ npm run lint -- --fix
 ## Deploy
 Use host mode networking for Nginx reverse proxy (need accept host 443 port)
 ```shell
-appc reg -n appweb --perm 11 --exit restart -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d laoshanxi/appmesh-ui:2.0.1 -f
+appc reg -n appweb --perm 11 --exit restart -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d laoshanxi/appmesh-ui:2.0.2 -f
 ```
 Or use Docker native API way to manage container app:
 ```shell
@@ -59,7 +59,7 @@ tee appweb.json <<-'EOF'
     }
 }
 EOF
-appc reg -n appweb --perm 11 --exit restart -g @./appweb.json -d laoshanxi/appmesh-ui:2.0.1
+appc reg -n appweb --perm 11 --exit restart -g @./appweb.json -d laoshanxi/appmesh-ui:2.0.2
 ```
 
 ## Demo

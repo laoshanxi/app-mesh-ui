@@ -51,10 +51,17 @@
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
 
-        <el-table-column class-name="status-col" label="Status" width="110">
+        <el-table-column class-name="status-col" label="Status" width="100">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.locked" :type="'danger'">Locked</el-tag>
             <el-tag v-else :type="'success'">Active</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column class-name="status-col" label="MFA" width="100">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.mfa_enabled" :type="'danger'">Enabled</el-tag>
+            <el-tag v-else :type="'success'">Disabled</el-tag>
           </template>
         </el-table-column>
 
@@ -137,6 +144,7 @@ export default {
                 group: res.data[p].group,
                 exec_user: res.data[p].exec_user,
                 locked: res.data[p].locked,
+                mfa_enabled: res.data[p].mfa_enabled,
                 roles: res.data[p].roles,
                 metadata: res.data[p].metadata,
                 email: res.data[p].email,
@@ -166,6 +174,7 @@ export default {
             name: this.currentRow.name,
             roles: this.currentRow.roles,
             locked: this.currentRow.locked,
+            mfa_enabled: this.currentRow.mfa_enabled,
             group: this.currentRow.group,
             exec_user: this.currentRow.exec_user,
             metadata: this.currentRow.metadata,

@@ -38,7 +38,16 @@
             v-model="userForm.locked"
             active-text="Locked"
             :active-value="true"
-            inactive-text="Unlocked"
+            inactive-text="Active"
+            :inactive-value="false"
+          ></el-switch>
+        </el-form-item>
+        <el-form-item label="2FA enabled" prop="mfa_enabled">
+          <el-switch
+            v-model="userForm.mfa_enabled"
+            active-text="Enabled"
+            :active-value="true"
+            inactive-text="Disabled"
             :inactive-value="false"
           ></el-switch>
         </el-form-item>
@@ -153,6 +162,7 @@ export default {
         metadata: "",
         email: "",
         locked: false,
+        mfa_enabled: false,
         roles: [],
       };
     },

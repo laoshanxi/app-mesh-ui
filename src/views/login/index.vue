@@ -29,7 +29,7 @@
 
       <el-form-item prop="Password">
         <span class="svg-container">
-          <svg-icon icon-class="Password" />
+          <svg-icon icon-class="password" />
         </span>
         <el-input
           :key="passwordType"
@@ -45,6 +45,21 @@
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'Password' ? 'eye' : 'eye-open'" />
         </span>
+      </el-form-item>
+
+      <el-form-item prop="Totp">
+        <span class="svg-container">
+          <svg-icon icon-class="password" />
+        </span>
+        <el-input
+          ref="input"
+          v-model="loginForm.Totp"
+          placeholder="TOTP (input for 2FA enabled)"
+          name="Totp"
+          type="text"
+          tabindex="3"
+          auto-complete="on"
+        />
       </el-form-item>
 
       <el-button
@@ -81,6 +96,7 @@ export default {
     return {
       loginForm: {
         UserName: "",
+        Totp: "",
         Password: "",
         host: window.location.origin,
       },
