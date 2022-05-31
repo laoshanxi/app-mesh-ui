@@ -1,5 +1,5 @@
 RELEASE_DIR=./release
-VER=2.0.2
+VER=2.1.0
 NODE_VER=10.17.0-stretch
 DOCKER_IMG_NAME=appmesh-ui:${VER}
 
