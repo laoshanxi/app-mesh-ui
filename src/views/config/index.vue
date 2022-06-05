@@ -106,16 +106,6 @@
                     />
                   </el-form-item>
 
-                  <el-form-item label="TCP rest enabled" prop="REST.SeparateRestProcess">
-                    <el-switch
-                      v-model="form.REST.SeparateRestProcess"
-                      active-text="Yes"
-                      :active-value="true"
-                      inactive-text="No"
-                      :inactive-value="false"
-                    />
-                  </el-form-item>
-
                   <el-form-item label="TCP rest listen port" prop="REST.RestTcpPort">
                     <el-input-number
                       v-model="form.REST.RestTcpPort"
@@ -287,7 +277,6 @@ export default {
         REST: {
           HttpThreadPoolSize: 6,
           RestEnabled: true,
-          SeparateRestProcess: true,
           RestTcpPort: 6059,
           DockerProxyListenAddr: "127.0.0.1:6058",
           RestListenAddress: "",
