@@ -6,7 +6,7 @@
       layout="prev, pager, next"
       :current-page.sync="curPage"
       :page-size="1"
-      :total="app.stdout_cache_num"
+      :total="app.stdout_cache_size"
     ></el-pagination>
     <pre class="log">{{loginfo ? loginfo : 'No log'}}</pre>
   </el-card>

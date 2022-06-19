@@ -27,7 +27,7 @@
         </div>
       </Description>
     </DescriptionList>
-    
+
     <DescriptionList title col="12">
       <Description term="Cloud">
         {{ record.cloud | formatEmpty }}
@@ -72,6 +72,9 @@
       <Description term="Description">
         {{ record.description | formatEmpty }}
       </Description>
+      <Description term="Stdout number definition">
+        {{ record.stdout_cache_num | formatEmpty }}
+      </Description>
     </DescriptionList>
 
     <el-divider />
@@ -103,9 +106,6 @@
         <span v-if="record.last_exit_time">{{ record.last_exit_time | formatEmpty }}</span>
         <span v-else>-</span>
       </Description>
-      <Description term="Stdout number">
-        {{ record.stdout_cache_num | formatEmpty }}
-      </Description>
       <Description term="Container id">
         {{ record.container_id | formatEmpty }}
       </Description>
@@ -127,7 +127,7 @@
     <DescriptionList title="Extra infomation" col="12">
       <Description term="Daily limitation">
         {{
-          record.daily_limitation ? record.daily_limitation.daily_start + " - " + record.daily_limitation.daily_end : "-"
+        record.daily_limitation ? record.daily_limitation.daily_start + " - " + record.daily_limitation.daily_end : "-"
         }}
       </Description>
       <Description term="Posix timezone">
@@ -143,7 +143,7 @@
         {{ record.resource_limit ? record.resource_limit.cpu_shares : "-" }}
       </Description>
       <Description term="Stdout number">
-        {{ record.stdout_cache_num | formatEmpty }}
+        {{ record.stdout_cache_size | formatEmpty }}
       </Description>
       <Description term="Metadata">
       </Description>
@@ -155,7 +155,7 @@
     <DescriptionList v-if="record.env" title="Environment variables" col="24">
       <Description v-for="(value, name) in record.env" :term="name">
         {{
-          value
+        value
         }}
       </Description>
     </DescriptionList>

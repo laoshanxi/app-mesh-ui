@@ -298,7 +298,7 @@ export default {
         this.$refs["appLog"].initCurPage();
       }
       this.isShowLog = true;
-      if (curRow.stdout_cache_num == 0) {
+      if (curRow.stdout_cache_size == 0) {
         return;
       }
       this.getAppLogByName(this.currentRow.name);
