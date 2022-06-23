@@ -5,7 +5,7 @@
         {{ record.name | formatEmpty }}
       </Description>
       <Description term="Add time">
-        {{ record.register_time | formatEmpty }}
+        {{ record.register_time_ref_str | formatEmpty }}
       </Description>
       <Description term="Owner">
         {{ record.owner | formatEmpty }}
@@ -50,10 +50,10 @@
 
     <DescriptionList title col="12">
       <Description term="Start time">
-        {{ record.start_time | formatEmpty }}
+        {{ record.start_time_ref_str | formatEmpty }}
       </Description>
       <Description term="End time">
-        {{ record.end_time | formatEmpty }}
+        {{ record.end_time_ref_str | formatEmpty }}
       </Description>
       <Description term="Period run interval(S)">
         {{ record.start_interval_seconds | formatEmpty }}
@@ -93,17 +93,17 @@
         {{ record.cpu | formatCpu }}
       </Description>
       <Description term="Next start time">
-        {{ record.next_start_time | formatEmpty }}
+        {{ record.next_start_time_ref_str | formatEmpty }}
       </Description>
       <Description term="Last start time">
-        <span v-if="record.last_start_time">{{ record.last_start_time | formatEmpty }}</span>
+        <span v-if="record.last_start_time">{{ record.last_start_time_ref_str | formatEmpty }}</span>
         <span v-else>-</span>
       </Description>
       <Description term="Return">
         {{ record.return | formatEmpty }}
       </Description>
       <Description term="Last exit time">
-        <span v-if="record.last_exit_time">{{ record.last_exit_time | formatEmpty }}</span>
+        <span v-if="record.last_exit_time">{{ record.last_exit_time_ref_str | formatEmpty }}</span>
         <span v-else>-</span>
       </Description>
       <Description term="Container id">
@@ -127,11 +127,8 @@
     <DescriptionList title="Extra infomation" col="12">
       <Description term="Daily limitation">
         {{
-        record.daily_limitation ? record.daily_limitation.daily_start + " - " + record.daily_limitation.daily_end : "-"
+  record.daily_limitation ? record.daily_limitation._ref_str + " - " + record.daily_limitation.daily_end_ref_str : "-"
         }}
-      </Description>
-      <Description term="Posix timezone">
-        {{ record.posix_timezone | formatEmpty }}
       </Description>
       <Description term="Phisical memory (Mi)">
         {{ record.resource_limit ? record.resource_limit.memory_mb : "-" }}

@@ -120,9 +120,6 @@
             end-placeholder="End time"
           ></el-time-picker>
         </el-form-item>
-        <el-form-item label="Posix timezone" prop="posix_timezone">
-          <el-input v-model="registerForm.posix_timezone"></el-input>
-        </el-form-item>
         <el-divider></el-divider>
 
         <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
@@ -299,7 +296,6 @@ export default {
         APP_DOCKER_IMG_PULL_TIMEOUT: null,
         APP_DOCKER_OPTS: "",
         envs: [],
-        posix_timezone: "",
         docker_image: "",
         pid: null,
         start_interval_seconds: null,
