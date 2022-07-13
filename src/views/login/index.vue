@@ -65,8 +65,10 @@
       <el-button
         :loading="loading"
         type="primary"
+        tabindex="4"
         style="width:100%;margin-bottom:30px;"
         @click.native.prevent="switchHost"
+        @keyup.enter.native="switchHost"
       >Login</el-button>
     </el-form>
   </div>

@@ -160,7 +160,7 @@
               <el-link :underline="true" @click="showLog(scope.row)" title="Show log">
                 <i class="el-icon-document"></i>
                 <i class="el-icon-time" style="margin-right: 5px" />
-                {{ scope.row.last_start_time | formatEmpty }}
+                {{ scope.row.last_start_time | formatDate }}
               </el-link>
             </span>
             <span v-else>-</span>

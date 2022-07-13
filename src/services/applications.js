@@ -1,18 +1,29 @@
 import { getApplications, getApplicationByName, getAppLog, runApp, enableApp, disableApp, deleteApplication, registerApplication } from '@/api/applications'
 import moment from "moment";
+import { parseDateFromUtcSeconds, formatDayTime } from '@/utils';
 export default {
   getAppList: function (vueComp) {
     vueComp.listLoading = true;
     getApplications().then(response => {
       response.data.forEach(m => {
+        m.register_time = parseDateFromUtcSeconds(m.register_time);
+        m.last_start_time = parseDateFromUtcSeconds(m.last_start_time);
+        m.last_exit_time = parseDateFromUtcSeconds(m.last_exit_time);
+        m.start_time = parseDateFromUtcSeconds(m.start_time);
+        m.end_time = parseDateFromUtcSeconds(m.end_time);
+        if (m.daily_limitation && m.daily_limitation.daily_start) {
+          m.daily_limitation.daily_start = formatDayTime(parseDateFromUtcSeconds(m.daily_limitation.daily_start));
+        }
+        if (m.daily_limitation && m.daily_limitation.daily_end) {
+          m.daily_limitation.daily_end = formatDayTime(parseDateFromUtcSeconds(m.daily_limitation.daily_end));
+        }
         // desc
         m.desc = m.description
         // age
-        m.age = this.humanReadableDuration(this.dateFromISO8601(m.register_time), new Date())
-
+        m.age = this.humanReadableDuration(m.register_time, new Date())
         // duration
         if (m.last_start_time && m.pid) {
-          m.duration = this.humanReadableDuration(this.dateFromISO8601(m.last_start_time), new Date())
+          m.duration = this.humanReadableDuration(m.last_start_time, new Date())
         } else {
           m.duration = '-'
         }
@@ -65,9 +76,12 @@ export default {
       return seconds + 's'
     }
   },
-  dateFromISO8601(isoDateString) {
+  dateFromISO8601: function (isoDateString) {
     // "2021-10-13T21:24:17+08"
-    return moment.parseZone(isoDateString).toDate()
+    if (isoDateString) {
+      return moment.parseZone(isoDateString).toDate()
+    }
+    return isoDateString;
   },
   getAppByName: function (vueComp, name) {
     vueComp.isLoadingDetail = true
@@ -170,6 +184,22 @@ export default {
         if (data.resource_limit.memory_mb) data.resource_limit.memory_mb = parseInt(data.resource_limit.memory_mb);
         if (data.resource_limit.memory_virt_mb) data.resource_limit.memory_virt_mb = parseInt(data.resource_limit.memory_virt_mb);
       }
+      if (data.start_time && data.start_time != "") {
+        data.start_time = moment(data.start_time).unix();
+      } else {
+        data.start_time = null
+      }
+      if (data.end_time && data.end_time != "") {
+        data.end_time = moment(data.end_time).unix();
+      } else {
+        data.end_time = null
+      }
+      if (data.daily_limitation && data.daily_limitation.daily_start && data.daily_limitation.daily_start != "") data.daily_limitation.daily_start = moment(data.daily_limitation.daily_start).unix();
+      if (data.daily_limitation && data.daily_limitation.daily_end && data.daily_limitation.daily_end != "") {
+        data.daily_limitation.daily_end = moment(data.daily_limitation.daily_end).unix();
+      } else {
+        data.daily_limitation = null;
+      }
     }
     vueComp.$refs["regForm"].validate((valid) => {
       if (valid) {
@@ -182,8 +212,8 @@ export default {
 
         data.env = data.envs.length > 0 ? envs : null;
         if (vueComp.daily_time_range != null) {
-          data.daily_limitation.daily_start = vueComp.daily_time_range[0];
-          data.daily_limitation.daily_end = vueComp.daily_time_range[1];
+          data.daily_limitation.daily_start = "1970-1-1 " + vueComp.daily_time_range[0];
+          data.daily_limitation.daily_end = "1970-1-1 " + vueComp.daily_time_range[1];
         }
 
         if (data.APP_DOCKER_OPTS && data.APP_DOCKER_OPTS.length > 0) {
@@ -199,6 +229,7 @@ export default {
 
         removeEmptyProperties(data);
         formatData(data);
+        removeEmptyProperties(data);
 
         registerApplication(data.name, data).then((res) => {
           vueComp.$message.success('Application ' + data.name + ' register successfully.', 5000);

@@ -5,7 +5,7 @@
         {{ record.name | formatEmpty }}
       </Description>
       <Description term="Add time">
-        {{ record.register_time_ref_str | formatEmpty }}
+        {{ record.register_time | formatDate }}
       </Description>
       <Description term="Owner">
         {{ record.owner | formatEmpty }}
@@ -50,10 +50,10 @@
 
     <DescriptionList title col="12">
       <Description term="Start time">
-        {{ record.start_time_ref_str | formatEmpty }}
+        {{ record.start_time | formatDate }}
       </Description>
       <Description term="End time">
-        {{ record.end_time_ref_str | formatEmpty }}
+        {{ record.end_time | formatDate }}
       </Description>
       <Description term="Period run interval(S)">
         {{ record.start_interval_seconds | formatEmpty }}
@@ -93,21 +93,18 @@
         {{ record.cpu | formatCpu }}
       </Description>
       <Description term="Next start time">
-        {{ record.next_start_time_ref_str | formatEmpty }}
+        {{ record.next_start_time | formatDate }}
       </Description>
       <Description term="Last start time">
-        <span v-if="record.last_start_time">{{ record.last_start_time_ref_str | formatEmpty }}</span>
+        <span v-if="record.last_start_time">{{ record.last_start_time | formatDate }}</span>
         <span v-else>-</span>
       </Description>
       <Description term="Return">
         {{ record.return | formatEmpty }}
       </Description>
       <Description term="Last exit time">
-        <span v-if="record.last_exit_time">{{ record.last_exit_time_ref_str | formatEmpty }}</span>
+        <span v-if="record.last_exit_time">{{ record.last_exit_time| formatDate }}</span>
         <span v-else>-</span>
-      </Description>
-      <Description term="Container id">
-        {{ record.container_id | formatEmpty }}
       </Description>
       <Description term="Start number">
         {{ record.starts | formatEmpty }}
@@ -120,6 +117,9 @@
       <Description term="Last error">
         {{ record.last_error }}
       </Description>
+      <Description term="Container id">
+        {{ record.container_id | formatEmpty }}
+      </Description>
     </DescriptionList>
 
     <el-divider />
@@ -127,7 +127,7 @@
     <DescriptionList title="Extra infomation" col="12">
       <Description term="Daily limitation">
         {{
-  record.daily_limitation ? record.daily_limitation._ref_str + " - " + record.daily_limitation.daily_end_ref_str : "-"
+  record.daily_limitation ? record.daily_limitation.daily_start + " - " + record.daily_limitation.daily_end : "-"
         }}
       </Description>
       <Description term="Phisical memory (Mi)">

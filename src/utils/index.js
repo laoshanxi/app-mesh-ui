@@ -1,7 +1,7 @@
 /**
  * Created by PanJiaChen on 16/11/18.
  */
-
+import moment from "moment";
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -37,7 +37,7 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value ] }
+    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
     return value.toString().padStart(2, '0')
   })
   return time_str
@@ -97,31 +97,54 @@ export function param2Obj(url) {
   }
   return JSON.parse(
     '{"' +
-      decodeURIComponent(search)
-        .replace(/"/g, '\\"')
-        .replace(/&/g, '","')
-        .replace(/=/g, '":"')
-        .replace(/\+/g, ' ') +
-      '"}'
+    decodeURIComponent(search)
+      .replace(/"/g, '\\"')
+      .replace(/&/g, '","')
+      .replace(/=/g, '":"')
+      .replace(/\+/g, ' ') +
+    '"}'
   )
 }
 
-export function formatEmpty(value, defaultValue){
-	return value || value == 0 ? value : (defaultValue ? defaultValue : "-");
+export function formatEmpty(value, defaultValue) {
+  return value || value == 0 ? value : (defaultValue ? defaultValue : "-");
 }
 
-export function formatMemory(memory){
-	if(!memory){
-	  return "-";
-	}
-	let units = ["B", "Ki", "Mi", "Gi", "Ti", "Pi"];
-	let index = 0;
-	let compute = function(num){
-	  index ++;
-	  let result = num > 1024 ? num / 1024 : num;
-	  return result > 1024 ? compute(result) : result;
-	}
-	return compute(memory).toFixed(1) + " " + units[index];
+export function parseDateFromUtcSeconds(value) {
+  if (value) {
+    return moment.unix(value).toDate();
+  }
+  return null;
+}
+
+export function formatDate(value) {
+  if (value) {
+    let str = moment(value).format("YYYY-MM-DDTHH:mm:ssZ");
+    return str.slice(0, str.length - 3);
+  }
+  return "";
+}
+
+export function formatDayTime(value) {
+  if (value) {
+    let str = moment(value).format("HH:mm:ssZ")
+    return str.slice(0, str.length - 3);
+  }
+  return "";
+}
+
+export function formatMemory(memory) {
+  if (!memory) {
+    return "-";
+  }
+  let units = ["B", "Ki", "Mi", "Gi", "Ti", "Pi"];
+  let index = 0;
+  let compute = function (num) {
+    index++;
+    let result = num > 1024 ? num / 1024 : num;
+    return result > 1024 ? compute(result) : result;
+  }
+  return compute(memory).toFixed(1) + " " + units[index];
 }
 
 export function formatCpu(cpu) {
