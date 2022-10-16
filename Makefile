@@ -1,4 +1,4 @@
-VER=2.1.0
+VER=2.1.1
 NODE_VER=10.17.0-stretch
 DOCKER_IMG_NAME=appmesh-ui:${VER}
 
@@ -10,7 +10,7 @@ buildnode:
 	appc unreg -n appweb -f
 	- docker rm -f ui_build
 	docker run --name ui_build --rm -v `pwd`:/workspace -v `pwd`:/root --workdir /workspace node:${NODE_VER} sh -c "cd /workspace; npm config set cache /workspace; npm install; npm run build:prod"
-	
+
 pack:
 	- docker rm -f appweb
 	- docker rmi -f ${DOCKER_IMG_NAME}
