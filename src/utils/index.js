@@ -119,7 +119,7 @@ export function parseDateFromUtcSeconds(value) {
 
 export function formatDate(value) {
   if (value) {
-    let str = moment(value).format("YYYY-MM-DDTHH:mm:ssZ");
+    let str = moment(parseDateFromUtcSeconds(value)).format("YYYY-MM-DDTHH:mm:ssZ");
     return str.slice(0, str.length - 3);
   }
   return "";

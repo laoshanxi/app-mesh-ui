@@ -6,11 +6,6 @@ export default {
     vueComp.listLoading = true;
     getApplications().then(response => {
       response.data.forEach(m => {
-        m.register_time = parseDateFromUtcSeconds(m.register_time);
-        m.last_start_time = parseDateFromUtcSeconds(m.last_start_time);
-        m.last_exit_time = parseDateFromUtcSeconds(m.last_exit_time);
-        m.start_time = parseDateFromUtcSeconds(m.start_time);
-        m.end_time = parseDateFromUtcSeconds(m.end_time);
         if (m.daily_limitation && m.daily_limitation.daily_start) {
           m.daily_limitation.daily_start = formatDayTime(parseDateFromUtcSeconds(m.daily_limitation.daily_start));
         }
@@ -20,10 +15,10 @@ export default {
         // desc
         m.desc = m.description
         // age
-        m.age = this.humanReadableDuration(m.register_time, new Date())
+        m.age = this.humanReadableDuration(parseDateFromUtcSeconds(m.register_time), new Date())
         // duration
         if (m.last_start_time && m.pid) {
-          m.duration = this.humanReadableDuration(m.last_start_time, new Date())
+          m.duration = this.humanReadableDuration(parseDateFromUtcSeconds(m.last_start_time), new Date())
         } else {
           m.duration = '-'
         }
