@@ -100,7 +100,7 @@
         <span v-else>-</span>
       </Description>
       <Description term="Return">
-        {{ record.return | formatEmpty }}
+        {{ record.return_code | formatEmpty }}
       </Description>
       <Description term="Last exit time">
         <span v-if="record.last_exit_time">{{ record.last_exit_time| formatDate }}</span>
