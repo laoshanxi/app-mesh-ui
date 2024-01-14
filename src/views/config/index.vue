@@ -68,11 +68,6 @@
 										<el-input v-model="form.REST.DockerProxyListenAddr" />
 									</el-form-item>
 
-									<el-form-item label="SSL enabled" prop="REST.SSL.SSLEnabled">
-										<el-switch v-model="form.REST.SSL.SSLEnabled" active-text="Yes" :active-value="true"
-											inactive-text="No" :inactive-value="false" />
-									</el-form-item>
-
 									<el-form-item label="SSL verify peer" prop="REST.SSL.VerifyPeer">
 										<el-switch v-model="form.REST.SSL.VerifyPeer" active-text="Yes" :active-value="true"
 											inactive-text="No" :inactive-value="false" />
