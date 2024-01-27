@@ -79,6 +79,12 @@
 									<el-form-item label="SSL certificate key file" prop="REST.SSL.SSLCertificateKeyFile">
 										<el-input v-model="form.REST.SSL.SSLCertificateKeyFile" />
 									</el-form-item>
+									<el-form-item label="SSL client certificate file" prop="REST.SSL.SSLClientCertificateFile">
+										<el-input v-model="form.REST.SSL.SSLClientCertificateFile" />
+									</el-form-item>
+									<el-form-item label="SSL client certificate key file" prop="REST.SSL.SSLClientCertificateKeyFile">
+										<el-input v-model="form.REST.SSL.SSLClientCertificateKeyFile" />
+									</el-form-item>
 									<el-form-item label="SSL CA file" prop="REST.SSL.SSLCaPath">
 										<el-input v-model="form.REST.SSL.SSLCaPath" />
 									</el-form-item>
@@ -163,6 +169,8 @@ export default {
 					SSL: {
 						SSLCertificateFile: "",
 						SSLCertificateKeyFile: "",
+						SSLClientCertificateFile: "",
+						SSLClientCertificateKeyFile: "",
 						SSLCaPath: "",
 						VerifyPeer: false,
 					},
