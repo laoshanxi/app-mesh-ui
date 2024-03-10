@@ -68,8 +68,12 @@
 										<el-input v-model="form.REST.DockerProxyListenAddr" />
 									</el-form-item>
 
-									<el-form-item label="SSL verify peer" prop="REST.SSL.VerifyPeer">
-										<el-switch v-model="form.REST.SSL.VerifyPeer" active-text="Yes" :active-value="true"
+									<el-form-item label="SSL verify peer" prop="REST.SSL.VerifyServer">
+										<el-switch v-model="form.REST.SSL.VerifyServer" active-text="Yes" :active-value="true"
+											inactive-text="No" :inactive-value="false" />
+									</el-form-item>
+									<el-form-item label="SSL verify peer" prop="REST.SSL.VerifyClient">
+										<el-switch v-model="form.REST.SSL.VerifyClient" active-text="Yes" :active-value="true"
 											inactive-text="No" :inactive-value="false" />
 									</el-form-item>
 
@@ -172,7 +176,8 @@ export default {
 						SSLClientCertificateFile: "",
 						SSLClientCertificateKeyFile: "",
 						SSLCaPath: "",
-						VerifyPeer: false,
+						VerifyServer: false,
+						VerifyClient: false,
 					},
 					JWT: {
 						JWTSalt: "",
