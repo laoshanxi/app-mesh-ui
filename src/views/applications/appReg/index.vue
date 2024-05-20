@@ -15,6 +15,9 @@
         <el-form-item label="Shell mode" prop="shell">
           <el-switch v-model="registerForm.shell" :active-value="true" :inactive-value="false"></el-switch>
         </el-form-item>
+        <el-form-item label="Session login" prop="session_login">
+          <el-switch v-model="registerForm.session_login" :active-value="true" :inactive-value="false"></el-switch>
+        </el-form-item>
 
         <el-form-item label="Working dir" prop="working_dir">
           <el-input v-model="registerForm.working_dir"></el-input>
@@ -278,6 +281,7 @@ export default {
         command: "",
         working_dir: "",
         shell: false,
+        session_login: false,
         permission: null,
         otherPermission: 3,
         groupPermission: 3,

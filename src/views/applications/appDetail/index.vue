@@ -43,6 +43,14 @@
           No
         </el-tag>
       </Description>
+      <Description term="Session login">
+        <el-tag v-if="record.session_login == 1" :type="'success'">
+          Yes
+        </el-tag>
+        <el-tag v-else :type="'info'">
+          No
+        </el-tag>
+      </Description>
       <Description term="Healthcheck cmd">
         {{ record.health_check_cmd | formatEmpty }}
       </Description>
