@@ -40,7 +40,7 @@ const actions = {
   login({ commit }, userInfo) {
     const { UserName, Totp, Password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ Username: Base64.encode(UserName.trim()), Totp: Base64.encode(Totp), Password: Base64.encode(Password) }).then(response => {
+      login({ Authorization: "Basic " + Base64.encode(UserName.trim() + ":" + Password), Totp: Base64.encode(Totp) }).then(response => {
         const { data } = response;
         let user = {
           token: data['Access-Token'],
@@ -55,7 +55,7 @@ const actions = {
         commit('SET_ACCOUNT', user.UserName);
         commit('SET_AUTH', user.auth);
         commit('SET_AVATAR', user.avatar);
-        getUserPermissions().then(res=>{
+        getUserPermissions().then(res => {
           user.permissions = res.data;
           commit('SET_PERMISSIONS', res.data);
           setUser(user);
