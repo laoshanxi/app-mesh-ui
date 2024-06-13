@@ -1,4 +1,4 @@
-VER=2.1.1
+VER=2.1.2
 NODE_VER=10.17.0-stretch
 DOCKER_IMG_NAME=appmesh-ui:${VER}
 
