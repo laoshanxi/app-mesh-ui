@@ -29,9 +29,6 @@
     </DescriptionList>
 
     <DescriptionList title col="12">
-      <Description term="Cloud">
-        {{ record.cloud | formatEmpty }}
-      </Description>
       <Description term="Working dir">
         {{ record.working_dir | formatEmpty }}
       </Description>
