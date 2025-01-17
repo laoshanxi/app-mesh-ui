@@ -1,10 +1,18 @@
 import request from '@/utils/request'
 
 export function login(data) {
-  data["Expire-Seconds"] = 60 * 60 * 8;
+  data['Expire-Seconds'] = 60 * 60 * 8
   return request({
     url: '/appmesh/login',
     method: 'post',
+    headers: data
+  })
+}
+
+export function totpValidate(data) {
+  return request({
+    url: '/appmesh/totp/validate',
+    method: 'POST',
     headers: data
   })
 }
@@ -19,13 +27,13 @@ export function getUserPermissions() {
 export function locked(UserName) {
   return request({
     url: '/appmesh/user/' + UserName + '/lock',
-    method: 'post',
+    method: 'post'
   })
 }
 export function unlocked(UserName) {
   return request({
     url: '/appmesh/user/' + UserName + '/unlock',
-    method: 'post',
+    method: 'post'
   })
 }
 
@@ -46,7 +54,7 @@ export function logout() {
 
 export function saveUser(user) {
   return request({
-    url: '/appmesh/user/'+user.name,
+    url: '/appmesh/user/' + user.name,
     method: 'PUT',
     data: user
   })
@@ -54,7 +62,7 @@ export function saveUser(user) {
 
 export function delUser(user) {
   return request({
-    url: '/appmesh/user/'+user,
+    url: '/appmesh/user/' + user,
     method: 'DELETE'
   })
 }

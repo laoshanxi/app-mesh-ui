@@ -1,75 +1,43 @@
 <template>
   <div class="login-container">
-    <el-form
-      ref="loginForm"
-      :model="loginForm"
-      :rules="loginRules"
-      class="login-form"
-      auto-complete="on"
-      label-position="left"
-    >
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+      label-position="left">
       <div class="title-container">
         <h3 class="title">App Mesh Login</h3>
       </div>
 
-      <el-form-item prop="UserName">
+      <el-form-item prop="UserName" v-show="!totpMode">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input
-          ref="UserName"
-          v-model="loginForm.UserName"
-          placeholder="Username"
-          name="UserName"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
+        <el-input ref="UserName" v-model="loginForm.UserName" placeholder="Username" name="UserName" type="text"
+          tabindex="1" auto-complete="on" />
       </el-form-item>
 
-      <el-form-item prop="Password">
+      <el-form-item prop="Password" v-show="!totpMode">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input
-          :key="passwordType"
-          ref="Password"
-          v-model="loginForm.Password"
-          :type="passwordType"
-          placeholder="Password"
-          name="Password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="switchHost"
-        />
+        <el-input :key="passwordType" ref="Password" v-model="loginForm.Password" :type="passwordType"
+          placeholder="Password" name="Password" tabindex="2" auto-complete="on" @keyup.enter.native="switchHost" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'Password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
 
-      <el-form-item prop="Totp">
+      <el-form-item prop="Totp" v-show="totpMode">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input
-          ref="input"
-          v-model="loginForm.Totp"
-          placeholder="TOTP (input for 2FA enabled)"
-          name="Totp"
-          type="text"
-          tabindex="3"
-          auto-complete="on"
-        />
+        <el-input ref="Totp" v-model="loginForm.Totp" placeholder="Please enter your TOTP code" name="Totp" type="text"
+          tabindex="3" auto-complete="on" @keyup.enter.native="handleTotpSubmit" />
       </el-form-item>
 
-      <el-button
-        :loading="loading"
-        type="primary"
-        tabindex="4"
-        style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="switchHost"
-        @keyup.enter.native="switchHost"
-      >Login</el-button>
+      <el-button :loading="loading" type="primary" tabindex="4" style="width:100%;margin-bottom:30px;"
+        @click.native.prevent="totpMode ? handleTotpSubmit() : switchHost()"
+        @keyup.enter.native="totpMode ? handleTotpSubmit() : switchHost()">
+        {{ totpMode ? 'Submit TOTP' : 'Login' }}
+      </el-button>
     </el-form>
   </div>
 </template>
@@ -100,6 +68,7 @@ export default {
         UserName: "",
         Totp: "",
         Password: "",
+        TotpChallenge: "",
         host: window.location.origin,
       },
       restaurants: [
@@ -118,6 +87,7 @@ export default {
       loading: false,
       passwordType: "Password",
       redirect: undefined,
+      totpMode: false,
     };
   },
   watch: {
@@ -169,10 +139,22 @@ export default {
           this.$store
             .dispatch("user/login", this.loginForm)
             .then(() => {
+              // Login success
+              this.totpMode = false;
               this.$router.push({ path: this.redirect || "/" });
               this.loading = false;
             })
-            .catch(() => {
+            .catch((error) => {
+              if (error.response && error.response.status === 401 && error.response.data["Totp-Challenge"]) {
+                this.loginForm.TotpChallenge = error.response.data["Totp-Challenge"];
+                this.totpMode = true;
+                this.$message({ message: 'Please enter your TOTP code', type: 'info' });
+                this.$nextTick(() => {
+                  this.$refs.Totp.focus();
+                });
+              } else {
+                this.$message({ message: error.message || 'Login failed', type: 'error' });
+              }
               this.loading = false;
             });
         } else {
@@ -180,6 +162,23 @@ export default {
           return false;
         }
       });
+    },
+    handleTotpSubmit() {
+      this.loading = true;
+      this.$store
+        .dispatch("user/validateTotp", {
+          username: this.loginForm.UserName,
+          challenge: this.loginForm.TotpChallenge,
+          totp: this.loginForm.Totp,
+          expireSeconds: "604800" // DURATION_ONE_WEEK
+        })
+        .then(() => {
+          this.$router.push({ path: this.redirect || "/" });
+          this.loading = false;
+        })
+        .catch(() => {
+          this.loading = false;
+        });
     },
   },
 };
@@ -201,6 +200,7 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+
   .el-input,
   .el-autocomplete {
     display: inline-block;

@@ -125,6 +125,34 @@ export function formatDate(value) {
   return "";
 }
 
+// convert 2025-01-20T06:37:09+08 to 2024-12-15 13:23:40
+export function formatToLocal(isoString) {
+  if (!isoString) {
+    return ""; // Input is empty
+  }
+  // Parse the ISO string using moment.js
+  const date = moment(isoString);
+  if (!date.isValid()) {
+    return ""; // Invalid date format
+  }
+  // Format the date as YYYY-MM-DD HH:mm:ss
+  return date.format("YYYY-MM-DD HH:mm:ss");
+}
+
+// convert 2025-01-20T06:37:09+08 to 2024-12-15 13:23:40
+export function formatToLocalDayTime(dayTime) {
+  if (!dayTime) {
+    return ""; // Input is empty
+  }
+  // Parse the ISO string using moment.js
+  const date = moment("1970-01-01 " + dayTime);
+  if (!date.isValid()) {
+    return ""; // Invalid date format
+  }
+  // Format the date as YYYY-MM-DD HH:mm:ss
+  return date.format("HH:mm:ss");
+}
+
 export function formatDayTime(value) {
   if (value) {
     let str = moment(value).format("HH:mm:ssZ")

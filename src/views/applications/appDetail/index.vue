@@ -5,7 +5,7 @@
         {{ record.name | formatEmpty }}
       </Description>
       <Description term="Add time">
-        {{ record.register_time | formatDate }}
+        {{ record.register_time_TEXT }}
       </Description>
       <Description term="Owner">
         {{ record.owner | formatEmpty }}
@@ -29,9 +29,6 @@
     </DescriptionList>
 
     <DescriptionList title col="12">
-      <Description term="Cloud">
-        {{ record.cloud | formatEmpty }}
-      </Description>
       <Description term="Working dir">
         {{ record.working_dir | formatEmpty }}
       </Description>
@@ -58,10 +55,10 @@
 
     <DescriptionList title col="12">
       <Description term="Start time">
-        {{ record.start_time | formatDate }}
+        {{ record.start_time_TEXT }}
       </Description>
       <Description term="End time">
-        {{ record.end_time | formatDate }}
+        {{ record.end_time_TEXT }}
       </Description>
       <Description term="Period run interval(S)">
         {{ record.start_interval_seconds | formatEmpty }}
@@ -91,6 +88,9 @@
       <Description term="PID">
         {{ record.pid | formatEmpty }}
       </Description>
+      <Description term="PID user">
+        {{ record.pid_user | formatEmpty }}
+      </Description>
       <Description term="Health">
         {{ record.health | formatEmpty }}
       </Description>
@@ -101,17 +101,17 @@
         {{ record.cpu | formatCpu }}
       </Description>
       <Description term="Next start time">
-        {{ record.next_start_time | formatDate }}
+        {{ record.next_start_time_TEXT }}
       </Description>
       <Description term="Last start time">
-        <span v-if="record.last_start_time">{{ record.last_start_time | formatDate }}</span>
+        <span v-if="record.last_start_time">{{ record.last_start_time_TEXT }}</span>
         <span v-else>-</span>
       </Description>
       <Description term="Return">
         {{ record.return_code | formatEmpty }}
       </Description>
       <Description term="Last exit time">
-        <span v-if="record.last_exit_time">{{ record.last_exit_time| formatDate }}</span>
+        <span v-if="record.last_exit_time">{{ record.last_exit_time_TEXT }}</span>
         <span v-else>-</span>
       </Description>
       <Description term="Start number">
@@ -135,7 +135,8 @@
     <DescriptionList title="Extra infomation" col="12">
       <Description term="Daily limitation">
         {{
-  record.daily_limitation ? record.daily_limitation.daily_start + " - " + record.daily_limitation.daily_end : "-"
+          record.daily_limitation ? record.daily_limitation.daily_start_TEXT + " - " +
+            record.daily_limitation.daily_end_TEXT : "-"
         }}
       </Description>
       <Description term="Phisical memory (Mi)">
@@ -158,9 +159,9 @@
 
     <el-divider />
     <DescriptionList v-if="record.env" title="Environment variables" col="24">
-      <Description v-for="(value, name) in record.env" :term="name">
+      <Description v-for="(value, name) in record.env" :key="name" :term="name">
         {{
-        value
+          value
         }}
       </Description>
     </DescriptionList>
@@ -187,10 +188,9 @@ export default {
       ],
     };
   },
-  mounted() {},
+  mounted() { },
   methods: {},
 };
 </script>
 
-<style>
-</style>
+<style></style>
