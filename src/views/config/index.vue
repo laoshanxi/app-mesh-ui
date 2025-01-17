@@ -7,7 +7,7 @@
             <span slot="label">
               <i class="el-icon-s-operation" /> Configuration
             </span>
-            <el-form ref="form" :model="form" label-width="260px">
+            <el-form ref="form" :model="form" :rules="rules" label-width="260px">
               <el-collapse v-model="activeNames">
                 <el-collapse-item title="Basic" name="1">
                   <el-form-item label="Version" prop="Version">
@@ -18,7 +18,11 @@
                   </el-form-item>
                   <el-form-item label="Log level" prop="BaseConfig.LogLevel">
                     <el-select v-model="form.BaseConfig.LogLevel" placeholder="Please select">
-                      <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
+                      <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                        <el-tooltip :content="item.description" placement="right">
+                          <span>{{ item.label }}</span>
+                        </el-tooltip>
+                      </el-option>
                     </el-select>
                   </el-form-item>
                   <el-form-item label="Schedule period seconds" prop="BaseConfig.ScheduleIntervalSeconds">
@@ -29,8 +33,8 @@
                   </el-form-item>
 
                   <el-form-item label="Disable exec user" prop="BaseConfig.DisableExecUser">
-                    <el-switch v-model="form.BaseConfig.DisableExecUser" active-text="Yes" :active-value="true" inactive-text="No"
-                      :inactive-value="false" />
+                    <el-switch v-model="form.BaseConfig.DisableExecUser" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false" />
                   </el-form-item>
 
                   <el-form-item label="Working dir" prop="BaseConfig.WorkingDirectory">
@@ -64,10 +68,6 @@
                     <el-input-number v-model="form.REST.RestTcpPort" :min="1024" :max="65534" />
                   </el-form-item>
 
-                  <el-form-item label="Docker rest agent URL" prop="REST.DockerProxyListenAddr">
-                    <el-input v-model="form.REST.DockerProxyListenAddr" />
-                  </el-form-item>
-
                   <el-form-item label="SSL verify peer" prop="REST.SSL.VerifyServer">
                     <el-switch v-model="form.REST.SSL.VerifyServer" active-text="Yes" :active-value="true"
                       inactive-text="No" :inactive-value="false" />
@@ -94,40 +94,23 @@
                   </el-form-item>
                 </el-collapse-item>
                 <el-collapse-item title="JWT" name="3">
-                  <el-form-item label="JWT enabled" prop="REST.JWT.JWTEnabled">
-                    <el-switch v-model="form.REST.JWT.JWTEnabled" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false" />
-                  </el-form-item>
                   <el-form-item label="JWT Salt" prop="REST.JWT.JWTSalt">
                     <el-input v-model="form.REST.JWT.JWTSalt" />
+                  </el-form-item>
+                  <el-form-item label="JWT Issuer" prop="REST.JWT.Issuer">
+                    <el-input v-model="form.REST.JWT.Issuer" />
+                  </el-form-item>
+                  <el-form-item label="JWT Audience" prop="REST.JWT.Audience">
+                    <el-select v-model="form.REST.JWT.Audience" multiple filterable allow-create
+                      default-first-option="true" placeholder="Enter audience values">
+                      <el-option v-for="item in form.REST.JWT.Audience" :key="item" :label="item" :value="item">
+                      </el-option>
+                    </el-select>
                   </el-form-item>
                   <el-form-item label="JWT Interface" prop="REST.JWT.SecurityInterface">
                     <el-select v-model="form.REST.JWT.SecurityInterface" placeholder="Please select">
                       <el-option v-for="item in JWTOptions" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
-                  </el-form-item>
-                </el-collapse-item>
-                <el-collapse-item title="Consul" name="4">
-                  <el-form-item label="Run as main node" prop="Consul.IsMainNode">
-                    <el-switch v-model="form.Consul.IsMainNode" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false" />
-                  </el-form-item>
-                  <el-form-item label="Run as worker node" prop="Consul.IsWorkerNode">
-                    <el-switch v-model="form.Consul.IsWorkerNode" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false" />
-                  </el-form-item>
-                  <el-form-item label="Store user role in Consul" prop="Consul.EnableConsulSecurity">
-                    <el-switch v-model="form.Consul.EnableConsulSecurity" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false" />
-                  </el-form-item>
-                  <el-form-item label="Session TTL" prop="Consul.SessionTTL">
-                    <el-input-number v-model="form.Consul.SessionTTL" />
-                  </el-form-item>
-                  <el-form-item label="Consul URL" prop="Consul.Url">
-                    <el-input v-model="form.Consul.Url" />
-                  </el-form-item>
-                  <el-form-item label="App Mesh expose URL" prop="Consul.AppmeshProxyUrl">
-                    <el-input v-model="form.Consul.AppmeshProxyUrl" />
                   </el-form-item>
                 </el-collapse-item>
               </el-collapse>
@@ -158,78 +141,83 @@ export default {
       form: {
         Version: "",
         BaseConfig: {
-          Description: "",
+          Description: "MYHOST",
           DefaultExecUser: "",
           DisableExecUser: false,
+          ScheduleIntervalSeconds: 1,
           WorkingDirectory: "",
-          LogLevel: "",
-          ScheduleIntervalSeconds: 2,
-          PosixTimezone: "",
+          LogLevel: "INFO",
+          PosixTimezone: "+08",
         },
         REST: {
-          HttpThreadPoolSize: 6,
           RestEnabled: true,
-          RestTcpPort: 6059,
-          DockerProxyListenAddr: "127.0.0.1:6058",
-          RestListenAddress: "",
+          RestListenAddress: "localhost",
           RestListenPort: 6060,
+          RestTcpPort: 6059,
           PrometheusExporterListenPort: 6061,
+          HttpThreadPoolSize: 2,
           SSL: {
-            SSLCertificateFile: "",
-            SSLCertificateKeyFile: "",
-            SSLClientCertificateFile: "",
-            SSLClientCertificateKeyFile: "",
-            SSLCaPath: "",
-            VerifyServer: false,
+            SSLCaPath: "ssl/ca.pem",
+            SSLCertificateFile: "ssl/server.pem",
+            SSLCertificateKeyFile: "ssl/server-key.pem",
+            SSLClientCertificateFile: "ssl/client.pem",
+            SSLClientCertificateKeyFile: "ssl/client-key.pem",
+            VerifyServer: true,
             VerifyClient: false,
+            VerifyServerDelegate: false,
           },
           JWT: {
-            JWTSalt: "",
-            JWTEnabled: false,
-            SecurityInterface: "",
+            JWTSalt: "HelloAppMesh",
+            Issuer: "",
+            Audience: ["appmesh-service", "your-service-api"],
+            SecurityInterface: "local",
           },
-        },
-
-        Consul: {
-          IsMainNode: false,
-          IsWorkerNode: false,
-          SessionTTL: null,
-          EnableConsulSecurity: false,
-          Url: "",
-          AppmeshProxyUrl: "",
         },
       },
       configData: null,
+      rules: {
+        'BaseConfig.LogLevel': [
+          { required: true, message: 'Log level is required', trigger: 'change' }
+        ],
+        'REST.RestListenPort': [
+          { type: 'number', min: 1024, max: 65534, message: 'Port must be between 1024-65534', trigger: 'blur' }
+        ]
+      },
       options: [
-        {
-          label: "NOTEST",
-          value: "NOTEST",
-        },
         {
           label: "DEBUG",
           value: "DEBUG",
+          description: "Debug level messages"
         },
         {
           label: "INFO",
           value: "INFO",
+          description: "Info level messages"
         },
         {
           label: "NOTICE",
           value: "NOTICE",
+          description: "Notice level messages"
         },
         {
           label: "WARN",
           value: "WARN",
+          description: "Warning level messages"
         },
         {
           label: "ERROR",
           value: "ERROR",
+          description: "Error level messages"
         },
       ],
       JWTOptions: [
         {
           label: "json",
           value: "json",
+        },
+        {
+          label: "consul",
+          value: "consul",
         },
         {
           label: "ldap",

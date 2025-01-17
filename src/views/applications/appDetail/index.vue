@@ -29,9 +29,6 @@
     </DescriptionList>
 
     <DescriptionList title col="12">
-      <Description term="Cloud">
-        {{ record.cloud | formatEmpty }}
-      </Description>
       <Description term="Working dir">
         {{ record.working_dir | formatEmpty }}
       </Description>
@@ -91,6 +88,9 @@
       <Description term="PID">
         {{ record.pid | formatEmpty }}
       </Description>
+      <Description term="PID user">
+        {{ record.pid_user | formatEmpty }}
+      </Description>
       <Description term="Health">
         {{ record.health | formatEmpty }}
       </Description>
@@ -111,7 +111,7 @@
         {{ record.return_code | formatEmpty }}
       </Description>
       <Description term="Last exit time">
-        <span v-if="record.last_exit_time">{{ record.last_exit_time| formatDate }}</span>
+        <span v-if="record.last_exit_time">{{ record.last_exit_time | formatDate }}</span>
         <span v-else>-</span>
       </Description>
       <Description term="Start number">
@@ -135,7 +135,7 @@
     <DescriptionList title="Extra infomation" col="12">
       <Description term="Daily limitation">
         {{
-  record.daily_limitation ? record.daily_limitation.daily_start + " - " + record.daily_limitation.daily_end : "-"
+          record.daily_limitation ? record.daily_limitation.daily_start + " - " + record.daily_limitation.daily_end : "-"
         }}
       </Description>
       <Description term="Phisical memory (Mi)">
@@ -158,9 +158,9 @@
 
     <el-divider />
     <DescriptionList v-if="record.env" title="Environment variables" col="24">
-      <Description v-for="(value, name) in record.env" :term="name">
+      <Description v-for="(value, name) in record.env" :key="name" :term="name">
         {{
-        value
+          value
         }}
       </Description>
     </DescriptionList>
@@ -187,10 +187,9 @@ export default {
       ],
     };
   },
-  mounted() {},
+  mounted() { },
   methods: {},
 };
 </script>
 
-<style>
-</style>
+<style></style>

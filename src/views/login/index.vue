@@ -1,13 +1,7 @@
 <template>
   <div class="login-container">
-    <el-form
-      ref="loginForm"
-      :model="loginForm"
-      :rules="loginRules"
-      class="login-form"
-      auto-complete="on"
-      label-position="left"
-    >
+    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+      label-position="left">
       <div class="title-container">
         <h3 class="title">App Mesh Login</h3>
       </div>
@@ -16,32 +10,16 @@
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input
-          ref="UserName"
-          v-model="loginForm.UserName"
-          placeholder="Username"
-          name="UserName"
-          type="text"
-          tabindex="1"
-          auto-complete="on"
-        />
+        <el-input ref="UserName" v-model="loginForm.UserName" placeholder="Username" name="UserName" type="text"
+          tabindex="1" auto-complete="on" />
       </el-form-item>
 
       <el-form-item prop="Password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input
-          :key="passwordType"
-          ref="Password"
-          v-model="loginForm.Password"
-          :type="passwordType"
-          placeholder="Password"
-          name="Password"
-          tabindex="2"
-          auto-complete="on"
-          @keyup.enter.native="switchHost"
-        />
+        <el-input :key="passwordType" ref="Password" v-model="loginForm.Password" :type="passwordType"
+          placeholder="Password" name="Password" tabindex="2" auto-complete="on" @keyup.enter.native="switchHost" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'Password' ? 'eye' : 'eye-open'" />
         </span>
@@ -51,25 +29,12 @@
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input
-          ref="input"
-          v-model="loginForm.Totp"
-          placeholder="TOTP (input for 2FA enabled)"
-          name="Totp"
-          type="text"
-          tabindex="3"
-          auto-complete="on"
-        />
+        <el-input ref="input" v-model="loginForm.Totp" placeholder="TOTP (input for 2FA enabled)" name="Totp"
+          type="text" tabindex="3" auto-complete="on" />
       </el-form-item>
 
-      <el-button
-        :loading="loading"
-        type="primary"
-        tabindex="4"
-        style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="switchHost"
-        @keyup.enter.native="switchHost"
-      >Login</el-button>
+      <el-button :loading="loading" type="primary" tabindex="4" style="width:100%;margin-bottom:30px;"
+        @click.native.prevent="switchHost" @keyup.enter.native="switchHost">Login</el-button>
     </el-form>
   </div>
 </template>
@@ -201,6 +166,7 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+
   .el-input,
   .el-autocomplete {
     display: inline-block;
