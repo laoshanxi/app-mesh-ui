@@ -27,14 +27,15 @@
     "markdown-loader": "^5.1.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
-    "path-to-regexp": "2.4.0",
+    "path-to-regexp": "3.3.0",
+    "qrcode.vue": "^1.7.0",
     "showdown": "^1.9.0",
     "vue": "2.6.10",
     "vue-json-viewer": "^2.2.8",
     "vue-markdown-loader": "^2.4.1",
+    "vue-moment": "4.1.0",
     "vue-router": "3.0.6",
-    "vuex": "3.1.0",
-    "vue-moment": "4.1.0"
+    "vuex": "3.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",
@@ -54,7 +55,7 @@
     "eslint-plugin-vue": "5.2.2",
     "html-webpack-plugin": "3.2.0",
     "mockjs": "1.0.1-beta3",
-    "node-sass": "^6.0.1",
+    "node-sass": "^4.14.1",
     "runjs": "^4.3.2",
     "sass-loader": "^10.0.1",
     "script-ext-html-webpack-plugin": "2.1.3",

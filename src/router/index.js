@@ -90,37 +90,6 @@ export const constantRoutes = [
     ]
   },
   {
-    path: "/cloud",
-    component: Layout,
-    redirect: "/cloud/nodes",
-    name: "Cloud",
-    alwaysShow: true,
-    meta: {
-      title: "Cloud",
-      icon: "cloud"
-    },
-    children: [
-      {
-        path: "nodes",
-        name: "Nodes",
-        component: () => import("@/views/cloud/nodes"),
-        meta: { title: "Nodes", icon: "nodes" }
-      },
-      {
-        path: "task",
-        name: "Tasks",
-        component: () => import("@/views/cloud/tasks"),
-        meta: { title: "Tasks", icon: "task" }
-      },
-      {
-        path: "services",
-        name: "Services",
-        component: () => import("@/views/cloud/services"),
-        meta: { title: "Services", icon: "services" }
-      }
-    ]
-  },
-  {
     path: "/host",
     component: Layout,
     children: [
@@ -230,8 +199,8 @@ export const constantRoutes = [
       }
     ]
   },
-  
-  
+
+
 
   {
     path: "/refresh",

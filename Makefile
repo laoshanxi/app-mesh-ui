@@ -31,6 +31,8 @@ run:
 	appc reg -n appweb --perm 11 --exit restart -u root -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d "laoshanxi/appmesh-ui:${VER}" -f
 
 dev:
+  nvm install 10.17.0
+  nvm use 10.17.0
 	npm install
 	npm run dev
 	#This will automatically open http://localhost:9528

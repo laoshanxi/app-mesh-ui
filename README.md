@@ -41,11 +41,21 @@ npm run lint -- --fix
 
 
 ## Deploy
-Use host mode networking for Nginx reverse proxy (need accept host 443 port)
+
+- Use docker run to start a container connected to local App Mesh
+
+```shell
+docker run --name=appmesh-ui -d --net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro laoshanxi/appmesh-ui:2.1.2
+```
+
+- Use host mode networking for Nginx reverse proxy (need accept host 443 port)
+
 ```shell
 appc reg -n appweb --perm 11 --exit restart -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d laoshanxi/appmesh-ui:2.1.2 -f
 ```
-Or use Docker native API way to manage container app:
+
+- Use Docker native API way to manage container app:
+
 ```shell
 tee appweb.json <<-'EOF'
 {

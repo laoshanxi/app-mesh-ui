@@ -24,13 +24,8 @@
         </el-form-item>
 
         <el-form-item label="Status">
-          <el-switch
-            v-model="registerForm.status"
-            active-text="Enabled"
-            :active-value="1"
-            inactive-text="Disabled"
-            :inactive-value="0"
-          ></el-switch>
+          <el-switch v-model="registerForm.status" active-text="Enabled" :active-value="1" inactive-text="Disabled"
+            :inactive-value="0"></el-switch>
         </el-form-item>
 
         <el-form-item label="Permission">
@@ -76,52 +71,30 @@
           <el-input v-model="registerForm.start_interval_seconds"></el-input>(ISO 8601 durations / seconds / cron expr)
         </el-form-item>
         <el-form-item label="Cron interval expr" prop="cron">
-          <el-switch
-            v-model="registerForm.cron"
-            :active-value="true"
-            :inactive-value="false"
-          ></el-switch>
+          <el-switch v-model="registerForm.cron" :active-value="true" :inactive-value="false"></el-switch>
         </el-form-item>
         <el-form-item label="Retention" prop="retention">
           <el-input v-model="registerForm.retention"></el-input>(ISO 8601 durations or seconds)
         </el-form-item>
         <el-form-item label="Exit behavior" prop="behavior.exit">
           <el-select v-model="registerForm.behavior.exit" placeholder="Please select">
-            <el-option
-              v-for="item in Behaviors"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
+            <el-option v-for="item in Behaviors" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
         <el-divider></el-divider>
 
         <el-form-item label="Start time" prop="start_time">
-          <el-date-picker
-            v-model="registerForm.start_time"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            type="datetime"
-            placeholder
-          ></el-date-picker>
+          <el-date-picker v-model="registerForm.start_time_TEXT" value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
+            placeholder></el-date-picker>
         </el-form-item>
         <el-form-item label="End time" prop="end_time">
-          <el-date-picker
-            v-model="registerForm.end_time"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            type="datetime"
-            placeholder
-          ></el-date-picker>
+          <el-date-picker v-model="registerForm.end_time_TEXT" value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
+            placeholder></el-date-picker>
         </el-form-item>
         <el-form-item label="Daily limitation">
-          <el-time-picker
-            is-range
-            v-model="daily_time_range"
-            range-separator="-"
-            value-format="HH:mm:ss"
-            start-placeholder="Start time"
-            end-placeholder="End time"
-          ></el-time-picker>
+          <el-time-picker is-range v-model="daily_time_range" :value="daily_time_range" @change="onDailyTimeChange"
+            range-separator="-" value-format="HH:mm:ss" start-placeholder="Start time" end-placeholder="End time">
+          </el-time-picker>
         </el-form-item>
         <el-divider></el-divider>
 
@@ -153,17 +126,12 @@
 
         <el-divider></el-divider>
 
-        <el-form-item
-          v-for="(env, index) in registerForm.envs"
-          :label="'Env ' + index"
-          :key="env.key"
-          :prop="'envs.' + index + '.value'"
-          :rules="{
+        <el-form-item v-for="(env, index) in registerForm.envs" :label="'Env ' + index" :key="env.key"
+          :prop="'envs.' + index + '.value'" :rules="{
             required: true,
             message: 'ENV is not empty',
             trigger: 'blur'
-          }"
-        >
+          }">
           <el-input v-model="env.name" ref="envs" style="width:200px"></el-input>=
           <el-input v-model="env.value" style="width:200px"></el-input>
           <el-button @click.prevent="removeEnvReg(env)" icon="el-icon-delete"></el-button>
@@ -181,6 +149,7 @@
 
 <script>
 import applications from "@/services/applications";
+import { formatToLocal, formatToLocalDayTime } from "@/utils";
 
 export default {
   name: "AppReg",
@@ -226,7 +195,7 @@ export default {
     this.resetForm();
     this.setFromWithProps();
   },
-  mounted() {},
+  mounted() { },
   watch: {
     propForm: {
       handler: function (val, old) {
@@ -238,30 +207,40 @@ export default {
       },
       immediate: false,
     },
+    daily_time_range: {
+      handler: function (newRange) {
+        onDailyTimeChange(newRange);
+      },
+      deep: true
+    },
   },
   methods: {
     setFromWithProps() {
-      this.registerForm.env = [];
+      this.resetForm();
+
+
       if (Object.keys(this.propForm).length !== 0) {
         this.registerForm = this.merge(this.$clone(this.propForm), this.registerForm);
         let permission = this.registerForm.permission + "";
-        this.registerForm.otherPermission =
-          permission.length == 2 ? permission.substring(0, 1) : 3;
-        this.registerForm.groupPermission =
-          permission.length == 2 ? permission.substring(1, 2) : 3;
-        if(this.registerForm.daily_limitation){
-          this.daily_time_range = [this.registerForm.daily_limitation.daily_start, this.registerForm.daily_limitation.daily_end];
-        }else{
+        this.registerForm.otherPermission = permission.length == 2 ? permission.substring(0, 1) : 3;
+        this.registerForm.groupPermission = permission.length == 2 ? permission.substring(1, 2) : 3;
+        if (this.registerForm.daily_limitation) {
+          this.registerForm.daily_limitation.daily_start_TEXT = formatToLocalDayTime(this.registerForm.daily_limitation.daily_start_TEXT);
+          this.registerForm.daily_limitation.daily_end_TEXT = formatToLocalDayTime(this.registerForm.daily_limitation.daily_end_TEXT);
+          this.daily_time_range = [this.registerForm.daily_limitation.daily_start_TEXT, this.registerForm.daily_limitation.daily_end_TEXT];
+        } else {
           this.daily_time_range = null;
         }
-        if(this.isJsonString(this.registerForm.metadata)){
+        this.registerForm.start_time_TEXT = formatToLocal(this.registerForm.start_time_TEXT);
+        this.registerForm.end_time_TEXT = formatToLocal(this.registerForm.end_time_TEXT);
+        if (this.isJsonString(this.registerForm.metadata)) {
           this.registerForm.metadata = JSON.stringify(this.registerForm.metadata, null, 2);
-        }else{
+        } else {
           this.registerForm.metadata = this.propForm.metadata;
         }
-        if(this.registerForm.env){
+        if (this.registerForm.env) {
           this.registerForm.envs = [];
-          for(let env in this.registerForm.env){
+          for (let env in this.registerForm.env) {
             this.registerForm.envs.push({
               key: env,
               name: env,
@@ -269,46 +248,48 @@ export default {
             });
           }
         }
-      } else {
-        this.resetForm();
       }
     },
     resetForm() {
       this.daily_time_range = null;
       this.registerForm = {
-        name: "",
-        description: "",
-        command: "",
-        working_dir: "",
+        name: '',
+        description: '',
+        command: '',
+        working_dir: '',
         shell: false,
         session_login: false,
         permission: null,
         otherPermission: 3,
         groupPermission: 3,
-        metadata: "",
+        metadata: '',
         stdout_cache_num: 0,
         status: 1, //0 disabled, 1 enabled
         daily_limitation: {
-          daily_start: "",
-          daily_end: "",
+          daily_start: 0,
+          daily_start_TEXT: '',
+          daily_end: 0,
+          daily_end_TEXT: ''
         },
         resource_limit: {
           cpu_shares: null,
           memory_mb: null,
-          memory_virt_mb: null,
+          memory_virt_mb: null
         },
         APP_DOCKER_IMG_PULL_TIMEOUT: null,
-        APP_DOCKER_OPTS: "",
+        APP_DOCKER_OPTS: '',
         envs: [],
-        docker_image: "",
+        docker_image: '',
         pid: null,
         start_interval_seconds: null,
         cron: false,
-        start_time: "",
-        end_time: "",
+        start_time: 0,
+        start_time_TEXT: '',
+        end_time: 0,
+        end_time_TEXT: '',
         retention: null,
         behavior: {
-          exit: "standby",
+          exit: 'standby'
         }
       };
     },
@@ -334,14 +315,37 @@ export default {
         this.registerForm.envs.splice(index, 1);
       }
     },
+    onDailyTimeChange(value) {
+      if (value) {
+        this.registerForm.daily_limitation.daily_start_TEXT = value[0];
+        this.registerForm.daily_limitation.daily_end_TEXT = value[1];
+      } else {
+        this.registerForm.daily_limitation.daily_start_TEXT = '';
+        this.registerForm.daily_limitation.daily_end_TEXT = '';
+      }
+    },
     registerApp() {
-      let other = this.registerForm.otherPermission
-        ? this.registerForm.otherPermission + ""
-        : "3";
-      let group = this.registerForm.groupPermission
-        ? this.registerForm.groupPermission + ""
-        : "3";
+      let other = this.registerForm.otherPermission ? this.registerForm.otherPermission + "" : "3";
+      let group = this.registerForm.groupPermission ? this.registerForm.groupPermission + "" : "3";
       this.registerForm.permission = other + group;
+      if (this.registerForm.start_time_TEXT && this.registerForm.start_time_TEXT !== "") {
+        // convert "2025-01-19 18:06:57" with current browser zone to UTC seconds
+        this.registerForm.start_time = Date.parse(this.registerForm.start_time_TEXT) / 1000;
+      }
+      if (this.registerForm.end_time_TEXT && this.registerForm.end_time_TEXT !== "") {
+        // convert "2025-01-19 18:06:57" with current browser zone to UTC seconds
+        this.registerForm.end_time = Date.parse(this.registerForm.end_time_TEXT) / 1000;
+      }
+      if (this.registerForm.daily_limitation.daily_start_TEXT && this.registerForm.daily_limitation.daily_start_TEXT !== "") {
+        // convert day time "08:00:00" with current browser zone to UTC seconds
+        let fullDateString = `1970-01-02 ${this.registerForm.daily_limitation.daily_start_TEXT}`; // Combine with time (no 'Z' for local time)
+        this.registerForm.daily_limitation.daily_start = Date.parse(fullDateString) / 1000; // Convert to seconds
+      }
+      if (this.registerForm.daily_limitation.daily_end_TEXT && this.registerForm.daily_limitation.daily_end_TEXT !== "") {
+        // convert day time "08:00:00" with current browser zone to UTC seconds
+        let fullDateString = `1970-01-02 ${this.registerForm.daily_limitation.daily_end_TEXT}`; // Combine with time (no 'Z' for local time)
+        this.registerForm.daily_limitation.daily_end = Date.parse(fullDateString) / 1000; // Convert to seconds
+      }
       applications.registerApp(this);
     },
 
@@ -360,9 +364,9 @@ export default {
           if ((typeof JSON.parse(str)) === "object") {
             return true;
           }
-        } catch (e) {}
+        } catch (e) { }
         if (Object.prototype.toString.call(str) === "[object Object]") {
-            return true;
+          return true;
         }
         return ((typeof str) === "object");
       }
@@ -378,11 +382,13 @@ export default {
   height: calc(100vh - 136px) !important;
   overflow-y: auto;
 }
+
 .register-card .el-input,
 .register-card .el-input-number {
   width: 350px;
   margin-right: 10px;
 }
+
 .right-drawer .dialog-footer {
   border-top: 1px solid #bfcbd9;
   background-color: #ffffff;
@@ -394,6 +400,7 @@ export default {
   padding-bottom: 10px;
   padding-right: 30px;
 }
+
 .detail-card {
   height: calc(100vh - 77px) !important;
   overflow-y: auto;

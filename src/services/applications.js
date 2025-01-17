@@ -6,12 +6,6 @@ export default {
     vueComp.listLoading = true;
     getApplications().then(response => {
       response.data.forEach(m => {
-        if (m.daily_limitation && m.daily_limitation.daily_start) {
-          m.daily_limitation.daily_start = formatDayTime(parseDateFromUtcSeconds(m.daily_limitation.daily_start));
-        }
-        if (m.daily_limitation && m.daily_limitation.daily_end) {
-          m.daily_limitation.daily_end = formatDayTime(parseDateFromUtcSeconds(m.daily_limitation.daily_end));
-        }
         // desc
         m.desc = m.description
         // age
@@ -179,22 +173,6 @@ export default {
         if (data.resource_limit.memory_mb) data.resource_limit.memory_mb = parseInt(data.resource_limit.memory_mb);
         if (data.resource_limit.memory_virt_mb) data.resource_limit.memory_virt_mb = parseInt(data.resource_limit.memory_virt_mb);
       }
-      if (data.start_time && data.start_time != "") {
-        data.start_time = moment(data.start_time).unix();
-      } else {
-        data.start_time = null
-      }
-      if (data.end_time && data.end_time != "") {
-        data.end_time = moment(data.end_time).unix();
-      } else {
-        data.end_time = null
-      }
-      if (data.daily_limitation && data.daily_limitation.daily_start && data.daily_limitation.daily_start != "") data.daily_limitation.daily_start = moment(data.daily_limitation.daily_start).unix();
-      if (data.daily_limitation && data.daily_limitation.daily_end && data.daily_limitation.daily_end != "") {
-        data.daily_limitation.daily_end = moment(data.daily_limitation.daily_end).unix();
-      } else {
-        data.daily_limitation = null;
-      }
     }
     vueComp.$refs["regForm"].validate((valid) => {
       if (valid) {
@@ -206,10 +184,6 @@ export default {
         }
 
         data.env = data.envs.length > 0 ? envs : null;
-        if (vueComp.daily_time_range != null) {
-          data.daily_limitation.daily_start = "1970-1-1 " + vueComp.daily_time_range[0];
-          data.daily_limitation.daily_end = "1970-1-1 " + vueComp.daily_time_range[1];
-        }
 
         if (data.APP_DOCKER_OPTS && data.APP_DOCKER_OPTS.length > 0) {
           data.env = !data.env ? {} : data.env;

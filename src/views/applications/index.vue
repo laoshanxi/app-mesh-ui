@@ -5,94 +5,42 @@
     </el-row>
     <el-row>
       <el-button-group>
-        <el-button
-          type="primary"
-          icon="el-icon-plus"
-          @click="btnClick('register')"
-        >
+        <el-button type="primary" icon="el-icon-plus" @click="btnClick('register')">
           Add
         </el-button>
-        <el-button
-          type="success"
-          icon="el-icon-edit"
-          :disabled="!isSelected"
-          @click="btnClick('update')"
-        >
+        <el-button type="success" icon="el-icon-edit" :disabled="!isSelected" @click="btnClick('update')">
           Edit
         </el-button>
-        <el-button
-          type="danger"
-          icon="el-icon-delete"
-          :disabled="!isSelected"
-          @click="btnClick('delete')"
-        >
+        <el-button type="danger" icon="el-icon-delete" :disabled="!isSelected" @click="btnClick('delete')">
           Delete
         </el-button>
       </el-button-group>
 
       <el-button-group>
-        <el-button
-          type="success"
-          icon="el-icon-open"
-          :disabled="!isSelected || isEnabled"
-          @click="btnClick('enable')"
-        >
+        <el-button type="success" icon="el-icon-open" :disabled="!isSelected || isEnabled" @click="btnClick('enable')">
           Enable
         </el-button>
-        <el-button
-          type="warning"
-          icon="el-icon-turn-off"
-          :disabled="!isSelected || !isEnabled"
-          @click="btnClick('disable')"
-        >
+        <el-button type="warning" icon="el-icon-turn-off" :disabled="!isSelected || !isEnabled"
+          @click="btnClick('disable')">
           Disable
         </el-button>
       </el-button-group>
     </el-row>
     <el-row>
-      <el-table
-        :key="tableKey"
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="Loading"
-        border
-        style="width: 100%"
-        height="100%"
-        class="fix-table"
-        :fit="true"
-        highlight-current-row
-        @current-change="currentRowChange"
-      >
+      <el-table :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
+        style="width: 100%" height="100%" class="fix-table" :fit="true" highlight-current-row
+        @current-change="currentRowChange">
         <el-table-column label="Name" width="200">
           <template slot-scope="scope">
+
+            <i v-if="scope.row.health == 0" class="el-icon-success"
+              style="color: #85ce61; font-size: 18px; vertical-align: middle" />
+            <i v-else class="el-icon-warning" style="color: #f56c6c; font-size: 18px; vertical-align: middle" />
+
             <el-link :underline="true" :title="scope.row.desc" @click="showDetail()">
-              <i class="el-icon-view" />
               {{ scope.row.name }}
             </el-link>
-            <i v-if="scope.row.docker_image" class="iconfont icon-docker" />
-            <i
-              v-if="scope.row.metadata == 'cloud-app'"
-              class="el-icon-cloudy"
-            />
-            <i
-              v-if="scope.row.metadata == 'system-internal'"
-              class="el-icon-setting"
-            />
-          </template>
-        </el-table-column>
 
-        <el-table-column label="Health" width="70">
-          <template slot-scope="scope">
-            <i
-              v-if="scope.row.health == 0"
-              class="el-icon-success"
-              style="color: #85ce61; font-size: 18px; vertical-align: middle"
-            />
-            <i
-              v-else
-              class="el-icon-warning"
-              style="color: #f56c6c; font-size: 18px; vertical-align: middle"
-            />
           </template>
         </el-table-column>
         <el-table-column label="Owner" width="100">
@@ -102,10 +50,7 @@
         </el-table-column>
         <el-table-column class-name="status-col" label="State" width="110">
           <template slot-scope="scope">
-            <el-tag
-              v-if="scope.row.status == 1"
-              :type="'success'"
-            >
+            <el-tag v-if="scope.row.status == 1" :type="'success'">
               Enabled
             </el-tag>
             <el-tag v-else :type="'info'">
@@ -118,7 +63,7 @@
           <template slot-scope="scope">
             <span v-if="scope.row.pstree">
               <el-link :underline="true" :title="scope.row.pstree">
-                 {{ scope.row.pid | formatEmpty }}
+                {{ scope.row.pid | formatEmpty }}
               </el-link>
             </span>
             <span v-else>-</span>
@@ -177,28 +122,17 @@
     <!-- Add application dialog -->
     <!-- <el-dialog title="Add Application" :visible.sync="registerFormVisible" fullscreen="false"> -->
     <el-drawer custom-class="right-drawer" :title="drawerTitle" :visible.sync="registerFormVisible" size="60%">
-      <app-reg
-        :prop-form="selectedForm"
-        @close="registerFormVisible = false"
-        @success="regSuccess()"
-      />
+      <app-reg :prop-form="selectedForm" @close="registerFormVisible = false" @success="regSuccess()" />
     </el-drawer>
 
     <!-- show application detail -->
-    <el-drawer
-      v-loading="isLoadingDetail"
-      :visible.sync="isShowDetail"
-      size="50%"
-    >
+    <el-drawer v-loading="isLoadingDetail" :visible.sync="isShowDetail" size="50%">
       <span slot="title">
         <span class="el-icon-view">
           &nbsp;&nbsp;{{
-                        currentRow ? currentRow.name : "Please select one application"
-                      }}
-          <i
-            v-if="currentRow && currentRow.docker_image"
-            class="iconfont icon-docker"
-          />
+            currentRow ? currentRow.name : "Please select one application"
+          }}
+          <i v-if="currentRow && currentRow.docker_image" class="iconfont icon-docker" />
         </span>
       </span>
       <div class="detail-card">
@@ -216,13 +150,8 @@
         </span>
       </span>
       <div class="detail-card">
-        <app-log
-          ref="appLog"
-          :loginfo="appLogInfo"
-          :app="currentRow"
-          @startLoading="isLoadingLog = true"
-          @loadingDone="logChange"
-        />
+        <app-log ref="appLog" :loginfo="appLogInfo" :app="currentRow" @startLoading="isLoadingLog = true"
+          @loadingDone="logChange" />
       </div>
     </el-drawer>
   </div>
@@ -370,18 +299,22 @@ export default {
 .el-row {
   margin-bottom: 8px;
 }
+
 .el-input {
   width: 200px;
   margin-right: 10px;
 }
+
 .register-card {
   height: calc(100vh - 136px) !important;
   overflow-y: auto;
 }
+
 .register-card .el-input {
   width: 350px;
   margin-right: 10px;
 }
+
 .right-drawer .dialog-footer {
   border-top: 1px solid #bfcbd9;
   background-color: #ffffff;
@@ -393,10 +326,12 @@ export default {
   padding-bottom: 10px;
   padding-right: 30px;
 }
+
 .detail-card {
   height: calc(100vh - 77px) !important;
   overflow-y: auto;
 }
+
 .docker-icon {
   width: 26px;
   height: 18px;
