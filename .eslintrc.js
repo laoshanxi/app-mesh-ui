@@ -9,10 +9,14 @@ module.exports = {
   extends: ['plugin:vue/recommended', 'eslint:recommended'],
   parserOptions: {
     parser: '@babel/eslint-parser',
-    sourceType: 'module',
-    requireConfigFile: false
+    sourceType: 'module'
   },
   rules: {
+    'vue/multi-word-component-names': 'off',
+    'vue/max-attributes-per-line': 'off',
+    'vue/html-self-closing': 'off',
+    'vue/singleline-html-element-content-newline': 'off',
+    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
   }

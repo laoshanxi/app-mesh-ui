@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
-          <el-tab-pane style="minwidth: 600px">
+          <el-tab-pane style="max-width: 600px">
             <span slot="label">
               <i class="el-icon-upload"></i> Upload file
             </span>
@@ -16,27 +16,11 @@
               </el-form-item>
 
               <el-form-item>
-                <el-upload
-                  class="upload-demo"
-                  ref="upload"
-                  :action="url"
-                  :headers="headers"
-                  :on-change="fileChange"
-                  :on-error="uploadError"
-                  :limit="1"
-                  :auto-upload="false"
-                >
-                  <el-button slot="trigger" size="small" type="primary"
-                    >Select File</el-button
-                  >
-                  <el-button
-                    style="margin-left: 10px"
-                    size="small"
-                    type="success"
-                    @click="submitUpload"
-                    :disabled="form.disabled"
-                    >Upload</el-button
-                  >
+                <el-upload class="upload-demo" ref="upload" :action="url" :headers="headers" :on-change="fileChange"
+                  :on-error="uploadError" :limit="1" :auto-upload="false">
+                  <el-button slot="trigger" size="small" type="primary">Select File</el-button>
+                  <el-button style="margin-left: 10px" size="small" type="success" @click="submitUpload"
+                    :disabled="form.disabled">Upload</el-button>
                 </el-upload>
               </el-form-item>
             </el-form>
@@ -45,19 +29,13 @@
             <span slot="label">
               <i class="el-icon-download"></i> Download file
             </span>
-            <el-form
-              ref="downloadForm"
-              :model="downloadForm"
-              label-width="80px"
-            >
+            <el-form ref="downloadForm" :model="downloadForm" label-width="80px">
               <el-form-item label="File Path">
                 <el-input v-model="downloadForm.filepath"></el-input>
               </el-form-item>
 
               <el-form-item>
-                <el-button size="small" type="primary" @click="download"
-                  >Download</el-button
-                >
+                <el-button size="small" type="primary" @click="download">Download</el-button>
               </el-form-item>
             </el-form>
           </el-tab-pane>

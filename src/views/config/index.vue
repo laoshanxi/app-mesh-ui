@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
-          <el-tab-pane style="minwidth: 600px">
+          <el-tab-pane style="min-width: 600px">
             <span slot="label">
               <i class="el-icon-s-operation" /> Configuration
             </span>
@@ -11,7 +11,7 @@
               <el-collapse v-model="activeNames">
                 <el-collapse-item title="Basic" name="1">
                   <el-form-item label="Version" prop="Version">
-                    <el-input v-model="form.Version" readonly="true" :disabled="true" />
+                    <el-input v-model="form.Version" :readonly="true" :disabled="true" />
                   </el-form-item>
                   <el-form-item label="Description" prop="BaseConfig.Description">
                     <el-input v-model="form.BaseConfig.Description" />
@@ -68,12 +68,16 @@
                     <el-input-number v-model="form.REST.RestTcpPort" :min="1024" :max="65534" />
                   </el-form-item>
 
-                  <el-form-item label="SSL verify peer" prop="REST.SSL.VerifyServer">
+                  <el-form-item label="SSL verify server" prop="REST.SSL.VerifyServer">
                     <el-switch v-model="form.REST.SSL.VerifyServer" active-text="Yes" :active-value="true"
                       inactive-text="No" :inactive-value="false" />
                   </el-form-item>
-                  <el-form-item label="SSL verify peer" prop="REST.SSL.VerifyClient">
+                  <el-form-item label="SSL verify client" prop="REST.SSL.VerifyClient">
                     <el-switch v-model="form.REST.SSL.VerifyClient" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false" />
+                  </el-form-item>
+                  <el-form-item label="Forwarding SSL verify" prop="REST.SSL.VerifyServerDelegate">
+                    <el-switch v-model="form.REST.SSL.VerifyServerDelegate" active-text="Yes" :active-value="true"
                       inactive-text="No" :inactive-value="false" />
                   </el-form-item>
 
@@ -102,7 +106,7 @@
                   </el-form-item>
                   <el-form-item label="JWT Audience" prop="REST.JWT.Audience">
                     <el-select v-model="form.REST.JWT.Audience" multiple filterable allow-create
-                      default-first-option="true" placeholder="Enter audience values">
+                      :default-first-option="true" placeholder="Enter audience values">
                       <el-option v-for="item in form.REST.JWT.Audience" :key="item" :label="item" :value="item">
                       </el-option>
                     </el-select>
@@ -224,17 +228,16 @@ export default {
           value: "ldap",
         },
       ],
+      value: '',
+      inputValue: '',
     };
   },
   mounted() {
-    this.refresh();
+    this.reset();
   },
   methods: {
-    refresh() {
-      configService.refresh(this);
-    },
     reset() {
-      configService.setConfig(this, this.configData);
+      configService.refresh(this);
     },
     saveConfig() {
       configService.saveConfig(this);

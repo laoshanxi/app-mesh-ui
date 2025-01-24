@@ -1,18 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "@/*": ["src/*"]
-    },
-    "target": "es6",
-    "module": "commonjs",
-    "allowSyntheticDefaultImports": true,
-    "checkJs": false,
-    "jsx": "preserve",
-    "types": [
-      "@babel/core",
-      "node"
-    ]
+    "typeRoots": ["node_modules/@types"],
+    "types": ["@babel/core", "node"]
   },
   "exclude": ["node_modules", "dist"],
   "include": [

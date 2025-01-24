@@ -6,7 +6,7 @@ export default {
   setConfig: function (vueComp, data) {
     vueComp.configData = data;
     for (let prop in vueComp.form) {
-      if (data.hasOwnProperty(prop)) {
+      if (Object.prototype.hasOwnProperty.call(data, prop)) {
         vueComp.form[prop] = data[prop];
       }
     }

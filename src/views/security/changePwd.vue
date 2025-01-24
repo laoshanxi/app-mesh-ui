@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
-          <el-tab-pane style="minWidth:600px;">
+          <el-tab-pane style="min-width:600px;">
             <span slot="label">
               <i class="el-icon-key"></i> Change Password
             </span>

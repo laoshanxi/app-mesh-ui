@@ -37,7 +37,7 @@ const mutations = {
       setDataLocalStorage(constants.BASE_URL, value);
 
     }
-    if (state.hasOwnProperty(key)) {
+    if (Object.prototype.hasOwnProperty.call(state, key)) {
       state[key] = value
     }
   }

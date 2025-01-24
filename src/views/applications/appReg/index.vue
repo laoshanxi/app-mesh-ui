@@ -209,7 +209,7 @@ export default {
     },
     daily_time_range: {
       handler: function (newRange) {
-        onDailyTimeChange(newRange);
+        this.onDailyTimeChange(newRange);
       },
       deep: true
     },
@@ -364,7 +364,9 @@ export default {
           if ((typeof JSON.parse(str)) === "object") {
             return true;
           }
-        } catch (e) { }
+        } catch (e) {
+          console.debug('Failed to parse JSON:', e);
+        }
         if (Object.prototype.toString.call(str) === "[object Object]") {
           return true;
         }
