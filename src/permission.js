@@ -10,7 +10,7 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
 const whiteList = ['/login'] // no redirect whitelist
 
-router.beforeEach(async(to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   // start progress bar
   NProgress.start()
   store.dispatch("app/setLoading", true);
@@ -27,31 +27,32 @@ router.beforeEach(async(to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
+      // TODO: when browser close and re-open, the user permission info will be lost
       const hasGetUserInfo = store.getters.user
       if (hasGetUserInfo) {
-        if (to.meta && to.meta.roles && to.meta.roles.length>0){
+        if (to.meta && to.meta.roles && to.meta.roles.length > 0) {
           let curPermissions = to.meta.roles;
           let permissions = hasGetUserInfo.permissions;
           let hasPermission = false;
-          if(permissions){
-            for(let i=0;i<curPermissions.length;i++){
-              if(permissions.indexOf(curPermissions[i]) >= 0 ){
+          if (permissions) {
+            for (let i = 0; i < curPermissions.length; i++) {
+              if (permissions.indexOf(curPermissions[i]) >= 0) {
                 hasPermission = true;
                 break;
               }
             }
           }
 
-          if(hasPermission){
+          if (hasPermission) {
             next();
-          }else{
+          } else {
             next('/401');
             NProgress.done();
-            setTimeout(()=>{
+            setTimeout(() => {
               store.dispatch("app/setLoading", false);
             }, 1000);
           }
-        }else{
+        } else {
           next();
         }
       } else {
@@ -86,7 +87,7 @@ router.beforeEach(async(to, from, next) => {
 router.afterEach(() => {
   // finish progress bar
   NProgress.done();
-  setTimeout(()=>{
+  setTimeout(() => {
     store.dispatch("app/setLoading", false);
   }, 1000);
 })

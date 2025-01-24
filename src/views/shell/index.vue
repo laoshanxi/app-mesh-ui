@@ -1,10 +1,6 @@
 <template>
-  <el-card
-    v-loading="loading"
-    element-loading-text="Downloading"
-    @keyup.native="clearScreenByKeyUp"
-    @keydown.native="clearScreenByKeyDown"
-  >
+  <el-card v-loading="loading" element-loading-text="Downloading" @keyup.native="clearScreenByKeyUp"
+    @keydown.native="clearScreenByKeyDown">
     <el-row slot="header">
       <el-col :span="3" style="text-align: center;height: 38px; line-height: 38px;">
         <el-switch v-model="isSync" active-text="Sync" inactive-text="Async"></el-switch>
@@ -20,31 +16,20 @@
         <i class="el-icon-delete" @click="clearScreen"></i>
       </el-button-group>
       <div class="shell-content">
-        <div v-for="line in shellContents" class="shell-line">
-          <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{line.content}}</pre>
-          <json-viewer
-          boxed theme="my-awesome-json-theme"
-          v-else-if="line.type == 'json'"
-          :value="line.content"
-          style="line-height: 18px">
+        <div v-for="(line, index) in shellContents" :key="index" class="shell-line">
+          <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{ line.content }}</pre>
+          <json-viewer boxed theme="my-awesome-json-theme" v-else-if="line.type == 'json'" :value="line.content"
+            style="line-height: 18px">
           </json-viewer>
-          <pre v-else :class="{'command':line.type=='command'}">{{line.content}}</pre>
+          <pre v-else :class="{ 'command': line.type == 'command' }">{{ line.content }}</pre>
         </div>
       </div>
       <div class="shell-command">
-        <el-button v-if="connected==0" @click.stop="connectHost()">Re-connect</el-button>
+        <el-button v-if="connected == 0" @click.stop="connectHost()">Re-connect</el-button>
 
-        <el-input
-          ref="input"
-          :disabled="inputDisabled"
-          v-if="connected==2"
-          class="shell-input"
-          v-model="input"
-          @keyup.enter.native="runShell()"
-          @keyup.up.native="upCommand"
-          @keyup.down.native="downCommand"
-          placeholder="Please enter a command"
-        >
+        <el-input ref="input" :disabled="inputDisabled" v-if="connected == 2" class="shell-input" v-model="input"
+          @keyup.enter.native="runShell()" @keyup.up.native="upCommand" @keyup.down.native="downCommand"
+          placeholder="Please enter a command">
           <template slot="prepend">
             <pre># </pre>
           </template>
@@ -88,7 +73,7 @@ export default {
       connected: 0, //0,not-connected；1，connecting；2，connected
     };
   },
-  created() {},
+  created() { },
   components: {},
   destroyed() {
     if (this.timer) {
@@ -162,8 +147,8 @@ export default {
 
 <style>
 .shell-input,
-.shell-input > div,
-.shell-input > input {
+.shell-input>div,
+.shell-input>input {
   border: 0px !important;
   margin: 0px !important;
   padding: 0px !important;
@@ -177,9 +162,11 @@ export default {
   right: 35px;
   padding: 10px;
 }
+
 .buttonsArea i {
   cursor: pointer;
 }
+
 .shell-div {
   overflow: auto;
   width: 100%;
@@ -187,6 +174,7 @@ export default {
   background-color: #001528;
   color: #bfcbd9;
 }
+
 .shell-command {
   padding: 0px 10px 10px 10px;
   line-height: 24px;
@@ -195,6 +183,7 @@ export default {
   background-color: #001528;
   color: #bfcbd9;
 }
+
 .shell-content {
   padding: 10px 10px 0px 10px;
   line-height: 24px;
@@ -202,27 +191,32 @@ export default {
   background-color: #001528;
   color: #bfcbd9;
 }
-.shell-line > pre {
+
+.shell-line>pre {
   margin: 0px;
 }
 
-.shell-line > .command {
+.shell-line>.command {
   color: #67c23a;
 }
-.shell-line > .file {
+
+.shell-line>.file {
   color: #67c23a;
   cursor: pointer;
 }
-
 </style>
 <style lang="scss">
-.my-awesome-json-theme.boxed { border-color: #1B2948;}
+.my-awesome-json-theme.boxed {
+  border-color: #1B2948;
+}
+
 .my-awesome-json-theme {
   background: #1B2948;
   white-space: nowrap;
   color: #999;
   font-size: 14px;
   font-family: Consolas, Menlo, Courier, monospace;
+
   .jv-ellipsis {
     color: #999;
     display: inline-block;
@@ -234,30 +228,62 @@ export default {
     cursor: pointer;
     user-select: none;
   }
-  
-  .jv-container.jv-button { color: #49b3ff }
-  .jv-container.jv-key { color: #999 }
+
+  .jv-container.jv-button {
+    color: #49b3ff
+  }
+
+  .jv-container.jv-key {
+    color: #999
+  }
+
   .jv-item {
-    &.jv-array { color: #999 }
-    &.jv-boolean { color: #fc1e70 }
-    &.jv-function { color: #067bca }
-    &.jv-number { color: #fc1e70 }
-    &.jv-number-float { color: #fc1e70 }
-    &.jv-number-integer { color: #fc1e70 }
-    &.jv-object { color: #999 }
-    &.jv-undefined { color: #e08331 }
+    &.jv-array {
+      color: #999
+    }
+
+    &.jv-boolean {
+      color: #fc1e70
+    }
+
+    &.jv-function {
+      color: #067bca
+    }
+
+    &.jv-number {
+      color: #fc1e70
+    }
+
+    &.jv-number-float {
+      color: #fc1e70
+    }
+
+    &.jv-number-integer {
+      color: #fc1e70
+    }
+
+    &.jv-object {
+      color: #999
+    }
+
+    &.jv-undefined {
+      color: #e08331
+    }
+
     &.jv-string {
       color: #42b983;
       word-break: break-word;
       white-space: normal;
     }
   }
+
   .jv-code {
     .jv-toggle {
       &:before {
         padding: 0px 2px;
         border-radius: 2px;
       }
+
       &:hover {
         &:before {
           background: #1B2948;

@@ -10,6 +10,6 @@ import request from "@/utils/request";
 export default {
   name: "App",
 
-  mounted() {},
+  mounted() { },
 };
 </script>

@@ -6,29 +6,21 @@
 
     <div class="right-menu">
       <span>Host:</span>
-      <el-autocomplete
-	        class="inline-input"
-          style="width:300px"
-	        v-model="host"
-	        :fetch-suggestions="querySearch"
-	      ></el-autocomplete>
-      <el-button type="warning" icon="el-icon-sort" @click="switchHost()" v-loading.fullscreen.lock="fullscreenLoading">Switch</el-button>
-      <el-button icon="el-icon-refresh"
-          @click="refresh()"
-          type="text"
-
-          :loading="loading"
-          title="Refresh"
-          style="margin-right:10px;font-size:18px;font-weight: bold !important;">
+      <el-autocomplete class="inline-input" style="width:300px" v-model="host"
+        :fetch-suggestions="querySearch"></el-autocomplete>
+      <el-button type="warning" icon="el-icon-sort" @click="switchHost()"
+        v-loading.fullscreen.lock="fullscreenLoading">Switch</el-button>
+      <el-button icon="el-icon-refresh" @click="refresh()" type="text" :loading="loading" title="Refresh"
+        style="margin-right:10px;font-size:18px;font-weight: bold !important;">
       </el-button>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- <div><img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"><span class="UserName-avatar">{{name}}</span></div> -->
           <div>
             <el-avatar shape="circle" :size="40" :src="avatar">
-              <i class="el-icon-s-custom"/>
+              <i class="el-icon-s-custom" />
             </el-avatar>
-            <span class="UserName-avatar">{{name}}</span>
+            <span class="UserName-avatar">{{ name }}</span>
           </div>
           <i class="el-icon-caret-bottom" />
         </div>
@@ -61,14 +53,14 @@ import Hamburger from '@/components/Hamburger'
 import { MessageBox, Message } from 'element-ui'
 import request from '@/utils/request'
 import EventBus from '@/utils/event.bus.js'
-import {EVENTS} from '@/utils/constants.js'
+import { EVENTS } from '@/utils/constants.js'
 
 export default {
-  data(){
+  data() {
     return {
-      restaurants:[],
-      host:"",
-      lastHost:"",
+      restaurants: [],
+      host: "",
+      lastHost: "",
       fullscreenLoading: false
     };
   },
@@ -79,13 +71,13 @@ export default {
   created() {
     this.host = this.$store.getters.baseUrl;
     this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
-    EventBus.$on(EVENTS.SWITCH_HOST, (host)=>{
+    EventBus.$on(EVENTS.SWITCH_HOST, (host) => {
       this.lastHost = this.host;
       this.host = host;
       this.switchHost();
     });
   },
-  mounted(){
+  mounted() {
   },
   computed: {
     ...mapGetters([
@@ -98,20 +90,20 @@ export default {
     ])
   },
   methods: {
-    certifedHost(callback){
+    certifedHost(callback) {
       request({
         url: this.host,
         timeout: 3000,
         method: 'GET'
-      }).then((res)=>{
+      }).then((res) => {
         console.info("Certified");
         callback ? callback() : '';
-      }, (res)=>{
+      }, (res) => {
         this.fullscreenLoading = false;
         window.open(this.host);
       });
     },
-    refresh () {
+    refresh() {
       this.$router.replace({
         path: '/refresh',
         query: {
@@ -119,7 +111,7 @@ export default {
         }
       });
     },
-    gotoApplication(){
+    gotoApplication() {
       this.$router.replace({
         path: '/applications/index',
         query: {
@@ -127,8 +119,8 @@ export default {
         }
       });
     },
-    logonWithNewHost(){
-      this.$store.dispatch('user/login', {UserName:this.name, Password:this.auth}).then(() => {
+    logonWithNewHost() {
+      this.$store.dispatch('user/login', { UserName: this.name, Password: this.auth }).then(() => {
         Message({
           message: 'Switch host to ' + this.host,
           type: 'success',
@@ -140,22 +132,22 @@ export default {
         this.fullscreenLoading = false;
       })
     },
-    switchHost(){
+    switchHost() {
       this.$confirm(`Do you want to switch host to <${this.host}>?`, 'Tooltip', {
-	      confirmButtonText: 'Confirm',
-	      cancelButtonText: 'Cancel',
-	      type: 'warning'
-	    }).then(() => {
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(() => {
         this.fullscreenLoading = true;
-	      this.certifedHost(()=>{
-	        this.$store.dispatch("settings/changeSetting", { key: "baseUrl", value: this.host }).then(() => {
+        this.certifedHost(() => {
+          this.$store.dispatch("settings/changeSetting", { key: "baseUrl", value: this.host }).then(() => {
             this.logonWithNewHost();
           }).catch(() => {
             this.fullscreenLoading = false;
           });
         });
-      }).catch(()=>{
-        if(this.lastHost && this.lastHost.length>0){
+      }).catch(() => {
+        if (this.lastHost && this.lastHost.length > 0) {
           this.host = this.lastHost;
         }
       });
@@ -182,9 +174,9 @@ export default {
 }
 </script>
 <style>
-  .el-button--text {
-    color: #606266;
-  }
+.el-button--text {
+  color: #606266;
+}
 </style>
 <style lang="scss" scoped>
 .navbar {
@@ -192,7 +184,7 @@ export default {
   overflow: hidden;
   position: relative;
   background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
 
   .hamburger-container {
     line-height: 46px;
@@ -200,7 +192,7 @@ export default {
     float: left;
     cursor: pointer;
     transition: background .3s;
-    -webkit-tap-highlight-color:transparent;
+    -webkit-tap-highlight-color: transparent;
 
     &:hover {
       background: rgba(0, 0, 0, .025)
@@ -241,6 +233,7 @@ export default {
     .avatar-container {
       margin-right: 30px;
       vertical-align: middle;
+
       .avatar-wrapper {
         margin-top: 0px;
         position: relative;
@@ -254,6 +247,7 @@ export default {
           height: 40px;
           border-radius: 10px;
         }
+
         .UserName-avatar {
           margin-left: 5px;
           top: -15px;

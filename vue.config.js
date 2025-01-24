@@ -29,7 +29,7 @@ module.exports = defineConfig({
     },
     proxy: {
       '^/': {
-        target: 'https://laoshanxi.asuscomm.com:16060',
+        target: 'https://localhost:6060',
         changeOrigin: true,
         secure: false
       }

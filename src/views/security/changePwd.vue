@@ -3,10 +3,7 @@
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
-          <el-tab-pane style="minWidth:600px;">
-            <span slot="label">
-              <i class="el-icon-key"></i> Change Password
-            </span>
+          <el-tab-pane label="Change Password" style="min-width:600px;">
             <el-form ref="form" :model="form" label-width="200px">
               <el-form-item label="New Password" prop="newPwd" :rules="{
                 required: true, message: 'New Password is empty', trigger: 'blur'
@@ -20,15 +17,17 @@
               </el-form-item>
 
               <el-form-item>
-                <el-button size="small" type="primary" @click.prevent="updatePwd()">Submit</el-button>
-                <el-button size="small" @click.prevent="reset()">Reset</el-button>
+                <el-button size="small" type="primary" @click.prevent="updatePwd">Submit</el-button>
+                <el-button size="small" @click.prevent="reset">Reset</el-button>
               </el-form-item>
-
+            </el-form>
+          </el-tab-pane>
+          <el-tab-pane label="Two-factor authentication" style="min-width:600px;">
+            <el-form ref="form" :model="form" label-width="200px">
               <el-form-item label="MFA enabled" prop="mfaEnabled">
                 <el-switch v-model="form.mfaEnabled" active-text="Yes" :active-value="true" inactive-text="No"
                   :inactive-value="false" @change="handleMfaChange" />
               </el-form-item>
-
             </el-form>
           </el-tab-pane>
         </el-tabs>
@@ -54,7 +53,7 @@ import VueQrcode from 'qrcode.vue'
 
 export default {
   components: {
-    'qrcode': VueQrcode
+    qrcode: VueQrcode
   },
   data() {
     return {
@@ -70,29 +69,14 @@ export default {
     };
   },
   mounted() {
-    this.loading = true;
-    userSelf().then(response => {
-      if (response && response.data) {
-        this.form.mfaEnabled = response.data["mfa_enabled"] || false;
-      }
-    })
-      .catch(error => {
-        // eslint-disable-next-line no-console
-        console.error('Failed to get user MFA status:', error);
-        this.$message.error('Failed to get MFA status');
-      })
-      .finally(() => {
-        this.loading = false;
-      });
+    this.loadUserMfaStatus();
   },
   methods: {
     validatePass2(rule, value, callback) {
       if (value === "") {
         callback(new Error("Confirm Password is empty"));
       } else if (value !== this.form.newPwd) {
-        callback(
-          new Error("New Password and confirm Password are inconsistent")
-        );
+        callback(new Error("New Password and confirm Password are inconsistent"));
       } else {
         callback();
       }
@@ -100,29 +84,39 @@ export default {
     reset() {
       this.$refs.form.resetFields();
     },
-    updatePwd() {
-      this.$refs["form"].validate((valid) => {
-        this.loading = true;
-        if (valid) {
-          updatePwd(this.$store.getters.name, {
-            "New-Password": Base64.encode(this.form.newPwd),
-          }).then(
-            (res) => {
-              this.$message.success("Password update successfully.", 5000);
-              this.loading = false;
-            },
-            (error) => {
-              // eslint-disable-next-line no-console
-              console.error('Failed to update password:', error);
-              this.$message.error('Failed to update password');
-              this.loading = false;
-            }
-          );
-        } else {
+    async updatePwd() {
+      this.$refs.form.validate(async (valid) => {
+        if (!valid) {
           this.loading = false;
-          return false;
+          return;
+        }
+        this.loading = true;
+        try {
+          await updatePwd(this.$store.getters.name, {
+            "New-Password": Base64.encode(this.form.newPwd),
+          });
+          this.$message.success("Password update successfully.", 5000);
+        } catch (error) {
+          console.error('Failed to update password:', error);
+          this.$message.error('Failed to update password');
+        } finally {
+          this.loading = false;
         }
       });
+    },
+    async loadUserMfaStatus() {
+      this.loading = true;
+      try {
+        const response = await userSelf();
+        if (response && response.data) {
+          this.form.mfaEnabled = response.data["mfa_enabled"] || false;
+        }
+      } catch (error) {
+        console.error('Failed to get user MFA status:', error);
+        this.$message.error('Failed to get MFA status');
+      } finally {
+        this.loading = false;
+      }
     },
     async verifyTotp() {
       if (!this.totpCode) {
@@ -136,8 +130,8 @@ export default {
         this.qrDialogVisible = false;
         this.qrCodeData = '';
         this.totpCode = '';
+        this.loadUserMfaStatus();
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error('Invalid TOTP code:', error);
         this.$message.error('Invalid TOTP code');
       }
@@ -158,12 +152,11 @@ export default {
         } catch (error) {
           if (error === 'cancel') {
             this.form.mfaEnabled = false;
-            return;
+          } else {
+            console.error('Failed to get TOTP secret:', error);
+            this.$message.error('Failed to get TOTP secret');
+            this.form.mfaEnabled = false;
           }
-          // eslint-disable-next-line no-console
-          console.error('Failed to get TOTP secret:', error);
-          this.$message.error('Failed to get TOTP secret');
-          this.form.mfaEnabled = false;
         }
       } else {
         // Disable MFA
@@ -179,14 +172,14 @@ export default {
         } catch (error) {
           if (error === 'cancel') {
             this.form.mfaEnabled = true;
-            return;
+          } else {
+            console.error('Failed to disable MFA:', error);
+            this.$message.error('Failed to disable MFA');
+            this.form.mfaEnabled = true;
           }
-          // eslint-disable-next-line no-console
-          console.error('Failed to disable MFA:', error);
-          this.$message.error('Failed to disable MFA');
-          this.form.mfaEnabled = true;
         }
       }
+      this.loadUserMfaStatus();
     }
   }
 };

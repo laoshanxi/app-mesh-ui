@@ -32,7 +32,7 @@ function refreshShellContents(vueComp, content) {
     let dir = vueComp.shellApp.working_dir;
     let tmpCommand = command;
     if (command != "ls") {
-      tmpCommand = tmpCommand.replace(/ \-[a-z]/g, ' ').replace(/ls /g, '').replace(' ', '');
+      tmpCommand = tmpCommand.replace(/ -[a-z]/g, ' ').replace(/ls /g, '').replace(' ', '');
       if (tmpCommand.indexOf("/") == 0) {
         dir = tmpCommand;
       } else {
@@ -77,7 +77,7 @@ function getOutputValue(vueComp, data) {
     // console.log(res.headers)
     // use lowercase header key here!!!
     // https://stackoverflow.com/questions/63112580/upper-case-converted-to-lower-case-when-reading-response-header-in-node-express
-    if (res.headers.hasOwnProperty('exit-code')) {
+    if (Object.prototype.hasOwnProperty.call(res.headers, 'exit-code')) {
       runFinished(vueComp);
     }
     if (res.data != "") {

@@ -1,14 +1,8 @@
 <template>
   <el-card class="box-card">
-    <el-pagination
-      background
-      @current-change="getAppLogByName"
-      layout="prev, pager, next"
-      :current-page.sync="curPage"
-      :page-size="1"
-      :total="app.stdout_cache_size"
-    ></el-pagination>
-    <pre class="log">{{loginfo ? loginfo : 'No log'}}</pre>
+    <el-pagination background @current-change="getAppLogByName" layout="prev, pager, next" :current-page.sync="curPage"
+      :page-size="1" :total="app.stdout_cache_size"></el-pagination>
+    <pre class="log">{{ loginfo ? loginfo : 'No log' }}</pre>
   </el-card>
 </template>
 
@@ -45,6 +39,7 @@ export default {
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
     Microsoft YaHei, Arial, sans-serif;
 }
+
 .box-card .el-card__body {
   height: calc(100vh - 80px) !important;
   overflow: auto;

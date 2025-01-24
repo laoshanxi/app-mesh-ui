@@ -7,7 +7,7 @@
             <span slot="label">
               <i class="iconfont icon-Prometheus"></i> Prometheus
             </span>
-            <pre class="log">{{content}}</pre>
+            <pre class="log">{{ content }}</pre>
           </el-tab-pane>
         </el-tabs>
       </el-col>
@@ -40,6 +40,7 @@ export default {
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
     Microsoft YaHei, Arial, sans-serif;
 }
+
 .box-card .el-card__body {
   height: calc(100vh - 80px) !important;
   overflow: auto;

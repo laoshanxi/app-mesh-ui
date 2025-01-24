@@ -1,4 +1,5 @@
 import {getResources} from '@/api/resources';
+import { Chart } from '@antv/g2';
 
 export default {
   getResources: function(vueComp){
@@ -50,7 +51,7 @@ export default {
     });
   },
   drawChart: function(vueComp){
-    vueComp.memoryChart = new G2.Chart({
+    vueComp.memoryChart = new Chart({
       container: 'memory',
       width: "1200",
       height: 400,
