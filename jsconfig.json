@@ -2,8 +2,20 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-        "@/*": ["src/*"]
-    }
+      "@/*": ["src/*"]
+    },
+    "target": "es6",
+    "module": "commonjs",
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    "jsx": "preserve",
+    "types": [
+      "@babel/core",
+      "node"
+    ]
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
+  "include": [
+    "src/**/*"
+  ]
 }

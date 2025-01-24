@@ -6,59 +6,33 @@
     <el-row>
       <el-button-group>
         <el-button @click="btnClick('new')" type="primary" icon="el-icon-plus">New</el-button>
-        <el-button
-          @click="btnClick('delete')"
-          type="danger"
-          icon="el-icon-delete"
-          :disabled="!isSelected"
-        >Delete</el-button>
-        <el-button
-          @click="btnClick('permissions')"
-          type="success"
-          icon="el-icon-key"
-          :disabled="!isSelected"
-        >Permissions</el-button>
+        <el-button @click="btnClick('delete')" type="danger" icon="el-icon-delete"
+          :disabled="!isSelected">Delete</el-button>
+        <el-button @click="btnClick('permissions')" type="success" icon="el-icon-key"
+          :disabled="!isSelected">Permissions</el-button>
       </el-button-group>
     </el-row>
     <el-row>
-      <el-table
-        :key="tableKey"
-        v-loading="listLoading"
-        :data="list"
-        element-loading-text="Loading"
-        border
-        style="width: 100%"
-        height="100%"
-        class="fix-table"
-        highlight-current-row
-        @current-change="currentRowChange"
-      >
+      <el-table :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
+        style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange">
         <el-table-column label="Name" width="200">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
 
         <el-table-column label="Permissions">
           <template slot-scope="scope">
-            <el-tag
-              type="info"
-              style="margin:0px 5px 5px 0px;"
-              v-for="permission in scope.row.permissions"
-            >{{permission}}</el-tag>
+            <el-tag v-for="permission in scope.row.permissions" :key="permission.id" type="info"
+              style="margin:0px 5px 5px 0px;">
+              {{ permission }}
+            </el-tag>
           </template>
         </el-table-column>
       </el-table>
     </el-row>
-    <el-drawer
-      custom-class="right-drawer"
-      :title="selectedForm.name==null ? 'Add role' : 'Update role permissions'"
-      :visible.sync="permissionsVisible"
-      size="60%"
-    >
-      <permissions
-        @close="permissionsVisible = false"
-        @success="updatePermissionsSuccess()"
-        :propForm="selectedForm"
-      ></permissions>
+    <el-drawer custom-class="right-drawer" :title="selectedForm.name == null ? 'Add role' : 'Update role permissions'"
+      :visible.sync="permissionsVisible" size="60%">
+      <permissions @close="permissionsVisible = false" @success="updatePermissionsSuccess()" :propForm="selectedForm">
+      </permissions>
     </el-drawer>
   </div>
 </template>
@@ -175,6 +149,7 @@ export default {
 .el-table th.gutter {
   display: table-cell !important;
 }
+
 .el-row {
   margin-bottom: 8px;
 }

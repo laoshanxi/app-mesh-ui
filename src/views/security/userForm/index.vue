@@ -4,14 +4,10 @@
     <el-card shadow="never" class="register-card">
       <el-form :model="userForm" ref="userFormDom" :rules="userRules" label-width="160px">
         <el-form-item label="Name" prop="name">
-          <label v-if="propForm.name!=null && propForm.name.length>0">{{propForm.name}}</label>
-          <el-input v-if="propForm.name==null || propForm.name.length==0" v-model="userForm.name"></el-input>
+          <label v-if="propForm.name != null && propForm.name.length > 0">{{ propForm.name }}</label>
+          <el-input v-if="propForm.name == null || propForm.name.length == 0" v-model="userForm.name"></el-input>
         </el-form-item>
-        <el-form-item
-          v-if="propForm.name==null || propForm.name.length==0"
-          label="Password"
-          prop="key"
-        >
+        <el-form-item v-if="propForm.name == null || propForm.name.length == 0" label="Password" prop="key">
           <el-input v-model="userForm.key"></el-input>
         </el-form-item>
         <el-form-item label="Metadata" prop="metadata">
@@ -24,41 +20,21 @@
           <el-input v-model="userForm.exec_user"></el-input>
         </el-form-item>
         <el-form-item label="Group" prop="group">
-          <el-select
-            v-model="userForm.group"
-            filterable
-            allow-create
-            placeholder="Please select the group"
-          >
-            <el-option v-for="item in groups" :key="item" :label="item" :value="item">{{item}}</el-option>
+          <el-select v-model="userForm.group" filterable allow-create placeholder="Please select the group">
+            <el-option v-for="item in groups" :key="item" :label="item" :value="item">{{ item }}</el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="Is locked" prop="locked">
-          <el-switch
-            v-model="userForm.locked"
-            active-text="Locked"
-            :active-value="true"
-            inactive-text="Active"
-            :inactive-value="false"
-          ></el-switch>
+          <el-switch v-model="userForm.locked" active-text="Locked" :active-value="true" inactive-text="Active"
+            :inactive-value="false"></el-switch>
         </el-form-item>
         <el-form-item label="2FA enabled" prop="mfa_enabled">
-          <el-switch
-            v-model="userForm.mfa_enabled"
-            active-text="Enabled"
-            :active-value="true"
-            inactive-text="Disabled"
-            :inactive-value="false"
-          ></el-switch>
+          <el-switch v-model="userForm.mfa_enabled" active-text="Enabled" :active-value="true" inactive-text="Disabled"
+            :inactive-value="false"></el-switch>
         </el-form-item>
         <el-form-item label="Roles" prop="roles">
-          <el-transfer
-            filterable
-            filter-placeholder="Filter"
-            :titles="['All roles', 'User roles']"
-            v-model="userForm.roles"
-            :data="roles"
-          ></el-transfer>
+          <el-transfer filterable filter-placeholder="Filter" :titles="['All roles', 'User roles']"
+            v-model="userForm.roles" :data="roles"></el-transfer>
         </el-form-item>
       </el-form>
     </el-card>
@@ -129,7 +105,7 @@ export default {
             this.groups = res.data;
           }
         })
-        .then(() => {});
+        .then(() => { });
     },
     initRoles() {
       getRoles()
@@ -144,7 +120,7 @@ export default {
             }
           }
         })
-        .then((res) => {});
+        .then((res) => { });
     },
     setFromWithProps() {
       if (Object.keys(this.propForm).length !== 0) {
@@ -191,7 +167,7 @@ export default {
           this.$emit("success");
           this.cancel();
         })
-        .then((res) => {});
+        .then((res) => { });
     },
 
     merge(local, origin) {
@@ -212,11 +188,13 @@ export default {
   height: calc(100vh - 136px) !important;
   overflow-y: auto;
 }
+
 .register-card .el-input,
 .register-card .el-select {
   width: 350px;
   margin-right: 10px;
 }
+
 .right-drawer .dialog-footer {
   border-top: 1px solid #bfcbd9;
   background-color: #ffffff;
@@ -228,6 +206,7 @@ export default {
   padding-bottom: 10px;
   padding-right: 30px;
 }
+
 .detail-card {
   height: calc(100vh - 77px) !important;
   overflow-y: auto;

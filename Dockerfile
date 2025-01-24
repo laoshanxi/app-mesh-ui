@@ -1,7 +1,9 @@
-FROM node:10.17.0-stretch AS builder
+FROM node:18 AS builder
 WORKDIR /workspace
+COPY package*.json ./
+RUN npm install
 COPY . .
-RUN npm install && npm run build:prod
+RUN npm run build:prod
 
 FROM nginx:mainline-alpine
 
