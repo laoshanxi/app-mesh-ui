@@ -29,14 +29,14 @@ server {
         add_header 'Access-Control-Allow-Origin' '*';
         add_header 'Access-Control-Allow-Credentials' 'true';
         add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,HEAD';
-        add_header 'Access-Control-Allow-Headers' 'Exit-Code,Output-Position,Username,Totp,Password,New-Password,Auth-Permission,Expire-Seconds,File-Path,File-Mode,File-User,File-Group,Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,X-Data-Type,X-Requested-With,X-Data-Type,X-Auth-Token';
-        add_header 'Access-Control-Expose-Headers' 'Exit-Code,Output-Position,Username,Totp,Password,New-Password,Auth-Permission,Expire-Seconds,File-Path,File-Mode,File-User,File-Group,Authorization,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,X-Mx-ReqToken,X-Data-Type,X-Requested-With,X-Data-Type,X-Auth-Toke';
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Auth-Permission,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,Expire-Seconds,X-Send-File-Socket,X-Recv-File-Socket,X-Target-Host,Audience,Username,Totp-Challenge,Totp,New-Password,File-Path,File-Mode,File-User,File-Group';
+        add_header 'Access-Control-Expose-Headers' 'Exit-Code,Output-Position,File-Mode,File-User,File-Group,Content-Type';
 
         if ($request_method = 'OPTIONS') {
             return 204;
         }
 
-        proxy_pass https://${APP_MESH_SERVER_HOST}:6060;
+        proxy_pass ${APP_MESH_API_URL};
     }
 
     # Web

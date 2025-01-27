@@ -27,7 +27,9 @@ router.beforeEach(async (to, from, next) => {
       next({ path: '/' })
       NProgress.done()
     } else {
-      // TODO: when browser close and re-open, the user permission info will be lost
+      // TODO: When the browser is closed and reopened, the user permission info will be lost.
+      // If the user navigates directly to another page without going through the login page,
+      // the permissions need to be re-validated.
       const hasGetUserInfo = store.getters.user
       if (hasGetUserInfo) {
         if (to.meta && to.meta.roles && to.meta.roles.length > 0) {

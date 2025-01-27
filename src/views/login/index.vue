@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
       label-position="left">
       <div class="title-container">
-        <h3 class="title">App Mesh Login</h3>
+        <h3 class="title">{{ loginForm.appName }} Login</h3>
       </div>
 
       <el-form-item prop="UserName" v-show="!totpMode">
@@ -19,7 +19,7 @@
           <svg-icon icon-class="password" />
         </span>
         <el-input :key="passwordType" ref="Password" v-model="loginForm.Password" :type="passwordType"
-          placeholder="Password" name="Password" tabindex="2" auto-complete="on" @keyup.enter.native="switchHost" />
+          placeholder="Password" name="Password" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin()" />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'Password' ? 'eye' : 'eye-open'" />
         </span>
@@ -34,8 +34,8 @@
       </el-form-item>
 
       <el-button :loading="loading" type="primary" tabindex="4" style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="totpMode ? handleTotpSubmit() : switchHost()"
-        @keyup.enter.native="totpMode ? handleTotpSubmit() : switchHost()">
+        @click.native.prevent="totpMode ? handleTotpSubmit() : handleLogin()"
+        @keyup.enter.native="totpMode ? handleTotpSubmit() : handleLogin()">
         {{ totpMode ? 'Submit TOTP' : 'Login' }}
       </el-button>
     </el-form>
@@ -65,11 +65,11 @@ export default {
     };
     return {
       loginForm: {
+        appName: window.VUE_APP_TITLE || process.env.VUE_APP_TITLE || "App Mesh",
         UserName: "",
         Totp: "",
         Password: "",
         TotpChallenge: "",
-        host: window.location.origin,
       },
       restaurants: [
         {
@@ -99,87 +99,132 @@ export default {
     },
   },
   created() {
-    this.loginForm.host = this.$store.getters.baseUrl
-      ? this.$store.getters.baseUrl
-      : window.location.origin;
-    this.restaurants = this.$store.getters.apiUrls
-      ? this.$store.getters.apiUrls
-      : [];
+    this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
   },
 
   methods: {
-    switchHost() {
-      this.loading = true;
-      this.$store
-        .dispatch("settings/changeSetting", {
-          key: "baseUrl",
-          value: this.loginForm.host,
-        })
-        .then(() => {
-          this.handleLogin();
-        })
-        .catch(() => {
-          this.loading = false;
-        });
-    },
+    /**
+     * Toggle password visibility
+     */
     showPwd() {
-      if (this.passwordType === "Password") {
-        this.passwordType = "";
-      } else {
-        this.passwordType = "Password";
-      }
-      this.$nextTick(() => {
-        this.$refs.Password.focus();
-      });
+      this.passwordType = this.passwordType === "Password" ? "" : "Password";
+      this.$nextTick(() => this.$refs.Password.focus());
     },
-    handleLogin() {
-      this.$refs.loginForm.validate((valid) => {
-        if (valid) {
-          this.loading = true;
-          this.$store
-            .dispatch("user/login", this.loginForm)
-            .then(() => {
-              // Login success
-              this.totpMode = false;
-              this.$router.push({ path: this.redirect || "/" });
-              this.loading = false;
-            })
-            .catch((error) => {
-              if (error.response && error.response.status === 401 && error.response.data["Totp-Challenge"]) {
-                this.loginForm.TotpChallenge = error.response.data["Totp-Challenge"];
-                this.totpMode = true;
-                this.$message({ message: 'Please enter your TOTP code', type: 'info' });
-                this.$nextTick(() => {
-                  this.$refs.Totp.focus();
-                });
-              } else {
-                this.$message({ message: error.message || 'Login failed', type: 'error' });
-              }
-              this.loading = false;
-            });
-        } else {
-          console.log("error submit!!");
-          return false;
+
+    /**
+     * Handle login request
+     * @returns {Promise<void>}
+     */
+    async handleLogin() {
+      try {
+        const valid = await this.$refs.loginForm.validate();
+        if (!valid) {
+          console.warn("Form validation failed");
+          return;
         }
-      });
+
+        this.loading = true;
+        const originalForwarding = this.$store.getters.forwarding;
+
+        try {
+          await this.$store.dispatch("settings/changeSetting", {
+            key: "forwarding",
+            value: null
+          });
+          await this.$store.dispatch("user/login", this.loginForm);
+
+          this.totpMode = false;
+          await this.$store.dispatch("settings/changeSetting", {
+            key: "forwarding",
+            value: originalForwarding
+          });
+
+          this.$router.push({ path: this.redirect || "/" });
+        } catch (error) {
+          if (this.isTotpChallenge(error)) {
+            this.handleTotpChallenge(error);
+          } else {
+            this.$message({
+              message: error.message || 'Login failed',
+              type: 'error',
+              duration: 5000
+            });
+          }
+          await this.restoreForwarding(originalForwarding);
+        }
+      } finally {
+        this.loading = false;
+      }
     },
-    handleTotpSubmit() {
+
+    /**
+     * Handle TOTP verification
+     * @returns {Promise<void>}
+     */
+    async handleTotpSubmit() {
+      if (!this.loginForm.Totp) {
+        this.$message.warning('Please enter TOTP code');
+        return;
+      }
+
       this.loading = true;
-      this.$store
-        .dispatch("user/validateTotp", {
+      const originalForwarding = this.$store.getters.forwarding;
+
+      try {
+        await this.$store.dispatch("settings/changeSetting", {
+          key: "forwarding",
+          value: null
+        });
+
+        await this.$store.dispatch("user/validateTotp", {
           username: this.loginForm.UserName,
           challenge: this.loginForm.TotpChallenge,
           totp: this.loginForm.Totp,
-          expireSeconds: "604800" // DURATION_ONE_WEEK
-        })
-        .then(() => {
-          this.$router.push({ path: this.redirect || "/" });
-          this.loading = false;
-        })
-        .catch(() => {
-          this.loading = false;
+          expireSeconds: "604800" // One week expiration
         });
+
+        await this.restoreForwarding(originalForwarding);
+        this.$router.push({ path: this.redirect || "/" });
+      } catch (error) {
+        this.$message.error(error.message || 'TOTP验证失败');
+        await this.restoreForwarding(originalForwarding);
+      } finally {
+        this.loading = false;
+      }
     },
+
+    /**
+     * Check if TOTP verification is required
+     * @param {Error} error - Error object
+     * @returns {boolean}
+     */
+    isTotpChallenge(error) {
+      return error.response &&
+        error.response.status === 401 &&
+        error.response.data["Totp-Challenge"];
+    },
+
+    /**
+     * Handle TOTP challenge
+     * @param {Error} error - Error object
+     */
+    handleTotpChallenge(error) {
+      this.loginForm.TotpChallenge = error.response.data["Totp-Challenge"];
+      this.totpMode = true;
+      this.$message.info('Please enter TOTP code');
+      this.$nextTick(() => this.$refs.Totp.focus());
+    },
+
+    /**
+     * Restore forwarding settings
+     * @param {string} originalForwarding - Original forwarding setting
+     */
+    async restoreForwarding(originalForwarding) {
+      await this.$store.dispatch("settings/changeSetting", {
+        key: "forwarding",
+        value: originalForwarding
+      });
+    }
   },
 };
 </script>

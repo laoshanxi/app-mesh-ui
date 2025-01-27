@@ -1,6 +1,5 @@
 module.exports = {
-
-  title: 'App Mesh',
+  title: process.env.VUE_APP_TITLE || 'App Mesh',
 
   /**
    * @type {boolean} true | false
@@ -12,6 +11,11 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: true
-  // baseUrl: window.location.origin
+  sidebarLogo: true,
+
+  /**
+   * @type {string}
+   * @description target host address for request forwarding in a cluster setup.
+   */
+  forwarding: ''
 }

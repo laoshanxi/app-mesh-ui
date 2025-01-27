@@ -40,7 +40,7 @@ const actions = {
   login({ commit }, userInfo) {
     const { UserName, Password, Audience } = userInfo
     return new Promise((resolve, reject) => {
-      const headers = {
+      let headers = {
         Authorization: "Basic " + Base64.encode(UserName.trim() + ":" + Password),
         "Expire-Seconds": "604800" // DURATION_ONE_WEEK
       }

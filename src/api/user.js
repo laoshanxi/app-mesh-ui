@@ -9,6 +9,14 @@ export function login(data) {
   })
 }
 
+export function authenticate(data) {
+  return request({
+    url: '/appmesh/auth',
+    method: 'post',
+    headers: data
+  })
+}
+
 export function totpValidate(data) {
   return request({
     url: '/appmesh/totp/validate',

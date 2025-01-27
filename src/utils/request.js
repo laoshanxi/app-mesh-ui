@@ -16,16 +16,14 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // do something before request is sent
-    if (store.getters.token) {
+    if (store.getters.token && !config.headers['Authorization']) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
       config.headers['Authorization'] = "Bearer " + getToken()
     }
-    if(config.curBaseUrl) {
-      config.baseURL = config.curBaseUrl;
-    }else{
-      config.baseURL = store.getters.baseUrl;
+    if (store.getters.forwarding && !('X-Target-Host' in config.headers)) {
+      config.headers['X-Target-Host'] = store.getters.forwarding
     }
     return config
   },
@@ -77,7 +75,7 @@ service.interceptors.response.use(
   },
   error => {
     let errMessage = error.message;
-    if(error.response && error.response.data && error.response.data.message){
+    if (error.response && error.response.data && error.response.data.message) {
       errMessage = errMessage + ": " + error.response.data.message;
     }
     error.message = errMessage;
@@ -86,15 +84,15 @@ service.interceptors.response.use(
       type: 'error',
       duration: 5 * 1000
     })
-    if(error.response && error.response.data && error.response.data.message && error.response.data.message.indexOf("verification failed")>-1){
+    if (error.response && error.response.data && error.response.data.message && error.response.data.message.indexOf("verification failed") > -1) {
       MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
         confirmButtonText: 'Re-Login',
         cancelButtonText: 'Cancel',
         type: 'warning'
       }).then(() => {
-        store.dispatch('user/logout').then(res=>{
+        store.dispatch('user/logout').then(res => {
           router.go("/login");
-        }, res=>{});
+        }, res => { });
       })
 
     }

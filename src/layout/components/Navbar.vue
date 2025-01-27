@@ -5,14 +5,16 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-      <span>Host:</span>
-      <el-autocomplete class="inline-input" style="width:300px" v-model="host"
+
+      <el-switch v-model="forwardEnabled" active-text="Forward to:" inactive-text="" @change="handleSwitchChange" />
+      <el-autocomplete class="inline-input" style="width:140px" v-model="forward"
         :fetch-suggestions="querySearch"></el-autocomplete>
-      <el-button type="warning" icon="el-icon-sort" @click="switchHost()"
-        v-loading.fullscreen.lock="fullscreenLoading">Switch</el-button>
+
+
       <el-button icon="el-icon-refresh" @click="refresh()" type="text" :loading="loading" title="Refresh"
         style="margin-right:10px;font-size:18px;font-weight: bold !important;">
       </el-button>
+
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- <div><img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"><span class="UserName-avatar">{{name}}</span></div> -->
@@ -50,7 +52,6 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import { MessageBox, Message } from 'element-ui'
 import request from '@/utils/request'
 import EventBus from '@/utils/event.bus.js'
 import { EVENTS } from '@/utils/constants.js'
@@ -59,8 +60,9 @@ export default {
   data() {
     return {
       restaurants: [],
-      host: "",
-      lastHost: "",
+      forward: "",
+      lastForward: "",
+      forwardEnabled: false,
       fullscreenLoading: false
     };
   },
@@ -69,12 +71,13 @@ export default {
     Hamburger
   },
   created() {
-    this.host = this.$store.getters.baseUrl;
+    this.forward = this.$store.getters.forwarding;
+    this.forwardEnabled = !!this.forward;
     this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
-    EventBus.$on(EVENTS.SWITCH_HOST, (host) => {
-      this.lastHost = this.host;
-      this.host = host;
-      this.switchHost();
+    EventBus.$on(EVENTS.SWITCH_FORWARD, (fw) => {
+      this.lastForward = this.forward;
+      this.forward = fw;
+      this.updateForward();
     });
   },
   mounted() {
@@ -85,82 +88,141 @@ export default {
       'avatar',
       'name',
       'auth',
-      'baseUrl',
+      'forwarding',
       'loading'
     ])
   },
   methods: {
-    certifedHost(callback) {
-      request({
-        url: this.host,
-        timeout: 3000,
-        method: 'GET'
-      }).then((res) => {
-        console.info("Certified");
-        callback ? callback() : '';
-      }, (res) => {
-        this.fullscreenLoading = false;
-        window.open(this.host);
-      });
-    },
+    /**
+     * Refresh current page
+     */
     refresh() {
       this.$router.replace({
         path: '/refresh',
-        query: {
-          t: Date.now()
-        }
+        query: { t: Date.now() }
       });
     },
-    gotoApplication() {
-      this.$router.replace({
-        path: '/applications/index',
-        query: {
-          t: Date.now()
-        }
-      });
-    },
-    logonWithNewHost() {
-      this.$store.dispatch('user/login', { UserName: this.name, Password: this.auth }).then(() => {
-        Message({
-          message: 'Switch host to ' + this.host,
-          type: 'success',
-          duration: 5 * 1000
-        });
-        this.fullscreenLoading = false;
-        this.gotoApplication();
-      }).catch(() => {
-        this.fullscreenLoading = false;
-      })
-    },
-    switchHost() {
-      this.$confirm(`Do you want to switch host to <${this.host}>?`, 'Tooltip', {
-        confirmButtonText: 'Confirm',
-        cancelButtonText: 'Cancel',
-        type: 'warning'
-      }).then(() => {
+
+    /**
+     * Enable request forwarding to specified target
+     * @returns {Promise<void>}
+     */
+    async enableForward() {
+      this.forward = this.forward.trim();
+      if (!this.forward) {
+        throw new Error('Forward target cannot be empty');
+      }
+
+      try {
+        await this.$confirm(
+          `Forward requests to [${this.forward}]?`,
+          'Confirm',
+          {
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            type: 'warning'
+          }
+        );
+
         this.fullscreenLoading = true;
-        this.certifedHost(() => {
-          this.$store.dispatch("settings/changeSetting", { key: "baseUrl", value: this.host }).then(() => {
-            this.logonWithNewHost();
-          }).catch(() => {
-            this.fullscreenLoading = false;
-          });
+        const response = await request({
+          url: '/appmesh/auth',
+          method: 'post',
+          headers: { 'X-Target-Host': this.forward }
         });
-      }).catch(() => {
-        if (this.lastHost && this.lastHost.length > 0) {
-          this.host = this.lastHost;
+
+        if (response.status !== 200) {
+          throw new Error(response.data);
         }
-      });
+
+        await this.$store.dispatch("settings/changeSetting", {
+          key: "forwarding",
+          value: this.forward
+        });
+
+        this.forwardEnabled = true;
+        this.$message.success('Forward request successful');
+        this.refresh();
+      } catch (error) {
+        if (error === 'cancel' || error.toString().includes('cancel')) {
+          throw 'cancel';
+        }
+        if (this.lastForward?.length > 0) {
+          this.forward = this.lastForward;
+        }
+        throw error;
+      } finally {
+        this.fullscreenLoading = false;
+      }
     },
-    querySearch(queryString, cb) {
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createFilter(queryString)) : restaurants;
-      // 调用 callback 返回建议列表的数据
-      cb(results);
+
+    /**
+     * Disable request forwarding
+     * @returns {Promise<void>}
+     */
+    async disableForward() {
+      try {
+        await this.$confirm(
+          'Disable request forwarding?',
+          'Confirm',
+          {
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'No',
+            type: 'warning'
+          }
+        );
+
+        this.fullscreenLoading = true;
+        const response = await request({
+          url: '/appmesh/auth',
+          method: 'post',
+          headers: { 'X-Target-Host': '' }
+        });
+
+        if (response.status !== 200) {
+          throw new Error(response.data);
+        }
+
+        await this.$store.dispatch("settings/changeSetting", {
+          key: "forwarding",
+          value: ''
+        });
+
+        this.lastForward = this.forward;
+        this.forward = '';
+        this.forwardEnabled = false;
+        this.$message.success('Disable forward successful');
+        this.refresh();
+      } catch (error) {
+        if (error === 'cancel' || error.toString().includes('cancel')) {
+          throw 'cancel';
+        }
+        throw error;
+      } finally {
+        this.fullscreenLoading = false;
+      }
     },
+
+    /**
+     * Query suggestion list
+     * @param {string} queryString - Query string
+     * @param {Function} callback - Callback function
+     */
+    querySearch(queryString, callback) {
+      const results = queryString
+        ? this.restaurants.filter(item => this.createFilter(queryString)(item))
+        : this.restaurants;
+      callback(results);
+    },
+
+    /**
+     * Create filter function
+     * @param {string} queryString - Query string
+     * @returns {Function} Filter function
+     */
     createFilter(queryString) {
       return (restaurant) => {
-        return (restaurant.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+        return restaurant?.value?.toLowerCase().indexOf(queryString.toLowerCase()) === 0;
       };
     },
     toggleSideBar() {
@@ -169,6 +231,29 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    async handleSwitchChange(value) {
+      const oldForward = this.forward;
+
+      try {
+        if (!value) {
+          await this.disableForward();
+        } else {
+          if (oldForward) {
+            this.forward = oldForward;
+          }
+          await this.enableForward();
+        }
+      } catch (error) {
+        this.forward = oldForward;
+        this.forwardEnabled = !this.forwardEnabled
+
+        if (error === 'cancel' || error.toString().includes('cancel')) {
+          // do nothing for cancled
+        } else {
+          this.$message.error(`Failed to forward request: ${error.message || error}`);
+        }
+      }
     }
   }
 }

@@ -1,11 +1,11 @@
 import defaultSettings from '@/settings'
-import {setDataLocalStorage, getDataLocalStorage} from '@/utils/localStorage'
+import { setDataLocalStorage, getDataLocalStorage } from '@/utils/localStorage'
 import constants from '@/utils/constants'
 
-const { showSettings, fixedHeader, sidebarLogo, baseUrl, title } = defaultSettings
+const { showSettings, fixedHeader, sidebarLogo, forwarding, title } = defaultSettings
 
 const state = {
-  baseUrl: getDataLocalStorage(constants.BASE_URL) || baseUrl,
+  forwarding: getDataLocalStorage(constants.FORWARDING) || forwarding,
   apiUrls: getDataLocalStorage(constants.API_URLS),
   showSettings: showSettings,
   fixedHeader: fixedHeader,
@@ -15,37 +15,39 @@ const state = {
 
 const mutations = {
   CHANGE_SETTING: (state, { key, value }) => {
-    if(key == "baseUrl"){
-      if(state.apiUrls==null){
+    if (Object.prototype.hasOwnProperty.call(state, key)) {
+      state[key] = value
+    }
+    if (key == "forwarding") {
+      if (state.apiUrls == null) {
         state.apiUrls = getDataLocalStorage(constants.API_URLS);
       }
-      if(!state.apiUrls){
+      if (!state.apiUrls) {
         state.apiUrls = [];
       }
-      let createFilter=function(queryString) {
+      let createFilter = function (queryString) {
+        if (!queryString || queryString.trim() === '') {
+          return () => false;
+        }
         return (url) => {
-          return (url.value.toLowerCase().trim()==queryString.toLowerCase().trim());
+          return (url && url.value && typeof url.value === 'string' && url.value.toLowerCase().trim() === queryString.toLowerCase().trim());
         };
       }
 
-      if(state.apiUrls.filter(createFilter(value)).length==0){
+      if (state.apiUrls.filter(createFilter(value)).length == 0) {
         state.apiUrls.push({
           value: value
         });
       }
       setDataLocalStorage(constants.API_URLS, state.apiUrls);
-      setDataLocalStorage(constants.BASE_URL, value);
-
-    }
-    if (Object.prototype.hasOwnProperty.call(state, key)) {
-      state[key] = value
+      setDataLocalStorage(constants.FORWARDING, value);
     }
   }
 }
 
 const actions = {
   changeSetting({ commit }, data) {
-    commit('CHANGE_SETTING', data)
+    commit('CHANGE_SETTING', data);
   }
 }
 

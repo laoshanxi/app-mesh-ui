@@ -8,8 +8,8 @@
 <img src="https://raw.githubusercontent.com/laoshanxi/app-mesh-ui/main/doc/diagram.png"width=434 height=334/>
 </div>
 
-
 ## Build Docker image
+
 ```bash
 VER=2.1.2
 cd appmesh-ui/
@@ -39,13 +39,15 @@ npm run lint
 npm run lint -- --fix
 ```
 
-
 ## Deploy
 
 - Use docker run to start a container connected to local App Mesh
 
 ```shell
-docker run --name=appmesh-ui -d --net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro laoshanxi/appmesh-ui:2.1.2
+docker run --name=appmesh-ui -d -p 443:443 --name=appmesh-ui -e APP_MESH_API_URL=https://`hostname`:6060 -e VUE_APP_TITLE=`hostname` -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro laoshanxi/appmesh-ui:2.1.2
+
+# Use the environment variable `APP_MESH_API_URL` to specify the API service URL. The default value is `https://127.0.0.1:6060`.
+# Use the environment variable `VUE_APP_TITLE` to specify the Web Site Title. The default value is `App Mesh`.
 ```
 
 - Use host mode networking for Nginx reverse proxy (need accept host 443 port)
@@ -103,12 +105,9 @@ Modern browsers and Internet Explorer 10+.
 
 [MIT](https://github.com/laoshanxi/app-mesh-ui/LICENSE) license.
 
-
-[language.url]:   https://nodejs.org/
+[language.url]: https://nodejs.org/
 [language.badge]: https://img.shields.io/badge/language-nodes.vue-blue.svg
-
-[release.url]:    https://github.com/laoshanxi/app-mesh/releases
-[release.badge]:  https://img.shields.io/github/v/release/laoshanxi/app-mesh-ui.svg
-
-[docker.url]:    https://hub.docker.com/repository/docker/laoshanxi/appmesh-ui
-[docker.badge]:  https://img.shields.io/docker/pulls/laoshanxi/appmesh-ui.svg
+[release.url]: https://github.com/laoshanxi/app-mesh/releases
+[release.badge]: https://img.shields.io/github/v/release/laoshanxi/app-mesh-ui.svg
+[docker.url]: https://hub.docker.com/repository/docker/laoshanxi/appmesh-ui
+[docker.badge]: https://img.shields.io/docker/pulls/laoshanxi/appmesh-ui.svg
