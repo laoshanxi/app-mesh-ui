@@ -2,15 +2,17 @@
   <div>
     <!-- {{ form }} -->
     <el-card shadow="never" class="register-card">
-      <el-form :model="permissionForm" ref="permissionFormDom" :rules="permissionRules" label-width="160px">
+      <el-form ref="permissionFormDom" :model="permissionForm" :rules="permissionRules" label-width="160px">
         <el-form-item label="Role">
           <label v-if="propForm.name != null && propForm.name.length > 0">{{ propForm.name }}</label>
           <el-input v-if="propForm.name == null || propForm.name.length == 0" v-model="permissionForm.name"></el-input>
         </el-form-item>
         <el-form-item label="Permissions" prop="permissions">
-          <el-transfer class="permission-transfer" filterable filter-placeholder="Filter"
-            :titles="['All permissions', 'Role permissions']" v-model="permissionForm.permissions"
-            :data="permissions"></el-transfer>
+          <el-transfer
+            v-model="permissionForm.permissions" class="permission-transfer" filterable
+            filter-placeholder="Filter" :titles="['All permissions', 'Role permissions']"
+            :data="permissions"
+          ></el-transfer>
           <el-input v-model="newPermission" style="margin-top:10px;"></el-input>
           <el-button @click="addNewPermission">Add new permission</el-button>
           <br />
@@ -32,6 +34,7 @@ import { getPermissions } from "@/api/security";
 
 export default {
   name: "RoleForm",
+  props: ["propForm"],
   data() {
     return {
       permissionForm: {
@@ -43,13 +46,6 @@ export default {
       newPermission: "",
     };
   },
-  props: ["propForm"],
-  created() {
-    this.resetForm();
-    this.setFromWithProps();
-    this.initData();
-  },
-  mounted() { },
   watch: {
     propForm: {
       handler: function (val, old) {
@@ -62,6 +58,12 @@ export default {
       immediate: false,
     },
   },
+  created() {
+    this.resetForm();
+    this.setFromWithProps();
+    this.initData();
+  },
+  mounted() { },
   methods: {
     initData() {
       getPermissions()

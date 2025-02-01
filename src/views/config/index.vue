@@ -33,8 +33,10 @@
                   </el-form-item>
 
                   <el-form-item label="Disable exec user" prop="BaseConfig.DisableExecUser">
-                    <el-switch v-model="form.BaseConfig.DisableExecUser" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false" />
+                    <el-switch
+                      v-model="form.BaseConfig.DisableExecUser" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false"
+                    />
                   </el-form-item>
 
                   <el-form-item label="Working dir" prop="BaseConfig.WorkingDirectory">
@@ -47,8 +49,10 @@
 
                 <el-collapse-item title="Rest" name="2">
                   <el-form-item label="Rest enabled" prop="REST.RestEnabled">
-                    <el-switch v-model="form.REST.RestEnabled" active-text="Yes" :active-value="true" inactive-text="No"
-                      :inactive-value="false" />
+                    <el-switch
+                      v-model="form.REST.RestEnabled" active-text="Yes" :active-value="true" inactive-text="No"
+                      :inactive-value="false"
+                    />
                   </el-form-item>
                   <el-form-item label="Http thread pool size" prop="REST.HttpThreadPoolSize">
                     <el-input-number v-model="form.REST.HttpThreadPoolSize" />
@@ -69,16 +73,22 @@
                   </el-form-item>
 
                   <el-form-item label="SSL verify server" prop="REST.SSL.VerifyServer">
-                    <el-switch v-model="form.REST.SSL.VerifyServer" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false" />
+                    <el-switch
+                      v-model="form.REST.SSL.VerifyServer" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false"
+                    />
                   </el-form-item>
                   <el-form-item label="SSL verify client" prop="REST.SSL.VerifyClient">
-                    <el-switch v-model="form.REST.SSL.VerifyClient" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false" />
+                    <el-switch
+                      v-model="form.REST.SSL.VerifyClient" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false"
+                    />
                   </el-form-item>
                   <el-form-item label="Forwarding SSL verify" prop="REST.SSL.VerifyServerDelegate">
-                    <el-switch v-model="form.REST.SSL.VerifyServerDelegate" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false" />
+                    <el-switch
+                      v-model="form.REST.SSL.VerifyServerDelegate" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false"
+                    />
                   </el-form-item>
 
                   <el-form-item label="SSL certificate file" prop="REST.SSL.SSLCertificateFile">
@@ -105,8 +115,10 @@
                     <el-input v-model="form.REST.JWT.Issuer" />
                   </el-form-item>
                   <el-form-item label="JWT Audience" prop="REST.JWT.Audience">
-                    <el-select v-model="form.REST.JWT.Audience" multiple filterable allow-create
-                      :default-first-option="true" placeholder="Enter audience values">
+                    <el-select
+                      v-model="form.REST.JWT.Audience" multiple filterable allow-create
+                      :default-first-option="true" placeholder="Enter audience values"
+                    >
                       <el-option v-for="item in form.REST.JWT.Audience" :key="item" :label="item" :value="item">
                       </el-option>
                     </el-select>

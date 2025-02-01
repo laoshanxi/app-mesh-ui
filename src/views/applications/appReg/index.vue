@@ -2,7 +2,7 @@
   <div>
     <!-- {{ form }} -->
     <el-card shadow="never" class="register-card">
-      <el-form :model="registerForm" ref="regForm" :rules="regRules" label-width="160px">
+      <el-form ref="regForm" :model="registerForm" :rules="regRules" label-width="160px">
         <el-form-item label="Name" prop="name">
           <el-input v-model="registerForm.name"></el-input>
         </el-form-item>
@@ -24,8 +24,10 @@
         </el-form-item>
 
         <el-form-item label="Status">
-          <el-switch v-model="registerForm.status" active-text="Enabled" :active-value="1" inactive-text="Disabled"
-            :inactive-value="0"></el-switch>
+          <el-switch
+            v-model="registerForm.status" active-text="Enabled" :active-value="1" inactive-text="Disabled"
+            :inactive-value="0"
+          ></el-switch>
         </el-form-item>
 
         <el-form-item label="Permission">
@@ -53,7 +55,7 @@
           </el-row>
         </el-form-item>
         <el-form-item label="stdout cache number" prop="stdout_cache_num">
-          <el-input-number :min="0" v-model="registerForm.stdout_cache_num"></el-input-number>
+          <el-input-number v-model="registerForm.stdout_cache_num" :min="0"></el-input-number>
         </el-form-item>
 
         <el-divider></el-divider>
@@ -84,33 +86,39 @@
         <el-divider></el-divider>
 
         <el-form-item label="Start time" prop="start_time">
-          <el-date-picker v-model="registerForm.start_time_TEXT" value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
-            placeholder></el-date-picker>
+          <el-date-picker
+            v-model="registerForm.start_time_TEXT" value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
+            placeholder
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="End time" prop="end_time">
-          <el-date-picker v-model="registerForm.end_time_TEXT" value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
-            placeholder></el-date-picker>
+          <el-date-picker
+            v-model="registerForm.end_time_TEXT" value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
+            placeholder
+          ></el-date-picker>
         </el-form-item>
         <el-form-item label="Daily limitation">
-          <el-time-picker is-range v-model="daily_time_range" :value="daily_time_range" @change="onDailyTimeChange"
-            range-separator="-" value-format="HH:mm:ss" start-placeholder="Start time" end-placeholder="End time">
+          <el-time-picker
+            v-model="daily_time_range" is-range :value="daily_time_range" range-separator="-"
+            value-format="HH:mm:ss" start-placeholder="Start time" end-placeholder="End time" @change="onDailyTimeChange"
+          >
           </el-time-picker>
         </el-form-item>
         <el-divider></el-divider>
 
         <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
-          <el-input-number :min="0" v-model="registerForm.resource_limit.cpu_shares"></el-input-number>
+          <el-input-number v-model="registerForm.resource_limit.cpu_shares" :min="0"></el-input-number>
         </el-form-item>
         <el-form-item label="Physical memory" prop="resource_limit.memory_mb">
-          <el-input-number :min="0" v-model="registerForm.resource_limit.memory_mb"></el-input-number>Mi
+          <el-input-number v-model="registerForm.resource_limit.memory_mb" :min="0"></el-input-number>Mi
         </el-form-item>
         <el-form-item label="Virtual memory" prop="resource_limit.memory_virt_mb">
-          <el-input-number :min="0" v-model="registerForm.resource_limit.memory_virt_mb"></el-input-number>Mi
+          <el-input-number v-model="registerForm.resource_limit.memory_virt_mb" :min="0"></el-input-number>Mi
         </el-form-item>
         <el-divider></el-divider>
 
         <el-form-item label="Pid(for attach)" prop="pid">
-          <el-input-number :min="0" v-model="registerForm.pid"></el-input-number>
+          <el-input-number v-model="registerForm.pid" :min="0"></el-input-number>
         </el-form-item>
 
         <el-divider></el-divider>
@@ -121,20 +129,22 @@
           <el-input v-model="registerForm.APP_DOCKER_OPTS"></el-input>
         </el-form-item>
         <el-form-item label="Image pull timeout" prop="APP_DOCKER_IMG_PULL_TIMEOUT">
-          <el-input-number :min="0" v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT"></el-input-number>S
+          <el-input-number v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT" :min="0"></el-input-number>S
         </el-form-item>
 
         <el-divider></el-divider>
 
-        <el-form-item v-for="(env, index) in registerForm.envs" :label="'Env ' + index" :key="env.key"
+        <el-form-item
+          v-for="(env, index) in registerForm.envs" :key="env.key" :label="'Env ' + index"
           :prop="'envs.' + index + '.value'" :rules="{
             required: true,
             message: 'ENV is not empty',
             trigger: 'blur'
-          }">
-          <el-input v-model="env.name" ref="envs" style="width:200px"></el-input>=
+          }"
+        >
+          <el-input ref="envs" v-model="env.name" style="width:200px"></el-input>=
           <el-input v-model="env.value" style="width:200px"></el-input>
-          <el-button @click.prevent="removeEnvReg(env)" icon="el-icon-delete"></el-button>
+          <el-button icon="el-icon-delete" @click.prevent="removeEnvReg(env)"></el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -153,6 +163,7 @@ import { formatToLocal, formatToLocalDayTime } from "@/utils";
 
 export default {
   name: "AppReg",
+  props: ["propForm"],
   data() {
     return {
       daily_time_range: null,
@@ -190,12 +201,6 @@ export default {
       ],
     };
   },
-  props: ["propForm"],
-  created() {
-    this.resetForm();
-    this.setFromWithProps();
-  },
-  mounted() { },
   watch: {
     propForm: {
       handler: function (val, old) {
@@ -214,6 +219,11 @@ export default {
       deep: true
     },
   },
+  created() {
+    this.resetForm();
+    this.setFromWithProps();
+  },
+  mounted() { },
   methods: {
     setFromWithProps() {
       this.resetForm();

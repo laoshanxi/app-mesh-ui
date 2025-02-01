@@ -2,7 +2,7 @@
   <div>
     <!-- {{ form }} -->
     <el-card shadow="never" class="register-card">
-      <el-form :model="userForm" ref="userFormDom" :rules="userRules" label-width="160px">
+      <el-form ref="userFormDom" :model="userForm" :rules="userRules" label-width="160px">
         <el-form-item label="Name" prop="name">
           <label v-if="propForm.name != null && propForm.name.length > 0">{{ propForm.name }}</label>
           <el-input v-if="propForm.name == null || propForm.name.length == 0" v-model="userForm.name"></el-input>
@@ -25,16 +25,22 @@
           </el-select>
         </el-form-item>
         <el-form-item label="Is locked" prop="locked">
-          <el-switch v-model="userForm.locked" active-text="Locked" :active-value="true" inactive-text="Active"
-            :inactive-value="false"></el-switch>
+          <el-switch
+            v-model="userForm.locked" active-text="Locked" :active-value="true" inactive-text="Active"
+            :inactive-value="false"
+          ></el-switch>
         </el-form-item>
         <el-form-item label="2FA enabled" prop="mfa_enabled">
-          <el-switch v-model="userForm.mfa_enabled" active-text="Enabled" :active-value="true" inactive-text="Disabled"
-            :inactive-value="false"></el-switch>
+          <el-switch
+            v-model="userForm.mfa_enabled" active-text="Enabled" :active-value="true" inactive-text="Disabled"
+            :inactive-value="false"
+          ></el-switch>
         </el-form-item>
         <el-form-item label="Roles" prop="roles">
-          <el-transfer filterable filter-placeholder="Filter" :titles="['All roles', 'User roles']"
-            v-model="userForm.roles" :data="roles"></el-transfer>
+          <el-transfer
+            v-model="userForm.roles" filterable filter-placeholder="Filter"
+            :titles="['All roles', 'User roles']" :data="roles"
+          ></el-transfer>
         </el-form-item>
       </el-form>
     </el-card>
@@ -52,6 +58,7 @@ import { saveUser, getGroups } from "@/api/user";
 
 export default {
   name: "UserForm",
+  props: ["propForm"],
   data() {
     return {
       userForm: {
@@ -76,15 +83,6 @@ export default {
       },
     };
   },
-  props: ["propForm"],
-  created() {
-    this.resetForm();
-    this.setFromWithProps();
-    this.initRoles();
-  },
-  updated() {
-    this.initGroup();
-  },
   watch: {
     propForm: {
       handler: function (val, old) {
@@ -96,6 +94,14 @@ export default {
       },
       immediate: false,
     },
+  },
+  created() {
+    this.resetForm();
+    this.setFromWithProps();
+    this.initRoles();
+  },
+  updated() {
+    this.initGroup();
   },
   methods: {
     initGroup() {

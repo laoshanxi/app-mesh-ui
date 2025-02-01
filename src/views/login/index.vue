@@ -1,41 +1,51 @@
 <template>
   <div class="login-container">
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
-      label-position="left">
+    <el-form
+      ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on"
+      label-position="left"
+    >
       <div class="title-container">
         <h3 class="title">{{ loginForm.appName }} Login</h3>
       </div>
 
-      <el-form-item prop="UserName" v-show="!totpMode">
+      <el-form-item v-show="!totpMode" prop="UserName">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
-        <el-input ref="UserName" v-model="loginForm.UserName" placeholder="Username" name="UserName" type="text"
-          tabindex="1" auto-complete="on" />
+        <el-input
+          ref="UserName" v-model="loginForm.UserName" placeholder="Username" name="UserName" type="text"
+          tabindex="1" auto-complete="on"
+        />
       </el-form-item>
 
-      <el-form-item prop="Password" v-show="!totpMode">
+      <el-form-item v-show="!totpMode" prop="Password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input :key="passwordType" ref="Password" v-model="loginForm.Password" :type="passwordType"
-          placeholder="Password" name="Password" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin()" />
+        <el-input
+          :key="passwordType" ref="Password" v-model="loginForm.Password" :type="passwordType"
+          placeholder="Password" name="Password" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin()"
+        />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'Password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
 
-      <el-form-item prop="Totp" v-show="totpMode">
+      <el-form-item v-show="totpMode" prop="Totp">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
-        <el-input ref="Totp" v-model="loginForm.Totp" placeholder="Please enter your TOTP code" name="Totp" type="text"
-          tabindex="3" auto-complete="on" @keyup.enter.native="handleTotpSubmit" />
+        <el-input
+          ref="Totp" v-model="loginForm.Totp" placeholder="Please enter your TOTP code" name="Totp" type="text"
+          tabindex="3" auto-complete="on" @keyup.enter.native="handleTotpSubmit"
+        />
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" tabindex="4" style="width:100%;margin-bottom:30px;"
+      <el-button
+        :loading="loading" type="primary" tabindex="4" style="width:100%;margin-bottom:30px;"
         @click.native.prevent="totpMode ? handleTotpSubmit() : handleLogin()"
-        @keyup.enter.native="totpMode ? handleTotpSubmit() : handleLogin()">
+        @keyup.enter.native="totpMode ? handleTotpSubmit() : handleLogin()"
+      >
         {{ totpMode ? 'Submit TOTP' : 'Login' }}
       </el-button>
     </el-form>

@@ -1,5 +1,5 @@
 <template>
-  <div class="box-card" v-if="record != 'No Data'">
+  <div v-if="record != 'No Data'" class="box-card">
     <DescriptionList title="Host" col="8">
       <Description term="Host name">{{ record.host_name | formatEmpty }}</Description>
       <Description term="Date time">{{ record.systime | formatEmpty }}</Description>
@@ -12,17 +12,20 @@
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="CPU & Memory" col="8">
+      <Description term="Sockets">{{ record.cpu_sockets | formatEmpty }}</Description>
+      <Description term="Cores">{{ record.cpu_cores | formatEmpty }}</Description>
       <Description term="Processors">{{ record.cpu_processors | formatEmpty }}</Description>
-      <Description term="CPU cores">{{ record.cpu_cores | formatEmpty }}</Description>
     </DescriptionList>
     <DescriptionList title col="24">
       <Description term="Memory">
         <div style="margin-left: 39px;">
           <div class="chart-label-left">free {{ record.mem_free_bytes | formatMemory }}</div>
           <div class="chart-div">
-            <el-progress :text-inside="true" :stroke-width="25"
+            <el-progress
+              :text-inside="true" :stroke-width="25"
               :percentage="parseFloat(((record.mem_total_bytes - record.mem_free_bytes) / record.mem_total_bytes * 100).toFixed(2))"
-              status="exception"></el-progress>
+              status="exception"
+            ></el-progress>
           </div>
           <div class="chart-label">total {{ record.mem_total_bytes | formatMemory }}</div>
         </div>
@@ -31,24 +34,30 @@
         <el-row>
           <div class="chart-label-left">free {{ record.mem_freeSwap_bytes | formatMemory }}</div>
           <div class="chart-div">
-            <el-progress :text-inside="true" :stroke-width="25"
+            <el-progress
+              :text-inside="true" :stroke-width="25"
               :percentage="record.mem_totalSwap_bytes <= 0 ? 0 : parseFloat(((record.mem_totalSwap_bytes - record.mem_freeSwap_bytes) / record.mem_totalSwap_bytes * 100).toFixed(2))"
-              status="exception"></el-progress>
+              status="exception"
+            ></el-progress>
           </div>
           <div class="chart-label">total {{ record.mem_totalSwap_bytes | formatMemory }}</div>
         </el-row>
       </Description>
-      <Description term="Total app memory">{{ record.mem_applications | formatMemory }}</Description>
+      <Description term="App Mesh memory">{{ record.mem_applications | formatMemory }}</Description>
     </DescriptionList>
     <el-divider></el-divider>
 
     <DescriptionList title="Disk" col="24" style="margin-bottom: 20px;">
-      <el-table :key="1" :data="record.fs" border :default-sort="{ prop: 'size' }" style="width: 100%"
-        highlight-current-row>
+      <el-table
+        :key="1" :data="record.fs" border :default-sort="{ prop: 'size' }" style="width: 100%"
+        highlight-current-row
+      >
         <el-table-column label="Device" prop="device">
           <template slot-scope="scope">
-            <i class="el-icon-warning" style="color: firebrick;font-size: 18px; vertical-align: middle;"
-              v-if="formatPercent(scope.row.usage)"></i>
+            <i
+              v-if="formatPercent(scope.row.usage)" class="el-icon-warning"
+              style="color: firebrick;font-size: 18px; vertical-align: middle;"
+            ></i>
             {{ scope.row.device | formatEmpty }}
           </template>
         </el-table-column>
@@ -60,8 +69,10 @@
         </el-table-column>
         <el-table-column label="Usage" width="200">
           <template slot-scope="scope">
-            <el-progress :text-inside="true" :stroke-width="25"
-              :percentage="parseFloat((scope.row.usage * 100).toFixed(2))" status="exception"></el-progress>
+            <el-progress
+              :text-inside="true" :stroke-width="25"
+              :percentage="parseFloat((scope.row.usage * 100).toFixed(2))" status="exception"
+            ></el-progress>
           </template>
         </el-table-column>
         <el-table-column label="Mount point">
@@ -70,16 +81,18 @@
       </el-table>
     </DescriptionList>
     <DescriptionList title="Network" col="24">
-      <el-table :key="2" :data="record.net" :default-sort="{ prop: 'name' }" border style="width: 100%"
-        highlight-current-row>
+      <el-table
+        :key="2" :data="record.net" :default-sort="{ prop: 'name' }" border style="width: 100%"
+        highlight-current-row
+      >
         <el-table-column label="Name" width="240" prop="name">
           <template slot-scope="scope">{{ scope.row.name | formatEmpty }}</template>
         </el-table-column>
 
         <el-table-column label="Protocol" width="100" prop="protocol">
           <template slot-scope="scope">
-            <el-tag v-if="scope.row.ipv4" :type="'success'">IPv4</el-tag>
-            <el-tag v-else :type="'info'">IPv6</el-tag>
+            <el-tag v-if="scope.row.ipv6" :type="'success'">IPv6</el-tag>
+            <el-tag v-else :type="'info'">IPv4</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="Address" prop="address">
@@ -96,11 +109,11 @@ import Description from "@/components/Description";
 
 export default {
   name: "Detail",
-  props: ["record"],
   components: {
     DescriptionList,
     Description,
   },
+  props: ["record"],
   data() {
     return {
       data: [

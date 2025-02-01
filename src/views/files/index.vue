@@ -16,11 +16,17 @@
               </el-form-item>
 
               <el-form-item>
-                <el-upload class="upload-demo" ref="upload" :action="url" :headers="headers" :on-change="fileChange"
-                  :on-error="uploadError" :limit="1" :auto-upload="false">
+                <el-upload
+                  ref="upload" class="upload-demo" :action="url" :headers="headers" :on-change="fileChange"
+                  :on-error="uploadError" :limit="1" :auto-upload="false"
+                >
                   <el-button slot="trigger" size="small" type="primary">Select File</el-button>
-                  <el-button style="margin-left: 10px" size="small" type="success" @click="submitUpload"
-                    :disabled="form.disabled">Upload</el-button>
+                  <el-button
+                    style="margin-left: 10px" size="small" type="success" :disabled="form.disabled"
+                    @click="submitUpload"
+                  >
+                    Upload
+                  </el-button>
                 </el-upload>
               </el-form-item>
             </el-form>

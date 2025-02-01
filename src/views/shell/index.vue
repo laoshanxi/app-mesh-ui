@@ -1,6 +1,8 @@
 <template>
-  <el-card v-loading="loading" element-loading-text="Downloading" @keyup.native="clearScreenByKeyUp"
-    @keydown.native="clearScreenByKeyDown">
+  <el-card
+    v-loading="loading" element-loading-text="Downloading" @keyup.native="clearScreenByKeyUp"
+    @keydown.native="clearScreenByKeyDown"
+  >
     <el-row slot="header">
       <el-col :span="3" style="text-align: center;height: 38px; line-height: 38px;">
         <el-switch v-model="isSync" active-text="Sync" inactive-text="Async"></el-switch>
@@ -11,15 +13,17 @@
       </el-col>
       <el-col :span="9"></el-col>
     </el-row>
-    <div class="shell-div" ref="shell_div" @click="moveFocus">
+    <div ref="shell_div" class="shell-div" @click="moveFocus">
       <el-button-group class="buttonsArea">
         <i class="el-icon-delete" @click="clearScreen"></i>
       </el-button-group>
       <div class="shell-content">
         <div v-for="(line, index) in shellContents" :key="index" class="shell-line">
           <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{ line.content }}</pre>
-          <json-viewer boxed theme="my-awesome-json-theme" v-else-if="line.type == 'json'" :value="line.content"
-            style="line-height: 18px">
+          <json-viewer
+            v-else-if="line.type == 'json'" boxed theme="my-awesome-json-theme" :value="line.content"
+            style="line-height: 18px"
+          >
           </json-viewer>
           <pre v-else :class="{ 'command': line.type == 'command' }">{{ line.content }}</pre>
         </div>
@@ -27,9 +31,11 @@
       <div class="shell-command">
         <el-button v-if="connected == 0" @click.stop="connectHost()">Re-connect</el-button>
 
-        <el-input ref="input" :disabled="inputDisabled" v-if="connected == 2" class="shell-input" v-model="input"
-          @keyup.enter.native="runShell()" @keyup.up.native="upCommand" @keyup.down.native="downCommand"
-          placeholder="Please enter a command">
+        <el-input
+          v-if="connected == 2" ref="input" v-model="input" :disabled="inputDisabled" class="shell-input"
+          placeholder="Please enter a command" @keyup.enter.native="runShell()" @keyup.up.native="upCommand"
+          @keyup.down.native="downCommand"
+        >
           <template slot="prepend">
             <pre># </pre>
           </template>
@@ -45,6 +51,7 @@ import fileService from "@/services/file";
 
 export default {
   name: "Shell",
+  components: {},
   data() {
     return {
       loading: false,
@@ -74,7 +81,6 @@ export default {
     };
   },
   created() { },
-  components: {},
   destroyed() {
     if (this.timer) {
       clearInterval(this.timer);

@@ -5,21 +5,35 @@
     </el-row>
     <el-row>
       <el-button-group>
-        <el-button @click="btnClick('new')" type="primary" icon="el-icon-plus">New</el-button>
-        <el-button @click="btnClick('update')" type="success" icon="iconfont icon-role"
-          :disabled="!isSelected">Edit</el-button>
-        <el-button @click="delUser()" type="danger" icon="el-icon-delete" :disabled="!isSelected">Delete</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="btnClick('new')">New</el-button>
+        <el-button
+          type="success" icon="iconfont icon-role" :disabled="!isSelected"
+          @click="btnClick('update')"
+        >
+          Edit
+        </el-button>
+        <el-button type="danger" icon="el-icon-delete" :disabled="!isSelected" @click="delUser()">Delete</el-button>
       </el-button-group>
       <el-button-group>
-        <el-button @click="locked()" type="warning" icon="el-icon-lock"
-          :disabled="!isSelected || isLocked">Lock</el-button>
-        <el-button @click="unlocked()" type="success" icon="el-icon-unlock"
-          :disabled="!isSelected || !isLocked">Unlock</el-button>
+        <el-button
+          type="warning" icon="el-icon-lock" :disabled="!isSelected || isLocked"
+          @click="locked()"
+        >
+          Lock
+        </el-button>
+        <el-button
+          type="success" icon="el-icon-unlock" :disabled="!isSelected || !isLocked"
+          @click="unlocked()"
+        >
+          Unlock
+        </el-button>
       </el-button-group>
     </el-row>
     <el-row>
-      <el-table :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
-        style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange">
+      <el-table
+        :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
+        style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange"
+      >
         <el-table-column label="User" width="150">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
@@ -56,17 +70,18 @@
 
         <el-table-column label="Roles">
           <template slot-scope="scope">
-            <el-tag type="info" style="margin:0px 5px 5px 0px;" v-for="(role, index) in scope.row.roles" :key="index">
+            <el-tag v-for="(role, index) in scope.row.roles" :key="index" type="info" style="margin:0px 5px 5px 0px;">
               {{ role }}
             </el-tag>
           </template>
         </el-table-column>
-
       </el-table>
     </el-row>
-    <el-drawer custom-class="right-drawer" :title="selectedForm.name == null ? 'Add user' : 'Update user'"
-      :visible.sync="userFormVisible" size="60%">
-      <user-form @close="userFormVisible = false" @success="addUserSuccess()" :propForm="selectedForm"></user-form>
+    <el-drawer
+      custom-class="right-drawer" :title="selectedForm.name == null ? 'Add user' : 'Update user'"
+      :visible.sync="userFormVisible" size="60%"
+    >
+      <user-form :prop-form="selectedForm" @close="userFormVisible = false" @success="addUserSuccess()"></user-form>
     </el-drawer>
   </div>
 </template>

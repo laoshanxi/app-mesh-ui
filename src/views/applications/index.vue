@@ -20,27 +20,31 @@
         <el-button type="success" icon="el-icon-open" :disabled="!isSelected || isEnabled" @click="btnClick('enable')">
           Enable
         </el-button>
-        <el-button type="warning" icon="el-icon-turn-off" :disabled="!isSelected || !isEnabled"
-          @click="btnClick('disable')">
+        <el-button
+          type="warning" icon="el-icon-turn-off" :disabled="!isSelected || !isEnabled"
+          @click="btnClick('disable')"
+        >
           Disable
         </el-button>
       </el-button-group>
     </el-row>
     <el-row>
-      <el-table :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
+      <el-table
+        :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         style="width: 100%" height="100%" class="fix-table" :fit="true" highlight-current-row
-        @current-change="currentRowChange">
+        @current-change="currentRowChange"
+      >
         <el-table-column label="Name" width="200">
           <template slot-scope="scope">
-
-            <i v-if="scope.row.health == 0" class="el-icon-success"
-              style="color: #85ce61; font-size: 18px; vertical-align: middle" />
+            <i
+              v-if="scope.row.health == 0" class="el-icon-success"
+              style="color: #85ce61; font-size: 18px; vertical-align: middle"
+            />
             <i v-else class="el-icon-warning" style="color: #f56c6c; font-size: 18px; vertical-align: middle" />
 
             <el-link :underline="true" :title="scope.row.desc" @click="showDetail()">
               {{ scope.row.name }}
             </el-link>
-
           </template>
         </el-table-column>
         <el-table-column label="Owner" width="100">
@@ -102,7 +106,7 @@
         <el-table-column prop="last_start_time" label="Last Start Time" width="230">
           <template slot-scope="scope">
             <span v-if="scope.row.last_start_time">
-              <el-link :underline="true" @click="showLog(scope.row)" title="Show log">
+              <el-link :underline="true" title="Show log" @click="showLog(scope.row)">
                 <i class="el-icon-document"></i>
                 <i class="el-icon-time" style="margin-right: 5px" />
                 {{ scope.row.last_start_time | formatDate }}
@@ -130,8 +134,8 @@
       <span slot="title">
         <span class="el-icon-view">
           &nbsp;&nbsp;{{
-            currentRow ? currentRow.name : "Please select one application"
-          }}
+                        currentRow ? currentRow.name : "Please select one application"
+                      }}
           <i v-if="currentRow && currentRow.docker_image" class="iconfont icon-docker" />
         </span>
       </span>
@@ -150,8 +154,10 @@
         </span>
       </span>
       <div class="detail-card">
-        <app-log ref="appLog" :loginfo="appLogInfo" :app="currentRow" @startLoading="isLoadingLog = true"
-          @loadingDone="logChange" />
+        <app-log
+          ref="appLog" :loginfo="appLogInfo" :app="currentRow" @startLoading="isLoadingLog = true"
+          @loadingDone="logChange"
+        />
       </div>
     </el-drawer>
   </div>

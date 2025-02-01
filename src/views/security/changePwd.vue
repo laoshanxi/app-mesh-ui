@@ -1,19 +1,23 @@
 <template>
-  <div class="app-container" style="clear:both;" v-loading="loading">
+  <div v-loading="loading" class="app-container" style="clear:both;">
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
           <el-tab-pane label="Change Password" style="min-width:600px;">
             <el-form ref="form" :model="form" label-width="200px">
-              <el-form-item label="New Password" prop="newPwd" :rules="{
-                required: true, message: 'New Password is empty', trigger: 'blur'
-              }">
-                <el-input type="Password" v-model="form.newPwd"></el-input>
+              <el-form-item
+                label="New Password" prop="newPwd" :rules="{
+                  required: true, message: 'New Password is empty', trigger: 'blur'
+                }"
+              >
+                <el-input v-model="form.newPwd" type="Password"></el-input>
               </el-form-item>
-              <el-form-item label="Confirm Password" prop="confirmPwd" :rules="{
-                required: true, validator: validatePass2, trigger: 'blur'
-              }">
-                <el-input type="Password" v-model="form.confirmPwd"></el-input>
+              <el-form-item
+                label="Confirm Password" prop="confirmPwd" :rules="{
+                  required: true, validator: validatePass2, trigger: 'blur'
+                }"
+              >
+                <el-input v-model="form.confirmPwd" type="Password"></el-input>
               </el-form-item>
 
               <el-form-item>
@@ -25,8 +29,10 @@
           <el-tab-pane label="Two-factor authentication" style="min-width:600px;">
             <el-form ref="form" :model="form" label-width="200px">
               <el-form-item label="MFA enabled" prop="mfaEnabled">
-                <el-switch v-model="form.mfaEnabled" active-text="Yes" :active-value="true" inactive-text="No"
-                  :inactive-value="false" @change="handleMfaChange" />
+                <el-switch
+                  v-model="form.mfaEnabled" active-text="Yes" :active-value="true" inactive-text="No"
+                  :inactive-value="false" @change="handleMfaChange"
+                />
               </el-form-item>
             </el-form>
           </el-tab-pane>

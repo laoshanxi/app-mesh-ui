@@ -2,25 +2,18 @@
 
 # Web GUI for App Mesh
 
-[App Mesh](https://github.com/laoshanxi/app-mesh)
+Web GUI for [App Mesh](https://github.com/laoshanxi/app-mesh)
 
 <div align=center>
-<img src="https://raw.githubusercontent.com/laoshanxi/app-mesh-ui/main/doc/diagram.png"width=434 height=334/>
+<img src="https://raw.githubusercontent.com/laoshanxi/app-mesh-ui/main/doc/diagram.png" width=434 height=334 alt="Architecture"/>
 </div>
+
+## Development
 
 ## Build Docker image
 
 ```bash
-VER=2.1.2
-cd appmesh-ui/
-make
-
-docker rmi laoshanxi/appmesh-ui:${VER} || true
-docker tag appmesh-ui:${VER} laoshanxi/appmesh-ui:${VER}
-docker push laoshanxi/appmesh-ui:${VER}
-
-docker tag laoshanxi/appmesh-ui:${VER} laoshanxi/appmesh-ui:latest
-docker push laoshanxi/appmesh-ui:latest
+docker build -t appmesh-ui .
 ```
 
 ## Develop environment
@@ -37,42 +30,34 @@ npm run lint
 
 # code format check and auto fix
 npm run lint -- --fix
+
+# run development
+npm run dev
 ```
 
 ## Deploy
 
-- Use docker run to start a container connected to local App Mesh
+- Use docker to start a container connected to local App Mesh
 
 ```shell
-docker run --name=appmesh-ui -d -p 443:443 --name=appmesh-ui -e APP_MESH_API_URL=https://`hostname`:6060 -e VUE_APP_TITLE=`hostname` -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro laoshanxi/appmesh-ui:2.1.2
-
-# Use the environment variable `APP_MESH_API_URL` to specify the API service URL. The default value is `https://127.0.0.1:6060`.
-# Use the environment variable `VUE_APP_TITLE` to specify the Web Site Title. The default value is `App Mesh`.
+docker run \
+  --name=appmesh-ui \
+  -d \
+  --restart=always \
+  -p 443:443 \
+  -e APP_MESH_API_URL=https://`hostname`:6060 \
+  -e VUE_APP_TITLE=`hostname` \
+  -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro \
+  -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro \
+  laoshanxi/appmesh-ui
 ```
 
-- Use host mode networking for Nginx reverse proxy (need accept host 443 port)
+The following environment variables can be used to customize the deployment:
 
-```shell
-appc reg -n appweb --perm 11 --exit restart -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d laoshanxi/appmesh-ui:2.1.2 -f
-```
-
-- Use Docker native API way to manage container app:
-
-```shell
-tee appweb.json <<-'EOF'
-{
-    "Image": "ubuntu",
-    "HostConfig": {
-        "NetworkMode": "host",
-        "Binds": [
-            "/opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro",
-            "/opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro"
-        ]
-    }
-}
-EOF
-appc reg -n appweb --perm 11 --exit restart -g @./appweb.json -d laoshanxi/appmesh-ui:2.1.2
-```
+| Variable           | Description                  | Default Value            |
+| ------------------ | ---------------------------- | ------------------------ |
+| `APP_MESH_API_URL` | The App Mesh API service URL | `https://127.0.0.1:6060` |
+| `VUE_APP_TITLE`    | The Web Site Title           | `App Mesh`               |
 
 ## Demo
 
@@ -90,16 +75,6 @@ appc reg -n appweb --perm 11 --exit restart -g @./appweb.json -d laoshanxi/appme
 <img src="https://github.com/laoshanxi/picture/blob/master/appmesh/c.png?raw=true" />
 <img src="https://github.com/laoshanxi/picture/blob/master/appmesh/d.png?raw=true" />
 <img src="https://github.com/laoshanxi/picture/blob/master/appmesh/e.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/f.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/g.png?raw=true" />
-
-## Browsers support
-
-Modern browsers and Internet Explorer 10+.
-
-| [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/edge/edge_48x48.png" alt="IE / Edge" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>IE / Edge | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/firefox/firefox_48x48.png" alt="Firefox" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Firefox | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/chrome/chrome_48x48.png" alt="Chrome" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Chrome | [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/safari/safari_48x48.png" alt="Safari" width="24px" height="24px" />](http://godban.github.io/browsers-support-badges/)</br>Safari |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| IE10, IE11, Edge                                                                                                                                                                                              | last 2 versions                                                                                                                                                                                                 | last 2 versions                                                                                                                                                                                             | last 2 versions                                                                                                                                                                                             |
 
 ## License
 

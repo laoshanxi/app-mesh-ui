@@ -5,14 +5,17 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-
       <el-switch v-model="forwardEnabled" active-text="Forward to:" inactive-text="" @change="handleSwitchChange" />
-      <el-autocomplete class="inline-input" style="width:140px" v-model="forward"
-        :fetch-suggestions="querySearch"></el-autocomplete>
+      <el-autocomplete
+        v-model="forward" class="inline-input" style="width:140px"
+        :fetch-suggestions="querySearch"
+      ></el-autocomplete>
 
 
-      <el-button icon="el-icon-refresh" @click="refresh()" type="text" :loading="loading" title="Refresh"
-        style="margin-right:10px;font-size:18px;font-weight: bold !important;">
+      <el-button
+        icon="el-icon-refresh" type="text" :loading="loading" title="Refresh" style="margin-right:10px;font-size:18px;font-weight: bold !important;"
+        @click="refresh()"
+      >
       </el-button>
 
       <el-dropdown class="avatar-container" trigger="click">
@@ -57,6 +60,10 @@ import EventBus from '@/utils/event.bus.js'
 import { EVENTS } from '@/utils/constants.js'
 
 export default {
+  components: {
+    Breadcrumb,
+    Hamburger
+  },
   data() {
     return {
       restaurants: [],
@@ -65,10 +72,6 @@ export default {
       forwardEnabled: false,
       fullscreenLoading: false
     };
-  },
-  components: {
-    Breadcrumb,
-    Hamburger
   },
   created() {
     this.forward = this.$store.getters.forwarding;
