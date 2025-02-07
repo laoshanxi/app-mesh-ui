@@ -18,5 +18,5 @@ RUN apk add --no-cache curl && \
     chmod +x /docker-entrypoint.d/99-custom-config.sh
 ENV VUE_APP_TITLE="App Mesh" APP_MESH_API_URL=https://127.0.0.1:6060
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD curl -fsk https://localhost:443 || exit 1
+    CMD curl -fsk https://localhost:443/health >/dev/null 2>&1 || exit 1
 EXPOSE 443

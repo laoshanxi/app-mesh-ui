@@ -2,14 +2,18 @@
   <div v-loading="loading" class="app-container" style="clear: both">
     <el-row>
       <el-col :span="24">
-        <el-tabs type="border-card">
-          <el-tab-pane style="min-width: 600px">
+        <el-tabs ref="tabs" v-model="activeTab" type="border-card">
+          <el-tab-pane name="config" style="min-width: 600px">
             <span slot="label">
               <i class="el-icon-s-operation" /> Configuration
             </span>
             <el-form ref="form" :model="form" :rules="rules" label-width="260px">
               <el-collapse v-model="activeNames">
-                <el-collapse-item title="Basic" name="1">
+                <el-collapse-item name="1">
+                  <template slot="title">
+                    <i class="el-icon-setting" style="margin-right: 8px;" />
+                    Basic
+                  </template>
                   <el-form-item label="Version" prop="Version">
                     <el-input v-model="form.Version" :readonly="true" :disabled="true" />
                   </el-form-item>
@@ -47,7 +51,11 @@
                   </el-form-item>
                 </el-collapse-item>
 
-                <el-collapse-item title="Rest" name="2">
+                <el-collapse-item name="2">
+                  <template slot="title">
+                    <i class="el-icon-connection" style="margin-right: 8px;" />
+                    Web
+                  </template>
                   <el-form-item label="Rest enabled" prop="REST.RestEnabled">
                     <el-switch
                       v-model="form.REST.RestEnabled" active-text="Yes" :active-value="true" inactive-text="No"
@@ -107,7 +115,11 @@
                     <el-input v-model="form.REST.SSL.SSLCaPath" />
                   </el-form-item>
                 </el-collapse-item>
-                <el-collapse-item title="JWT" name="3">
+                <el-collapse-item name="3">
+                  <template slot="title">
+                    <i class="el-icon-key" style="margin-right: 8px;" />
+                    JWT
+                  </template>
                   <el-form-item label="JWT Salt" prop="REST.JWT.JWTSalt">
                     <el-input v-model="form.REST.JWT.JWTSalt" />
                   </el-form-item>
@@ -132,28 +144,94 @@
               </el-collapse>
             </el-form>
           </el-tab-pane>
+          <el-tab-pane name="labels" style="min-width: 600px">
+            <span slot="label">
+              <i class="el-icon-collection-tag" /> Labels
+            </span>
+            <el-row>
+              <el-table
+                :key="tableKey" v-loading="listLoading" :data="labels" element-loading-text="Loading" border
+                style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange"
+              >
+                <el-table-column label="Key" width="300">
+                  <template slot-scope="scope">
+                    <el-input
+                      v-if="scope.row.isEdit" v-model="scope.row.key" size="mini"
+                      placeholder="Please enter key"
+                    ></el-input>
+                    <span v-else>{{ scope.row.key }}</span>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="Value">
+                  <template slot-scope="scope">
+                    <el-input
+                      v-if="scope.row.isEdit" v-model="scope.row.value" size="mini"
+                      placeholder="Please enter value"
+                    ></el-input>
+                    <span v-else>{{ scope.row.value }}</span>
+                  </template>
+                </el-table-column>
+                <el-table-column label="Action" width="260">
+                  <template slot-scope="scope">
+                    <el-button
+                      v-if="!scope.row.isEdit" type="text" icon="el-icon-edit" :disabled="isEdit"
+                      @click="editLabel(scope.row)"
+                    >
+                      Edit
+                    </el-button>
+                    <el-button
+                      v-if="scope.row.isEdit" type="text" icon="el-icon-save"
+                      @click="cancelUpdate(scope.row)"
+                    >
+                      Cancel
+                    </el-button>
+                    <el-button
+                      v-if="scope.row.isEdit" type="text" icon="el-icon-save"
+                      @click="updateLabel(scope.row)"
+                    >
+                      Save
+                    </el-button>
+                    <el-button
+                      v-if="!scope.row.isNew" type="text" icon="el-icon-delete" :disabled="isEdit"
+                      @click="removeLabel(scope.row)"
+                    >
+                      Remove
+                    </el-button>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-row>
+          </el-tab-pane>
         </el-tabs>
       </el-col>
     </el-row>
     <div class="control">
-      <el-button size="small" type="primary" @click.prevent="saveConfig()">
-        Submit
+      <el-button v-show="isConfigTab" size="small" type="primary" @click.prevent="saveConfig()">
+        Save
       </el-button>
-      <el-button size="small" @click.prevent="reset()">
+      <el-button v-show="isConfigTab" size="small" @click.prevent="reset()">
         Reset
       </el-button>
+      <el-button-group v-show="!isConfigTab">
+        <el-button size="small" type="primary" icon="el-icon-plus" :disabled="isEdit" @click="addLabel()">
+          Add
+        </el-button>
+      </el-button-group>
     </div>
   </div>
 </template>
 
 <script>
 import configService from "@/services/config";
+import labelsService from "@/services/labels";
 
 export default {
   data() {
     return {
       loading: false,
       activeNames: ["1", "2", "3", "4"],
+      activeTab: 'config',
       form: {
         Version: "",
         BaseConfig: {
@@ -242,17 +320,70 @@ export default {
       ],
       value: '',
       inputValue: '',
+      labels: [],
+      tableKey: 0,
+      isSelected: false,
+      listLoading: false,
+      isEdit: false,
+      currentRow: null,
     };
   },
+  computed: {
+    isConfigTab() {
+      return this.activeTab === 'config';
+    }
+  },
   mounted() {
-    this.reset();
+    this.refresh();
   },
   methods: {
-    reset() {
+    refresh() {
       configService.refresh(this);
+      this.refreshLabels();
     },
     saveConfig() {
       configService.saveConfig(this);
+    },
+    editLabel(row) {
+      this.isEdit = true;
+      this.$set(row, "isEdit", true);
+    },
+    cancelUpdate(row) {
+      this.isEdit = false;
+      this.$set(row, "isEdit", false);
+      if (row.isNew) {
+        this.labels.splice(row.index, 1);
+      }
+    },
+    updateLabel(row) {
+      labelsService.updateLabel(this, row);
+    },
+    removeLabel(row) {
+      labelsService.deleteLabel(this, row);
+    },
+    refreshLabels() {
+      this.labels = [];
+      this.isEdit = false;
+      labelsService.getLabels(this);
+    },
+    addLabel() {
+      let index = this.labels.length;
+      this.labels.push({
+        key: "",
+        value: "",
+        isEdit: true,
+        isNew: true,
+        index: index,
+      });
+      this.isEdit = true;
+    },
+    currentRowChange(currentRow, oldCurrentRow) {
+      this.currentRow = currentRow;
+      if (!currentRow) {
+        this.isSelected = false;
+        return;
+      }
+      this.isSelected = true;
     },
   },
 };
@@ -262,11 +393,24 @@ export default {
 .line {
   text-align: center;
 }
+.fix-table {
+  margin-top: 10px;
+}
 </style>
+
 <style>
 .el-collapse-item__header {
   font-size: 14px;
   font-weight: bold;
+}
+
+.el-collapse-item .el-collapse-item__header {
+  background-color: #d6e7fa;
+}
+
+.el-collapse-item__header i {
+  margin-right: 8px;
+  color: #409EFF;
 }
 
 .control {

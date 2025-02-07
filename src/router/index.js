@@ -114,30 +114,6 @@ export const constantRoutes = [
     ]
   },
   {
-    path: "/prometheus",
-    component: Layout,
-    children: [
-      {
-        path: "index",
-        name: "Prometheus",
-        component: () => import("@/views/prometheus/index"),
-        meta: { title: "Prometheus", icon: "Prometheus" }
-      }
-    ]
-  },
-  {
-    path: "/labels",
-    component: Layout,
-    children: [
-      {
-        path: "index",
-        name: "Labels",
-        component: () => import("@/views/labels/index"),
-        meta: { title: "Labels", icon: "label" }
-      }
-    ]
-  },
-  {
     path: "/security",
     component: Layout,
     redirect: "/security/changePwd",
@@ -171,7 +147,7 @@ export const constantRoutes = [
         path: "changePwd",
         name: "ChangePwd",
         component: () => import("@/views/security/changePwd"),
-        meta: { title: "Change Password", icon: "password" }
+        meta: { title: "Password", icon: "password" }
       }
     ]
   },
@@ -188,6 +164,18 @@ export const constantRoutes = [
     ]
   },
   {
+    path: "/prometheus",
+    component: Layout,
+    children: [
+      {
+        path: "index",
+        name: "Prometheus",
+        component: () => import("@/views/prometheus/index"),
+        meta: { title: "Prometheus", icon: "Prometheus" }
+      }
+    ]
+  },
+  {
     path: "/config",
     component: Layout,
     children: [
@@ -199,9 +187,6 @@ export const constantRoutes = [
       }
     ]
   },
-
-
-
   {
     path: "/refresh",
     component: () => import("@/views/refresh"),
