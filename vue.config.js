@@ -2,6 +2,7 @@
 'use strict'
 const path = require('path')
 const { defineConfig } = require('@vue/cli-service')
+const webpack = require('webpack')
 const defaultSettings = require('./src/settings.js')
 
 function resolve(dir) {
@@ -41,9 +42,19 @@ module.exports = defineConfig({
     name: name,
     resolve: {
       fallback: {
-        path: require.resolve('path-browserify')
+        path: require.resolve('path-browserify'),
+        "https": require.resolve("https-browserify"),
+        "http": require.resolve("stream-http"),
+        "stream": require.resolve("stream-browserify"),
+        "buffer": require.resolve("buffer/"),
+        "url": require.resolve("url/")
       }
-    }
+    },
+    plugins: [
+      new webpack.ProvidePlugin({
+        Buffer: ['buffer', 'Buffer'],
+      })
+    ]
   },
 
   chainWebpack(config) {

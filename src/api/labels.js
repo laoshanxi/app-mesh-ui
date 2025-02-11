@@ -1,10 +1,9 @@
 import request from '@/utils/request'
+import { getClient } from '@/utils'
 
 export function getLabels() {
-  return request({
-    url: '/appmesh/labels',
-    method: 'GET',
-  })
+  const client = getClient();
+  return client.view_tags().then(data => ({ data }));
 }
 
 export function updateLabels(data) {
