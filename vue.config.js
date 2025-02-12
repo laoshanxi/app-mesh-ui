@@ -42,6 +42,10 @@ module.exports = defineConfig({
     resolve: {
       fallback: {
         path: require.resolve('path-browserify')
+      },
+      alias: {
+        '@': resolve('src'),
+        'appmesh': resolve('node_modules/appmesh/dist/appmesh.esm.js')
       }
     }
   },
