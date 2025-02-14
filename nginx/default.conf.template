@@ -28,8 +28,8 @@ server {
         add_header 'Access-Control-Allow-Origin' '*';
         add_header 'Access-Control-Allow-Credentials' 'true';
         add_header 'Access-Control-Allow-Methods' 'GET,POST,OPTIONS,PUT,DELETE,HEAD';
-        add_header 'Access-Control-Allow-Headers' 'Authorization,Auth-Permission,Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,Expire-Seconds,X-Send-File-Socket,X-Recv-File-Socket,X-Target-Host,Audience,Username,Totp-Challenge,Totp,New-Password,File-Path,File-Mode,File-User,File-Group';
-        add_header 'Access-Control-Expose-Headers' 'Exit-Code,Output-Position,File-Mode,File-User,File-Group,Content-Type';
+        add_header 'Access-Control-Allow-Headers' 'Content-Type,Accept,Origin,User-Agent,DNT,Cache-Control,Authorization,Audience,Auth-Permission,Expire-Seconds,X-Send-File-Socket,X-Recv-File-Socket,X-Target-Host,Audience,Username,Totp-Challenge,Totp,New-Password,File-Path,File-Mode,File-User,File-Group';
+        add_header 'Access-Control-Expose-Headers' 'Content-Type,Exit-Code,Output-Position,File-Mode,File-User,File-Group';
 
         if ($request_method = 'OPTIONS') {
             return 204;

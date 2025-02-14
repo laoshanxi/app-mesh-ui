@@ -5,13 +5,17 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-      <el-button icon="el-icon-refresh" type="text" acti :loading="loading" title="Refresh"
-        style="margin-right:10px;font-size:18px;font-weight: bold !important;" @click="refresh()">
+      <el-button
+        icon="el-icon-refresh" type="text" acti :loading="loading" title="Refresh"
+        style="margin-right:10px;font-size:18px;font-weight: bold !important;" @click="refresh()"
+      >
       </el-button>
 
       <el-switch v-model="forwardEnabled" active-text="Forward to:" inactive-text="" @change="handleSwitchChange" />
-      <el-autocomplete v-model="forward" class="inline-input" style="width:140px"
-        :fetch-suggestions="querySearch"></el-autocomplete>
+      <el-autocomplete
+        v-model="forward" class="inline-input" style="width:140px"
+        :fetch-suggestions="querySearch"
+      ></el-autocomplete>
 
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">

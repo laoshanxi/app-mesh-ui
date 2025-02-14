@@ -5,7 +5,7 @@ import moment from "moment";
 
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-import { AppMeshClient } from "appmesh";
+import { VueAppMeshClient } from "@/utils/appmeshClient";
 
 /**
  * Parse the time to string
@@ -190,7 +190,7 @@ export function formatCpu(cpu) {
 export function getClient(data = null) {
   // Use window to store a global instance
   if (!window._appmeshClient) {
-    window._appmeshClient = new AppMeshClient();
+    window._appmeshClient = new VueAppMeshClient();
 
     const client = window._appmeshClient;
     const token = store.getters?.token;
