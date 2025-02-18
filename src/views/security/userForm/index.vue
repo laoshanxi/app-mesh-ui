@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { getRoles } from "@/api/roles";
+import { getClient } from '@/utils'
 import { saveUser, getGroups } from "@/api/user";
 
 export default {
@@ -114,10 +114,10 @@ export default {
         .then(() => { });
     },
     initRoles() {
-      getRoles()
+      getClient().view_roles()
         .then((res) => {
-          if (res.data) {
-            for (let p in res.data) {
+          if (res) {
+            for (let p in res) {
               this.roles.push({
                 label: p,
                 key: p,

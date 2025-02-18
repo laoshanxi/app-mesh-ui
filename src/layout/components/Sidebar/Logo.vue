@@ -29,7 +29,7 @@ export default {
   },
   computed:{
     title(){
-		console.info(this.$store.state);
+		  // console.info(this.$store.state);
       return this.$store.state.settings.title;
     }
   },

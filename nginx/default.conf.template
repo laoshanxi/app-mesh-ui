@@ -35,6 +35,10 @@ server {
             return 204;
         }
 
+        # Environment Variable: PROXY_SSL_VERIFY=on/off
+        proxy_ssl_verify ${PROXY_SSL_VERIFY};
+        proxy_ssl_server_name on;
+
         proxy_pass ${APP_MESH_API_URL};
     }
 
