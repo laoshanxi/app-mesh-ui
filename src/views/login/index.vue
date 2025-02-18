@@ -54,7 +54,7 @@
 
 <script>
 import { validUsername } from "@/utils/validate";
-import request from "@/utils/request";
+import { HttpStatus } from "@/utils/constants";
 
 export default {
   name: "Login",
@@ -80,6 +80,7 @@ export default {
         Totp: "",
         Password: "",
         TotpChallenge: "",
+        Audience: "",
       },
       restaurants: [
         {
@@ -126,45 +127,42 @@ export default {
      * @returns {Promise<void>}
      */
     async handleLogin() {
+      this.loading = true;
+      const originalForwarding = this.$store.getters.forwarding;
       try {
         const valid = await this.$refs.loginForm.validate();
         if (!valid) {
           console.warn("Form validation failed");
           return;
         }
+        await this.$store.dispatch("settings/changeSetting", {
+          key: "forwarding",
+          value: null
+        });
+        await this.$store.dispatch("user/login", this.loginForm);
 
-        this.loading = true;
-        const originalForwarding = this.$store.getters.forwarding;
+        this.totpMode = false;
+        await this.$store.dispatch("settings/changeSetting", {
+          key: "forwarding",
+          value: originalForwarding
+        });
 
-        try {
-          await this.$store.dispatch("settings/changeSetting", {
-            key: "forwarding",
-            value: null
+        this.$router.push({ path: this.redirect || "/" });
+      } catch (error) {
+        if (this.isTotpChallenge(error)) {
+          this.handleTotpChallenge(error);
+        } else {
+          this.$message({
+            message: error.message || 'Login failed',
+            type: 'error',
+            duration: 5000
           });
-          await this.$store.dispatch("user/login", this.loginForm);
-
-          this.totpMode = false;
-          await this.$store.dispatch("settings/changeSetting", {
-            key: "forwarding",
-            value: originalForwarding
-          });
-
-          this.$router.push({ path: this.redirect || "/" });
-        } catch (error) {
-          if (this.isTotpChallenge(error)) {
-            this.handleTotpChallenge(error);
-          } else {
-            this.$message({
-              message: error.message || 'Login failed',
-              type: 'error',
-              duration: 5000
-            });
-          }
-          await this.restoreForwarding(originalForwarding);
         }
+        await this.restoreForwarding(originalForwarding);
       } finally {
         this.loading = false;
       }
+
     },
 
     /**
@@ -173,7 +171,11 @@ export default {
      */
     async handleTotpSubmit() {
       if (!this.loginForm.Totp) {
-        this.$message.warning('Please enter TOTP code');
+        this.$message({
+          message: 'Please enter TOTP code',
+          type: 'info',
+          duration: 5000
+        });
         return;
       }
 
@@ -190,13 +192,13 @@ export default {
           username: this.loginForm.UserName,
           challenge: this.loginForm.TotpChallenge,
           totp: this.loginForm.Totp,
-          expireSeconds: "604800" // One week expiration
+          expireSeconds: "P1D"
         });
 
         await this.restoreForwarding(originalForwarding);
         this.$router.push({ path: this.redirect || "/" });
       } catch (error) {
-        this.$message.error(error.message || 'TOTP验证失败');
+        this.$message.error(error.message || 'TOTP validation failed');
         await this.restoreForwarding(originalForwarding);
       } finally {
         this.loading = false;
@@ -205,23 +207,27 @@ export default {
 
     /**
      * Check if TOTP verification is required
-     * @param {Error} error - Error object
+     * @param {AppMeshError} error - Error object
      * @returns {boolean}
      */
     isTotpChallenge(error) {
-      return error.response &&
-        error.response.status === 401 &&
-        error.response.data["Totp-Challenge"];
+      return error &&
+        error.statusCode === HttpStatus.PRECONDITION_REQUIRED &&
+        error.responseData["Totp-Challenge"];
     },
 
     /**
      * Handle TOTP challenge
-     * @param {Error} error - Error object
+     * @param {AppMeshError} error - Error object
      */
     handleTotpChallenge(error) {
-      this.loginForm.TotpChallenge = error.response.data["Totp-Challenge"];
+      this.loginForm.TotpChallenge = error.responseData["Totp-Challenge"];
       this.totpMode = true;
-      this.$message.info('Please enter TOTP code');
+      this.$message({
+          message: 'Please enter TOTP code',
+          type: 'info',
+          duration: 5000
+        });
       this.$nextTick(() => this.$refs.Totp.focus());
     },
 

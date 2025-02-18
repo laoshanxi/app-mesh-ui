@@ -1,4 +1,4 @@
-import { runApp, getAppLog } from '@/api/applications'
+import { getClient } from '@/utils/appmeshClient'
 
 function runFinished(vueComp) {
   vueComp.index = -1;
@@ -29,7 +29,7 @@ function refreshShellContents(vueComp, content) {
   }
   content = content + "";
   if (content.indexOf("ls:") !== 0 && (command.indexOf("ls ") == 0 || command == "ls")) {
-    let dir = vueComp.shellApp.working_dir;
+    let dir = vueComp.shellApp.working_dir || ".";
     let tmpCommand = command;
     if (command != "ls") {
       tmpCommand = tmpCommand.replace(/ -[a-z]/g, ' ').replace(/ls /g, '').replace(' ', '');
@@ -72,40 +72,23 @@ function refreshShellContents(vueComp, content) {
     shell.scrollTop = shell.scrollHeight;
   });
 }
-function getOutputValue(vueComp, data) {
-  getAppLog(data.name, 0, vueComp.outputPosition, data.process_uuid).then((res) => {
-    // console.log(res.headers)
-    // use lowercase header key here!!!
-    // https://stackoverflow.com/questions/63112580/upper-case-converted-to-lower-case-when-reading-response-header-in-node-express
-    if (Object.prototype.hasOwnProperty.call(res.headers, 'exit-code')) {
-      runFinished(vueComp);
-    }
-    if (res.data != "") {
-      vueComp.outputPosition = res.headers['output-position']
-      refreshShellContents(vueComp, res.data);
-    }
-  }, (res) => {
-    vueComp.shellContents.push({
-      content: "# Failed: " + res.message
-    });
-    runFinished(vueComp);
-  });
-}
+
 export default {
   connectHost: function (vueComp) {
     vueComp.connected = 1;
-    vueComp.shellApp.command = '""';
-    runApp(vueComp.timeout, true, vueComp.shellApp).then((res) => {
+    vueComp.shellApp.command = 'who';
+    getClient().run_app_sync(vueComp.shellApp, null, vueComp.timeout).then((res) => {
       vueComp.connected = 2;
       runFinished(vueComp);
-    }, (res) => {
-      vueComp.connected = 0;
-      vueComp.shellContents.push(
-        {
-          content: "# Connected remote host failed."
-        }
-      );
-    });
+    })
+      .catch((error) => {
+        vueComp.connected = 0;
+        vueComp.shellContents.push(
+          {
+            content: "# Connected remote host failed."
+          }
+        );
+      });
   },
   run: function (vueComp) {
     let command = vueComp.input;
@@ -118,22 +101,34 @@ export default {
     vueComp.$nextTick(() => {
       shell.scrollTop = shell.scrollHeight;
     });
-    runApp(vueComp.timeout, vueComp.isSync, vueComp.shellApp).then((res) => {
-      if (vueComp.isSync) {
-        refreshShellContents(vueComp, res.data);
-        runFinished(vueComp);
-      } else {
-        vueComp.outputPosition = "0"
-        vueComp.timer = setInterval(() => {
-          getOutputValue(vueComp, res.data);
-        }, 1000);
-      }
-    }, (res) => {
-      vueComp.shellContents.push({
-        content: "# Failed: " + res.message
-      });
-      runFinished(vueComp);
-    });
-  },
 
+    const outputHandler = output => refreshShellContents(vueComp, output);
+
+    if (vueComp.isSync) {
+      getClient().run_app_sync(vueComp.shellApp, outputHandler, vueComp.timeout)
+        .then((res) => {
+          // noghting
+        })
+        .catch((error) => {
+          outputHandler("# Failed: " + error.message);
+        })
+        .finally(() => {
+          runFinished(vueComp);
+        });
+    } else {
+      getClient().run_app_async(vueComp.shellApp, vueComp.timeout)
+        .then((run) => {
+          run.wait(outputHandler).then((res) => {
+            // nothing
+          });
+        })
+        .catch((error) => {
+          outputHandler("# Failed: " + error.message);
+        })
+        .finally(() => {
+          runFinished(vueComp);
+        });
+    }
+
+  },
 }

@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import service from '@/utils/request.js'
 export default {
   name: 'SidebarLogo',
   props: {
@@ -29,7 +28,7 @@ export default {
   },
   computed:{
     title(){
-		console.info(this.$store.state);
+      // console.info(this.$store.state);
       return this.$store.state.settings.title;
     }
   },

@@ -3,10 +3,6 @@
  */
 import moment from "moment";
 
-import store from '@/store'
-import { getToken } from '@/utils/auth'
-import { VueAppMeshClient } from "@/utils/appmeshClient";
-
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -185,26 +181,4 @@ export function formatCpu(cpu) {
     return "-";
   }
   return cpu.toFixed(1);
-}
-
-export function getClient(data = null) {
-  // Use window to store a global instance
-  if (!window._appmeshClient) {
-    window._appmeshClient = new VueAppMeshClient();
-
-    const client = window._appmeshClient;
-    const token = store.getters?.token;
-    const forwardingHost = store.getters?.forwarding;
-    const headers = data?.headers || {};
-
-    // Set token and forwardingHost if needed
-    if (token && !('Authorization' in headers)) {
-      client._jwtToken = getToken();
-    }
-    if (forwardingHost && !('X-Target-Host' in headers)) {
-      client.forwardingHost = forwardingHost;
-    }
-  }
-
-  return window._appmeshClient;
 }

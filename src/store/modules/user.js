@@ -1,5 +1,5 @@
-import { login, totpValidate, logout, getInfo, getUserPermissions } from '@/api/user'
 import { getToken, setToken, removeToken, setUser, getUser, removeUser } from '@/utils/auth'
+import { getClient } from '@/utils/appmeshClient'
 import { resetRouter } from '@/router'
 import { Base64 } from 'js-base64'
 
@@ -40,31 +40,10 @@ const actions = {
   login({ commit }, userInfo) {
     const { UserName, Password, Audience } = userInfo
     return new Promise((resolve, reject) => {
-      let headers = {
-        Authorization: "Basic " + Base64.encode(UserName.trim() + ":" + Password),
-        "Expire-Seconds": "604800" // DURATION_ONE_WEEK
-      }
-      if (Audience) {
-        headers.Audience = Audience
-      }
-
-      login(headers).then(response => {
-        const { data } = response
-        if (data['Access-Token']) {
-          // Login success without TOTP
-          actions.handleLoginSuccess({ commit, data, UserName, Password, resolve, reject })
-        } else if (data['Totp-Challenge']) {
-          // Login need TOTP
-          resolve({
-            needTotp: true,
-            totpChallenge: data['Totp-Challenge']
-          })
-        } else {
-          console.error('Login failed: Invalid response format', data)
-          reject(new Error('Invalid response format'))
-        }
+      getClient().login(UserName, Password, null, 'P1D', Audience).then(token => {
+        // Login success without TOTP
+        actions.handleLoginSuccess({ commit, token, UserName, Password, resolve, reject })
       }).catch(error => {
-        console.error('Login failed:', error)
         reject(error)
       })
     })
@@ -73,21 +52,8 @@ const actions = {
   // TOTP login
   validateTotp({ commit }, { username, challenge, totp, expireSeconds }) {
     return new Promise((resolve, reject) => {
-      const headers = {
-        Username: Base64.encode(username),
-        "Totp-Challenge": Base64.encode(challenge),
-        Totp: totp,
-        "Expire-Seconds": expireSeconds
-      }
-
-      totpValidate(headers).then(response => {
-        const { data } = response
-        if (data['Access-Token']) {
-          actions.handleLoginSuccess({ commit, data, username, resolve, reject })
-        } else {
-          console.error('TOTP validation failed: Invalid response', data)
-          reject(new Error('TOTP validation failed'))
-        }
+      getClient().validate_totp(username, challenge, totp, expireSeconds).then(token => {
+        actions.handleLoginSuccess({ commit, token, username, resolve, reject })
       }).catch(error => {
         console.error('TOTP validation error:', error)
         reject(error)
@@ -95,15 +61,15 @@ const actions = {
     })
   },
 
-  handleLoginSuccess({ commit, data, UserName, Password, resolve, reject }) {
-    if (!data || !data['Access-Token']) {
-      console.error('Login success handler failed: Invalid response', data)
+  handleLoginSuccess({ commit, token, UserName, Password, resolve, reject }) {
+    if (!token) {
+      console.error('Login success handler failed: Invalid response', token)
       reject(new Error('Invalid login response'));
       return;
     }
 
     const user = {
-      token: data['Access-Token'],
+      token: token,
       name: UserName,
       account: UserName,
       auth: Password,
@@ -117,14 +83,10 @@ const actions = {
     commit('SET_AUTH', user.auth);
     commit('SET_AVATAR', user.avatar);
 
-    getUserPermissions()
+    getClient().view_user_permissions()
       .then(res => {
-        if (!res || !res.data) {
-          console.error('Get permissions failed: Invalid response', res)
-          throw new Error('Invalid permissions response');
-        }
-        user.permissions = res.data;
-        commit('SET_PERMISSIONS', res.data);
+        user.permissions = res;
+        commit('SET_PERMISSIONS', res);
         setUser(user);
         resolve({ needTotp: false });
       })
@@ -138,8 +100,7 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
+      getClient().view_self().then(data => {
 
         if (!data) {
           console.error('Get user info failed: Empty response')
@@ -161,6 +122,11 @@ const actions = {
   // user logout
   logout({ commit }) {
     return new Promise((resolve) => {
+      getClient().logoff().then(() => {
+        console.log('Logged off')
+      }).catch((error) => {
+        console.error('Failed to log off:', error)
+      })
       commit('SET_TOKEN', '')
       commit('SET_NAME', '')
       commit('SET_ACCOUNT', '')

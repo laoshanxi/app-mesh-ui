@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie'
+import { getClient } from '@/utils/appmeshClient'
 
 const TokenKey = 'vue_admin_template_token'
 
@@ -14,15 +15,15 @@ export function removeToken() {
   return Cookies.remove(TokenKey)
 }
 
-export function setUser(user){
+export function setUser(user) {
   sessionStorage["user"] = JSON.stringify(user);
 }
 
-export function getUser(){
+export function getUser() {
   return sessionStorage["user"] ? JSON.parse(sessionStorage["user"]) : null;
 }
 
-export function removeUser(){
+export function removeUser() {
   sessionStorage["user"] = null;
 }
 

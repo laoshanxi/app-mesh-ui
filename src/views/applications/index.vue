@@ -52,7 +52,7 @@
             {{ scope.row.owner | formatEmpty }}
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="State" width="110">
+        <el-table-column class-name="status-col" label="State" width="90">
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status == 1" :type="'success'">
               Enabled
@@ -63,7 +63,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="PID" width="100">
+        <el-table-column label="PID" width="90">
           <template slot-scope="scope">
             <span v-if="scope.row.pstree">
               <el-link :underline="true" :title="scope.row.pstree">
@@ -71,6 +71,11 @@
               </el-link>
             </span>
             <span v-else>-</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="User" width="90">
+          <template slot-scope="scope">
+            {{ scope.row.pid_user | formatEmpty }}
           </template>
         </el-table-column>
         <el-table-column label="Memory" width="110">

@@ -75,7 +75,7 @@ export default {
       shellApp: {
         command: "",
         shell: true,
-        working_dir: "/tmp",
+        session_login: true,
       },
       connected: 0, //0,not-connected；1，connecting；2，connected
     };

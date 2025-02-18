@@ -53,8 +53,8 @@
 </template>
 
 <script>
-import { updatePwd, userSelf, getTotpSecret, setupTotp, disableTotp } from "@/api/security";
-import { Base64 } from "js-base64";
+import { getClient } from '@/utils/appmeshClient'
+import { setToken } from '@/utils/auth'
 import VueQrcode from 'qrcode.vue'
 
 export default {
@@ -98,13 +98,10 @@ export default {
         }
         this.loading = true;
         try {
-          await updatePwd(this.$store.getters.name, {
-            "New-Password": Base64.encode(this.form.newPwd),
-          });
+          await getClient().update_user_password(this.form.newPwd);
           this.$message.success("Password update successfully.", 5000);
         } catch (error) {
           console.error('Failed to update password:', error);
-          this.$message.error('Failed to update password');
         } finally {
           this.loading = false;
         }
@@ -113,9 +110,9 @@ export default {
     async loadUserMfaStatus() {
       this.loading = true;
       try {
-        const response = await userSelf();
-        if (response && response.data) {
-          this.form.mfaEnabled = response.data["mfa_enabled"] || false;
+        const response = await getClient().view_self();
+        if (response) {
+          this.form.mfaEnabled = response["mfa_enabled"] || false;
         }
       } catch (error) {
         console.error('Failed to get user MFA status:', error);
@@ -131,7 +128,8 @@ export default {
       }
 
       try {
-        await setupTotp(this.totpCode);
+        const token = await getClient().setup_totp(this.totpCode);
+        setToken(token);
         this.$message.success('MFA setup successfully');
         this.qrDialogVisible = false;
         this.qrCodeData = '';
@@ -152,8 +150,7 @@ export default {
             type: 'warning'
           });
 
-          const response = await getTotpSecret();
-          this.qrCodeData = Base64.decode(response.data["Mfa-Uri"]);
+          this.qrCodeData = await getClient().get_totp_secret();
           this.qrDialogVisible = true;
         } catch (error) {
           if (error === 'cancel') {
@@ -173,7 +170,7 @@ export default {
             type: 'warning'
           });
 
-          await disableTotp("self");
+          await getClient().disable_totp("self");
           this.$message.success('MFA disabled successfully');
         } catch (error) {
           if (error === 'cancel') {

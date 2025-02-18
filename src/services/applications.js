@@ -1,11 +1,11 @@
-import { getApplications, getApplicationByName, getAppLog, runApp, enableApp, disableApp, deleteApplication, registerApplication } from '@/api/applications'
+import { getClient } from '@/utils/appmeshClient'
 import moment from "moment";
 import { parseDateFromUtcSeconds, formatDayTime } from '@/utils';
 export default {
   getAppList: function (vueComp) {
     vueComp.listLoading = true;
-    getApplications().then(response => {
-      response.data.forEach(m => {
+    getClient().view_all_apps().then(data => {
+      data.forEach(m => {
         // desc
         m.desc = m.description
         // age
@@ -17,7 +17,7 @@ export default {
           m.duration = '-'
         }
       })
-      vueComp.list = response.data;
+      vueComp.list = data;
       vueComp.listLoading = false;
     }, res => {
       vueComp.listLoading = false;
@@ -74,8 +74,8 @@ export default {
   },
   getAppByName: function (vueComp, name) {
     vueComp.isLoadingDetail = true
-    getApplicationByName(name).then(response => {
-      vueComp.application = response.data;
+    getClient().view_app(name).then(data => {
+      vueComp.application = data;
       vueComp.isLoadingDetail = false
     }, res => {
       vueComp.isLoadingDetail = false;
@@ -83,8 +83,8 @@ export default {
   },
   getAppLogByName: function (vueComp, name, pageNo, position) {
     vueComp.isLoadingLog = true
-    getAppLog(name, pageNo, position, "").then(response => {
-      vueComp.appLogInfo = response.data;
+    getClient().get_app_output(name, position, pageNo).then(data => {
+      vueComp.appLogInfo = data.output;
       vueComp.isLoadingLog = false
     }, res => {
       vueComp.isLoadingLog = false;
@@ -93,8 +93,8 @@ export default {
   getAppLogForLogPage: function (vueComp, name, pageNo, position) {
     vueComp.$emit("startLoading");
     vueComp.isLoadingLog = true
-    getAppLog(name, pageNo, position, "").then(response => {
-      vueComp.$emit("loadingDone", response.data);
+    getClient().get_app_output(name, position, pageNo).then(data => {
+      vueComp.$emit("loadingDone", data.output);
     }, res => {
       vueComp.$emit("loadingDone", null);
     })
@@ -106,7 +106,7 @@ export default {
       cancelButtonText: 'Cancel',
       type: 'warning'
     }).then(() => {
-      enableApp(vueComp.currentRow.name).then((res) => {
+      getClient().enable_app(vueComp.currentRow.name).then((res) => {
         vueComp.$message.success('Application ' + vueComp.currentRow.name + ' enabled successfully.', 5000);
         vueComp.fetchData();
       }, (res) => {
@@ -120,7 +120,7 @@ export default {
       cancelButtonText: 'Cancel',
       type: 'warning'
     }).then(() => {
-      disableApp(vueComp.currentRow.name).then((res) => {
+      getClient().disable_app(vueComp.currentRow.name).then((res) => {
         vueComp.$message.success('Application ' + vueComp.currentRow.name + ' disabled successfully.', 5000);
         vueComp.fetchData();
       }, (res) => {
@@ -134,7 +134,7 @@ export default {
       cancelButtonText: 'Cancel',
       type: 'warning'
     }).then(() => {
-      deleteApplication(vueComp.currentRow.name).then((res) => {
+      getClient().delete_app(vueComp.currentRow.name).then((res) => {
         vueComp.$message({
           type: 'success',
           message: `Application <${vueComp.currentRow.name}> removed successfully.`
@@ -200,7 +200,7 @@ export default {
         formatData(data);
         removeEmptyProperties(data);
 
-        registerApplication(data.name, data).then((res) => {
+        getClient().add_app(data.name, data).then((res) => {
           vueComp.$message.success('Application ' + data.name + ' register successfully.', 5000);
           vueComp.$emit("success");
           vueComp.reset();
