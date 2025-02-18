@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import { getResources } from "@/api/resources";
 import hostService from "@/services/host";
 import detail from "./detail";
 

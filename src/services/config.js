@@ -1,9 +1,7 @@
-import { getConfig, getPrometheusData, updateConfig } from '@/api/config'
-import axios from 'axios'
-import store from '@/store'
+import { getClient } from '@/utils/appmeshClient'
 
 export default {
-  setConfig: function (vueComp, data) {
+  setConfig(vueComp, data) {
     vueComp.configData = data;
     for (let prop in vueComp.form) {
       if (Object.prototype.hasOwnProperty.call(data, prop)) {
@@ -11,41 +9,51 @@ export default {
       }
     }
   },
-  refresh: function (vueComp) {
+
+  refresh(vueComp) {
     vueComp.loading = true;
-    getConfig().then((res) => {
-      this.setConfig(vueComp, res.data);
-      vueComp.loading = false;
-    }, (res) => {
-      vueComp.loading = false;
-      vueComp.$message.error('Get configuration failed. ' + res.data, 5000);
-    });
+    getClient().view_config()
+      .then(res => {
+        this.setConfig(vueComp, res);
+      })
+      .catch(err => {
+        vueComp.$message.error(`Get configuration failed: ${err.data}`, 5000);
+      })
+      .finally(() => {
+        vueComp.loading = false;
+      });
   },
-  saveConfig: function (vueComp) {
-    vueComp.$refs["form"].validate((valid) => {
+
+  saveConfig(vueComp) {
+    vueComp.$refs.form.validate(valid => {
+      if (!valid) return false;
+
       vueComp.loading = true;
-      if (valid) {
-        updateConfig(vueComp.form).then((res) => {
-          vueComp.$message.success('Configuration update successfully.', 5000);
-          vueComp.form = res.data;
-          vueComp.loading = false;
-        }, (res) => {
+      getClient().set_config(vueComp.form)
+        .then(res => {
+          vueComp.form = res;
+          vueComp.$message.success('Configuration updated successfully.', 5000);
+        })
+        .catch(err => {
+          vueComp.$message.error(`Update failed: ${err.data}`, 5000);
+        })
+        .finally(() => {
           vueComp.loading = false;
         });
-      } else {
-        vueComp.loading = false;
-        return false;
-      }
     });
   },
-  getPrometheus: function (vueComp) {
+
+  getPrometheus(vueComp) {
     vueComp.loading = true;
-    getPrometheusData().then((res) => {
-      vueComp.loading = false;
-      vueComp.content = res.data;
-    }, (res) => {
-      vueComp.loading = false;
-      vueComp.$message.error('Get configuration failed. ' + res.data, 5000);
-    });
+    getClient().metrics()
+      .then(res => {
+        vueComp.content = res;
+      })
+      .catch(err => {
+        vueComp.$message.error(`Get metrics failed: ${err.data}`, 5000);
+      })
+      .finally(() => {
+        vueComp.loading = false;
+      });
   }
 }

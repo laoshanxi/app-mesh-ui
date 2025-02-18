@@ -54,7 +54,7 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-import request from '@/utils/request'
+import { getClient } from '@/utils/appmeshClient'
 import EventBus from '@/utils/event.bus.js'
 import { EVENTS } from '@/utils/constants.js'
 
@@ -127,16 +127,9 @@ export default {
         );
 
         this.fullscreenLoading = true;
-        const response = await request({
-          url: '/appmesh/auth',
-          method: 'post',
-          headers: { 'X-Target-Host': this.forward }
-        });
 
-        if (response.status !== 200) {
-          throw new Error(response.data);
-        }
-
+        getClient().forwardingHost = this.forward;
+        await getClient().authenticate(getClient().jwtToken);
         await this.$store.dispatch("settings/changeSetting", {
           key: "forwarding",
           value: this.forward
@@ -145,6 +138,7 @@ export default {
         this.forwardEnabled = true;
         this.$message.success('Forward request successful');
         this.refresh();
+
       } catch (error) {
         if (error === 'cancel' || error.toString().includes('cancel')) {
           throw 'cancel';
@@ -152,7 +146,7 @@ export default {
         if (this.lastForward?.length > 0) {
           this.forward = this.lastForward;
         }
-        throw error;
+        this.$message.error(`Failed to forward request: ${error.message || error}`);
       } finally {
         this.fullscreenLoading = false;
       }
@@ -175,15 +169,7 @@ export default {
         );
 
         this.fullscreenLoading = true;
-        const response = await request({
-          url: '/appmesh/auth',
-          method: 'post',
-          headers: { 'X-Target-Host': '' }
-        });
-
-        if (response.status !== 200) {
-          throw new Error(response.data);
-        }
+        getClient().forwardingHost = null;
 
         await this.$store.dispatch("settings/changeSetting", {
           key: "forwarding",

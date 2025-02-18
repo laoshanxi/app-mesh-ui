@@ -52,8 +52,7 @@
 </template>
 
 <script>
-import { getConfig } from "@/api/config";
-import { getRoles, delRole } from "@/api/roles";
+import { getClient } from '@/utils/appmeshClient'
 import permissions from "./permissions";
 
 export default {
@@ -82,13 +81,12 @@ export default {
     refreshData() {
       this.listLoading = true;
       this.list = [];
-      getRoles().then(
-        (res) => {
-          if (res && res.data && res.data) {
-            for (let p in res.data) {
+      getClient().view_roles().then((res) => {
+          if (res) {
+            for (let p in res) {
               this.list.push({
                 name: p,
-                permissions: res.data[p],
+                permissions: res[p],
               });
             }
           }
@@ -97,7 +95,7 @@ export default {
         (res) => {
           this.listLoading = false;
         }
-      );
+      ).catch((err) => { console.warn(err); });
     },
     btnClick(action) {
       switch (action) {
@@ -133,7 +131,7 @@ export default {
         }
       ).then(() => {
         this.listLoading = true;
-        delRole(this.currentRow.name).then(
+        getClient().delete_role(this.currentRow.name).then(
           (res) => {
             this.$message.success(
               "Role " + this.currentRow.name + " had deleted.",
@@ -145,6 +143,11 @@ export default {
             this.listLoading = false;
           }
         );
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: 'Delete canceled'
+        });
       });
     },
     currentRowChange(currentRow, oldCurrentRow) {
