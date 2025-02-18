@@ -29,8 +29,7 @@
 </template>
 
 <script>
-import { updateRolePermissions } from "@/api/roles";
-import { getPermissions } from "@/api/security";
+import { getClient } from '@/utils/appmeshClient'
 
 export default {
   name: "RoleForm",
@@ -66,12 +65,12 @@ export default {
   mounted() { },
   methods: {
     initData() {
-      getPermissions()
+      getClient().view_permissions()
         .then((res) => {
-          if (res.data) {
+          if (res) {
             let permission = null;
-            for (let i = 0; i < res.data.length; i++) {
-              permission = res.data[i];
+            for (let i = 0; i < res.length; i++) {
+              permission = res[i]
               this.permissions.push({
                 label: permission,
                 key: permission,
@@ -81,6 +80,7 @@ export default {
             }
           }
         })
+        .catch((err) => { console.warn(err); })
         .then((res) => { });
     },
     addNewPermission() {
@@ -118,11 +118,10 @@ export default {
     },
 
     savePermissions() {
-      updateRolePermissions(
+      getClient().update_role(
         this.permissionForm.name,
         this.permissionForm.permissions
-      )
-        .then((res) => {
+      ).then((res) => {
           if (this.propForm.name == null) {
             this.$message.success(
               "Role " + this.permissionForm.name + " add successfully.",
@@ -138,6 +137,7 @@ export default {
           this.$emit("success");
           this.cancel();
         })
+        .catch((err) => { console.warn(err); })
         .then((res) => { });
     },
 

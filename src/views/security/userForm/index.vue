@@ -53,8 +53,7 @@
 </template>
 
 <script>
-import { getRoles } from "@/api/roles";
-import { saveUser, getGroups } from "@/api/user";
+import { getClient } from '@/utils/appmeshClient'
 
 export default {
   name: "UserForm",
@@ -105,19 +104,18 @@ export default {
   },
   methods: {
     initGroup() {
-      getGroups()
+      getClient().view_groups()
         .then((res) => {
-          if (res.data) {
-            this.groups = res.data;
-          }
+          this.groups = res;
         })
+        .catch((err) => { console.warn(err); })
         .then(() => { });
     },
     initRoles() {
-      getRoles()
+      getClient().view_roles()
         .then((res) => {
-          if (res.data) {
-            for (let p in res.data) {
+          if (res) {
+            for (let p in res) {
               this.roles.push({
                 label: p,
                 key: p,
@@ -126,6 +124,7 @@ export default {
             }
           }
         })
+        .catch((err) => { console.warn(err); })
         .then((res) => { });
     },
     setFromWithProps() {
@@ -157,7 +156,7 @@ export default {
 
     saveRole() {
       //applications.addRole(this);
-      saveUser(this.userForm)
+      getClient().add_user(this.userForm)
         .then((res) => {
           if (this.propForm.name == null) {
             this.$message.success(
@@ -173,6 +172,7 @@ export default {
           this.$emit("success");
           this.cancel();
         })
+        .catch((err) => { console.warn(err); })
         .then((res) => { });
     },
 
