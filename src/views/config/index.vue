@@ -37,10 +37,8 @@
                   </el-form-item>
 
                   <el-form-item label="Disable exec user" prop="BaseConfig.DisableExecUser">
-                    <el-switch
-                      v-model="form.BaseConfig.DisableExecUser" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false"
-                    />
+                    <el-switch v-model="form.BaseConfig.DisableExecUser" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false" />
                   </el-form-item>
 
                   <el-form-item label="Working dir" prop="BaseConfig.WorkingDirectory">
@@ -57,10 +55,8 @@
                     Web
                   </template>
                   <el-form-item label="Rest enabled" prop="REST.RestEnabled">
-                    <el-switch
-                      v-model="form.REST.RestEnabled" active-text="Yes" :active-value="true" inactive-text="No"
-                      :inactive-value="false"
-                    />
+                    <el-switch v-model="form.REST.RestEnabled" active-text="Yes" :active-value="true" inactive-text="No"
+                      :inactive-value="false" />
                   </el-form-item>
                   <el-form-item label="Http thread pool size" prop="REST.HttpThreadPoolSize">
                     <el-input-number v-model="form.REST.HttpThreadPoolSize" />
@@ -81,22 +77,16 @@
                   </el-form-item>
 
                   <el-form-item label="SSL verify server" prop="REST.SSL.VerifyServer">
-                    <el-switch
-                      v-model="form.REST.SSL.VerifyServer" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false"
-                    />
+                    <el-switch v-model="form.REST.SSL.VerifyServer" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false" />
                   </el-form-item>
                   <el-form-item label="SSL verify client" prop="REST.SSL.VerifyClient">
-                    <el-switch
-                      v-model="form.REST.SSL.VerifyClient" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false"
-                    />
+                    <el-switch v-model="form.REST.SSL.VerifyClient" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false" />
                   </el-form-item>
                   <el-form-item label="Forwarding SSL verify" prop="REST.SSL.VerifyServerDelegate">
-                    <el-switch
-                      v-model="form.REST.SSL.VerifyServerDelegate" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false"
-                    />
+                    <el-switch v-model="form.REST.SSL.VerifyServerDelegate" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false" />
                   </el-form-item>
 
                   <el-form-item label="SSL certificate file" prop="REST.SSL.SSLCertificateFile">
@@ -123,14 +113,19 @@
                   <el-form-item label="JWT Salt" prop="REST.JWT.JWTSalt">
                     <el-input v-model="form.REST.JWT.JWTSalt" />
                   </el-form-item>
+                  <el-form-item label="JWT Algorithm" prop="REST.JWT.Algorithm">
+                    <el-select v-model="form.REST.JWT.Algorithm" placeholder="Please select">
+                      <el-option label="HS256" value="HS256" />
+                      <el-option label="RS256" value="RS256" />
+                      <el-option label="ES256" value="ES256" />
+                    </el-select>
+                  </el-form-item>
                   <el-form-item label="JWT Issuer" prop="REST.JWT.Issuer">
                     <el-input v-model="form.REST.JWT.Issuer" />
                   </el-form-item>
                   <el-form-item label="JWT Audience" prop="REST.JWT.Audience">
-                    <el-select
-                      v-model="form.REST.JWT.Audience" multiple filterable allow-create
-                      :default-first-option="true" placeholder="Enter audience values"
-                    >
+                    <el-select v-model="form.REST.JWT.Audience" multiple filterable allow-create
+                      :default-first-option="true" placeholder="Enter audience values">
                       <el-option v-for="item in form.REST.JWT.Audience" :key="item" :label="item" :value="item">
                       </el-option>
                     </el-select>
@@ -139,6 +134,21 @@
                     <el-select v-model="form.REST.JWT.SecurityInterface" placeholder="Please select">
                       <el-option v-for="item in JWTOptions" :key="item.value" :label="item.label" :value="item.value" />
                     </el-select>
+                  </el-form-item>
+                  <el-form-item label="Keycloak Auth URL" prop="REST.JWT.Keycloak.AuthServerUrl">
+                    <el-input v-model="form.REST.JWT.Keycloak.AuthServerUrl" />
+                  </el-form-item>
+                  <el-form-item label="Keycloak Realm" prop="REST.JWT.Keycloak.Realm">
+                    <el-input v-model="form.REST.JWT.Keycloak.Realm" />
+                  </el-form-item>
+                  <el-form-item label="Keycloak Client ID" prop="REST.JWT.Keycloak.ClientID">
+                    <el-input v-model="form.REST.JWT.Keycloak.ClientID" />
+                  </el-form-item>
+                  <el-form-item label="Keycloak Client Secret" prop="REST.JWT.Keycloak.ClientSecret">
+                    <el-input :key="passwordType" v-model="form.REST.JWT.Keycloak.ClientSecret" :type="passwordType">
+                      <i slot="suffix" :class="passwordType === 'password' ? 'el-icon-view' : 'el-icon-circle-close'"
+                        @click="showPwd" style="cursor: pointer;" />
+                    </el-input>
                   </el-form-item>
                 </el-collapse-item>
               </el-collapse>
@@ -149,53 +159,38 @@
               <i class="el-icon-collection-tag" /> Labels
             </span>
             <el-row>
-              <el-table
-                :key="tableKey" v-loading="listLoading" :data="labels" element-loading-text="Loading" border
-                style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange"
-              >
+              <el-table :key="tableKey" v-loading="listLoading" :data="labels" element-loading-text="Loading" border
+                style="width: 100%" height="100%" class="fix-table" highlight-current-row
+                @current-change="currentRowChange">
                 <el-table-column label="Key" width="300">
                   <template slot-scope="scope">
-                    <el-input
-                      v-if="scope.row.isEdit" v-model="scope.row.key" size="mini"
-                      placeholder="Please enter key"
-                    ></el-input>
+                    <el-input v-if="scope.row.isEdit" v-model="scope.row.key" size="mini"
+                      placeholder="Please enter key"></el-input>
                     <span v-else>{{ scope.row.key }}</span>
                   </template>
                 </el-table-column>
 
                 <el-table-column label="Value">
                   <template slot-scope="scope">
-                    <el-input
-                      v-if="scope.row.isEdit" v-model="scope.row.value" size="mini"
-                      placeholder="Please enter value"
-                    ></el-input>
+                    <el-input v-if="scope.row.isEdit" v-model="scope.row.value" size="mini"
+                      placeholder="Please enter value"></el-input>
                     <span v-else>{{ scope.row.value }}</span>
                   </template>
                 </el-table-column>
                 <el-table-column label="Action" width="260">
                   <template slot-scope="scope">
-                    <el-button
-                      v-if="!scope.row.isEdit" type="text" icon="el-icon-edit" :disabled="isEdit"
-                      @click="editLabel(scope.row)"
-                    >
+                    <el-button v-if="!scope.row.isEdit" type="text" icon="el-icon-edit" :disabled="isEdit"
+                      @click="editLabel(scope.row)">
                       Edit
                     </el-button>
-                    <el-button
-                      v-if="scope.row.isEdit" type="text" icon="el-icon-save"
-                      @click="cancelUpdate(scope.row)"
-                    >
+                    <el-button v-if="scope.row.isEdit" type="text" icon="el-icon-save" @click="cancelUpdate(scope.row)">
                       Cancel
                     </el-button>
-                    <el-button
-                      v-if="scope.row.isEdit" type="text" icon="el-icon-save"
-                      @click="updateLabel(scope.row)"
-                    >
+                    <el-button v-if="scope.row.isEdit" type="text" icon="el-icon-save" @click="updateLabel(scope.row)">
                       Save
                     </el-button>
-                    <el-button
-                      v-if="!scope.row.isNew" type="text" icon="el-icon-delete" :disabled="isEdit"
-                      @click="removeLabel(scope.row)"
-                    >
+                    <el-button v-if="!scope.row.isNew" type="text" icon="el-icon-delete" :disabled="isEdit"
+                      @click="removeLabel(scope.row)">
                       Remove
                     </el-button>
                   </template>
@@ -232,6 +227,7 @@ export default {
       loading: false,
       activeNames: ["1", "2", "3", "4"],
       activeTab: 'config',
+      passwordType: 'password',
       form: {
         Version: "",
         BaseConfig: {
@@ -262,9 +258,16 @@ export default {
           },
           JWT: {
             JWTSalt: "HelloAppMesh",
+            Algorithm: "HS256",
             Issuer: "",
             Audience: ["appmesh-service", "your-service-api"],
             SecurityInterface: "local",
+            Keycloak: {
+              AuthServerUrl: "http://localhost:8090",
+              ClientID: "appmesh-client",
+              ClientSecret: "V87QbGeDJ4RCtzL8VNG4DTzsavZZENAx",
+              Realm: "appmesh-realm",
+            },
           },
         },
       },
@@ -316,6 +319,10 @@ export default {
         {
           label: "ldap",
           value: "ldap",
+        },
+        {
+          label: "oauth2",
+          value: "oauth2",
         },
       ],
       value: '',
@@ -385,6 +392,9 @@ export default {
       }
       this.isSelected = true;
     },
+    showPwd() {
+      this.passwordType = this.passwordType === 'password' ? 'text' : 'password';
+    },
   },
 };
 </script>
@@ -393,8 +403,23 @@ export default {
 .line {
   text-align: center;
 }
+
 .fix-table {
   margin-top: 10px;
+}
+
+.show-pwd {
+  position: absolute;
+  right: 5px;
+  top: 0;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  color: #889aa4;
+  cursor: pointer;
+  user-select: none;
+  padding: 0 5px;
 }
 </style>
 

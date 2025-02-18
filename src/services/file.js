@@ -1,36 +1,18 @@
-import { upload, download } from '@/api/files';
+import { getClient } from '@/utils/appmeshClient'
+
 export default {
-  download: function(vueComp){
-    download(vueComp.downloadForm.filepath).then((res)=>{
-      console.info(res);
-      var aLink = document.createElement('a');
-      var blob = new Blob([res.data]);
-      var evt = document.createEvent("HTMLEvents");
-      evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错, 感谢 Barret Lee 的反馈
-      aLink.download = vueComp.downloadForm.filepath;
-      aLink.href = URL.createObjectURL(blob);
-      aLink.dispatchEvent(evt);
-      aLink.click();
-    }, (res)=>{
-      vueComp.$message.error('File '+ vueComp.downloadForm.filepath +' download failed. ' + res.data, 5000);
-    });
+  download: function (vueComp) {
+    getClient().download_file(vueComp.downloadForm.filepath, vueComp.downloadForm.filepath).then((res) => {
+      vueComp.$message.success('File [' + vueComp.downloadForm.filepath + '] download success. ', 5000);
+    }).catch(err => { });
   },
-  downloadFile: async function(vueComp, fileName){
-    try{
+  downloadFile: async function (vueComp, fileName) {
+    try {
       vueComp.loading = true;
-      let res = await download(fileName);
-      var aLink = document.createElement('a');
-      var blob = new Blob([res.data]);
-      var evt = document.createEvent("HTMLEvents");
-      evt.initEvent("click", false, false);//initEvent 不加后两个参数在FF下会报错, 感谢 Barret Lee 的反馈
-      aLink.download = fileName;
-      aLink.href = URL.createObjectURL(blob);
-      aLink.dispatchEvent(evt);
-      aLink.click();
+      getClient().download_file(fileName, fileName).then((res) => {
+        vueComp.$message.success('File [' + fileName + '] download success. ', 5000);
+      });
       vueComp.loading = false;
-    }catch(e){
-      vueComp.loading = false;
-      vueComp.$message.error('File '+ fileName +' download failed. ' + e, 5000);
-    }
+    } catch (err) { vueComp.loading = false; }
   },
 }

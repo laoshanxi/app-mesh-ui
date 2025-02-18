@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { locked, unlocked, getUsers, addUser, delUser } from "@/api/user";
+import { getClient } from "@/utils/appmeshClient";
 import UserForm from "./userForm";
 
 export default {
@@ -114,19 +114,19 @@ export default {
     refreshData() {
       this.listLoading = true;
       this.list = [];
-      getUsers().then(
+      getClient().view_users().then(
         (res) => {
-          if (res && res.data) {
-            for (let p in res.data) {
+          if (res) {
+            for (let p in res) {
               this.list.push({
                 name: p,
-                group: res.data[p].group,
-                exec_user: res.data[p].exec_user,
-                locked: res.data[p].locked,
-                mfa_enabled: res.data[p].mfa_enabled,
-                roles: res.data[p].roles,
-                metadata: res.data[p].metadata,
-                email: res.data[p].email,
+                group: res[p].group,
+                exec_user: res[p].exec_user,
+                locked: res[p].locked,
+                mfa_enabled: res[p].mfa_enabled,
+                roles: res[p].roles,
+                metadata: res[p].metadata,
+                email: res[p].email,
               });
             }
           }
@@ -135,7 +135,10 @@ export default {
         (res) => {
           this.listLoading = false;
         }
-      );
+      ).catch((err) => {
+        console.warn(err);
+        this.listLoading = false;
+      });
     },
     btnClick(action) {
       switch (action) {
@@ -178,7 +181,7 @@ export default {
         }
       ).then(() => {
         this.listLoading = true;
-        delUser(this.currentRow.name).then(
+        getClient().delete_user(this.currentRow.name).then(
           (res) => {
             this.$message.success(
               "User " + this.currentRow.name + " had deleted.",
@@ -189,7 +192,10 @@ export default {
           (res) => {
             this.listLoading = false;
           }
-        );
+        ).catch((err) => {
+          console.warn(err);
+          this.listLoading = false;
+        });
       });
     },
     locked() {
@@ -203,7 +209,7 @@ export default {
         }
       ).then(() => {
         this.listLoading = true;
-        locked(this.currentRow.name).then(
+        getClient().lock_user(this.currentRow.name).then(
           (res) => {
             this.$message.success(
               "User " + this.currentRow.name + " had locked.",
@@ -215,7 +221,10 @@ export default {
           (res) => {
             this.listLoading = false;
           }
-        );
+        ).catch((err) => {
+          console.warn(err);
+          this.listLoading = false;
+        });
       });
     },
     unlocked() {
@@ -229,7 +238,7 @@ export default {
         }
       ).then(() => {
         this.listLoading = true;
-        unlocked(this.currentRow.name).then(
+        getClient().unlock_user(this.currentRow.name).then(
           (res) => {
             this.$message.success(
               "User " + this.currentRow.name + " had unlocked.",
@@ -241,7 +250,10 @@ export default {
           (res) => {
             this.listLoading = false;
           }
-        );
+        ).catch((err) => {
+          console.warn(err);
+          this.listLoading = false;
+        });
       });
     },
     currentRowChange(currentRow, oldCurrentRow) {
