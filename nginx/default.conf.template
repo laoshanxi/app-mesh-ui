@@ -10,6 +10,11 @@ server {
     ssl_ciphers                    HIGH:!aNULL:!eNULL:!kECDH:!aDH:!RC4:!3DES:!CAMELLIA:!MD5:!PSK:!SRP:!KRB5:@STRENGTH;
     underscores_in_headers         on;
 
+    # File upload limit control
+    client_max_body_size          100m;
+    client_body_buffer_size       128k;
+    client_body_timeout          120s;
+
     # charset koi8-r;
     # access_log  /var/log/nginx/host.access.log        main;
     # error_log  /var/log/nginx/error.log               error;
@@ -34,6 +39,10 @@ server {
         if ($request_method = 'OPTIONS') {
             return 204;
         }
+
+        # Environment Variable: PROXY_SSL_VERIFY=on/off
+        proxy_ssl_verify ${PROXY_SSL_VERIFY};
+        proxy_ssl_server_name on;
 
         proxy_pass ${APP_MESH_API_URL};
     }

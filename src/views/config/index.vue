@@ -123,6 +123,13 @@
                   <el-form-item label="JWT Salt" prop="REST.JWT.JWTSalt">
                     <el-input v-model="form.REST.JWT.JWTSalt" />
                   </el-form-item>
+                  <el-form-item label="JWT Algorithm" prop="REST.JWT.Algorithm">
+                    <el-select v-model="form.REST.JWT.Algorithm" placeholder="Please select">
+                      <el-option label="HS256" value="HS256" />
+                      <el-option label="RS256" value="RS256" />
+                      <el-option label="ES256" value="ES256" />
+                    </el-select>
+                  </el-form-item>
                   <el-form-item label="JWT Issuer" prop="REST.JWT.Issuer">
                     <el-input v-model="form.REST.JWT.Issuer" />
                   </el-form-item>
@@ -262,6 +269,7 @@ export default {
           },
           JWT: {
             JWTSalt: "HelloAppMesh",
+            Algorithm: "HS256",
             Issuer: "",
             Audience: ["appmesh-service", "your-service-api"],
             SecurityInterface: "local",

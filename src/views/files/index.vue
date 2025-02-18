@@ -7,18 +7,15 @@
             <span slot="label">
               <i class="el-icon-upload"></i> Upload file
             </span>
-            <el-form ref="form" :model="form" label-width="80px">
-              <el-form-item label="File Path">
-                <el-input v-model="form.filepath"></el-input>
-              </el-form-item>
-              <el-form-item label="File Name">
-                <el-input v-model="form.filename"></el-input>
+            <el-form ref="form" :model="form" label-width="90px">
+              <el-form-item label="Remote dir:">
+                <el-input v-model="form.filepath" size="small"></el-input>
               </el-form-item>
 
               <el-form-item>
                 <el-upload
-                  ref="upload" class="upload-demo" :action="url" :headers="headers" :on-change="fileChange"
-                  :on-error="uploadError" :limit="1" :auto-upload="false"
+                  ref="upload" class="upload-demo" action="#" :auto-upload="false" :on-change="fileChange"
+                  :limit="1"
                 >
                   <el-button slot="trigger" size="small" type="primary">Select File</el-button>
                   <el-button
@@ -35,8 +32,8 @@
             <span slot="label">
               <i class="el-icon-download"></i> Download file
             </span>
-            <el-form ref="downloadForm" :model="downloadForm" label-width="80px">
-              <el-form-item label="File Path">
+            <el-form ref="downloadForm" :model="downloadForm" label-width="90px">
+              <el-form-item label="Remote file">
                 <el-input v-model="downloadForm.filepath"></el-input>
               </el-form-item>
 
@@ -52,60 +49,57 @@
 </template>
 
 <script>
-import { getToken } from "@/utils/auth";
 import { mapGetters } from "vuex";
 import fileService from "@/services/file";
+import { getClient } from '@/utils/appmeshClient'
 
 export default {
   data() {
     return {
-      url: "/upload",
       form: {
-        filepath: "/tmp/",
+        filepath: "",
         filename: "",
         disabled: true,
         file: null,
       },
       downloadForm: {
-        filepath: "/tmp/",
-      },
-      headers: {},
+        filepath: "",
+      }
     };
   },
   computed: {
     ...mapGetters(["baseUrl"]),
   },
-  mounted() {
-    this.url = this.$store.getters.baseUrl + "/upload";
-  },
   methods: {
     fileChange(file, fileList) {
-      if (file.status == "ready") {
+      if (fileList.length > 0) {
         this.form.filename = file.name;
         this.form.file = file;
         this.form.disabled = false;
-      } else if (file.status == "success") {
-        this.$refs.upload.clearFiles();
+      } else {
         this.form.disabled = true;
         this.form.file = null;
-        this.$message.success(
-          "File " + this.form.filename + " upload successfully.",
-          5000
-        );
       }
     },
-    uploadError(err, file, fileList) {
-      this.$message.error(
-        "File " + this.form.filename + " upload failed. " + err.message,
-        5000
-      );
-    },
     submitUpload() {
-      this.headers["File-Path"] = encodeURI(
-        this.form.filepath + this.form.filename
-      );
-      this.headers["Authorization"] = "Bearer " + getToken();
-      this.$refs.upload.submit();
+      if (!this.form.file) {
+        this.$message.warning("Please select a file");
+        return;
+      }
+      const file = this.$refs.upload.uploadFiles[0];
+      const path = [this.form.filepath, this.form.filename].join('/').replace(/\/+/g, '/');
+
+      getClient().upload_file(file.raw, path)
+        .then(() => {
+          this.$refs.upload.clearFiles();
+          this.form.disabled = true;
+          this.form.file = null;
+          this.$message.success(
+            "File [" + this.form.filename + "] upload success",
+            5000
+          );
+        })
+        .catch((err) => { });
     },
     download() {
       fileService.download(this);
