@@ -1,43 +1,53 @@
 [![language.badge]][language.url] [![release.badge]][release.url] [![docker.badge]][docker.url]
 
-# Web GUI for App Mesh
+# App Mesh Web GUI
 
-Web GUI for [App Mesh](https://github.com/laoshanxi/app-mesh)
+This is the Web GUI implementation for [App Mesh](https://github.com/laoshanxi/app-mesh).
 
 <div align=center>
-<img src="https://raw.githubusercontent.com/laoshanxi/app-mesh-ui/main/doc/diagram.png" width=434 height=334 alt="Architecture"/>
+<img src="https://raw.githubusercontent.com/laoshanxi/app-mesh-ui/main/doc/diagram.png" width=434 height=334 alt="System Architecture"/>
 </div>
 
-## Development
+## Features
 
-## Build Docker image
+- Modern web interface built with Vue.js
+- Visual management for all App Mesh core functionalities
+- Intuitive application monitoring and management interface
+- Quick deployment via Docker container
+
+## Development Guide
+
+### Environment Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Preview production build
+npm run preview
+
+# Preview with bundle analyzer report
+npm run preview -- --report
+
+# Lint code
+npm run lint
+
+# Lint and auto-fix
+npm run lint -- --fix
+```
+
+### Build Docker Image
 
 ```bash
 docker build -t appmesh-ui .
 ```
 
-## Develop environment
+## Deployment Guide
 
-```bash
-# preview the release environment effect
-npm run preview
-
-# preview the release environment effect + static resource analysis
-npm run preview -- --report
-
-# code format check
-npm run lint
-
-# code format check and auto fix
-npm run lint -- --fix
-
-# run development
-npm run dev
-```
-
-## Deploy
-
-- Use docker to start a container connected to local App Mesh
+### Method 1: Connect to Local App Mesh
 
 ```shell
 docker run \
@@ -52,14 +62,30 @@ docker run \
   laoshanxi/appmesh-ui
 ```
 
-The following environment variables can be used to customize the deployment:
+### Method 2: Host Network Mode
 
-| Variable           | Description                  | Default Value            |
-| ------------------ | ---------------------------- | ------------------------ |
-| `APP_MESH_API_URL` | The App Mesh API service URL | `https://127.0.0.1:6060` |
-| `VUE_APP_TITLE`    | The Web Site Title           | `App Mesh`               |
+When App Mesh runs on the host OS, use this recommended command:
 
-## Demo
+```shell
+docker run \
+  --name=appmesh-ui \
+  -d \
+  --restart=always \
+  --net=host \
+  -e VUE_APP_TITLE=`hostname` \
+  -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro \
+  -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro \
+  laoshanxi/appmesh-ui
+```
+
+### Environment Variables
+
+| Variable Name      | Description              | Default Value            |
+| ------------------ | ------------------------ | ------------------------ |
+| `APP_MESH_API_URL` | App Mesh API service URL | `https://127.0.0.1:6060` |
+| `VUE_APP_TITLE`    | Web site title           | `App Mesh`               |
+
+## Interface Preview
 
 <img src="https://github.com/laoshanxi/picture/blob/master/appmesh/1.png?raw=true" />
 <img src="https://github.com/laoshanxi/picture/blob/master/appmesh/2.png?raw=true" />
@@ -78,7 +104,7 @@ The following environment variables can be used to customize the deployment:
 
 ## License
 
-[MIT](https://github.com/laoshanxi/app-mesh-ui/LICENSE) license.
+This project is licensed under the [MIT](https://github.com/laoshanxi/app-mesh-ui/LICENSE) License.
 
 [language.url]: https://nodejs.org/
 [language.badge]: https://img.shields.io/badge/language-nodes.vue-blue.svg

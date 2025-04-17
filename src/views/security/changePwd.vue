@@ -54,7 +54,6 @@
 
 <script>
 import { getClient } from '@/utils/appmeshClient'
-import { setToken } from '@/utils/auth'
 import VueQrcode from 'qrcode.vue'
 
 export default {
@@ -128,8 +127,7 @@ export default {
       }
 
       try {
-        const token = await getClient().setup_totp(this.totpCode);
-        setToken(token);
+        await getClient().setup_totp(this.totpCode);
         this.$message.success('MFA setup successfully');
         this.qrDialogVisible = false;
         this.qrCodeData = '';

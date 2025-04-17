@@ -129,7 +129,7 @@ export default {
         this.fullscreenLoading = true;
 
         getClient().forwardingHost = this.forward;
-        await getClient().authenticate(getClient().jwtToken);
+        await getClient().authenticate();
         await this.$store.dispatch("settings/changeSetting", {
           key: "forwarding",
           value: this.forward
