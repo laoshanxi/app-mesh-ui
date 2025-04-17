@@ -1,12 +1,10 @@
-import { getToken, setToken, removeToken, setUser, getUser, removeUser } from '@/utils/auth'
+import { setUser, getUser, removeUser } from '@/utils/auth'
 import { getClient } from '@/utils/appmeshClient'
 import { resetRouter } from '@/router'
-import { Base64 } from 'js-base64'
 
 let user = getUser();
 
 const state = {
-  token: getToken(),
   name: user ? user.name : '',
   account: user ? user.account : '',
   auth: user ? user.auth : '',
@@ -15,9 +13,6 @@ const state = {
 }
 
 const mutations = {
-  SET_TOKEN: (state, token) => {
-    state.token = token
-  },
   SET_NAME: (state, name) => {
     state.name = name
   },
@@ -40,9 +35,9 @@ const actions = {
   login({ commit }, userInfo) {
     const { UserName, Password, Audience } = userInfo
     return new Promise((resolve, reject) => {
-      getClient().login(UserName, Password, null, 'P1D', Audience).then(token => {
+      getClient().login(UserName, Password, null, 'P1D', Audience).then(() => {
         // Login success without TOTP
-        actions.handleLoginSuccess({ commit, token, UserName, Password, resolve, reject })
+        actions.handleLoginSuccess({ commit, UserName, Password, resolve, reject })
       }).catch(error => {
         reject(error)
       })
@@ -52,8 +47,8 @@ const actions = {
   // TOTP login
   validateTotp({ commit }, { username, challenge, totp, expireSeconds }) {
     return new Promise((resolve, reject) => {
-      getClient().validate_totp(username, challenge, totp, expireSeconds).then(token => {
-        actions.handleLoginSuccess({ commit, token, username, resolve, reject })
+      getClient().validate_totp(username, challenge, totp, expireSeconds).then(() => {
+        actions.handleLoginSuccess({ commit, username, resolve, reject })
       }).catch(error => {
         console.error('TOTP validation error:', error)
         reject(error)
@@ -61,23 +56,14 @@ const actions = {
     })
   },
 
-  handleLoginSuccess({ commit, token, UserName, Password, resolve, reject }) {
-    if (!token) {
-      console.error('Login success handler failed: Invalid response', token)
-      reject(new Error('Invalid login response'));
-      return;
-    }
-
+  handleLoginSuccess({ commit, UserName, Password, resolve, reject }) {
     const user = {
-      token: token,
       name: UserName,
       account: UserName,
       auth: Password,
       avatar: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
     };
 
-    setToken(user.token);
-    commit('SET_TOKEN', user.token);
     commit('SET_NAME', user.name);
     commit('SET_ACCOUNT', user.account);
     commit('SET_AUTH', user.auth);
@@ -101,14 +87,13 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getClient().view_self().then(data => {
-
         if (!data) {
           console.error('Get user info failed: Empty response')
           reject('Verification failed, please Login again.')
+          return
         }
 
         const { name, avatar } = data
-
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         resolve(data)
@@ -127,24 +112,13 @@ const actions = {
       }).catch((error) => {
         console.error('Failed to log off:', error)
       })
-      commit('SET_TOKEN', '')
       commit('SET_NAME', '')
       commit('SET_ACCOUNT', '')
       commit('SET_AUTH', '')
       commit('SET_AVATAR', '')
-      commit('SET_PERMISSIONS', '');  // 添加清除权限
-      removeUser();
-      removeToken();
-      resetRouter();
-      resolve();
-    });
-  },
-
-  // remove token
-  resetToken({ commit }) {
-    return new Promise(resolve => {
-      commit('SET_TOKEN', '')
-      removeToken()
+      commit('SET_PERMISSIONS', '')
+      removeUser()
+      resetRouter()
       resolve()
     })
   }
