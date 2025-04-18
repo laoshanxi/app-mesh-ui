@@ -28,7 +28,7 @@
     "nprogress": "^0.2.0",
     "path-browserify": "^1.0.1",
     "path-to-regexp": "^6.2.1",
-    "qrcode.vue": "^1.7.0",
+    "qrcode.vue": "^3.6.0",
     "vue": "^2.7.16",
     "vue-json-viewer": "^2.2.22",
     "vue-router": "^3.6.5",
