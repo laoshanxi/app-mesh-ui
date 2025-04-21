@@ -6,6 +6,13 @@
           <el-tab-pane label="Change Password" style="min-width:600px;">
             <el-form ref="form" :model="form" label-width="200px">
               <el-form-item
+                label="Old Password" prop="curPwd" :rules="{
+                  required: true, message: 'Old Password is empty', trigger: 'blur'
+                }"
+              >
+                <el-input v-model="form.curPwd" type="Password"></el-input>
+              </el-form-item>
+              <el-form-item
                 label="New Password" prop="newPwd" :rules="{
                   required: true, message: 'New Password is empty', trigger: 'blur'
                 }"
@@ -64,6 +71,7 @@ export default {
     return {
       loading: false,
       form: {
+        curPwd: "",
         newPwd: "",
         confirmPwd: "",
         mfaEnabled: false,
@@ -97,7 +105,7 @@ export default {
         }
         this.loading = true;
         try {
-          await getClient().update_user_password(this.form.newPwd);
+          await getClient().update_user_password(this.form.curPwd, this.form.newPwd);
           this.$message.success("Password update successfully.", 5000);
         } catch (error) {
           console.error('Failed to update password:', error);

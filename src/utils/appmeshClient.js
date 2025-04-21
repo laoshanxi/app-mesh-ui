@@ -13,37 +13,32 @@ export class VueAppMeshClient extends AppMeshClient {
   }
 
   /**
-   * Override error handler to add Vue-specific behavior
-   * @protected
-   * @param {Error} error - The caught error
-   * @returns {AppMeshError} Standardized AppMeshError
-   */
+ * Override error handler to add Vue-specific behavior
+ * @protected
+ * @param {Error} error - The caught error
+ * @returns {Error} The original error
+ */
   onError(error) {
-    // First check if error is a valid object with statusCode
-    if (error && typeof error === "object" && "statusCode" in error) {
-      if (error.statusCode === HttpStatus.UNAUTHORIZED) {
-        // Logout user and redirect to login page
-        store
-          .dispatch("user/logout")
-          .catch((logoutError) => console.error("Logout error:", logoutError));
+    // Handle 401 Unauthorized errors
+    if (error?.statusCode === HttpStatus.UNAUTHORIZED) {
+      // Logout user and redirect to login page
+      store.dispatch("user/logout").catch(err =>
+        console.error("Logout error:", err)
+      );
 
-        // Check if we're not already on the login page to avoid redirection loops
-        if (!router.currentRoute.path.startsWith("/login")) {
-          router.push(
-            `/login?redirect=${encodeURIComponent(
-              router.currentRoute.fullPath
-            )}`
-          );
-        }
+      // Prevent redirect loops
+      const currentPath = router.currentRoute.path;
+      if (!currentPath.startsWith("/login")) {
+        const redirectParam = encodeURIComponent(router.currentRoute.fullPath);
+        router.push(`/login?redirect=${redirectParam}`);
       }
     }
 
-    // Show error message using Element UI
-    const message = error.message || "Unknown error occurred";
+    // Display error message
     Message({
-      message,
+      message: error?.message || "Unknown error occurred",
       type: "error",
-      duration: 5 * 1000,
+      duration: 5000,
     });
 
     return error;

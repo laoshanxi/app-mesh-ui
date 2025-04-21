@@ -87,7 +87,8 @@ export default {
         return;
       }
       const file = this.$refs.upload.uploadFiles[0];
-      const path = [this.form.filepath, this.form.filename].join('/').replace(/\/+/g, '/');
+      const parts = [this.form.filepath, this.form.filename].filter(Boolean);
+      const path = parts.join('/').replace(/\/+/g, '/');
 
       getClient().upload_file(file.raw, path)
         .then(() => {

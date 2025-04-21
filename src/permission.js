@@ -130,9 +130,6 @@ router.beforeEach(async (to, from, next) => {
     } catch (error) {
       // Authentication failed, redirect to login
       await store.dispatch("user/logout");
-      Message.error(
-        error?.message || "Authentication failed, please login again"
-      );
       next(`/login?redirect=${encodeURIComponent(to.fullPath)}`);
     }
     return;
