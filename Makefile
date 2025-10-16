@@ -1,4 +1,4 @@
-VER=2.1.2
+VER=2.2.1
 NODE_VER=18
 DOCKER_IMG_NAME=appmesh-ui:${VER}
 

@@ -105,7 +105,7 @@ export default {
         }
         this.loading = true;
         try {
-          await getClient().update_user_password(this.form.curPwd, this.form.newPwd);
+          await getClient().update_password(this.form.curPwd, this.form.newPwd);
           this.$message.success("Password update successfully.", 5000);
         } catch (error) {
           console.error('Failed to update password:', error);
