@@ -117,7 +117,7 @@ export default {
     async loadUserMfaStatus() {
       this.loading = true;
       try {
-        const response = await getClient().view_self();
+        const response = await getClient().get_current_user();
         if (response) {
           this.form.mfaEnabled = response["mfa_enabled"] || false;
         }
@@ -135,7 +135,7 @@ export default {
       }
 
       try {
-        await getClient().setup_totp(this.totpCode);
+        await getClient().enable_totp(this.totpCode);
         this.$message.success('MFA setup successfully');
         this.qrDialogVisible = false;
         this.qrCodeData = '';

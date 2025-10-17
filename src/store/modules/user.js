@@ -69,7 +69,7 @@ const actions = {
     commit('SET_AUTH', user.auth);
     commit('SET_AVATAR', user.avatar);
 
-    getClient().view_user_permissions()
+    getClient().get_user_permissions()
       .then(res => {
         user.permissions = res;
         commit('SET_PERMISSIONS', res);
@@ -86,7 +86,7 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getClient().view_self().then(data => {
+      getClient().get_current_user().then(data => {
         if (!data) {
           console.error('Get user info failed: Empty response')
           reject('Verification failed, please Login again.')
@@ -107,7 +107,7 @@ const actions = {
   // user logout
   logout({ commit }) {
     return new Promise((resolve) => {
-      getClient().logoff().then(() => {
+      getClient().logout().then(() => {
         console.log('Logged off')
       }).catch((error) => {
         console.error('Failed to log off:', error)

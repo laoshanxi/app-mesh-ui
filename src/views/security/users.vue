@@ -114,7 +114,7 @@ export default {
     refreshData() {
       this.listLoading = true;
       this.list = [];
-      getClient().view_users().then(
+      getClient().list_users().then(
         (res) => {
           if (res) {
             for (let p in res) {

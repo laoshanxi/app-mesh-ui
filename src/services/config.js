@@ -12,7 +12,7 @@ export default {
 
   refresh(vueComp) {
     vueComp.loading = true;
-    getClient().view_config()
+    getClient().get_config()
       .then(res => {
         this.setConfig(vueComp, res);
       })

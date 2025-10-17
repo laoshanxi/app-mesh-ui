@@ -65,7 +65,7 @@ export default {
   mounted() { },
   methods: {
     initData() {
-      getClient().view_permissions()
+      getClient().list_permissions()
         .then((res) => {
           if (res) {
             let permission = null;

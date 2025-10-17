@@ -104,7 +104,7 @@ export default {
   },
   methods: {
     initGroup() {
-      getClient().view_groups()
+      getClient().list_groups()
         .then((res) => {
           this.groups = res;
         })
@@ -112,7 +112,7 @@ export default {
         .then(() => { });
     },
     initRoles() {
-      getClient().view_roles()
+      getClient().list_roles()
         .then((res) => {
           if (res) {
             for (let p in res) {

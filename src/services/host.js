@@ -3,7 +3,7 @@ import { Chart } from '@antv/g2';
 
 export default {
   getResources: function (vueComp) {
-    getClient().view_host_resources().then((res) => {
+    getClient().get_host_resources().then((res) => {
       this.sortFS(res);
       vueComp.resources = res;
       vueComp.memoryData.push({
@@ -36,7 +36,7 @@ export default {
   },
 
   getResourcesForChart: function (vueComp) {
-    getClient().view_host_resources().then((res) => {
+    getClient().get_host_resources().then((res) => {
       vueComp.resources = res.data;
       if (vueComp.memoryData.length > 40) {
         vueComp.memoryData.shift();

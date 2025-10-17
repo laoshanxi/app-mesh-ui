@@ -4,7 +4,7 @@ import { parseDateFromUtcSeconds, formatDayTime } from '@/utils';
 export default {
   getAppList: function (vueComp) {
     vueComp.listLoading = true;
-    getClient().view_all_apps().then(data => {
+    getClient().list_apps().then(data => {
       data.forEach(m => {
         // desc
         m.desc = m.description
@@ -74,7 +74,7 @@ export default {
   },
   getAppByName: function (vueComp, name) {
     vueComp.isLoadingDetail = true
-    getClient().view_app(name).then(data => {
+    getClient().get_app(name).then(data => {
       vueComp.application = data;
       vueComp.isLoadingDetail = false
     }, res => {

@@ -2,7 +2,7 @@ import { getClient } from '@/utils/appmeshClient'
 
 export default {
   getLabels(vueComp) {
-    getClient().view_tags()
+    getClient().get_tags()
       .then(res => {
         vueComp.labels = Object.entries(res).map(([key, value]) => ({ key, value }));
       })

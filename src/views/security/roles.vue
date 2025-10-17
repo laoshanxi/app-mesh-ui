@@ -81,7 +81,7 @@ export default {
     refreshData() {
       this.listLoading = true;
       this.list = [];
-      getClient().view_roles().then((res) => {
+      getClient().list_roles().then((res) => {
           if (res) {
             for (let p in res) {
               this.list.push({
