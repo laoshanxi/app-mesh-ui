@@ -62,8 +62,11 @@
                       :inactive-value="false"
                     />
                   </el-form-item>
-                  <el-form-item label="Http thread pool size" prop="REST.HttpThreadPoolSize">
-                    <el-input-number v-model="form.REST.HttpThreadPoolSize" />
+                  <el-form-item label="Worker thread pool size" prop="REST.WorkerThreadPoolSize">
+                    <el-input-number v-model="form.REST.WorkerThreadPoolSize" />
+                  </el-form-item>
+                  <el-form-item label="IO thread pool size" prop="REST.IOThreadPoolSize">
+                    <el-input-number v-model="form.REST.IOThreadPoolSize" />
                   </el-form-item>
                   <el-form-item label="Prometheus exporter listen port" prop="REST.PrometheusExporterListenPort">
                     <el-input-number v-model="form.REST.PrometheusExporterListenPort" :min="0" :max="65534" />
@@ -252,7 +255,8 @@ export default {
           RestListenPort: 6060,
           RestTcpPort: 6059,
           PrometheusExporterListenPort: 6061,
-          HttpThreadPoolSize: 2,
+          WorkerThreadPoolSize: 2,
+          IOThreadPoolSize: 2,
           SSL: {
             SSLCaPath: "ssl/ca.pem",
             SSLCertificateFile: "ssl/server.pem",
@@ -316,10 +320,6 @@ export default {
         {
           label: "consul",
           value: "consul",
-        },
-        {
-          label: "ldap",
-          value: "ldap",
         },
         {
           label: "oauth2",
