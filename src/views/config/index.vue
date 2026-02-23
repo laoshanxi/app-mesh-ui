@@ -66,22 +66,41 @@
                     <el-input-number v-model="form.REST.WorkerThreadPoolSize" />
                   </el-form-item>
                   <el-form-item label="IO thread pool size" prop="REST.IOThreadPoolSize">
-                    <el-input-number v-model="form.REST.IOThreadPoolSize" />
-                  </el-form-item>
-                  <el-form-item label="Prometheus exporter listen port" prop="REST.PrometheusExporterListenPort">
-                    <el-input-number v-model="form.REST.PrometheusExporterListenPort" :min="0" :max="65534" />
-                  </el-form-item>
+                     <el-input-number v-model="form.REST.IOThreadPoolSize" />
+                   </el-form-item>
+                   <el-form-item label="Password complexity enabled" prop="REST.PasswordComplexityEnabled">
+                     <el-switch
+                       v-model="form.REST.PasswordComplexityEnabled" active-text="Yes" :active-value="true"
+                       inactive-text="No" :inactive-value="false"
+                     />
+                   </el-form-item>
+                   <el-form-item label="CORS disabled" prop="REST.CorsDisabled">
+                     <el-switch
+                       v-model="form.REST.CorsDisabled" active-text="Yes" :active-value="true"
+                       inactive-text="No" :inactive-value="false"
+                     />
+                   </el-form-item>
+                   <el-form-item label="File allowed base dir" prop="REST.FileAllowedBaseDir">
+                     <el-input v-model="form.REST.FileAllowedBaseDir" />
+                   </el-form-item>
+                   <el-form-item label="Rest listen address" prop="REST.RestListenAddress">
+                     <el-input v-model="form.REST.RestListenAddress" />
+                   </el-form-item>
+                   <el-form-item label="Rest listen port" prop="REST.RestListenPort">
+                     <el-input-number v-model="form.REST.RestListenPort" :min="1024" :max="65534" />
+                   </el-form-item>
 
-                  <el-form-item label="Rest listen address" prop="REST.RestListenAddress">
-                    <el-input v-model="form.REST.RestListenAddress" />
-                  </el-form-item>
-                  <el-form-item label="Rest listen port" prop="REST.RestListenPort">
-                    <el-input-number v-model="form.REST.RestListenPort" :min="1024" :max="65534" />
-                  </el-form-item>
+                   <el-form-item label="TCP rest listen port" prop="REST.RestTcpPort">
+                     <el-input-number v-model="form.REST.RestTcpPort" :min="1024" :max="65534" />
+                   </el-form-item>
 
-                  <el-form-item label="TCP rest listen port" prop="REST.RestTcpPort">
-                    <el-input-number v-model="form.REST.RestTcpPort" :min="1024" :max="65534" />
-                  </el-form-item>
+                   <el-form-item label="WebSocket port" prop="REST.WebSocketPort">
+                     <el-input-number v-model="form.REST.WebSocketPort" :min="0" :max="65534" />
+                   </el-form-item>
+
+                   <el-form-item label="Prometheus exporter listen port" prop="REST.PrometheusExporterListenPort">
+                     <el-input-number v-model="form.REST.PrometheusExporterListenPort" :min="0" :max="65534" />
+                   </el-form-item>
 
                   <el-form-item label="SSL verify server" prop="REST.SSL.VerifyServer">
                     <el-switch
@@ -251,12 +270,16 @@ export default {
         },
         REST: {
           RestEnabled: true,
-          RestListenAddress: "localhost",
+          RestListenAddress: "127.0.0.1",
           RestListenPort: 6060,
           RestTcpPort: 6059,
-          PrometheusExporterListenPort: 6061,
+          WebSocketPort: 6058,
+          PrometheusExporterListenPort: 0,
           WorkerThreadPoolSize: 2,
           IOThreadPoolSize: 2,
+          PasswordComplexityEnabled: false,
+          CorsDisabled: false,
+          FileAllowedBaseDir: "",
           SSL: {
             SSLCaPath: "ssl/ca.pem",
             SSLCertificateFile: "ssl/server.pem",
@@ -268,10 +291,10 @@ export default {
             VerifyServerDelegate: false,
           },
           JWT: {
-            JWTSalt: "HelloAppMesh",
+            JWTSalt: "How_AreU!ApPMEsh",
             Algorithm: "HS256",
             Issuer: "",
-            Audience: ["appmesh-service", "your-service-api"],
+            Audience: ["appmesh-service", "appmesh-file-service", "your-service-api"],
             SecurityInterface: "local",
           },
         },
@@ -314,8 +337,8 @@ export default {
       ],
       JWTOptions: [
         {
-          label: "json",
-          value: "json",
+          label: "local",
+          value: "local",
         },
         {
           label: "consul",
