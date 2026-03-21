@@ -2,9 +2,9 @@
   <div class="app-container">
     <el-tabs type="border-card">
       <el-tab-pane>
-        <span slot="label">
+        <template #label><span>
           <i class="el-icon-monitor"></i> Host
-        </span>
+        </span></template>
         <el-row>
           <el-col :span="24" style="padding: 10px;">
             <detail :record="resources" />
@@ -18,9 +18,9 @@
       </el-tab-pane>
 
       <el-tab-pane>
-        <span slot="label">
+        <template #label><span>
           <i class="el-icon-document"></i> Json
-        </span>
+        </span></template>
 
         <el-row>
           <el-col :span="1" style="text-align: right; padding-top: 20px;">

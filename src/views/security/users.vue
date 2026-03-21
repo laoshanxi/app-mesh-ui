@@ -35,41 +35,41 @@
         style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange"
       >
         <el-table-column label="User" width="150">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
+          <template #default="scope">{{ scope.row.name }}</template>
         </el-table-column>
 
         <el-table-column class-name="status-col" label="Status" width="100">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-tag v-if="scope.row.locked" :type="'danger'">Locked</el-tag>
             <el-tag v-else :type="'success'">Active</el-tag>
           </template>
         </el-table-column>
 
         <el-table-column class-name="status-col" label="MFA" width="100">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-tag v-if="scope.row.mfa_enabled" :type="'danger'">Enabled</el-tag>
             <el-tag v-else :type="'success'">Disabled</el-tag>
           </template>
         </el-table-column>
 
         <el-table-column label="Group" width="150">
-          <template slot-scope="scope">{{ scope.row.group }}</template>
+          <template #default="scope">{{ scope.row.group }}</template>
         </el-table-column>
 
         <el-table-column label="Exec user" width="150">
-          <template slot-scope="scope">{{ scope.row.exec_user }}</template>
+          <template #default="scope">{{ scope.row.exec_user }}</template>
         </el-table-column>
 
         <el-table-column label="Metadata">
-          <template slot-scope="scope">{{ scope.row.metadata }}</template>
+          <template #default="scope">{{ scope.row.metadata }}</template>
         </el-table-column>
 
         <el-table-column label="Email">
-          <template slot-scope="scope">{{ scope.row.email }}</template>
+          <template #default="scope">{{ scope.row.email }}</template>
         </el-table-column>
 
         <el-table-column label="Roles">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-tag v-for="(role, index) in scope.row.roles" :key="index" type="info" style="margin:0px 5px 5px 0px;">
               {{ role }}
             </el-tag>

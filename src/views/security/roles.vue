@@ -26,11 +26,11 @@
         style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange"
       >
         <el-table-column label="Name" width="200">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
+          <template #default="scope">{{ scope.row.name }}</template>
         </el-table-column>
 
         <el-table-column label="Permissions">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-tag
               v-for="permission in scope.row.permissions" :key="permission.id" type="info"
               style="margin:0px 5px 5px 0px;"

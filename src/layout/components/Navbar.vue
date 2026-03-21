@@ -28,7 +28,8 @@
           </div>
           <i class="el-icon-caret-bottom" />
         </div>
-        <el-dropdown-menu slot="dropdown" class="user-dropdown">
+        <template #dropdown>
+        <el-dropdown-menu class="user-dropdown">
           <router-link to="/security/changePwd">
             <el-dropdown-item>
               <i class="iconfont icon-lock"></i>Change Password
@@ -45,6 +46,7 @@
             </span>
           </el-dropdown-item>
         </el-dropdown-menu>
+        </template>
       </el-dropdown>
     </div>
   </div>
@@ -76,7 +78,7 @@ export default {
     this.forward = this.$store.getters.forwarding;
     this.forwardEnabled = !!this.forward;
     this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
-    EventBus.$on(EVENTS.SWITCH_FORWARD, (fw) => {
+    EventBus.on(EVENTS.SWITCH_FORWARD, (fw) => {
       this.lastForward = this.forward;
       this.forward = fw;
       this.updateForward();

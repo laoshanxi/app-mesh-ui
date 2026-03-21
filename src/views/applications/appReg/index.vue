@@ -159,7 +159,7 @@
 
 <script>
 import applications from "@/services/applications";
-import { formatToLocal, formatToLocalDayTime } from "@/utils";
+import { formatToLocal, formatToLocalDayTime, deepClone } from "@/utils";
 
 export default {
   name: "AppReg",
@@ -230,7 +230,7 @@ export default {
 
 
       if (Object.keys(this.propForm).length !== 0) {
-        this.registerForm = this.merge(this.$clone(this.propForm), this.registerForm);
+        this.registerForm = this.merge(deepClone(this.propForm), this.registerForm);
         let permission = this.registerForm.permission + "";
         this.registerForm.otherPermission = permission.length == 2 ? permission.substring(0, 1) : 3;
         this.registerForm.groupPermission = permission.length == 2 ? permission.substring(1, 2) : 3;

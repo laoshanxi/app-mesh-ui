@@ -182,3 +182,10 @@ export function formatCpu(cpu) {
   }
   return cpu.toFixed(1);
 }
+
+export function deepClone(obj) {
+  if (obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+  return null;
+}

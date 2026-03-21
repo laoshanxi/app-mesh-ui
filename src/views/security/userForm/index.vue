@@ -156,7 +156,7 @@ export default {
 
     saveRole() {
       //applications.addRole(this);
-      getClient().add_user(this.userForm)
+      getClient().add_user(this.userForm.name, this.userForm)
         .then((res) => {
           if (this.propForm.name == null) {
             this.$message.success(

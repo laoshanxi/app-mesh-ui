@@ -8,10 +8,10 @@ function runFinished(vueComp) {
   }
   vueComp.input = '';
   vueComp.inputDisabled = false;
-  let shell = vueComp.$refs['shell_div'];
   vueComp.$nextTick(() => {
-    shell.scrollTop = shell.scrollHeight;
-    vueComp.$refs["input"].focus();
+    let shell = vueComp.$refs['shell_div'];
+    if (shell) shell.scrollTop = shell.scrollHeight;
+    if (vueComp.$refs["input"]) vueComp.$refs["input"].focus();
   });
 }
 function refreshShellContents(vueComp, content) {
@@ -67,9 +67,9 @@ function refreshShellContents(vueComp, content) {
   }
 
 
-  let shell = vueComp.$refs['shell_div'];
   vueComp.$nextTick(() => {
-    shell.scrollTop = shell.scrollHeight;
+    let shell = vueComp.$refs['shell_div'];
+    if (shell) shell.scrollTop = shell.scrollHeight;
   });
 }
 
@@ -97,9 +97,9 @@ export default {
       command = command + ";pwd";
     }
     vueComp.shellApp.command = command;
-    let shell = vueComp.$refs['shell_div'];
     vueComp.$nextTick(() => {
-      shell.scrollTop = shell.scrollHeight;
+      let shell = vueComp.$refs['shell_div'];
+      if (shell) shell.scrollTop = shell.scrollHeight;
     });
 
     const outputHandler = output => refreshShellContents(vueComp, output);

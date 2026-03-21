@@ -4,13 +4,13 @@
       <el-col :span="24">
         <el-tabs ref="tabs" v-model="activeTab" type="border-card">
           <el-tab-pane name="config" style="min-width: 600px">
-            <span slot="label">
+            <template #label><span>
               <i class="el-icon-s-operation" /> Configuration
-            </span>
+            </span></template>
             <el-form ref="form" :model="form" :rules="rules" label-width="260px">
               <el-collapse v-model="activeNames">
                 <el-collapse-item name="1">
-                  <template slot="title">
+                  <template #title>
                     <i class="el-icon-setting" style="margin-right: 8px;" />
                     Basic
                   </template>
@@ -52,7 +52,7 @@
                 </el-collapse-item>
 
                 <el-collapse-item name="2">
-                  <template slot="title">
+                  <template #title>
                     <i class="el-icon-connection" style="margin-right: 8px;" />
                     Web
                   </template>
@@ -138,7 +138,7 @@
                   </el-form-item>
                 </el-collapse-item>
                 <el-collapse-item name="3">
-                  <template slot="title">
+                  <template #title>
                     <i class="el-icon-key" style="margin-right: 8px;" />
                     JWT
                   </template>
@@ -174,9 +174,9 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane name="labels" style="min-width: 600px">
-            <span slot="label">
+            <template #label><span>
               <i class="el-icon-collection-tag" /> Labels
-            </span>
+            </span></template>
             <el-row>
               <el-table
                 :key="tableKey" v-loading="listLoading" :data="labels" element-loading-text="Loading" border
@@ -184,7 +184,7 @@
                 @current-change="currentRowChange"
               >
                 <el-table-column label="Key" width="300">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-input
                       v-if="scope.row.isEdit" v-model="scope.row.key" size="mini"
                       placeholder="Please enter key"
@@ -194,7 +194,7 @@
                 </el-table-column>
 
                 <el-table-column label="Value">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-input
                       v-if="scope.row.isEdit" v-model="scope.row.value" size="mini"
                       placeholder="Please enter value"
@@ -203,7 +203,7 @@
                   </template>
                 </el-table-column>
                 <el-table-column label="Action" width="260">
-                  <template slot-scope="scope">
+                  <template #default="scope">
                     <el-button
                       v-if="!scope.row.isEdit" type="text" icon="el-icon-edit" :disabled="isEdit"
                       @click="editLabel(scope.row)"
@@ -377,11 +377,11 @@ export default {
     },
     editLabel(row) {
       this.isEdit = true;
-      this.$set(row, "isEdit", true);
+      row.isEdit = true;
     },
     cancelUpdate(row) {
       this.isEdit = false;
-      this.$set(row, "isEdit", false);
+      row.isEdit = false;
       if (row.isNew) {
         this.labels.splice(row.index, 1);
       }

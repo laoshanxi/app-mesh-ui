@@ -53,7 +53,7 @@
         highlight-current-row
       >
         <el-table-column label="Device" prop="device">
-          <template slot-scope="scope">
+          <template #default="scope">
             <i
               v-if="formatPercent(scope.row.usage)" class="el-icon-warning"
               style="color: firebrick;font-size: 18px; vertical-align: middle;"
@@ -62,13 +62,13 @@
           </template>
         </el-table-column>
         <el-table-column label="Size" width="140">
-          <template slot-scope="scope">{{ scope.row.size | formatMemory }}</template>
+          <template #default="scope">{{ scope.row.size | formatMemory }}</template>
         </el-table-column>
         <el-table-column label="Used" width="140">
-          <template slot-scope="scope">{{ scope.row.used | formatMemory }}</template>
+          <template #default="scope">{{ scope.row.used | formatMemory }}</template>
         </el-table-column>
         <el-table-column label="Usage" width="200">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-progress
               :text-inside="true" :stroke-width="25"
               :percentage="parseFloat((scope.row.usage * 100).toFixed(2))" status="exception"
@@ -76,7 +76,7 @@
           </template>
         </el-table-column>
         <el-table-column label="Mount point">
-          <template slot-scope="scope">{{ scope.row.mount_point | formatEmpty }}</template>
+          <template #default="scope">{{ scope.row.mount_point | formatEmpty }}</template>
         </el-table-column>
       </el-table>
     </DescriptionList>
@@ -86,17 +86,17 @@
         highlight-current-row
       >
         <el-table-column label="Name" width="240" prop="name">
-          <template slot-scope="scope">{{ scope.row.name | formatEmpty }}</template>
+          <template #default="scope">{{ scope.row.name | formatEmpty }}</template>
         </el-table-column>
 
         <el-table-column label="Protocol" width="100" prop="protocol">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-tag v-if="scope.row.ipv6" :type="'success'">IPv6</el-tag>
             <el-tag v-else :type="'info'">IPv4</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="Address" prop="address">
-          <template slot-scope="scope">{{ scope.row.address | formatEmpty }}</template>
+          <template #default="scope">{{ scope.row.address | formatEmpty }}</template>
         </el-table-column>
       </el-table>
     </DescriptionList>

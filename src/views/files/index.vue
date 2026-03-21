@@ -4,9 +4,9 @@
       <el-col :span="24">
         <el-tabs type="border-card">
           <el-tab-pane style="max-width: 600px">
-            <span slot="label">
+            <template #label><span>
               <i class="el-icon-upload"></i> Upload file
-            </span>
+            </span></template>
             <el-form ref="form" :model="form" label-width="90px">
               <el-form-item label="Remote dir:">
                 <el-input v-model="form.filepath" size="small"></el-input>
@@ -17,7 +17,7 @@
                   ref="upload" class="upload-demo" action="#" :auto-upload="false" :on-change="fileChange"
                   :limit="1"
                 >
-                  <el-button slot="trigger" size="small" type="primary">Select File</el-button>
+                  <template #trigger><el-button size="small" type="primary">Select File</el-button></template>
                   <el-button
                     style="margin-left: 10px" size="small" type="success" :disabled="form.disabled"
                     @click="submitUpload"
@@ -29,9 +29,9 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane>
-            <span slot="label">
+            <template #label><span>
               <i class="el-icon-download"></i> Download file
-            </span>
+            </span></template>
             <el-form ref="downloadForm" :model="downloadForm" label-width="90px">
               <el-form-item label="Remote file">
                 <el-input v-model="downloadForm.filepath"></el-input>

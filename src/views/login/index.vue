@@ -213,7 +213,7 @@ export default {
     isTotpChallenge(error) {
       return error &&
         error.statusCode === HttpStatus.PRECONDITION_REQUIRED &&
-        error.responseData["Totp-Challenge"];
+        error.responseData && error.responseData["totp_challenge"];
     },
 
     /**
@@ -221,7 +221,7 @@ export default {
      * @param {AppMeshError} error - Error object
      */
     handleTotpChallenge(error) {
-      this.loginForm.TotpChallenge = error.responseData["Totp-Challenge"];
+      this.loginForm.TotpChallenge = error.responseData["totp_challenge"];
       this.totpMode = true;
       this.$message({
           message: 'Please enter TOTP code',

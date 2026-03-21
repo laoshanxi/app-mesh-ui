@@ -48,13 +48,15 @@
     </el-row>
     <el-dialog title="Setup MFA" :visible.sync="qrDialogVisible" width="30%">
       <div v-if="qrCodeData" class="text-center">
-        <qrcode :value="qrCodeData" :options="{ width: 200 }"></qrcode>
+        <qrcode :value="qrCodeData" :size="200"></qrcode>
         <el-input v-model="totpCode" placeholder="Enter TOTP code" style="margin-top: 20px"></el-input>
       </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="qrDialogVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="verifyTotp">Verify</el-button>
-      </span>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="qrDialogVisible = false">Cancel</el-button>
+          <el-button type="primary" @click="verifyTotp">Verify</el-button>
+        </span>
+      </template>
     </el-dialog>
   </div>
 </template>

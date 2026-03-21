@@ -2,7 +2,7 @@ import { getClient } from '@/utils/appmeshClient'
 
 export default {
   getLabels(vueComp) {
-    getClient().get_tags()
+    getClient().list_labels()
       .then(res => {
         vueComp.labels = Object.entries(res).map(([key, value]) => ({ key, value }));
       })
@@ -21,7 +21,7 @@ export default {
     }
 
     vueComp.listLoading = true;
-    return getClient().add_tag(row.key.trim(), row.value.trim())
+    return getClient().add_label(row.key.trim(), row.value.trim())
       .then(() => {
         vueComp.$message.success('Label updated successfully', 5000);
         vueComp.refresh();
@@ -51,7 +51,7 @@ export default {
     )
       .then(() => {
         vueComp.listLoading = true;
-        return getClient().delete_tag(row.key);
+        return getClient().delete_label(row.key);
       })
       .then(() => {
         vueComp.$message.success(`Label "${row.key}" removed successfully`, 5000);

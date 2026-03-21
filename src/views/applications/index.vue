@@ -35,7 +35,7 @@
         @current-change="currentRowChange"
       >
         <el-table-column label="Name" width="200">
-          <template slot-scope="scope">
+          <template #default="scope">
             <i
               v-if="scope.row.health == 0" class="el-icon-success"
               style="color: #85ce61; font-size: 18px; vertical-align: middle"
@@ -48,12 +48,12 @@
           </template>
         </el-table-column>
         <el-table-column label="Owner" width="100">
-          <template slot-scope="scope">
+          <template #default="scope">
             {{ scope.row.owner | formatEmpty }}
           </template>
         </el-table-column>
         <el-table-column class-name="status-col" label="State" width="90">
-          <template slot-scope="scope">
+          <template #default="scope">
             <el-tag v-if="scope.row.status == 1" :type="'success'">
               Enabled
             </el-tag>
@@ -64,7 +64,7 @@
         </el-table-column>
 
         <el-table-column label="PID" width="90">
-          <template slot-scope="scope">
+          <template #default="scope">
             <span v-if="scope.row.pstree">
               <el-link :underline="true" :title="scope.row.pstree">
                 {{ scope.row.pid | formatEmpty }}
@@ -74,42 +74,42 @@
           </template>
         </el-table-column>
         <el-table-column label="User" width="90">
-          <template slot-scope="scope">
+          <template #default="scope">
             {{ scope.row.pid_user | formatEmpty }}
           </template>
         </el-table-column>
         <el-table-column label="Memory" width="110">
-          <template slot-scope="scope">
+          <template #default="scope">
             {{ scope.row.memory | formatMemory }}
           </template>
         </el-table-column>
         <el-table-column label="%Cpu" width="110">
-          <template slot-scope="scope">
+          <template #default="scope">
             {{ scope.row.cpu | formatCpu }}
           </template>
         </el-table-column>
         <el-table-column label="Return" width="70">
-          <template slot-scope="scope">
+          <template #default="scope">
             {{ scope.row.return_code | formatEmpty }}
           </template>
         </el-table-column>
         <el-table-column label="Starts" width="70">
-          <template slot-scope="scope">
+          <template #default="scope">
             {{ scope.row.starts | formatEmpty }}
           </template>
         </el-table-column>
         <el-table-column label="Age" width="120">
-          <template slot-scope="scope">
+          <template #default="scope">
             {{ scope.row.age | formatEmpty }}
           </template>
         </el-table-column>
         <el-table-column label="Duration" width="120">
-          <template slot-scope="scope">
+          <template #default="scope">
             {{ scope.row.duration | formatEmpty }}
           </template>
         </el-table-column>
         <el-table-column prop="last_start_time" label="Last Start Time" width="230">
-          <template slot-scope="scope">
+          <template #default="scope">
             <span v-if="scope.row.last_start_time">
               <el-link :underline="true" title="Show log" @click="showLog(scope.row)">
                 <i class="el-icon-document"></i>
@@ -121,7 +121,7 @@
           </template>
         </el-table-column>
         <af-table-column label="Command">
-          <template slot-scope="scope">
+          <template #default="scope">
             {{ scope.row.command | formatEmpty }}
           </template>
         </af-table-column>
@@ -136,14 +136,16 @@
 
     <!-- show application detail -->
     <el-drawer v-loading="isLoadingDetail" :visible.sync="isShowDetail" size="50%">
-      <span slot="title">
-        <span class="el-icon-view">
-          &nbsp;&nbsp;{{
-                        currentRow ? currentRow.name : "Please select one application"
-                      }}
-          <i v-if="currentRow && currentRow.docker_image" class="iconfont icon-docker" />
+      <template #title>
+        <span>
+          <span class="el-icon-view">
+            &nbsp;&nbsp;{{
+                          currentRow ? currentRow.name : "Please select one application"
+                        }}
+            <i v-if="currentRow && currentRow.docker_image" class="iconfont icon-docker" />
+          </span>
         </span>
-      </span>
+      </template>
       <div class="detail-card">
         <app-detail :record="currentRow" />
       </div>
@@ -151,13 +153,15 @@
 
     <!-- show application logs -->
     <el-drawer v-loading="isLoadingLog" :visible.sync="isShowLog" size="50%">
-      <span slot="title">
-        <span class="el-icon-document">
-          &nbsp;&nbsp;{{
-            currentRow ? currentRow.name : "Please select one application"
-          }}
+      <template #title>
+        <span>
+          <span class="el-icon-document">
+            &nbsp;&nbsp;{{
+              currentRow ? currentRow.name : "Please select one application"
+            }}
+          </span>
         </span>
-      </span>
+      </template>
       <div class="detail-card">
         <app-log
           ref="appLog" :loginfo="appLogInfo" :app="currentRow" @startLoading="isLoadingLog = true"

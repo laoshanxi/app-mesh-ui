@@ -30,10 +30,19 @@ module.exports = defineConfig({
       }
     },
     proxy: {
-      '^/': {
+      '^/appmesh': {
         target: 'https://localhost:6060',
         changeOrigin: true,
-        secure: false
+        secure: false,
+        cookieDomainRewrite: '',
+        onProxyRes(proxyRes) {
+          const setCookie = proxyRes.headers['set-cookie'];
+          if (setCookie) {
+            proxyRes.headers['set-cookie'] = setCookie.map(cookie =>
+              cookie.replace(/;\s*Secure/gi, '').replace(/;\s*SameSite=\w+/gi, '; SameSite=Lax')
+            );
+          }
+        }
       }
     }
   },

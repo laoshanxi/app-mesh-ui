@@ -48,7 +48,7 @@ const actions = {
   validateTotp({ commit }, { username, challenge, totp, expireSeconds }) {
     return new Promise((resolve, reject) => {
       getClient().validate_totp(username, challenge, totp, expireSeconds).then(() => {
-        actions.handleLoginSuccess({ commit, username, resolve, reject })
+        actions.handleLoginSuccess({ commit, UserName: username, resolve, reject })
       }).catch(error => {
         console.error('TOTP validation error:', error)
         reject(error)
