@@ -54,10 +54,12 @@
 
 <script>
 import { getClient } from '@/utils/appmeshClient'
+import { ElMessage } from "element-plus";
 
 export default {
   name: "UserForm",
-  props: ["propForm"],
+  props: { propForm: { type: Object, default: () => ({}) } },
+  emits: ['close', 'success'],
   data() {
     return {
       userForm: {
@@ -125,7 +127,7 @@ export default {
           }
         })
         .catch((err) => { console.warn(err); })
-        .then((res) => { });
+        .then(() => { });
     },
     setFromWithProps() {
       if (Object.keys(this.propForm).length !== 0) {
@@ -157,23 +159,17 @@ export default {
     saveRole() {
       //applications.addRole(this);
       getClient().add_user(this.userForm.name, this.userForm)
-        .then((res) => {
+        .then(() => {
           if (this.propForm.name == null) {
-            this.$message.success(
-              "User " + this.userForm.name + " add successfully.",
-              5000
-            );
+            ElMessage.success("User " + this.userForm.name + " add successfully.");
           } else {
-            this.$message.success(
-              "User " + this.userForm.name + " update successfully.",
-              5000
-            );
+            ElMessage.success("User " + this.userForm.name + " update successfully.");
           }
           this.$emit("success");
           this.cancel();
         })
         .catch((err) => { console.warn(err); })
-        .then((res) => { });
+        .then(() => { });
     },
 
     merge(local, origin) {

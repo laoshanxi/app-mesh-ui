@@ -5,15 +5,15 @@
     </el-row>
     <el-row>
       <el-button-group>
-        <el-button type="primary" icon="el-icon-plus" @click="btnClick('new')">New</el-button>
+        <el-button type="primary" :icon="Plus" @click="btnClick('new')">New</el-button>
         <el-button
-          type="danger" icon="el-icon-delete" :disabled="!isSelected"
+          type="danger" :icon="Delete" :disabled="!isSelected"
           @click="btnClick('delete')"
         >
           Delete
         </el-button>
         <el-button
-          type="success" icon="el-icon-key" :disabled="!isSelected"
+          type="success" :icon="Key" :disabled="!isSelected"
           @click="btnClick('permissions')"
         >
           Permissions
@@ -42,9 +42,10 @@
       </el-table>
     </el-row>
     <el-drawer
-      custom-class="right-drawer" :title="selectedForm.name == null ? 'Add role' : 'Update role permissions'"
-      :visible.sync="permissionsVisible" size="60%"
+      v-model="permissionsVisible"
+      custom-class="right-drawer" size="60%"
     >
+      <template #header><span>{{ selectedForm.name == null ? 'Add role' : 'Update role permissions' }}</span></template>
       <permissions :prop-form="selectedForm" @close="permissionsVisible = false" @success="updatePermissionsSuccess()">
       </permissions>
     </el-drawer>
@@ -53,7 +54,10 @@
 
 <script>
 import { getClient } from '@/utils/appmeshClient'
-import permissions from "./permissions";
+import { ElMessageBox, ElMessage } from "element-plus";
+import { markRaw } from 'vue'
+import { Plus, Delete, Key } from "@element-plus/icons-vue";
+import permissions from "./permissions/index.vue";
 
 export default {
   components: {
@@ -61,6 +65,7 @@ export default {
   },
   data() {
     return {
+      Plus: markRaw(Plus), Delete: markRaw(Delete), Key: markRaw(Key),
       tableKey: 0,
       isSelected: false,
       list: null,
@@ -92,7 +97,7 @@ export default {
           }
           this.listLoading = false;
         },
-        (res) => {
+        () => {
           this.listLoading = false;
         }
       ).catch((err) => { console.warn(err); });
@@ -121,7 +126,7 @@ export default {
       }
     },
     delRole() {
-      this.$confirm(
+      ElMessageBox.confirm(
         `Do you want to delete the role <${this.currentRow.name}>?`,
         "Tooltip",
         {
@@ -132,25 +137,22 @@ export default {
       ).then(() => {
         this.listLoading = true;
         getClient().delete_role(this.currentRow.name).then(
-          (res) => {
-            this.$message.success(
-              "Role " + this.currentRow.name + " had deleted.",
-              5000
-            );
+          () => {
+            ElMessage.success("Role " + this.currentRow.name + " had deleted.");
             this.refreshData();
           },
-          (res) => {
+          () => {
             this.listLoading = false;
           }
         );
       }).catch(() => {
-        this.$message({
+        ElMessage({
           type: 'info',
           message: 'Delete canceled'
         });
       });
     },
-    currentRowChange(currentRow, oldCurrentRow) {
+    currentRowChange(currentRow, _oldCurrentRow) {
       this.currentRow = currentRow;
       if (!currentRow) {
         this.isSelected = false;

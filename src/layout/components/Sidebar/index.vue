@@ -18,9 +18,10 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Logo from './Logo'
-import SidebarItem from './SidebarItem'
-import * as variables from '@/styles/variables.scss'
+import Logo from './Logo.vue'
+import SidebarItem from './SidebarItem.vue'
+import { constantRoutes } from '@/router/index.js'
+import variables from '@/styles/variables.module.scss'
 
 export default {
   components: { SidebarItem, Logo },
@@ -29,7 +30,7 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return this.$router.options.routes
+      return constantRoutes
     },
     activeMenu() {
       const route = this.$route

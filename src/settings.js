@@ -1,5 +1,5 @@
-module.exports = {
-  title: process.env.VUE_APP_TITLE || 'App Mesh',
+export default {
+  title: 'App Mesh',
 
   /**
    * @type {boolean} true | false

@@ -2,19 +2,19 @@
   <el-card v-if="record" class="box-card">
     <DescriptionList title="Basic information" col="12">
       <Description term="Name">
-        {{ record.name | formatEmpty }}
+        {{ formatEmpty(record.name) }}
       </Description>
       <Description term="Add time">
         {{ record.register_time_TEXT }}
       </Description>
       <Description term="Owner">
-        {{ record.owner | formatEmpty }}
+        {{ formatEmpty(record.owner) }}
       </Description>
       <Description term="Command">
-        {{ record.command | formatEmpty }}
+        {{ formatEmpty(record.command) }}
       </Description>
       <Description term="Permission">
-        {{ record.permission | formatEmpty }}
+        {{ formatEmpty(record.permission) }}
       </Description>
       <Description term="Status">
         <div>
@@ -30,7 +30,7 @@
 
     <DescriptionList title col="12">
       <Description term="Working dir">
-        {{ record.working_dir | formatEmpty }}
+        {{ formatEmpty(record.working_dir) }}
       </Description>
       <Description term="Shell mode">
         <el-tag v-if="record.shell == 1" :type="'success'">
@@ -49,7 +49,7 @@
         </el-tag>
       </Description>
       <Description term="Healthcheck cmd">
-        {{ record.health_check_cmd | formatEmpty }}
+        {{ formatEmpty(record.health_check_cmd) }}
       </Description>
     </DescriptionList>
 
@@ -61,24 +61,24 @@
         {{ record.end_time_TEXT }}
       </Description>
       <Description term="Period run interval(S)">
-        {{ record.start_interval_seconds | formatEmpty }}
+        {{ formatEmpty(record.start_interval_seconds) }}
       </Description>
       <Description term="Period run retention (S)">
-        {{ record.retention | formatEmpty }}
+        {{ formatEmpty(record.retention) }}
       </Description>
       <Description term="Exit behavior">
-        {{ record.behavior.exit | formatEmpty }}
+        {{ formatEmpty(record.behavior.exit) }}
       </Description>
       <Description term="Docker image">
-        {{ record.docker_image | formatEmpty }}
+        {{ formatEmpty(record.docker_image) }}
       </Description>
     </DescriptionList>
     <DescriptionList col="24">
       <Description term="Description">
-        {{ record.description | formatEmpty }}
+        {{ formatEmpty(record.description) }}
       </Description>
       <Description term="Stdout number definition">
-        {{ record.stdout_cache_num | formatEmpty }}
+        {{ formatEmpty(record.stdout_cache_num) }}
       </Description>
     </DescriptionList>
 
@@ -86,19 +86,19 @@
 
     <DescriptionList title="Runtime infomation" col="12">
       <Description term="PID">
-        {{ record.pid | formatEmpty }}
+        {{ formatEmpty(record.pid) }}
       </Description>
       <Description term="PID user">
-        {{ record.pid_user | formatEmpty }}
+        {{ formatEmpty(record.pid_user) }}
       </Description>
       <Description term="Health">
-        {{ record.health | formatEmpty }}
+        {{ formatEmpty(record.health) }}
       </Description>
       <Description term="Memory">
-        {{ record.memory | formatMemory }}
+        {{ formatMemory(record.memory) }}
       </Description>
       <Description term="CPU Usage">
-        {{ record.cpu | formatCpu }}
+        {{ formatCpu(record.cpu) }}
       </Description>
       <Description term="Next start time">
         {{ record.next_start_time_TEXT }}
@@ -108,17 +108,17 @@
         <span v-else>-</span>
       </Description>
       <Description term="Return">
-        {{ record.return_code | formatEmpty }}
+        {{ formatEmpty(record.return_code) }}
       </Description>
       <Description term="Last exit time">
         <span v-if="record.last_exit_time">{{ record.last_exit_time_TEXT }}</span>
         <span v-else>-</span>
       </Description>
       <Description term="Start number">
-        {{ record.starts | formatEmpty }}
+        {{ formatEmpty(record.starts) }}
       </Description>
       <Description term="File descriptors">
-        {{ record.fd | formatEmpty }}
+        {{ formatEmpty(record.fd) }}
       </Description>
     </DescriptionList>
     <DescriptionList col="24">
@@ -126,7 +126,7 @@
         {{ record.last_error }}
       </Description>
       <Description term="Container id">
-        {{ record.container_id | formatEmpty }}
+        {{ formatEmpty(record.container_id) }}
       </Description>
     </DescriptionList>
 
@@ -149,7 +149,7 @@
         {{ record.resource_limit ? record.resource_limit.cpu_shares : "-" }}
       </Description>
       <Description term="Stdout number">
-        {{ record.stdout_cache_size | formatEmpty }}
+        {{ formatEmpty(record.stdout_cache_size) }}
       </Description>
       <Description term="Metadata">
       </Description>
@@ -169,15 +169,16 @@
 </template>
 
 <script>
-import DescriptionList from "@/components/Descriptions";
-import Description from "@/components/Description";
+import DescriptionList from "@/components/Descriptions/index.vue";
+import Description from "@/components/Description/index.vue";
+import { formatEmpty, formatMemory, formatCpu } from "@/utils";
 export default {
   name: "AppDetail",
   components: {
     DescriptionList,
     Description,
   },
-  props: ["record"],
+  props: { record: { type: Object, default: null } },
   data() {
     return {
       data: [
@@ -189,7 +190,11 @@ export default {
     };
   },
   mounted() { },
-  methods: {},
+  methods: {
+    formatEmpty,
+    formatMemory,
+    formatCpu,
+  },
 };
 </script>
 

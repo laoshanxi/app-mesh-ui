@@ -4,9 +4,11 @@
       <el-col :span="24">
         <el-tabs type="border-card">
           <el-tab-pane style="max-width: 600px">
-            <template #label><span>
-              <i class="el-icon-upload"></i> Upload file
-            </span></template>
+            <template #label>
+              <span>
+                <el-icon><Upload /></el-icon> Upload file
+              </span>
+            </template>
             <el-form ref="form" :model="form" label-width="90px">
               <el-form-item label="Remote dir:">
                 <el-input v-model="form.filepath" size="small"></el-input>
@@ -29,9 +31,11 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane>
-            <template #label><span>
-              <i class="el-icon-download"></i> Download file
-            </span></template>
+            <template #label>
+              <span>
+                <el-icon><Download /></el-icon> Download file
+              </span>
+            </template>
             <el-form ref="downloadForm" :model="downloadForm" label-width="90px">
               <el-form-item label="Remote file">
                 <el-input v-model="downloadForm.filepath"></el-input>
@@ -52,8 +56,11 @@
 import { mapGetters } from "vuex";
 import fileService from "@/services/file";
 import { getClient } from '@/utils/appmeshClient'
+import { ElMessage } from "element-plus";
+import { Upload, Download } from "@element-plus/icons-vue";
 
 export default {
+  components: { Upload, Download },
   data() {
     return {
       form: {
@@ -83,7 +90,7 @@ export default {
     },
     submitUpload() {
       if (!this.form.file) {
-        this.$message.warning("Please select a file");
+        ElMessage.warning("Please select a file");
         return;
       }
       const file = this.$refs.upload.uploadFiles[0];
@@ -95,12 +102,11 @@ export default {
           this.$refs.upload.clearFiles();
           this.form.disabled = true;
           this.form.file = null;
-          this.$message.success(
-            "File [" + this.form.filename + "] upload success",
-            5000
+          ElMessage.success(
+            "File [" + this.form.filename + "] upload success"
           );
         })
-        .catch((err) => { });
+        .catch(() => { });
     },
     download() {
       fileService.download(this);

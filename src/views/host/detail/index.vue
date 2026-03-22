@@ -1,25 +1,25 @@
 <template>
   <div v-if="record != 'No Data'" class="box-card">
     <DescriptionList title="Host" col="8">
-      <Description term="Host name">{{ record.host_name | formatEmpty }}</Description>
-      <Description term="Date time">{{ record.systime | formatEmpty }}</Description>
-      <Description term="Description">{{ record.host_description | formatEmpty }}</Description>
+      <Description term="Host name">{{ formatEmpty(record.host_name) }}</Description>
+      <Description term="Date time">{{ formatEmpty(record.systime) }}</Description>
+      <Description term="Description">{{ formatEmpty(record.host_description) }}</Description>
     </DescriptionList>
     <DescriptionList title col="8">
-      <Description term="1 minutes Load">{{ record.load["1min"] | formatEmpty }}</Description>
-      <Description term="5 minutes Load">{{ record.load["5min"] | formatEmpty }}</Description>
-      <Description term="15 minutes Load">{{ record.load["15min"] | formatEmpty }}</Description>
+      <Description term="1 minutes Load">{{ formatEmpty(record.load["1min"]) }}</Description>
+      <Description term="5 minutes Load">{{ formatEmpty(record.load["5min"]) }}</Description>
+      <Description term="15 minutes Load">{{ formatEmpty(record.load["15min"]) }}</Description>
     </DescriptionList>
     <el-divider></el-divider>
     <DescriptionList title="CPU & Memory" col="8">
-      <Description term="Sockets">{{ record.cpu_sockets | formatEmpty }}</Description>
-      <Description term="Cores">{{ record.cpu_cores | formatEmpty }}</Description>
-      <Description term="Processors">{{ record.cpu_processors | formatEmpty }}</Description>
+      <Description term="Sockets">{{ formatEmpty(record.cpu_sockets) }}</Description>
+      <Description term="Cores">{{ formatEmpty(record.cpu_cores) }}</Description>
+      <Description term="Processors">{{ formatEmpty(record.cpu_processors) }}</Description>
     </DescriptionList>
     <DescriptionList title col="24">
       <Description term="Memory">
         <div style="margin-left: 39px;">
-          <div class="chart-label-left">free {{ record.mem_free_bytes | formatMemory }}</div>
+          <div class="chart-label-left">free {{ formatMemory(record.mem_free_bytes) }}</div>
           <div class="chart-div">
             <el-progress
               :text-inside="true" :stroke-width="25"
@@ -27,12 +27,12 @@
               status="exception"
             ></el-progress>
           </div>
-          <div class="chart-label">total {{ record.mem_total_bytes | formatMemory }}</div>
+          <div class="chart-label">total {{ formatMemory(record.mem_total_bytes) }}</div>
         </div>
       </Description>
       <Description term="Swap memory">
         <el-row>
-          <div class="chart-label-left">free {{ record.mem_freeSwap_bytes | formatMemory }}</div>
+          <div class="chart-label-left">free {{ formatMemory(record.mem_freeSwap_bytes) }}</div>
           <div class="chart-div">
             <el-progress
               :text-inside="true" :stroke-width="25"
@@ -40,10 +40,10 @@
               status="exception"
             ></el-progress>
           </div>
-          <div class="chart-label">total {{ record.mem_totalSwap_bytes | formatMemory }}</div>
+          <div class="chart-label">total {{ formatMemory(record.mem_totalSwap_bytes) }}</div>
         </el-row>
       </Description>
-      <Description term="App Mesh memory">{{ record.mem_applications | formatMemory }}</Description>
+      <Description term="App Mesh memory">{{ formatMemory(record.mem_applications) }}</Description>
     </DescriptionList>
     <el-divider></el-divider>
 
@@ -54,18 +54,15 @@
       >
         <el-table-column label="Device" prop="device">
           <template #default="scope">
-            <i
-              v-if="formatPercent(scope.row.usage)" class="el-icon-warning"
-              style="color: firebrick;font-size: 18px; vertical-align: middle;"
-            ></i>
-            {{ scope.row.device | formatEmpty }}
+            <el-icon v-if="formatPercent(scope.row.usage)" style="color: firebrick;font-size: 18px; vertical-align: middle;"><WarningFilled /></el-icon>
+            {{ formatEmpty(scope.row.device) }}
           </template>
         </el-table-column>
         <el-table-column label="Size" width="140">
-          <template #default="scope">{{ scope.row.size | formatMemory }}</template>
+          <template #default="scope">{{ formatMemory(scope.row.size) }}</template>
         </el-table-column>
         <el-table-column label="Used" width="140">
-          <template #default="scope">{{ scope.row.used | formatMemory }}</template>
+          <template #default="scope">{{ formatMemory(scope.row.used) }}</template>
         </el-table-column>
         <el-table-column label="Usage" width="200">
           <template #default="scope">
@@ -76,7 +73,7 @@
           </template>
         </el-table-column>
         <el-table-column label="Mount point">
-          <template #default="scope">{{ scope.row.mount_point | formatEmpty }}</template>
+          <template #default="scope">{{ formatEmpty(scope.row.mount_point) }}</template>
         </el-table-column>
       </el-table>
     </DescriptionList>
@@ -86,7 +83,7 @@
         highlight-current-row
       >
         <el-table-column label="Name" width="240" prop="name">
-          <template #default="scope">{{ scope.row.name | formatEmpty }}</template>
+          <template #default="scope">{{ formatEmpty(scope.row.name) }}</template>
         </el-table-column>
 
         <el-table-column label="Protocol" width="100" prop="protocol">
@@ -96,7 +93,7 @@
           </template>
         </el-table-column>
         <el-table-column label="Address" prop="address">
-          <template #default="scope">{{ scope.row.address | formatEmpty }}</template>
+          <template #default="scope">{{ formatEmpty(scope.row.address) }}</template>
         </el-table-column>
       </el-table>
     </DescriptionList>
@@ -104,16 +101,19 @@
 </template>
 
 <script>
-import DescriptionList from "@/components/Descriptions";
-import Description from "@/components/Description";
+import DescriptionList from "@/components/Descriptions/index.vue";
+import Description from "@/components/Description/index.vue";
+import { formatEmpty, formatMemory } from "@/utils";
+import { WarningFilled } from "@element-plus/icons-vue";
 
 export default {
   name: "Detail",
   components: {
     DescriptionList,
     Description,
+    WarningFilled,
   },
-  props: ["record"],
+  props: { record: { type: [Object, String], default: null } },
   data() {
     return {
       data: [
@@ -126,6 +126,8 @@ export default {
   },
   mounted() { },
   methods: {
+    formatEmpty,
+    formatMemory,
     createChart(p) {
       console.info(p);
     },

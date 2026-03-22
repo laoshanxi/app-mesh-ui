@@ -1,26 +1,26 @@
 <template>
   <el-card
-    v-loading="loading" element-loading-text="Downloading" @keyup.native="clearScreenByKeyUp"
-    @keydown.native="clearScreenByKeyDown"
+    @keyup="clearScreenByKeyUp"
+    @keydown="clearScreenByKeyDown"
   >
     <template #header>
-    <el-row>
-      <el-col :span="3" style="text-align: center;height: 38px; line-height: 38px;">
-        <el-switch v-model="isSync" active-text="Sync" inactive-text="Async"></el-switch>
-      </el-col>
-      <el-col :span="2" style="text-align: center;height: 38px; line-height: 38px;">Timeout</el-col>
-      <el-col :span="10">
-        <el-slider v-model="timeout" :min="5" :max="60" show-input :marks="marks"></el-slider>
-      </el-col>
-      <el-col :span="9"></el-col>
-    </el-row>
+      <el-row>
+        <el-col :span="3" style="text-align: center;height: 38px; line-height: 38px;">
+          <el-switch v-model="isSync" active-text="Sync" inactive-text="Async"></el-switch>
+        </el-col>
+        <el-col :span="2" style="text-align: center;height: 38px; line-height: 38px;">Timeout</el-col>
+        <el-col :span="10">
+          <el-slider v-model="timeout" :min="5" :max="60" show-input :marks="marks"></el-slider>
+        </el-col>
+        <el-col :span="9"></el-col>
+      </el-row>
     </template>
-    <div ref="shell_div" class="shell-div" @click="moveFocus">
+    <div ref="shell_div" v-loading="loading" element-loading-text="Downloading" class="shell-div" @click="moveFocus">
       <el-button-group class="buttonsArea">
-        <i class="el-icon-delete" @click="clearScreen"></i>
+        <el-icon @click="clearScreen"><Delete /></el-icon>
       </el-button-group>
       <div class="shell-content">
-        <div v-for="(line, index) in shellContents" :key="index" class="shell-line">
+        <div v-for="(line, lineIndex) in shellContents" :key="lineIndex" class="shell-line">
           <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{ line.content }}</pre>
           <json-viewer
             v-else-if="line.type == 'json'" boxed theme="my-awesome-json-theme" :value="line.content"
@@ -35,8 +35,8 @@
 
         <el-input
           v-if="connected == 2" ref="input" v-model="input" :disabled="inputDisabled" class="shell-input"
-          placeholder="Please enter a command" @keyup.enter.native="runShell()" @keyup.up.native="upCommand"
-          @keyup.down.native="downCommand"
+          placeholder="Please enter a command" @keyup.enter="runShell()" @keyup.up="upCommand"
+          @keyup.down="downCommand"
         >
           <template #prepend>
             <pre># </pre>
@@ -50,10 +50,11 @@
 <script>
 import shellService from "@/services/shell";
 import fileService from "@/services/file";
+import { Delete } from "@element-plus/icons-vue";
 
 export default {
   name: "Shell",
-  components: {},
+  components: { Delete },
   data() {
     return {
       loading: false,
@@ -83,7 +84,7 @@ export default {
     };
   },
   created() { },
-  destroyed() {
+  unmounted() {
     if (this.timer) {
       clearInterval(this.timer);
       this.timer = null;
@@ -110,7 +111,7 @@ export default {
       }
     },
     moveFocus() {
-      this.$refs["input"].focus();
+      if (this.$refs["input"]) this.$refs["input"].focus();
     },
     upCommand() {
       if (this.commands.length == 0) {
@@ -154,14 +155,30 @@ export default {
 </script>
 
 <style>
-.shell-input,
-.shell-input>div,
-.shell-input>input {
+.shell-input {
+  width: 100% !important;
+}
+
+.shell-input .el-input__wrapper,
+.shell-input .el-input__inner {
   border: 0px !important;
+  box-shadow: none !important;
   margin: 0px !important;
   padding: 0px !important;
   background-color: #001528 !important;
   color: #889aa4;
+}
+
+.shell-input .el-input-group__prepend {
+  border: 0px !important;
+  box-shadow: none !important;
+  background-color: #001528 !important;
+  color: #889aa4;
+  padding: 0 5px !important;
+}
+
+.el-card .el-card__body {
+  padding: 0 !important;
 }
 </style>
 <style scoped>

@@ -1,47 +1,23 @@
-VER=2.2.1
+VER=3.0.0
 NODE_VER=20
-DOCKER_IMG_NAME=appmesh-ui:${VER}
+DOCKER_IMG_NAME=laoshanxi/appmesh-ui
 
-all:
-	make buildnode
-	make pack
-
-buildnode:
-	appc unreg -n appweb -f
-	- docker rm -f ui_build
-	docker run --name ui_build --rm -v `pwd`:/workspace -v `pwd`:/root --workdir /workspace node:${NODE_VER} sh -c "cd /workspace; npm config set cache /workspace; npm install; npm run build:prod"
-
-pack:
-	- docker rm -f appweb
-	- docker rmi -f ${DOCKER_IMG_NAME}
-	mkdir dockerbuild; cp -r nginx dist dockerbuild/ && docker build -t ${DOCKER_IMG_NAME} -f Dockerfile.local ./dockerbuild
-	- docker rmi -f laoshanxi/appmesh-ui:${VER}
-	- docker rmi -f laoshanxi/appmesh-ui
-	docker tag ${DOCKER_IMG_NAME} laoshanxi/appmesh-ui:${VER}
-	docker tag laoshanxi/appmesh-ui:${VER} laoshanxi/appmesh-ui:latest
+build:
+	docker build --no-cache -t ${DOCKER_IMG_NAME}:${VER} -t ${DOCKER_IMG_NAME}:latest .
 
 push:
-	docker push laoshanxi/appmesh-ui:${VER}
-	docker push laoshanxi/appmesh-ui:latest
+	docker push ${DOCKER_IMG_NAME}:${VER}
+	docker push ${DOCKER_IMG_NAME}:latest
 
 run:
 	appc logon -u admin -x admin123
 	appc unreg -n appweb -f
-	# use host mode for nginx reverse proxy redirect to 6060/8500
-	appc reg -n appweb --perm 11 --exit restart -u root -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d "laoshanxi/appmesh-ui:${VER}" -f
+	appc reg -n appweb --perm 11 --exit restart -u root -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d "${DOCKER_IMG_NAME}:${VER}" -f
 
 dev:
-  nvm install 18
-  nvm use 18
-	npm install
+	npm install --legacy-peer-deps
 	npm run dev
-	#This will automatically open http://localhost:9528
-
-install_dep:
-	sudo apt install -y nodejs npm
 
 clean:
-	-docker rm -f appweb
-	-docker rmi -f ${DOCKER_IMG_NAME}
-	rm -rf ./*.tar ./*.gz
-	#rm -rf ./node_modules
+	-docker rmi -f ${DOCKER_IMG_NAME}:${VER}
+	-docker rmi -f ${DOCKER_IMG_NAME}:latest

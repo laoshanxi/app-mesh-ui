@@ -13,7 +13,7 @@
 
 <script>
 import { Navbar, Sidebar, AppMain } from './components'
-import ResizeMixin from './mixin/ResizeHandler'
+import ResizeMixin from './mixin/ResizeHandler.js'
 
 export default {
   name: 'Layout',
@@ -51,8 +51,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "~@/styles/mixin.scss" as *;
-@use "~@/styles/variables.scss" as *;
+@use "@/styles/mixin.scss" as *;
+@use "@/styles/variables.scss" as *;
 
 .app-wrapper {
   @include clearfix;

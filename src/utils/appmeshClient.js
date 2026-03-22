@@ -1,5 +1,5 @@
 import { AppMeshClient } from "appmesh";
-import { Message } from "element-ui";
+import { ElMessage } from "element-plus";
 import { HttpStatus } from "./constants";
 import store from "@/store";
 import router from "@/router";
@@ -27,15 +27,15 @@ export class VueAppMeshClient extends AppMeshClient {
       );
 
       // Prevent redirect loops
-      const currentPath = router.currentRoute.path;
+      const currentPath = router.currentRoute.value.path;
       if (!currentPath.startsWith("/login")) {
-        const redirectParam = encodeURIComponent(router.currentRoute.fullPath);
+        const redirectParam = encodeURIComponent(router.currentRoute.value.fullPath);
         router.push(`/login?redirect=${redirectParam}`);
       }
     }
 
     // Display error message
-    Message({
+    ElMessage({
       message: error?.message || "Unknown error occurred",
       type: "error",
       duration: 5000,

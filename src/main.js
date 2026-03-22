@@ -1,27 +1,23 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 
-import 'normalize.css/normalize.css' // A modern alternative to CSS resets
+import 'normalize.css/normalize.css'
 
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 
 import '@/iconfont/iconfont.css'
 import '@/iconfont/iconfont.js'
-import '@/styles/index.scss' // global css
-import App from './App'
+import '@/styles/index.scss'
+import App from './App.vue'
 import store from './store'
 import router from './router'
 
-import '@/icons' // icon
-import '@/permission' // permission control
+import '@/permission'
 
-import * as filters from './filters' // global filters
 import JsonViewer from 'vue-json-viewer'
-Vue.use(JsonViewer);
 
-import AFTableColumn from 'af-table-column'// resolve column width issue
-Vue.use(AFTableColumn);
+import 'virtual:svg-icons-register'
+import SvgIcon from '@/components/SvgIcon/index.vue'
 
 /**
  * If you don't want to use mock-server
@@ -33,26 +29,17 @@ Vue.use(AFTableColumn);
  */
 import { mockXHR } from '../mock'
 
-if (process.env.NODE_ENV === 'production') {
+if (import.meta.env.PROD) {
   mockXHR()
 }
 
-// set ElementUI lang to EN
-Vue.use(ElementUI, { locale })
-// 如果想要中文版 element-ui，按如下方式声明
-// Vue.use(ElementUI)
+const app = createApp(App)
 
-// register global utility filters
-Object.keys(filters).forEach(key => {
-  Vue.filter(key, filters[key])
-})
+app.use(ElementPlus)
+app.use(JsonViewer)
+app.use(store)
+app.use(router)
 
+app.component('SvgIcon', SvgIcon)
 
-Vue.config.productionTip = false
-
-new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App)
-})
+app.mount('#app')

@@ -61,7 +61,7 @@ const actions = {
       name: UserName,
       account: UserName,
       auth: Password,
-      avatar: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
+      avatar: ""
     };
 
     commit('SET_NAME', user.name);
@@ -84,7 +84,7 @@ const actions = {
   },
 
   // get user info
-  getInfo({ commit, state }) {
+  getInfo({ commit, state: _state }) {
     return new Promise((resolve, reject) => {
       getClient().get_current_user().then(data => {
         if (!data) {

@@ -46,7 +46,7 @@
         </el-tabs>
       </el-col>
     </el-row>
-    <el-dialog title="Setup MFA" :visible.sync="qrDialogVisible" width="30%">
+    <el-dialog v-model="qrDialogVisible" title="Setup MFA" width="30%">
       <div v-if="qrCodeData" class="text-center">
         <qrcode :value="qrCodeData" :size="200"></qrcode>
         <el-input v-model="totpCode" placeholder="Enter TOTP code" style="margin-top: 20px"></el-input>
@@ -63,6 +63,7 @@
 
 <script>
 import { getClient } from '@/utils/appmeshClient'
+import { ElMessageBox, ElMessage } from "element-plus";
 import VueQrcode from 'qrcode.vue'
 
 export default {
@@ -108,7 +109,7 @@ export default {
         this.loading = true;
         try {
           await getClient().update_password(this.form.curPwd, this.form.newPwd);
-          this.$message.success("Password update successfully.", 5000);
+          ElMessage.success("Password update successfully.");
         } catch (error) {
           console.error('Failed to update password:', error);
         } finally {
@@ -125,34 +126,34 @@ export default {
         }
       } catch (error) {
         console.error('Failed to get user MFA status:', error);
-        this.$message.error('Failed to get MFA status');
+        ElMessage.error('Failed to get MFA status');
       } finally {
         this.loading = false;
       }
     },
     async verifyTotp() {
       if (!this.totpCode) {
-        this.$message.error('Please enter TOTP code');
+        ElMessage.error('Please enter TOTP code');
         return;
       }
 
       try {
         await getClient().enable_totp(this.totpCode);
-        this.$message.success('MFA setup successfully');
+        ElMessage.success('MFA setup successfully');
         this.qrDialogVisible = false;
         this.qrCodeData = '';
         this.totpCode = '';
         this.loadUserMfaStatus();
       } catch (error) {
         console.error('Invalid TOTP code:', error);
-        this.$message.error('Invalid TOTP code');
+        ElMessage.error('Invalid TOTP code');
       }
     },
     async handleMfaChange(newVal) {
       if (newVal) {
         // Enable MFA
         try {
-          await this.$confirm('Do you want to enable 2FA?', 'Warning', {
+          await ElMessageBox.confirm('Do you want to enable 2FA?', 'Warning', {
             confirmButtonText: 'OK',
             cancelButtonText: 'Cancel',
             type: 'warning'
@@ -165,27 +166,27 @@ export default {
             this.form.mfaEnabled = false;
           } else {
             console.error('Failed to get TOTP secret:', error);
-            this.$message.error('Failed to get TOTP secret');
+            ElMessage.error('Failed to get TOTP secret');
             this.form.mfaEnabled = false;
           }
         }
       } else {
         // Disable MFA
         try {
-          await this.$confirm('Do you want to disable 2FA?', 'Warning', {
+          await ElMessageBox.confirm('Do you want to disable 2FA?', 'Warning', {
             confirmButtonText: 'OK',
             cancelButtonText: 'Cancel',
             type: 'warning'
           });
 
           await getClient().disable_totp("self");
-          this.$message.success('MFA disabled successfully');
+          ElMessage.success('MFA disabled successfully');
         } catch (error) {
           if (error === 'cancel') {
             this.form.mfaEnabled = true;
           } else {
             console.error('Failed to disable MFA:', error);
-            this.$message.error('Failed to disable MFA');
+            ElMessage.error('Failed to disable MFA');
             this.form.mfaEnabled = true;
           }
         }

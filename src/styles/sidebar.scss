@@ -210,16 +210,36 @@
     }
 
     .el-menu--collapse {
-      .el-submenu {
-        &>.el-submenu__title {
-          &>span {
-            height: 0;
-            width: 0;
-            overflow: hidden;
-            visibility: hidden;
-            display: inline-block;
-          }
-        }
+
+      .el-menu-item,
+      .el-submenu > .el-submenu__title {
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        height: 56px;
+      }
+
+      // hide ALL text spans inside collapsed menu
+      .el-menu-item span,
+      .el-submenu__title span {
+        display: none !important;
+      }
+
+      // hide submenu arrow in collapsed mode
+      .el-submenu__icon-arrow {
+        display: none !important;
+      }
+
+      // show only svg icons, centered
+      .svg-icon {
+        display: inline-block !important;
+        visibility: visible !important;
+        width: 1em !important;
+        height: 1em !important;
+        overflow: visible !important;
+        margin: 0 !important;
+        font-size: 18px;
       }
     }
   }

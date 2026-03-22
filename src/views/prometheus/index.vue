@@ -4,9 +4,11 @@
       <el-col :span="24">
         <el-tabs type="border-card">
           <el-tab-pane>
-            <template #label><span>
-              <i class="iconfont icon-Prometheus"></i> Prometheus
-            </span></template>
+            <template #label>
+              <span>
+                <i class="iconfont icon-Prometheus"></i> Prometheus
+              </span>
+            </template>
             <pre class="log">{{ content }}</pre>
           </el-tab-pane>
         </el-tabs>

@@ -1,4 +1,5 @@
 import { getClient } from '@/utils/appmeshClient'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default {
   getLabels(vueComp) {
@@ -7,7 +8,7 @@ export default {
         vueComp.labels = Object.entries(res).map(([key, value]) => ({ key, value }));
       })
       .catch(err => {
-        vueComp.$message.error(`Get labels failed: ${err.data}`, 5000);
+        ElMessage.error(`Get labels failed: ${err.data}`);
       })
       .finally(() => {
         vueComp.listLoading = false;
@@ -16,18 +17,18 @@ export default {
 
   updateLabel(vueComp, row) {
     if (!row?.key?.trim() || !row?.value?.trim()) {
-      vueComp.$message.error('Label key and value cannot be empty', 5000);
+      ElMessage.error('Label key and value cannot be empty');
       return;
     }
 
     vueComp.listLoading = true;
     return getClient().add_label(row.key.trim(), row.value.trim())
       .then(() => {
-        vueComp.$message.success('Label updated successfully', 5000);
+        ElMessage.success('Label updated successfully');
         vueComp.refresh();
       })
       .catch(err => {
-        vueComp.$message.error(`Update label failed: ${err.data}`, 5000);
+        ElMessage.error(`Update label failed: ${err.data}`);
       })
       .finally(() => {
         vueComp.listLoading = false;
@@ -36,11 +37,11 @@ export default {
 
   deleteLabel(vueComp, row) {
     if (!row?.key) {
-      vueComp.$message.error('Invalid label key', 5000);
+      ElMessage.error('Invalid label key');
       return;
     }
 
-    return vueComp.$confirm(
+    return ElMessageBox.confirm(
       `Do you want to remove the label "${row.key}"?`,
       'Confirm',
       {
@@ -54,12 +55,12 @@ export default {
         return getClient().delete_label(row.key);
       })
       .then(() => {
-        vueComp.$message.success(`Label "${row.key}" removed successfully`, 5000);
+        ElMessage.success(`Label "${row.key}" removed successfully`);
         vueComp.refresh();
       })
       .catch(err => {
         if (err !== 'cancel') {
-          vueComp.$message.error(`Delete label failed: ${err}`, 5000);
+          ElMessage.error(`Delete label failed: ${err}`);
         }
       })
       .finally(() => {

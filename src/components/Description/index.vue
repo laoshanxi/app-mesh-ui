@@ -12,9 +12,9 @@
 export default {
   name: "Description",
   props: {
-    title: String,
-    term: String,
-    termStyle: String,
+    title: { type: String, default: '' },
+    term: { type: String, default: '' },
+    termStyle: { type: String, default: '' },
   },
   computed: {
     col() {

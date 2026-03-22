@@ -11,7 +11,7 @@ export default {
     $route: {
       handler(to) {
         try {
-          const baseTitle = window.VUE_APP_TITLE || process.env.VUE_APP_TITLE || 'App Mesh';
+          const baseTitle = window.VUE_APP_TITLE || 'App Mesh';
           const pageTitle = to.meta?.title?.trim();
           document.title = pageTitle ? `${baseTitle} - ${pageTitle}` : baseTitle;
         } catch (err) {

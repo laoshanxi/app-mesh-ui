@@ -1,6 +1,6 @@
 import router from "./router";
 import store from "./store";
-import { Message } from "element-ui";
+import { ElMessage } from "element-plus";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import getPageTitle from "@/utils/get-page-title";
@@ -55,46 +55,10 @@ const handleRouterError = (error, type = "error") => {
   console.error(`Router ${type}:`, error);
 
   if (error?.message) {
-    Message.error(error.message);
+    ElMessage.error(error.message);
   }
 
   finishLoading(true);
-};
-
-// Override router.push to handle navigation duplications silently
-const originalPush = router.push;
-router.push = function push(location, onResolve, onReject) {
-  if (onResolve || onReject) {
-    return originalPush.call(this, location, onResolve, onReject);
-  }
-
-  return originalPush.call(this, location).catch((err) => {
-    const isBenignError =
-      err.name === "NavigationDuplicated" ||
-      (err.message && err.message.includes("Redirected"));
-
-    if (!isBenignError) {
-      console.error("Router push error:", err);
-    }
-  });
-};
-
-// Override router.replace to handle navigation duplications silently
-const originalReplace = router.replace;
-router.replace = function replace(location, onResolve, onReject) {
-  if (onResolve || onReject) {
-    return originalReplace.call(this, location, onResolve, onReject);
-  }
-
-  return originalReplace.call(this, location).catch((err) => {
-    const isBenignError =
-      err.name === "NavigationDuplicated" ||
-      (err.message && err.message.includes("Redirected"));
-
-    if (!isBenignError) {
-      console.error("Router replace error:", err);
-    }
-  });
 };
 
 // Navigation guard - runs before each route change
@@ -140,8 +104,8 @@ router.beforeEach(async (to, from, next) => {
     to.meta?.roles &&
     !hasRequiredPermission(userInfo.permissions, to.meta.roles)
   ) {
-    Message.error("You do not have permission to access this page");
-    next("/401"); // Redirect to unauthorized page
+    ElMessage.error("You do not have permission to access this page");
+    next({ path: "/401", replace: true }); // Redirect without adding to history
     return;
   }
 

@@ -35,10 +35,9 @@
             <el-col :span="2">Group:</el-col>
             <el-col :span="22">
               <el-radio-group v-model="registerForm.groupPermission">
-                <!-- <el-radio-button label="0">All</el-radio-button> -->
-                <el-radio-button label="1">Deny</el-radio-button>
-                <el-radio-button label="2">Read</el-radio-button>
-                <el-radio-button label="3">Write</el-radio-button>
+                <el-radio-button value="1">Deny</el-radio-button>
+                <el-radio-button value="2">Read</el-radio-button>
+                <el-radio-button value="3">Write</el-radio-button>
               </el-radio-group>
             </el-col>
           </el-row>
@@ -46,10 +45,9 @@
             <el-col :span="2">Other:</el-col>
             <el-col :span="22">
               <el-radio-group v-model="registerForm.otherPermission">
-                <!-- <el-radio-button label="0">All</el-radio-button> -->
-                <el-radio-button label="1">Deny</el-radio-button>
-                <el-radio-button label="2">Read</el-radio-button>
-                <el-radio-button label="3">Write</el-radio-button>
+                <el-radio-button value="1">Deny</el-radio-button>
+                <el-radio-button value="2">Read</el-radio-button>
+                <el-radio-button value="3">Write</el-radio-button>
               </el-radio-group>
             </el-col>
           </el-row>
@@ -87,13 +85,13 @@
 
         <el-form-item label="Start time" prop="start_time">
           <el-date-picker
-            v-model="registerForm.start_time_TEXT" value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
+            v-model="registerForm.start_time_TEXT" value-format="YYYY-MM-DD HH:mm:ss" type="datetime"
             placeholder
           ></el-date-picker>
         </el-form-item>
         <el-form-item label="End time" prop="end_time">
           <el-date-picker
-            v-model="registerForm.end_time_TEXT" value-format="yyyy-MM-dd HH:mm:ss" type="datetime"
+            v-model="registerForm.end_time_TEXT" value-format="YYYY-MM-DD HH:mm:ss" type="datetime"
             placeholder
           ></el-date-picker>
         </el-form-item>
@@ -144,7 +142,7 @@
         >
           <el-input ref="envs" v-model="env.name" style="width:200px"></el-input>=
           <el-input v-model="env.value" style="width:200px"></el-input>
-          <el-button icon="el-icon-delete" @click.prevent="removeEnvReg(env)"></el-button>
+          <el-button :icon="Delete" @click.prevent="removeEnvReg(env)"></el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -160,12 +158,16 @@
 <script>
 import applications from "@/services/applications";
 import { formatToLocal, formatToLocalDayTime, deepClone } from "@/utils";
+import { markRaw } from 'vue'
+import { Delete } from "@element-plus/icons-vue";
 
 export default {
   name: "AppReg",
-  props: ["propForm"],
+  props: { propForm: { type: Object, default: () => ({}) } },
+  emits: ['close', 'success'],
   data() {
     return {
+      Delete: markRaw(Delete),
       daily_time_range: null,
       initRegisterForm: null,
       registerForm: {},

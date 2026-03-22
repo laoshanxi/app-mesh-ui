@@ -22,6 +22,7 @@ export default {
       default: false
     }
   },
+  emits: ['toggleClick'],
   methods: {
     toggleClick() {
       this.$emit('toggleClick')

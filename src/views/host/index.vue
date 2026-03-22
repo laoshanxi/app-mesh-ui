@@ -2,9 +2,11 @@
   <div class="app-container">
     <el-tabs type="border-card">
       <el-tab-pane>
-        <template #label><span>
-          <i class="el-icon-monitor"></i> Host
-        </span></template>
+        <template #label>
+          <span>
+            <el-icon><Monitor /></el-icon> Host
+          </span>
+        </template>
         <el-row>
           <el-col :span="24" style="padding: 10px;">
             <detail :record="resources" />
@@ -18,13 +20,15 @@
       </el-tab-pane>
 
       <el-tab-pane>
-        <template #label><span>
-          <i class="el-icon-document"></i> Json
-        </span></template>
+        <template #label>
+          <span>
+            <el-icon><Document /></el-icon> Json
+          </span>
+        </template>
 
         <el-row>
           <el-col :span="1" style="text-align: right; padding-top: 20px;">
-            <i :class="btnIcon" style="cursor: pointer;" :title="button" @click="expandJson()"></i>
+            <el-icon style="cursor: pointer;" :title="button" @click="expandJson()"><component :is="btnIcon" /></el-icon>
           </el-col>
           <el-col :span="23">
             <el-row v-show="showExpand">
@@ -41,12 +45,18 @@
 </template>
 
 <script>
+import { markRaw } from 'vue'
+import { Monitor, Document, CirclePlus, RemoveFilled } from '@element-plus/icons-vue'
 import hostService from "@/services/host";
-import detail from "./detail";
+import detail from "./detail/index.vue";
 
 export default {
   components: {
     detail,
+    Monitor,
+    Document,
+    CirclePlus,
+    RemoveFilled
   },
   data() {
     return {
@@ -55,7 +65,7 @@ export default {
       showExpand: true,
       showCollapse: false,
       button: "Expand",
-      btnIcon: "el-icon-circle-plus-outline",
+      btnIcon: markRaw(CirclePlus),
       timer: null,
       memoryChart: null,
       memoryData: [],
@@ -64,6 +74,11 @@ export default {
   mounted() {
     this.initData();
     // this.monitor();
+  },
+  unmounted() {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
   },
   methods: {
     initData() {
@@ -75,11 +90,6 @@ export default {
         hostService.getResourcesForChart(this);
       }, 1000);
     },
-    destroyed() {
-      if (this.timer) {
-        clearInterval(this.timer);
-      }
-    },
     expandJson() {
       let tmpJson = this.resources;
       if (this.showExpand) {
@@ -88,14 +98,14 @@ export default {
         this.showCollapse = true;
         this.button = "Collapse";
         this.resources = tmpJson;
-        this.btnIcon = "el-icon-remove-outline";
+        this.btnIcon = markRaw(RemoveFilled);
       } else {
         this.resources = "";
         this.showExpand = true;
         this.showCollapse = false;
         this.button = "Expand";
         this.resources = tmpJson;
-        this.btnIcon = "el-icon-circle-plus-outline";
+        this.btnIcon = markRaw(CirclePlus);
       }
     },
   },

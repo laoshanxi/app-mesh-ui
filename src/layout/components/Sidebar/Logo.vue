@@ -1,14 +1,9 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
-    <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <svg-icon v-if="logo" icon-class="logo" style="cursor: pointer; margin:0px; width:55px;height: 40px;vertical-align: middle;" />
-        <h1 v-else class="sidebar-title">{{ title }} </h1>
-      </router-link>
-      <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <h1 class="sidebar-title"><svg-icon icon-class="logo" style="cursor: pointer;margin:0px; width:55px;height: 40px;vertical-align: middle;" />{{ title }} </h1>
-      </router-link>
-    </transition>
+  <div class="sidebar-logo-container" :class="{ collapse: collapse }">
+    <router-link class="sidebar-logo-link" to="/">
+      <img src="@/icons/svg/logo.svg" class="sidebar-logo" />
+      <span v-show="!collapse" class="sidebar-title">{{ title }}</span>
+    </router-link>
   </div>
 </template>
 
@@ -21,68 +16,51 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      logo: true
+  computed: {
+    title() {
+      return this.$store.state.settings.title
     }
-  },
-  computed:{
-    title(){
-      // console.info(this.$store.state);
-      return this.$store.state.settings.title;
-    }
-  },
-  created(){
   }
 }
 </script>
 
-<style lang="scss" scoped>
-.sidebarLogoFade-enter-active {
-  transition: opacity 1.5s;
-}
-
-.sidebarLogoFade-enter,
-.sidebarLogoFade-leave-to {
-  opacity: 0;
-}
-
+<style scoped>
 .sidebar-logo-container {
-  position: relative;
   width: 100%;
   height: 50px;
   line-height: 50px;
   background: #2b2f3a;
-  text-align: center;
   overflow: hidden;
+  font-size: 14px !important;
+}
 
-  & .sidebar-logo-link {
-    height: 100%;
-    width: 100%;
+.sidebar-logo-link {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  height: 50px;
+  width: 100%;
+  padding-left: 11px;
+  text-decoration: none;
+}
 
-    & .sidebar-logo {
-      width: 32px;
-      height: 32px;
-      vertical-align: middle;
-      margin-right: 12px;
-    }
+.sidebar-logo {
+  width: 46px;
+  height: 46px;
+  flex-shrink: 0;
+}
 
-    & .sidebar-title {
-      display: inline-block;
-      margin: 0;
-      color: #fff;
-      font-weight: 600;
-      line-height: 50px;
-      font-size: 18px;
-      font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
-      vertical-align: middle;
-    }
-  }
+.sidebar-title {
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px !important;
+  margin-left: 10px;
+  white-space: nowrap;
+  font-family: Avenir, Helvetica Neue, Arial, Helvetica, sans-serif;
+}
 
-  &.collapse {
-    .sidebar-logo {
-      margin-right: 0px;
-    }
-  }
+.collapse .sidebar-logo-link {
+  justify-content: center;
+  padding-left: 0;
 }
 </style>

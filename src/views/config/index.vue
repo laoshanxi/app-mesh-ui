@@ -4,14 +4,16 @@
       <el-col :span="24">
         <el-tabs ref="tabs" v-model="activeTab" type="border-card">
           <el-tab-pane name="config" style="min-width: 600px">
-            <template #label><span>
-              <i class="el-icon-s-operation" /> Configuration
-            </span></template>
+            <template #label>
+              <span>
+                <el-icon><Setting /></el-icon> Configuration
+              </span>
+            </template>
             <el-form ref="form" :model="form" :rules="rules" label-width="260px">
               <el-collapse v-model="activeNames">
                 <el-collapse-item name="1">
                   <template #title>
-                    <i class="el-icon-setting" style="margin-right: 8px;" />
+                    <el-icon style="margin-right: 8px;"><Setting /></el-icon>
                     Basic
                   </template>
                   <el-form-item label="Version" prop="Version">
@@ -53,7 +55,7 @@
 
                 <el-collapse-item name="2">
                   <template #title>
-                    <i class="el-icon-connection" style="margin-right: 8px;" />
+                    <el-icon style="margin-right: 8px;"><Connection /></el-icon>
                     Web
                   </template>
                   <el-form-item label="Rest enabled" prop="REST.RestEnabled">
@@ -66,41 +68,41 @@
                     <el-input-number v-model="form.REST.WorkerThreadPoolSize" />
                   </el-form-item>
                   <el-form-item label="IO thread pool size" prop="REST.IOThreadPoolSize">
-                     <el-input-number v-model="form.REST.IOThreadPoolSize" />
-                   </el-form-item>
-                   <el-form-item label="Password complexity enabled" prop="REST.PasswordComplexityEnabled">
-                     <el-switch
-                       v-model="form.REST.PasswordComplexityEnabled" active-text="Yes" :active-value="true"
-                       inactive-text="No" :inactive-value="false"
-                     />
-                   </el-form-item>
-                   <el-form-item label="CORS disabled" prop="REST.CorsDisabled">
-                     <el-switch
-                       v-model="form.REST.CorsDisabled" active-text="Yes" :active-value="true"
-                       inactive-text="No" :inactive-value="false"
-                     />
-                   </el-form-item>
-                   <el-form-item label="File allowed base dir" prop="REST.FileAllowedBaseDir">
-                     <el-input v-model="form.REST.FileAllowedBaseDir" />
-                   </el-form-item>
-                   <el-form-item label="Rest listen address" prop="REST.RestListenAddress">
-                     <el-input v-model="form.REST.RestListenAddress" />
-                   </el-form-item>
-                   <el-form-item label="Rest listen port" prop="REST.RestListenPort">
-                     <el-input-number v-model="form.REST.RestListenPort" :min="1024" :max="65534" />
-                   </el-form-item>
+                    <el-input-number v-model="form.REST.IOThreadPoolSize" />
+                  </el-form-item>
+                  <el-form-item label="Password complexity enabled" prop="REST.PasswordComplexityEnabled">
+                    <el-switch
+                      v-model="form.REST.PasswordComplexityEnabled" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false"
+                    />
+                  </el-form-item>
+                  <el-form-item label="CORS disabled" prop="REST.CorsDisabled">
+                    <el-switch
+                      v-model="form.REST.CorsDisabled" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false"
+                    />
+                  </el-form-item>
+                  <el-form-item label="File allowed base dir" prop="REST.FileAllowedBaseDir">
+                    <el-input v-model="form.REST.FileAllowedBaseDir" />
+                  </el-form-item>
+                  <el-form-item label="Rest listen address" prop="REST.RestListenAddress">
+                    <el-input v-model="form.REST.RestListenAddress" />
+                  </el-form-item>
+                  <el-form-item label="Rest listen port" prop="REST.RestListenPort">
+                    <el-input-number v-model="form.REST.RestListenPort" :min="1024" :max="65534" />
+                  </el-form-item>
 
-                   <el-form-item label="TCP rest listen port" prop="REST.RestTcpPort">
-                     <el-input-number v-model="form.REST.RestTcpPort" :min="1024" :max="65534" />
-                   </el-form-item>
+                  <el-form-item label="TCP rest listen port" prop="REST.RestTcpPort">
+                    <el-input-number v-model="form.REST.RestTcpPort" :min="1024" :max="65534" />
+                  </el-form-item>
 
-                   <el-form-item label="WebSocket port" prop="REST.WebSocketPort">
-                     <el-input-number v-model="form.REST.WebSocketPort" :min="0" :max="65534" />
-                   </el-form-item>
+                  <el-form-item label="WebSocket port" prop="REST.WebSocketPort">
+                    <el-input-number v-model="form.REST.WebSocketPort" :min="0" :max="65534" />
+                  </el-form-item>
 
-                   <el-form-item label="Prometheus exporter listen port" prop="REST.PrometheusExporterListenPort">
-                     <el-input-number v-model="form.REST.PrometheusExporterListenPort" :min="0" :max="65534" />
-                   </el-form-item>
+                  <el-form-item label="Prometheus exporter listen port" prop="REST.PrometheusExporterListenPort">
+                    <el-input-number v-model="form.REST.PrometheusExporterListenPort" :min="0" :max="65534" />
+                  </el-form-item>
 
                   <el-form-item label="SSL verify server" prop="REST.SSL.VerifyServer">
                     <el-switch
@@ -139,7 +141,7 @@
                 </el-collapse-item>
                 <el-collapse-item name="3">
                   <template #title>
-                    <i class="el-icon-key" style="margin-right: 8px;" />
+                    <el-icon style="margin-right: 8px;"><Key /></el-icon>
                     JWT
                   </template>
                   <el-form-item label="JWT Salt" prop="REST.JWT.JWTSalt">
@@ -174,9 +176,11 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane name="labels" style="min-width: 600px">
-            <template #label><span>
-              <i class="el-icon-collection-tag" /> Labels
-            </span></template>
+            <template #label>
+              <span>
+                <el-icon><CollectionTag /></el-icon> Labels
+              </span>
+            </template>
             <el-row>
               <el-table
                 :key="tableKey" v-loading="listLoading" :data="labels" element-loading-text="Loading" border
@@ -186,7 +190,7 @@
                 <el-table-column label="Key" width="300">
                   <template #default="scope">
                     <el-input
-                      v-if="scope.row.isEdit" v-model="scope.row.key" size="mini"
+                      v-if="scope.row.isEdit" v-model="scope.row.key" size="small"
                       placeholder="Please enter key"
                     ></el-input>
                     <span v-else>{{ scope.row.key }}</span>
@@ -196,7 +200,7 @@
                 <el-table-column label="Value">
                   <template #default="scope">
                     <el-input
-                      v-if="scope.row.isEdit" v-model="scope.row.value" size="mini"
+                      v-if="scope.row.isEdit" v-model="scope.row.value" size="small"
                       placeholder="Please enter value"
                     ></el-input>
                     <span v-else>{{ scope.row.value }}</span>
@@ -205,19 +209,19 @@
                 <el-table-column label="Action" width="260">
                   <template #default="scope">
                     <el-button
-                      v-if="!scope.row.isEdit" type="text" icon="el-icon-edit" :disabled="isEdit"
+                      v-if="!scope.row.isEdit" text :icon="EditIcon" :disabled="isEdit"
                       @click="editLabel(scope.row)"
                     >
                       Edit
                     </el-button>
-                    <el-button v-if="scope.row.isEdit" type="text" icon="el-icon-save" @click="cancelUpdate(scope.row)">
+                    <el-button v-if="scope.row.isEdit" text :icon="CircleCheck" @click="cancelUpdate(scope.row)">
                       Cancel
                     </el-button>
-                    <el-button v-if="scope.row.isEdit" type="text" icon="el-icon-save" @click="updateLabel(scope.row)">
+                    <el-button v-if="scope.row.isEdit" text :icon="CircleCheck" @click="updateLabel(scope.row)">
                       Save
                     </el-button>
                     <el-button
-                      v-if="!scope.row.isNew" type="text" icon="el-icon-delete" :disabled="isEdit"
+                      v-if="!scope.row.isNew" text :icon="Delete" :disabled="isEdit"
                       @click="removeLabel(scope.row)"
                     >
                       Remove
@@ -238,7 +242,7 @@
         Reset
       </el-button>
       <el-button-group v-show="!isConfigTab">
-        <el-button size="small" type="primary" icon="el-icon-plus" :disabled="isEdit" @click="addLabel()">
+        <el-button size="small" type="primary" :icon="Plus" :disabled="isEdit" @click="addLabel()">
           Add
         </el-button>
       </el-button-group>
@@ -247,12 +251,24 @@
 </template>
 
 <script>
+import { markRaw } from 'vue'
+import { Setting, Connection, Key, CollectionTag, Edit as EditIcon, CircleCheck, Delete, Plus } from '@element-plus/icons-vue'
 import configService from "@/services/config";
 import labelsService from "@/services/labels";
 
 export default {
+  components: {
+    Setting,
+    Connection,
+    Key,
+    CollectionTag,
+  },
   data() {
     return {
+      EditIcon: markRaw(EditIcon),
+      CircleCheck: markRaw(CircleCheck),
+      Delete: markRaw(Delete),
+      Plus: markRaw(Plus),
       loading: false,
       activeNames: ["1", "2", "3", "4"],
       activeTab: 'config',
@@ -408,7 +424,7 @@ export default {
       });
       this.isEdit = true;
     },
-    currentRowChange(currentRow, oldCurrentRow) {
+    currentRowChange(currentRow, _oldCurrentRow) {
       this.currentRow = currentRow;
       if (!currentRow) {
         this.isSelected = false;
@@ -449,21 +465,36 @@ export default {
 
 <style>
 .el-collapse-item__header {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: bold;
+  padding: 0 15px;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
 .el-collapse-item .el-collapse-item__header {
   background-color: #d6e7fa;
+  border-left: 3px solid #409EFF;
 }
 
-.el-collapse-item__header i {
-  margin-right: 8px;
+.el-collapse-item .el-collapse-item__header:hover {
+  background-color: #c5dcf5;
+}
+
+.el-collapse-item .el-collapse-item__header .el-icon {
+  color: #409EFF;
+}
+
+.el-collapse-item__header .el-collapse-item__arrow {
+  font-size: 16px;
+  font-weight: bold;
   color: #409EFF;
 }
 
 .control {
-  padding-top: 10px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
 }
 </style>

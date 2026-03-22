@@ -24,7 +24,7 @@
         </span>
         <el-input
           :key="passwordType" ref="Password" v-model="loginForm.Password" :type="passwordType"
-          placeholder="Password" name="Password" tabindex="2" auto-complete="on" @keyup.enter.native="handleLogin()"
+          placeholder="Password" name="Password" tabindex="2" auto-complete="on" @keyup.enter="handleLogin()"
         />
         <span class="show-pwd" @click="showPwd">
           <svg-icon :icon-class="passwordType === 'Password' ? 'eye' : 'eye-open'" />
@@ -37,14 +37,14 @@
         </span>
         <el-input
           ref="Totp" v-model="loginForm.Totp" placeholder="Please enter your TOTP code" name="Totp" type="text"
-          tabindex="3" auto-complete="on" @keyup.enter.native="handleTotpSubmit"
+          tabindex="3" auto-complete="on" @keyup.enter="handleTotpSubmit"
         />
       </el-form-item>
 
       <el-button
         :loading="loading" type="primary" tabindex="4" style="width:100%;margin-bottom:30px;"
-        @click.native.prevent="totpMode ? handleTotpSubmit() : handleLogin()"
-        @keyup.enter.native="totpMode ? handleTotpSubmit() : handleLogin()"
+        @click.prevent="totpMode ? handleTotpSubmit() : handleLogin()"
+        @keyup.enter="totpMode ? handleTotpSubmit() : handleLogin()"
       >
         {{ totpMode ? 'Submit TOTP' : 'Login' }}
       </el-button>
@@ -55,6 +55,7 @@
 <script>
 import { validUsername } from "@/utils/validate";
 import { HttpStatus } from "@/utils/constants";
+import { ElMessage } from "element-plus";
 
 export default {
   name: "Login",
@@ -75,7 +76,7 @@ export default {
     };
     return {
       loginForm: {
-        appName: window.VUE_APP_TITLE || process.env.VUE_APP_TITLE || "App Mesh",
+        appName: window.VUE_APP_TITLE || "App Mesh",
         UserName: "",
         Totp: "",
         Password: "",
@@ -104,7 +105,9 @@ export default {
   watch: {
     $route: {
       handler: function (route) {
-        this.redirect = route.query && route.query.redirect;
+        const redirect = route.query && route.query.redirect;
+        // Don't redirect back to error pages
+        this.redirect = (redirect && !redirect.startsWith('/401') && !redirect.startsWith('/404')) ? redirect : '/';
       },
       immediate: true,
     },
@@ -152,7 +155,7 @@ export default {
         if (this.isTotpChallenge(error)) {
           this.handleTotpChallenge(error);
         } else {
-          this.$message({
+          ElMessage({
             message: error.message || 'Login failed',
             type: 'error',
             duration: 5000
@@ -171,7 +174,7 @@ export default {
      */
     async handleTotpSubmit() {
       if (!this.loginForm.Totp) {
-        this.$message({
+        ElMessage({
           message: 'Please enter TOTP code',
           type: 'info',
           duration: 5000
@@ -198,7 +201,7 @@ export default {
         await this.restoreForwarding(originalForwarding);
         this.$router.push({ path: this.redirect || "/" });
       } catch (error) {
-        this.$message.error(error.message || 'TOTP validation failed');
+        ElMessage.error(error.message || 'TOTP validation failed');
         await this.restoreForwarding(originalForwarding);
       } finally {
         this.loading = false;
@@ -223,7 +226,7 @@ export default {
     handleTotpChallenge(error) {
       this.loginForm.TotpChallenge = error.responseData["totp_challenge"];
       this.totpMode = true;
-      this.$message({
+      ElMessage({
           message: 'Please enter TOTP code',
           type: 'info',
           duration: 5000
@@ -254,21 +257,40 @@ $light_gray: #fff;
 $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
+  .login-container .el-input__inner {
     color: $cursor;
   }
 }
 
-/* reset element-ui css */
+/* reset element-plus css */
 .login-container {
 
-  .el-input,
-  .el-autocomplete {
+  .el-form-item {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    color: #454545;
+
+    .el-form-item__content {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .el-input {
     display: inline-block;
     height: 47px;
-    width: 85%;
+    flex: 1;
 
-    input {
+    .el-input__wrapper {
+      background: transparent;
+      box-shadow: none !important;
+      border-radius: 0px;
+      padding: 0;
+      height: 47px;
+    }
+
+    .el-input__inner {
       background: transparent;
       border: 0px;
       appearance: none;
@@ -284,13 +306,6 @@ $cursor: #fff;
         -webkit-text-fill-color: $cursor !important;
       }
     }
-  }
-
-  .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    color: #454545;
   }
 }
 </style>

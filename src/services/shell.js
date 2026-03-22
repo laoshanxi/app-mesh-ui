@@ -77,11 +77,11 @@ export default {
   connectHost: function (vueComp) {
     vueComp.connected = 1;
     vueComp.shellApp.command = 'who';
-    getClient().run_app_sync(vueComp.shellApp, null, vueComp.timeout).then((res) => {
+    getClient().run_app_sync(vueComp.shellApp, null, vueComp.timeout).then(() => {
       vueComp.connected = 2;
       runFinished(vueComp);
     })
-      .catch((error) => {
+      .catch(() => {
         vueComp.connected = 0;
         vueComp.shellContents.push(
           {
@@ -106,7 +106,7 @@ export default {
 
     if (vueComp.isSync) {
       getClient().run_app_sync(vueComp.shellApp, outputHandler, vueComp.timeout)
-        .then((res) => {
+        .then(() => {
           // noghting
         })
         .catch((error) => {
@@ -118,7 +118,7 @@ export default {
     } else {
       getClient().run_app_async(vueComp.shellApp, vueComp.timeout)
         .then((run) => {
-          run.wait(outputHandler).then((res) => {
+          run.wait(outputHandler).then(() => {
             // nothing
           });
         })

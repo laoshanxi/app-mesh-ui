@@ -8,12 +8,12 @@ import {DataSet} from '@antv/data-set';
 
 export default {
   name:"PercentageBar",
-  props:[
-    "id",
-    "data",// data:[{label:"",value:10}]
-    "width",
-    "padding"
-  ],
+  props:{
+    id: { type: String, default: '' },
+    data: { type: Array, default: () => [] },// data:[{label:"",value:10}]
+    width: { type: Number, default: 0 },
+    padding: { type: Array, default: () => [0, 0, 0, 0] }
+  },
   data(){
     return {
       chart:null

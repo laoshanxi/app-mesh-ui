@@ -5,24 +5,24 @@
     </el-row>
     <el-row>
       <el-button-group>
-        <el-button type="primary" icon="el-icon-plus" @click="btnClick('new')">New</el-button>
+        <el-button type="primary" :icon="Plus" @click="btnClick('new')">New</el-button>
         <el-button
-          type="success" icon="iconfont icon-role" :disabled="!isSelected"
+          type="success" :disabled="!isSelected"
           @click="btnClick('update')"
         >
-          Edit
+          <i class="iconfont icon-role" style="margin-right: 4px;" />Edit
         </el-button>
-        <el-button type="danger" icon="el-icon-delete" :disabled="!isSelected" @click="delUser()">Delete</el-button>
+        <el-button type="danger" :icon="Delete" :disabled="!isSelected" @click="delUser()">Delete</el-button>
       </el-button-group>
       <el-button-group>
         <el-button
-          type="warning" icon="el-icon-lock" :disabled="!isSelected || isLocked"
+          type="warning" :icon="Lock" :disabled="!isSelected || isLocked"
           @click="locked()"
         >
           Lock
         </el-button>
         <el-button
-          type="success" icon="el-icon-unlock" :disabled="!isSelected || !isLocked"
+          type="success" :icon="Unlock" :disabled="!isSelected || !isLocked"
           @click="unlocked()"
         >
           Unlock
@@ -78,9 +78,10 @@
       </el-table>
     </el-row>
     <el-drawer
-      custom-class="right-drawer" :title="selectedForm.name == null ? 'Add user' : 'Update user'"
-      :visible.sync="userFormVisible" size="60%"
+      v-model="userFormVisible"
+      custom-class="right-drawer" size="60%"
     >
+      <template #header><span>{{ selectedForm.name == null ? 'Add user' : 'Update user' }}</span></template>
       <user-form :prop-form="selectedForm" @close="userFormVisible = false" @success="addUserSuccess()"></user-form>
     </el-drawer>
   </div>
@@ -88,7 +89,10 @@
 
 <script>
 import { getClient } from "@/utils/appmeshClient";
-import UserForm from "./userForm";
+import { ElMessageBox, ElMessage } from "element-plus";
+import { markRaw } from 'vue'
+import { Plus, Delete, Lock, Unlock } from "@element-plus/icons-vue";
+import UserForm from "./userForm/index.vue";
 
 export default {
   components: {
@@ -96,6 +100,7 @@ export default {
   },
   data() {
     return {
+      Plus: markRaw(Plus), Delete: markRaw(Delete), Lock: markRaw(Lock), Unlock: markRaw(Unlock),
       tableKey: 0,
       isSelected: false,
       isLocked: false,
@@ -132,7 +137,7 @@ export default {
           }
           this.listLoading = false;
         },
-        (res) => {
+        () => {
           this.listLoading = false;
         }
       ).catch((err) => {
@@ -171,7 +176,7 @@ export default {
       this.refreshData();
     },
     delUser() {
-      this.$confirm(
+      ElMessageBox.confirm(
         `Do you want to delete the user <${this.currentRow.name}>?`,
         "Tooltip",
         {
@@ -182,14 +187,11 @@ export default {
       ).then(() => {
         this.listLoading = true;
         getClient().delete_user(this.currentRow.name).then(
-          (res) => {
-            this.$message.success(
-              "User " + this.currentRow.name + " had deleted.",
-              5000
-            );
+          () => {
+            ElMessage.success("User " + this.currentRow.name + " had deleted.");
             this.refreshData();
           },
-          (res) => {
+          () => {
             this.listLoading = false;
           }
         ).catch((err) => {
@@ -199,7 +201,7 @@ export default {
       });
     },
     locked() {
-      this.$confirm(
+      ElMessageBox.confirm(
         `Do you want to lock the user <${this.currentRow.name}>?`,
         "Tooltip",
         {
@@ -210,15 +212,12 @@ export default {
       ).then(() => {
         this.listLoading = true;
         getClient().lock_user(this.currentRow.name).then(
-          (res) => {
-            this.$message.success(
-              "User " + this.currentRow.name + " had locked.",
-              5000
-            );
+          () => {
+            ElMessage.success("User " + this.currentRow.name + " had locked.");
             this.refreshData();
             this.listLoading = false;
           },
-          (res) => {
+          () => {
             this.listLoading = false;
           }
         ).catch((err) => {
@@ -228,7 +227,7 @@ export default {
       });
     },
     unlocked() {
-      this.$confirm(
+      ElMessageBox.confirm(
         `Do you want to unlock the user <${this.currentRow.name}>?`,
         "Tooltip",
         {
@@ -239,15 +238,12 @@ export default {
       ).then(() => {
         this.listLoading = true;
         getClient().unlock_user(this.currentRow.name).then(
-          (res) => {
-            this.$message.success(
-              "User " + this.currentRow.name + " had unlocked.",
-              5000
-            );
+          () => {
+            ElMessage.success("User " + this.currentRow.name + " had unlocked.");
             this.refreshData();
             this.listLoading = false;
           },
-          (res) => {
+          () => {
             this.listLoading = false;
           }
         ).catch((err) => {
@@ -256,7 +252,7 @@ export default {
         });
       });
     },
-    currentRowChange(currentRow, oldCurrentRow) {
+    currentRowChange(currentRow, _oldCurrentRow) {
       this.currentRow = currentRow;
       if (!currentRow) {
         this.isSelected = false;

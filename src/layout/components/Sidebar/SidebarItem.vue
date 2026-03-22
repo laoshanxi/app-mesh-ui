@@ -10,7 +10,7 @@
       </app-link>
     </template>
 
-    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
+    <el-submenu v-else ref="subMenu" :index="resolvePath(item.path)" teleported>
       <template #title>
         <item v-if="item.meta" :icon="item.meta && item.meta.icon" :title="item.meta.title" />
       </template>
@@ -24,14 +24,15 @@
 
 <script>
 import path from 'path'
+import { ElSubMenu, ElMenuItem } from 'element-plus'
 import { isExternal } from '@/utils/validate'
-import Item from './Item'
-import AppLink from './Link'
-import FixiOSBug from './FixiOSBug'
+import Item from './Item.vue'
+import AppLink from './Link.vue'
+import FixiOSBug from './FixiOSBug.js'
 
 export default {
   name: 'SidebarItem',
-  components: { Item, AppLink },
+  components: { Item, AppLink, 'el-submenu': ElSubMenu, 'el-menu-item': ElMenuItem },
   mixins: [FixiOSBug],
   props: {
     // route object
@@ -49,9 +50,9 @@ export default {
     }
   },
   data() {
-    // To fix https://github.com/PanJiaChen/vue-admin-template/issues/237
-    this.onlyOneChild = null
-    return {}
+    return {
+      onlyOneChild: null
+    }
   },
   created() {
   },

@@ -5,23 +5,23 @@
     </el-row>
     <el-row>
       <el-button-group>
-        <el-button type="primary" icon="el-icon-plus" @click="btnClick('register')">
+        <el-button type="primary" :icon="Plus" @click="btnClick('register')">
           Add
         </el-button>
-        <el-button type="success" icon="el-icon-edit" :disabled="!isSelected" @click="btnClick('update')">
+        <el-button type="success" :icon="Edit" :disabled="!isSelected" @click="btnClick('update')">
           Edit
         </el-button>
-        <el-button type="danger" icon="el-icon-delete" :disabled="!isSelected" @click="btnClick('delete')">
+        <el-button type="danger" :icon="Delete" :disabled="!isSelected" @click="btnClick('delete')">
           Delete
         </el-button>
       </el-button-group>
 
       <el-button-group>
-        <el-button type="success" icon="el-icon-open" :disabled="!isSelected || isEnabled" @click="btnClick('enable')">
+        <el-button type="success" :icon="Open" :disabled="!isSelected || isEnabled" @click="btnClick('enable')">
           Enable
         </el-button>
         <el-button
-          type="warning" icon="el-icon-turn-off" :disabled="!isSelected || !isEnabled"
+          type="warning" :icon="TurnOff" :disabled="!isSelected || !isEnabled"
           @click="btnClick('disable')"
         >
           Disable
@@ -30,26 +30,28 @@
     </el-row>
     <el-row>
       <el-table
-        :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
+        ref="appTable" :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         style="width: 100%" height="100%" class="fix-table" :fit="true" highlight-current-row
         @current-change="currentRowChange"
       >
         <el-table-column label="Name" width="200">
           <template #default="scope">
-            <i
-              v-if="scope.row.health == 0" class="el-icon-success"
+            <el-icon
+              v-if="scope.row.health == 0"
               style="color: #85ce61; font-size: 18px; vertical-align: middle"
-            />
-            <i v-else class="el-icon-warning" style="color: #f56c6c; font-size: 18px; vertical-align: middle" />
+            >
+              <SuccessFilled />
+            </el-icon>
+            <el-icon v-else style="color: #f56c6c; font-size: 18px; vertical-align: middle"><WarningFilled /></el-icon>
 
-            <el-link :underline="true" :title="scope.row.desc" @click="showDetail()">
+            <el-link underline="always" :title="scope.row.desc" @click="showDetail()">
               {{ scope.row.name }}
             </el-link>
           </template>
         </el-table-column>
         <el-table-column label="Owner" width="100">
           <template #default="scope">
-            {{ scope.row.owner | formatEmpty }}
+            {{ formatEmpty(scope.row.owner) }}
           </template>
         </el-table-column>
         <el-table-column class-name="status-col" label="State" width="90">
@@ -66,8 +68,8 @@
         <el-table-column label="PID" width="90">
           <template #default="scope">
             <span v-if="scope.row.pstree">
-              <el-link :underline="true" :title="scope.row.pstree">
-                {{ scope.row.pid | formatEmpty }}
+              <el-link underline="always" :title="scope.row.pstree">
+                {{ formatEmpty(scope.row.pid) }}
               </el-link>
             </span>
             <span v-else>-</span>
@@ -75,97 +77,92 @@
         </el-table-column>
         <el-table-column label="User" width="90">
           <template #default="scope">
-            {{ scope.row.pid_user | formatEmpty }}
+            {{ formatEmpty(scope.row.pid_user) }}
           </template>
         </el-table-column>
         <el-table-column label="Memory" width="110">
           <template #default="scope">
-            {{ scope.row.memory | formatMemory }}
+            {{ formatMemory(scope.row.memory) }}
           </template>
         </el-table-column>
         <el-table-column label="%Cpu" width="110">
           <template #default="scope">
-            {{ scope.row.cpu | formatCpu }}
+            {{ formatCpu(scope.row.cpu) }}
           </template>
         </el-table-column>
         <el-table-column label="Return" width="70">
           <template #default="scope">
-            {{ scope.row.return_code | formatEmpty }}
+            {{ formatEmpty(scope.row.return_code) }}
           </template>
         </el-table-column>
         <el-table-column label="Starts" width="70">
           <template #default="scope">
-            {{ scope.row.starts | formatEmpty }}
+            {{ formatEmpty(scope.row.starts) }}
           </template>
         </el-table-column>
         <el-table-column label="Age" width="120">
           <template #default="scope">
-            {{ scope.row.age | formatEmpty }}
+            {{ formatEmpty(scope.row.age) }}
           </template>
         </el-table-column>
         <el-table-column label="Duration" width="120">
           <template #default="scope">
-            {{ scope.row.duration | formatEmpty }}
+            {{ formatEmpty(scope.row.duration) }}
           </template>
         </el-table-column>
         <el-table-column prop="last_start_time" label="Last Start Time" width="230">
           <template #default="scope">
             <span v-if="scope.row.last_start_time">
-              <el-link :underline="true" title="Show log" @click="showLog(scope.row)">
-                <i class="el-icon-document"></i>
-                <i class="el-icon-time" style="margin-right: 5px" />
-                {{ scope.row.last_start_time | formatDate }}
+              <el-link underline="always" title="Show log" @click="showLog(scope.row)">
+                <el-icon><Document /></el-icon>
+                <el-icon style="margin-right: 5px"><Clock /></el-icon>
+                {{ formatDate(scope.row.last_start_time) }}
               </el-link>
             </span>
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <af-table-column label="Command">
+        <el-table-column label="Command" show-overflow-tooltip>
           <template #default="scope">
-            {{ scope.row.command | formatEmpty }}
+            {{ formatEmpty(scope.row.command) }}
           </template>
-        </af-table-column>
+        </el-table-column>
       </el-table>
     </el-row>
 
     <!-- Add application dialog -->
     <!-- <el-dialog title="Add Application" :visible.sync="registerFormVisible" fullscreen="false"> -->
-    <el-drawer custom-class="right-drawer" :title="drawerTitle" :visible.sync="registerFormVisible" size="60%">
+    <el-drawer v-model="registerFormVisible" custom-class="right-drawer" size="60%">
+      <template #header><span>{{ drawerTitle }}</span></template>
       <app-reg :prop-form="selectedForm" @close="registerFormVisible = false" @success="regSuccess()" />
     </el-drawer>
 
     <!-- show application detail -->
-    <el-drawer v-loading="isLoadingDetail" :visible.sync="isShowDetail" size="50%">
-      <template #title>
+    <el-drawer v-model="isShowDetail" size="50%">
+      <template #header>
         <span>
-          <span class="el-icon-view">
-            &nbsp;&nbsp;{{
-                          currentRow ? currentRow.name : "Please select one application"
-                        }}
-            <i v-if="currentRow && currentRow.docker_image" class="iconfont icon-docker" />
-          </span>
+          <el-icon><ViewIcon /></el-icon>
+          &nbsp;&nbsp;{{ currentRow ? currentRow.name : "Please select one application" }}
+          <i v-if="currentRow && currentRow.docker_image" class="iconfont icon-docker" />
         </span>
       </template>
-      <div class="detail-card">
+      <div v-loading="isLoadingDetail" class="detail-card">
         <app-detail :record="currentRow" />
       </div>
     </el-drawer>
 
     <!-- show application logs -->
-    <el-drawer v-loading="isLoadingLog" :visible.sync="isShowLog" size="50%">
-      <template #title>
+    <el-drawer v-model="isShowLog" size="50%">
+      <template #header>
         <span>
-          <span class="el-icon-document">
-            &nbsp;&nbsp;{{
-              currentRow ? currentRow.name : "Please select one application"
-            }}
-          </span>
+          <el-icon><Document /></el-icon>
+          &nbsp;&nbsp;{{ currentRow ? currentRow.name : "Please select one application" }}
         </span>
       </template>
-      <div class="detail-card">
+      <div v-loading="isLoadingLog" class="detail-card">
         <app-log
-          ref="appLog" :loginfo="appLogInfo" :app="currentRow" @startLoading="isLoadingLog = true"
-          @loadingDone="logChange"
+          ref="appLog" :loginfo="appLogInfo" :app="currentRow" @start-loading="isLoadingLog = true"
+          @loading-done="logChange"
         />
       </div>
     </el-drawer>
@@ -174,30 +171,23 @@
 
 <script>
 import applications from "@/services/applications";
-import { parseTime } from "@/utils";
-import { MessageBox, Message } from "element-ui";
-import AppDetail from "./appDetail";
-import AppLog from "./appLog";
-import AppReg from "./appReg";
+import { formatEmpty, formatMemory, formatCpu, formatDate } from "@/utils";
+import { markRaw } from 'vue'
+import { Plus, Edit, Delete, Open, TurnOff, View as ViewIcon, Document, Clock, SuccessFilled, WarningFilled } from "@element-plus/icons-vue";
+import AppDetail from "./appDetail/index.vue";
+import AppLog from "./appLog/index.vue";
+import AppReg from "./appReg/index.vue";
 
 export default {
   components: {
     AppDetail,
     AppLog,
     AppReg,
-  },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "gray",
-        deleted: "danger",
-      };
-      return statusMap[status];
-    },
+    SuccessFilled, WarningFilled, ViewIcon, Document, Clock,
   },
   data() {
     return {
+      Plus: markRaw(Plus), Edit: markRaw(Edit), Delete: markRaw(Delete), Open: markRaw(Open), TurnOff: markRaw(TurnOff),
       isShowLog: false,
       isLoadingLog: false,
       appLogInfo: null,
@@ -223,6 +213,10 @@ export default {
     this.fetchData();
   },
   methods: {
+    formatEmpty,
+    formatMemory,
+    formatCpu,
+    formatDate,
     logChange(loginfo) {
       this.isLoadingLog = false;
       this.appLogInfo = loginfo;
@@ -277,8 +271,7 @@ export default {
       }
     },
 
-    currentRowChange(currentRow, oldCurrentRow) {
-      console.info(this.list, currentRow);
+    currentRowChange(currentRow, _oldCurrentRow) {
       this.currentRow = currentRow;
       if (!currentRow) {
         this.isSelected = false;
@@ -296,7 +289,6 @@ export default {
       this.pageSize = value;
     },
     handleCurrentChange() {
-      console.info(arguments);
     },
     fetchData() {
       applications.getAppList(this);

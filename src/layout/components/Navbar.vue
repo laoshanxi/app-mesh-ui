@@ -1,51 +1,59 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggle-click="toggleSideBar" />
 
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
       <el-button
-        icon="el-icon-refresh" type="text" acti :loading="loading" title="Refresh"
-        style="margin-right:10px;font-size:18px;font-weight: bold !important;" @click="refresh()"
-      >
-      </el-button>
+        :icon="Refresh" text :loading="loading" title="Refresh"
+        @click="refresh()"
+      />
 
-      <el-switch v-model="forwardEnabled" active-text="Forward to:" inactive-text="" @change="handleSwitchChange" />
-      <el-autocomplete
-        v-model="forward" class="inline-input" style="width:140px"
-        :fetch-suggestions="querySearch"
-      ></el-autocomplete>
+      <el-tooltip content="Request Forwarding" placement="bottom">
+        <el-input
+          v-model="forward"
+          size="small"
+          class="forward-input"
+          placeholder="Forward to host:port"
+          clearable
+          list="forward-suggestions"
+        >
+          <template #append>
+            <el-switch v-model="forwardEnabled" size="small" @change="handleSwitchChange" />
+          </template>
+        </el-input>
+      </el-tooltip>
+      <datalist id="forward-suggestions">
+        <option v-for="item in restaurants" :key="item.value" :value="item.value" />
+      </datalist>
 
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <!-- <div><img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"><span class="UserName-avatar">{{name}}</span></div> -->
-          <div>
-            <el-avatar shape="circle" :size="40" :src="avatar">
-              <i class="el-icon-s-custom" />
-            </el-avatar>
-            <span class="UserName-avatar">{{ name }}</span>
-          </div>
-          <i class="el-icon-caret-bottom" />
+          <el-avatar shape="circle" :size="30" :src="avatar">
+            <span>User</span>
+          </el-avatar>
+          <span class="UserName-avatar">{{ name }}</span>
+          <el-icon class="arrow-down"><ArrowDown /></el-icon>
         </div>
         <template #dropdown>
-        <el-dropdown-menu class="user-dropdown">
-          <router-link to="/security/changePwd">
-            <el-dropdown-item>
-              <i class="iconfont icon-lock"></i>Change Password
+          <el-dropdown-menu class="user-dropdown">
+            <router-link to="/security/changePwd">
+              <el-dropdown-item>
+                <i class="iconfont icon-lock"></i>Change Password
+              </el-dropdown-item>
+            </router-link>
+            <a target="_blank" href="/ui/dc1/kv">
+              <el-dropdown-item>
+                Consul
+              </el-dropdown-item>
+            </a>
+            <el-dropdown-item divided>
+              <span style="display:block;" @click="logout">
+                <i class="iconfont icon-log-out"></i>Log Out
+              </span>
             </el-dropdown-item>
-          </router-link>
-          <a target="_blank" href="/ui/dc1/kv">
-            <el-dropdown-item>
-              <i class="el-icon-mobile-phone"></i>Consul
-            </el-dropdown-item>
-          </a>
-          <el-dropdown-item divided>
-            <span style="display:block;" @click="logout">
-              <i class="iconfont icon-log-out"></i>Log Out
-            </span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
+          </el-dropdown-menu>
         </template>
       </el-dropdown>
     </div>
@@ -54,8 +62,11 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import Breadcrumb from '@/components/Breadcrumb'
-import Hamburger from '@/components/Hamburger'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { markRaw } from 'vue'
+import { Refresh, ArrowDown } from '@element-plus/icons-vue'
+import Breadcrumb from '@/components/Breadcrumb/index.vue'
+import Hamburger from '@/components/Hamburger/index.vue'
 import { getClient } from '@/utils/appmeshClient'
 import EventBus from '@/utils/event.bus.js'
 import { EVENTS } from '@/utils/constants.js'
@@ -63,28 +74,18 @@ import { EVENTS } from '@/utils/constants.js'
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    ArrowDown
   },
   data() {
     return {
+      Refresh: markRaw(Refresh),
       restaurants: [],
       forward: "",
       lastForward: "",
       forwardEnabled: false,
       fullscreenLoading: false
     };
-  },
-  created() {
-    this.forward = this.$store.getters.forwarding;
-    this.forwardEnabled = !!this.forward;
-    this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
-    EventBus.on(EVENTS.SWITCH_FORWARD, (fw) => {
-      this.lastForward = this.forward;
-      this.forward = fw;
-      this.updateForward();
-    });
-  },
-  mounted() {
   },
   computed: {
     ...mapGetters([
@@ -95,6 +96,16 @@ export default {
       'forwarding',
       'loading'
     ])
+  },
+  created() {
+    this.forward = this.$store.getters.forwarding;
+    this.forwardEnabled = !!this.forward;
+    this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
+    EventBus.on(EVENTS.SWITCH_FORWARD, (fw) => {
+      this.lastForward = this.forward;
+      this.forward = fw;
+      this.updateForward();
+    });
   },
   methods: {
     /**
@@ -118,7 +129,7 @@ export default {
       }
 
       try {
-        await this.$confirm(
+        await ElMessageBox.confirm(
           `Forward requests to [${this.forward}]?`,
           'Confirm',
           {
@@ -138,7 +149,7 @@ export default {
         });
 
         this.forwardEnabled = true;
-        this.$message.success('Forward request successful');
+        ElMessage.success('Forward request successful');
         this.refresh();
 
       } catch (error) {
@@ -148,7 +159,7 @@ export default {
         if (this.lastForward?.length > 0) {
           this.forward = this.lastForward;
         }
-        this.$message.error(`Failed to forward request: ${error.message || error}`);
+        ElMessage.error(`Failed to forward request: ${error.message || error}`);
       } finally {
         this.fullscreenLoading = false;
       }
@@ -160,7 +171,7 @@ export default {
      */
     async disableForward() {
       try {
-        await this.$confirm(
+        await ElMessageBox.confirm(
           'Disable request forwarding?',
           'Confirm',
           {
@@ -181,7 +192,7 @@ export default {
         this.lastForward = this.forward;
         this.forward = '';
         this.forwardEnabled = false;
-        this.$message.success('Disable forward successful');
+        ElMessage.success('Disable forward successful');
         this.refresh();
       } catch (error) {
         if (error === 'cancel' || error.toString().includes('cancel')) {
@@ -241,7 +252,7 @@ export default {
         if (error === 'cancel' || error.toString().includes('cancel')) {
           // do nothing for cancled
         } else {
-          this.$message.error(`Failed to forward request: ${error.message || error}`);
+          ElMessage.error(`Failed to forward request: ${error.message || error}`);
         }
       }
     }
@@ -278,10 +289,16 @@ export default {
     float: left;
   }
 
+  .forward-input {
+    width: 200px;
+    margin-right: 12px;
+  }
+
   .right-menu {
     float: right;
-    height: 100%;
-    line-height: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
 
     &:focus {
       outline: none;
@@ -310,30 +327,17 @@ export default {
       vertical-align: middle;
 
       .avatar-wrapper {
-        margin-top: 0px;
-        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 6px;
         cursor: pointer;
-        height: 42px;
-
-        .user-avatar {
-          vertical-align: middle;
-          cursor: pointer;
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-        }
+        height: 50px;
 
         .UserName-avatar {
-          margin-left: 5px;
-          top: -15px;
-          position: relative;
+          white-space: nowrap;
         }
 
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 15px;
+        .arrow-down {
           font-size: 12px;
         }
       }

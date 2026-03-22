@@ -1,10 +1,7 @@
-import Vue from "vue";
-import Router from "vue-router";
-
-Vue.use(Router);
+import { createRouter, createWebHashHistory } from "vue-router";
 
 /* Layout */
-import Layout from "@/layout";
+import Layout from "@/layout/index.vue";
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -33,13 +30,13 @@ import Layout from "@/layout";
 export const constantRoutes = [
   {
     path: "/login",
-    component: () => import("@/views/login/index"),
+    component: () => import("@/views/login/index.vue"),
     hidden: true
   },
 
   {
     path: "/404",
-    component: () => import("@/views/404"),
+    component: () => import("@/views/404.vue"),
     hidden: true
   },
 
@@ -57,7 +54,7 @@ export const constantRoutes = [
       {
         path: "401",
         name: "401",
-        component: () => import("@/views/errors/401"),
+        component: () => import("@/views/errors/401.vue"),
         meta: { title: "No Permission" },
         hidden: true
       }
@@ -71,7 +68,7 @@ export const constantRoutes = [
       {
         path: "home",
         name: "Home",
-        component: () => import("@/views/home/index"),
+        component: () => import("@/views/home/index.vue"),
         meta: { title: "Home", icon: "home" },
         hidden: true
       }
@@ -84,7 +81,7 @@ export const constantRoutes = [
       {
         path: "index",
         name: "Applications",
-        component: () => import("@/views/applications/index"),
+        component: () => import("@/views/applications/index.vue"),
         meta: { title: "Applications", icon: "application" }
       }
     ]
@@ -96,7 +93,7 @@ export const constantRoutes = [
       {
         path: "index",
         name: "Host",
-        component: () => import("@/views/host/index"),
+        component: () => import("@/views/host/index.vue"),
         meta: { title: "Host", icon: "host" }
       }
     ]
@@ -108,7 +105,7 @@ export const constantRoutes = [
       {
         path: "index",
         name: "WebShell",
-        component: () => import("@/views/shell/index"),
+        component: () => import("@/views/shell/index.vue"),
         meta: { title: "WebShell", icon: "shell" }
       }
     ]
@@ -126,7 +123,7 @@ export const constantRoutes = [
       {
         path: "users",
         name: "Users",
-        component: () => import("@/views/security/users"),
+        component: () => import("@/views/security/users.vue"),
         meta: {
           title: "Users",
           icon: "user",
@@ -136,7 +133,7 @@ export const constantRoutes = [
       {
         path: "roles",
         name: "Roles",
-        component: () => import("@/views/security/roles"),
+        component: () => import("@/views/security/roles.vue"),
         meta: {
           title: "Roles",
           icon: "role",
@@ -146,7 +143,7 @@ export const constantRoutes = [
       {
         path: "changePwd",
         name: "ChangePwd",
-        component: () => import("@/views/security/changePwd"),
+        component: () => import("@/views/security/changePwd.vue"),
         meta: { title: "Password", icon: "password" }
       }
     ]
@@ -158,7 +155,7 @@ export const constantRoutes = [
       {
         path: "index",
         name: "File Management",
-        component: () => import("@/views/files/index"),
+        component: () => import("@/views/files/index.vue"),
         meta: { title: "File Management", icon: "files" }
       }
     ]
@@ -170,7 +167,7 @@ export const constantRoutes = [
       {
         path: "index",
         name: "Prometheus",
-        component: () => import("@/views/prometheus/index"),
+        component: () => import("@/views/prometheus/index.vue"),
         meta: { title: "Prometheus", icon: "Prometheus" }
       }
     ]
@@ -182,33 +179,41 @@ export const constantRoutes = [
       {
         path: "index",
         name: "Config",
-        component: () => import("@/views/config/index"),
+        component: () => import("@/views/config/index.vue"),
         meta: { title: "Configuration", icon: "config" }
       }
     ]
   },
   {
     path: "/refresh",
-    component: () => import("@/views/refresh"),
+    component: () => import("@/views/refresh.vue"),
     hidden: true
   },
   // 404 page must be placed at the end !!!
-  { path: "*", redirect: "/404", hidden: true }
+  { path: "/:pathMatch(.*)*", redirect: "/404", hidden: true }
 ];
 
-const createRouter = () =>
-  new Router({
-    // mode: 'history', // require service support
-    scrollBehavior: () => ({ y: 0 }),
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes: constantRoutes
+});
+
+export function resetRouter() {
+  const newRouter = createRouter({
+    history: createWebHashHistory(),
+    scrollBehavior: () => ({ top: 0 }),
     routes: constantRoutes
   });
-
-const router = createRouter();
-
-// Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
-export function resetRouter() {
-  const newRouter = createRouter();
-  router.matcher = newRouter.matcher; // reset router
+  // Remove all existing routes and re-add from constantRoutes
+  router.getRoutes().forEach(route => {
+    const name = route.name;
+    if (name) {
+      router.removeRoute(name);
+    }
+  });
+  newRouter.getRoutes().forEach(route => {
+    router.addRoute(route);
+  });
 }
 
 export default router;

@@ -1,9 +1,9 @@
 <template>
   <el-card class="box-card">
     <el-pagination
-      background layout="prev, pager, next" :current-page.sync="curPage" :page-size="1"
-      :total="app.stdout_cache_size" @current-change="getAppLogByName"
-    ></el-pagination>
+      v-model:current-page="curPage" background layout="prev, pager, next" :default-page-size="1"
+      :total="app.stdout_cache_size" @update:current-page="getAppLogByName"
+    />
     <pre class="log">{{ loginfo ? loginfo : 'No log' }}</pre>
   </el-card>
 </template>
@@ -12,10 +12,11 @@
 import applications from "@/services/applications";
 export default {
   name: "AppLog",
-  props: ["app", "loginfo"],
+  props: { app: { type: Object, default: null }, loginfo: { type: String, default: null } },
   data() {
     return {
       curPage: 1,
+      pageSize: 1,
     };
   },
   mounted() {

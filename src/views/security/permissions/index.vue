@@ -8,15 +8,19 @@
           <el-input v-if="propForm.name == null || propForm.name.length == 0" v-model="permissionForm.name"></el-input>
         </el-form-item>
         <el-form-item label="Permissions" prop="permissions">
-          <el-transfer
-            v-model="permissionForm.permissions" class="permission-transfer" filterable
-            filter-placeholder="Filter" :titles="['All permissions', 'Role permissions']"
-            :data="permissions"
-          ></el-transfer>
-          <el-input v-model="newPermission" style="margin-top:10px;"></el-input>
-          <el-button @click="addNewPermission">Add new permission</el-button>
-          <br />
-          <span style="color:#909399;">* Note: Multiple permissions separated by commas</span>
+          <div style="width: 100%;">
+            <el-transfer
+              v-model="permissionForm.permissions" class="permission-transfer" filterable
+              filter-placeholder="Filter" :titles="['All permissions', 'Role permissions']"
+              :data="permissions"
+            ></el-transfer>
+            <div style="margin-top:10px;">
+              <el-input v-model="newPermission" style="width: 350px; margin-right: 10px;"></el-input>
+              <el-button @click="addNewPermission">Add new permission</el-button>
+              <br />
+              <span style="color:#909399;">* Note: Multiple permissions separated by commas</span>
+            </div>
+          </div>
         </el-form-item>
       </el-form>
     </el-card>
@@ -30,10 +34,12 @@
 
 <script>
 import { getClient } from '@/utils/appmeshClient'
+import { ElMessage } from "element-plus";
 
 export default {
   name: "RoleForm",
-  props: ["propForm"],
+  props: { propForm: { type: Object, default: () => ({}) } },
+  emits: ['close', 'success'],
   data() {
     return {
       permissionForm: {
@@ -81,7 +87,7 @@ export default {
           }
         })
         .catch((err) => { console.warn(err); })
-        .then((res) => { });
+        .then(() => { });
     },
     addNewPermission() {
       let newPermissions = this.newPermission.split(",");
@@ -121,24 +127,18 @@ export default {
       getClient().update_role(
         this.permissionForm.name,
         this.permissionForm.permissions
-      ).then((res) => {
+      ).then(() => {
           if (this.propForm.name == null) {
-            this.$message.success(
-              "Role " + this.permissionForm.name + " add successfully.",
-              5000
-            );
+            ElMessage.success("Role " + this.permissionForm.name + " add successfully.");
           } else {
-            this.$message.success(
-              "Role " + this.permissionForm.name + " update successfully.",
-              5000
-            );
+            ElMessage.success("Role " + this.permissionForm.name + " update successfully.");
           }
 
           this.$emit("success");
           this.cancel();
         })
         .catch((err) => { console.warn(err); })
-        .then((res) => { });
+        .then(() => { });
     },
 
     merge(local, origin) {
@@ -183,17 +183,21 @@ export default {
 }
 </style>
 <style>
-.permission-transfer,
-.el-transfer-panel {
+.permission-transfer .el-transfer-panel {
+  width: 222px;
   height: 400px;
 }
 
-.el-transfer-panel__body,
-.el-transfer-panel__list.is-filterable {
+.permission-transfer .el-transfer-panel .el-transfer-panel__body,
+.permission-transfer .el-transfer-panel .el-transfer-panel__list.is-filterable {
   height: 296px;
 }
 
-.permission-transfer .el-transfer-panel {
-  width: 222px;
+.permission-transfer .el-transfer__buttons {
+  padding: 0 10px;
+}
+
+.permission-transfer .el-transfer__buttons .el-button + .el-button {
+  margin-left: 0;
 }
 </style>

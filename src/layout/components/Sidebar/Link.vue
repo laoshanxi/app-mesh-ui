@@ -1,9 +1,13 @@
 
 <template>
-  <!-- eslint-disable vue/require-component-is -->
-  <component v-bind="linkProps(to)">
-    <slot />
-  </component>
+  <span>
+    <a v-if="isExternalLink" :href="to" target="_blank" rel="noopener">
+      <slot />
+    </a>
+    <router-link v-else :to="to">
+      <slot />
+    </router-link>
+  </span>
 </template>
 
 <script>
@@ -16,20 +20,9 @@ export default {
       required: true
     }
   },
-  methods: {
-    linkProps(url) {
-      if (isExternal(url)) {
-        return {
-          is: 'a',
-          href: url,
-          target: '_blank',
-          rel: 'noopener'
-        }
-      }
-      return {
-        is: 'router-link',
-        to: url
-      }
+  computed: {
+    isExternalLink() {
+      return isExternal(this.to)
     }
   }
 }

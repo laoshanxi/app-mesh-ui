@@ -1,4 +1,5 @@
 import { getClient } from '@/utils/appmeshClient'
+import { ElMessage } from 'element-plus'
 
 export default {
   setConfig(vueComp, data) {
@@ -17,7 +18,7 @@ export default {
         this.setConfig(vueComp, res);
       })
       .catch(err => {
-        vueComp.$message.error(`Get configuration failed: ${err.data}`, 5000);
+        ElMessage.error(`Get configuration failed: ${err.data}`);
       })
       .finally(() => {
         vueComp.loading = false;
@@ -32,10 +33,10 @@ export default {
       getClient().set_config(vueComp.form)
         .then(res => {
           vueComp.form = res;
-          vueComp.$message.success('Configuration updated successfully.', 5000);
+          ElMessage.success('Configuration updated successfully.');
         })
         .catch(err => {
-          vueComp.$message.error(`Update failed: ${err.data}`, 5000);
+          ElMessage.error(`Update failed: ${err.data}`);
         })
         .finally(() => {
           vueComp.loading = false;
@@ -50,7 +51,7 @@ export default {
         vueComp.content = res;
       })
       .catch(err => {
-        vueComp.$message.error(`Get metrics failed: ${err.data}`, 5000);
+        ElMessage.error(`Get metrics failed: ${err.data}`);
       })
       .finally(() => {
         vueComp.loading = false;

@@ -1,8 +1,10 @@
 import { getClient } from '@/utils/appmeshClient'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import moment from "moment";
-import { parseDateFromUtcSeconds, formatDayTime } from '@/utils';
+import { parseDateFromUtcSeconds } from '@/utils';
 export default {
   getAppList: function (vueComp) {
+    const selectedName = vueComp.currentRow ? vueComp.currentRow.name : null;
     vueComp.listLoading = true;
     getClient().list_apps().then(data => {
       data.forEach(m => {
@@ -19,7 +21,16 @@ export default {
       })
       vueComp.list = data;
       vueComp.listLoading = false;
-    }, res => {
+      // restore previous selection
+      if (selectedName && vueComp.$refs.appTable) {
+        const row = data.find(r => r.name === selectedName);
+        if (row) {
+          vueComp.$nextTick(() => {
+            vueComp.$refs.appTable.setCurrentRow(row);
+          });
+        }
+      }
+    }, () => {
       vueComp.listLoading = false;
     })
   },
@@ -77,7 +88,7 @@ export default {
     getClient().get_app(name).then(data => {
       vueComp.application = data;
       vueComp.isLoadingDetail = false
-    }, res => {
+    }, () => {
       vueComp.isLoadingDetail = false;
     })
   },
@@ -86,7 +97,7 @@ export default {
     getClient().get_app_output(name, position, pageNo).then(data => {
       vueComp.appLogInfo = data.output;
       vueComp.isLoadingLog = false
-    }, res => {
+    }, () => {
       vueComp.isLoadingLog = false;
     })
   },
@@ -95,53 +106,47 @@ export default {
     vueComp.isLoadingLog = true
     getClient().get_app_output(name, position, pageNo).then(data => {
       vueComp.$emit("loadingDone", data.output);
-    }, res => {
+    }, () => {
       vueComp.$emit("loadingDone", null);
     })
   },
 
   enableApp: function (vueComp) {
-    vueComp.$confirm(`Do you want to enable the application <${vueComp.currentRow.name}>?`, 'Tooltip', {
+    ElMessageBox.confirm(`Do you want to enable the application <${vueComp.currentRow.name}>?`, 'Tooltip', {
       confirmButtonText: 'Confirm',
       cancelButtonText: 'Cancel',
       type: 'warning'
     }).then(() => {
-      getClient().enable_app(vueComp.currentRow.name).then((res) => {
-        vueComp.$message.success('Application ' + vueComp.currentRow.name + ' enabled successfully.', 5000);
+      getClient().enable_app(vueComp.currentRow.name).then(() => {
+        ElMessage.success('Application ' + vueComp.currentRow.name + ' enabled successfully.');
         vueComp.fetchData();
-      }, (res) => {
-        console.info(res);
+      }, () => {
       });
     });
   },
   disableApp: function (vueComp) {
-    vueComp.$confirm(`Do you want to disable the application <${vueComp.currentRow.name}>?`, 'Tooltip', {
+    ElMessageBox.confirm(`Do you want to disable the application <${vueComp.currentRow.name}>?`, 'Tooltip', {
       confirmButtonText: 'Confirm',
       cancelButtonText: 'Cancel',
       type: 'warning'
     }).then(() => {
-      getClient().disable_app(vueComp.currentRow.name).then((res) => {
-        vueComp.$message.success('Application ' + vueComp.currentRow.name + ' disabled successfully.', 5000);
+      getClient().disable_app(vueComp.currentRow.name).then(() => {
+        ElMessage.success('Application ' + vueComp.currentRow.name + ' disabled successfully.');
         vueComp.fetchData();
-      }, (res) => {
-        console.info(res);
+      }, () => {
       });
     });
   },
   removeApp: function (vueComp) {
-    vueComp.$confirm(`Do you want to remove the application <${vueComp.currentRow.name}>?`, 'Tooltip', {
+    ElMessageBox.confirm(`Do you want to remove the application <${vueComp.currentRow.name}>?`, 'Tooltip', {
       confirmButtonText: 'Confirm',
       cancelButtonText: 'Cancel',
       type: 'warning'
     }).then(() => {
-      getClient().delete_app(vueComp.currentRow.name).then((res) => {
-        vueComp.$message({
-          type: 'success',
-          message: `Application <${vueComp.currentRow.name}> removed successfully.`
-        }, 5000);
+      getClient().delete_app(vueComp.currentRow.name).then(() => {
+        ElMessage.success(`Application <${vueComp.currentRow.name}> removed successfully.`);
         vueComp.fetchData();
-      }, (res) => {
-        console.info(res);
+      }, () => {
       });
     });
   },
@@ -166,8 +171,6 @@ export default {
       if (data.cache_lines) data.cache_lines = parseInt(data.cache_lines);
       if (data.permission) data.permission = parseInt(data.permission);
       if (data.pid) data.pid = parseInt(data.pid);
-      // if(data.start_interval_seconds) data.start_interval_seconds = parseInt(data.start_interval_seconds);
-      // if(data.start_interval_timeout) data.start_interval_timeout = parseInt(data.start_interval_timeout);
       if (data.resource_limit) {
         if (data.resource_limit.cpu_shares) data.resource_limit.cpu_shares = parseInt(data.resource_limit.cpu_shares);
         if (data.resource_limit.memory_mb) data.resource_limit.memory_mb = parseInt(data.resource_limit.memory_mb);
@@ -200,11 +203,11 @@ export default {
         formatData(data);
         removeEmptyProperties(data);
 
-        getClient().add_app(data.name, data).then((res) => {
-          vueComp.$message.success('Application ' + data.name + ' register successfully.', 5000);
+        getClient().add_app(data.name, data).then(() => {
+          ElMessage.success('Application ' + data.name + ' register successfully.');
           vueComp.$emit("success");
           vueComp.reset();
-        }, (res) => {
+        }, () => {
 
         });
 
