@@ -22,7 +22,7 @@
     </el-row>
     <el-row>
       <el-table
-        :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
+        ref="roleTable" :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange"
       >
         <el-table-column label="Name" width="200">
@@ -84,6 +84,7 @@ export default {
       this.refreshData();
     },
     refreshData() {
+      const selectedName = this.currentRow ? this.currentRow.name : null;
       this.listLoading = true;
       this.list = [];
       getClient().list_roles().then((res) => {
@@ -96,6 +97,15 @@ export default {
             }
           }
           this.listLoading = false;
+          // restore previous selection
+          if (selectedName && this.$refs.roleTable) {
+            const row = this.list.find(r => r.name === selectedName);
+            if (row) {
+              this.$nextTick(() => {
+                this.$refs.roleTable.setCurrentRow(row);
+              });
+            }
+          }
         },
         () => {
           this.listLoading = false;

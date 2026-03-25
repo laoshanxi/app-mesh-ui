@@ -1,4 +1,16 @@
 node_modules
+dist
 *.tar
 *.gz
 tests
+test-results
+.git
+.github
+.vscode
+.idea
+*.md
+LICENSE
+.eslintrc*
+.editorconfig
+playwright.config.js
+tests/e2e
