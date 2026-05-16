@@ -83,7 +83,7 @@ const actions = {
       });
   },
 
-  // get user info
+  // get user info (used for cookie-based authentication)
   getInfo({ commit, state: _state }) {
     return new Promise((resolve, reject) => {
       getClient().get_current_user().then(data => {
@@ -95,8 +95,15 @@ const actions = {
 
         const { name, avatar } = data
         commit('SET_NAME', name)
+        commit('SET_ACCOUNT', name)
         commit('SET_AVATAR', avatar)
-        resolve(data)
+
+        return getClient().get_user_permissions().then(permissions => {
+          commit('SET_PERMISSIONS', permissions)
+          const user = { name, account: name, auth: '', avatar: avatar || '', permissions }
+          setUser(user)
+          resolve(data)
+        })
       }).catch(error => {
         console.error('Get user info error:', error)
         reject(error)
