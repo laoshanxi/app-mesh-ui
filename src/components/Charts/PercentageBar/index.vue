@@ -26,8 +26,8 @@ export default {
   },
   methods:{
     createChart(){
-      var ds = new DataSet();
-        var dv = ds.createView().source(this.data).transform({
+      const ds = new DataSet();
+        const dv = ds.createView().source(this.data).transform({
           type: 'percent',
           field: 'value',
           dimension: 'label',

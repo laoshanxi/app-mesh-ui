@@ -8,12 +8,14 @@ export default {
     }).catch(() => { });
   },
   downloadFile: async function (vueComp, fileName) {
+    vueComp.loading = true;
     try {
-      vueComp.loading = true;
-      getClient().download_file(fileName, fileName).then(() => {
-        ElMessage.success('File [' + fileName + '] download success.');
-      });
+      await getClient().download_file(fileName, fileName);
+      ElMessage.success('File [' + fileName + '] download success.');
+    } catch (err) {
+      // error handled by client onError
+    } finally {
       vueComp.loading = false;
-    } catch (err) { vueComp.loading = false; }
+    }
   },
 }

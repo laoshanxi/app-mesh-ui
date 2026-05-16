@@ -8,15 +8,6 @@ import getPageTitle from "@/utils/get-page-title";
 // Configure NProgress
 NProgress.configure({ showSpinner: false });
 
-// Define public routes that don't require authentication
-const PUBLIC_ROUTES = ["/login"];
-
-/**
- * Checks if user has the required permissions to access a route
- * @param {string[]} userPermissions - User's permission list
- * @param {string[]} requiredRoles - Roles required for the route
- * @returns {boolean} True if user has necessary permissions
- */
 const hasRequiredPermission = (userPermissions, requiredRoles) => {
   if (!Array.isArray(requiredRoles)) return false;
   if (requiredRoles.length === 0) return true;
@@ -29,10 +20,6 @@ const hasRequiredPermission = (userPermissions, requiredRoles) => {
   );
 };
 
-/**
- * Completes loading state
- * @param {boolean} immediate - Whether to finish immediately without delay
- */
 const finishLoading = (immediate = false) => {
   NProgress.done();
 
@@ -46,11 +33,6 @@ const finishLoading = (immediate = false) => {
   }, 300);
 };
 
-/**
- * Handles router errors consistently
- * @param {Error} error - The error object
- * @param {string} type - Error type for logging
- */
 const handleRouterError = (error, type = "error") => {
   console.error(`Router ${type}:`, error);
 
@@ -72,15 +54,13 @@ router.beforeEach(async (to, from, next) => {
 
   const userInfo = store.getters.user;
 
-  // Allow access to public routes without authentication
-  if (PUBLIC_ROUTES.includes(to.path)) {
-    next();
-    return;
-  }
-
   // Redirect logged-in users away from login page
-  if (to.path === "/login" && userInfo?.name) {
-    next({ path: "/" });
+  if (to.path === "/login") {
+    if (userInfo?.name) {
+      next({ path: "/" });
+    } else {
+      next();
+    }
     return;
   }
 

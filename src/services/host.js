@@ -16,28 +16,16 @@ export default {
   },
 
   sortFS: function (resources) {
-    if (resources && resources.fs) {
-      resources.fs.sort((a, b) => {
-        if (a.size < b.size) {
-          return 1;
-        } else if (a.size > b.size) {
-          return -1;
-        } else {
-          if (a.mount_point < b.mount_point) {
-            return -1;
-          } else if (a.mount_point > b.mount_point) {
-            return 1;
-          } else {
-            return 0;
-          }
-        }
-      });
+    if (resources?.fs) {
+      resources.fs.sort((a, b) =>
+        b.size - a.size || a.mount_point.localeCompare(b.mount_point)
+      );
     }
   },
 
   getResourcesForChart: function (vueComp) {
     getClient().get_host_resources().then((res) => {
-      vueComp.resources = res.data;
+      vueComp.resources = res;
       if (vueComp.memoryData.length > 40) {
         vueComp.memoryData.shift();
       }

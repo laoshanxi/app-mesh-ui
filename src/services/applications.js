@@ -1,6 +1,5 @@
 import { getClient } from '@/utils/appmeshClient'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import moment from "moment";
 import { parseDateFromUtcSeconds } from '@/utils';
 export default {
   getAppList: function (vueComp) {
@@ -8,11 +7,8 @@ export default {
     vueComp.listLoading = true;
     getClient().list_apps().then(data => {
       data.forEach(m => {
-        // desc
         m.desc = m.description
-        // age
         m.age = this.humanReadableDuration(parseDateFromUtcSeconds(m.register_time), new Date())
-        // duration
         if (m.last_start_time && m.pid) {
           m.duration = this.humanReadableDuration(parseDateFromUtcSeconds(m.last_start_time), new Date())
         } else {
@@ -35,53 +31,18 @@ export default {
     })
   },
   humanReadableDuration(start, end) {
-    var date3 = end.getTime() - start.getTime(); //时间差秒
-    if (date3 < 0) {
-      return 'N/A'
-    }
-    //计算出相差天数
-    var days = Math.floor(date3 / (24 * 3600 * 1000))
-    days = days || ''
+    const ms = end.getTime() - start.getTime();
+    if (ms < 0) return 'N/A';
 
-    //计算出小时数
-    var leave1 = date3 % (24 * 3600 * 1000)   //计算天数后剩余的毫秒数
-    var hours = Math.floor(leave1 / (3600 * 1000))
+    const days = Math.floor(ms / (24 * 3600 * 1000));
+    const hours = Math.floor((ms % (24 * 3600 * 1000)) / (3600 * 1000));
+    const minutes = Math.floor((ms % (3600 * 1000)) / (60 * 1000));
+    const seconds = Math.round((ms % (60 * 1000)) / 1000);
 
-    //计算相差分钟数
-    var leave2 = leave1 % (3600 * 1000)        //计算小时数后剩余的毫秒数
-    var minutes = Math.floor(leave2 / (60 * 1000))
-
-    //计算相差秒数
-    var leave3 = leave2 % (60 * 1000)      //计算分钟数后剩余的毫秒数
-    var seconds = Math.round(leave3 / 1000)
-    if (days > 0) {
-      if (hours > 0) {
-        return days + "d" + hours + 'h'
-      }
-      return days + "d"
-    }
-    else if (hours > 0) {
-      if (minutes > 0) {
-        return hours + "h" + minutes + "m"
-      }
-      return hours + "h"
-    }
-    else if (minutes > 0) {
-      if (seconds > 0) {
-        return minutes + "m" + seconds + 's'
-      }
-      return minutes + "m"
-    }
-    else {
-      return seconds + 's'
-    }
-  },
-  dateFromISO8601: function (isoDateString) {
-    // "2021-10-13T21:24:17+08"
-    if (isoDateString) {
-      return moment.parseZone(isoDateString).toDate()
-    }
-    return isoDateString;
+    if (days > 0) return hours > 0 ? `${days}d${hours}h` : `${days}d`;
+    if (hours > 0) return minutes > 0 ? `${hours}h${minutes}m` : `${hours}h`;
+    if (minutes > 0) return seconds > 0 ? `${minutes}m${seconds}s` : `${minutes}m`;
+    return `${seconds}s`;
   },
   getAppByName: function (vueComp, name) {
     vueComp.isLoadingDetail = true
@@ -154,12 +115,12 @@ export default {
   registerApp: function (vueComp) {
     function removeEmptyProperties(obj) {
       let hasValue = false;
-      for (let p in obj) {
+      for (const p in obj) {
         let isNull = false;
-        if (Object.prototype.toString.call(obj[p]) == '[object Object]') {
+        if (Object.prototype.toString.call(obj[p]) === '[object Object]') {
           isNull = !removeEmptyProperties(obj[p]);
         }
-        if (obj[p] == null || obj[p].length == 0 || isNull) {
+        if (obj[p] == null || obj[p].length === 0 || isNull) {
           delete obj[p];
         } else {
           hasValue = true;

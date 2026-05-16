@@ -1,14 +1,5 @@
-/**
- * Created by PanJiaChen on 16/11/18.
- */
 import moment from "moment";
 
-/**
- * Parse the time to string
- * @param {(Object|string|number)} time
- * @param {string} cFormat
- * @returns {string | null}
- */
 export function parseTime(time, cFormat) {
   if (arguments.length === 0) {
     return null
@@ -38,17 +29,12 @@ export function parseTime(time, cFormat) {
   const time_str = format.replace(/{([ymdhisa])+}/g, (result, key) => {
     const value = formatObj[key]
     // Note: getDay() returns 0 on Sunday
-    if (key === 'a') { return ['日', '一', '二', '三', '四', '五', '六'][value] }
+    if (key === 'a') { return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][value] }
     return value.toString().padStart(2, '0')
   })
   return time_str
 }
 
-/**
- * @param {number} time
- * @param {string} option
- * @returns {string}
- */
 export function formatTime(time, option) {
   if (('' + time).length === 10) {
     time = parseInt(time) * 1000
@@ -61,54 +47,36 @@ export function formatTime(time, option) {
   const diff = (now - d) / 1000
 
   if (diff < 30) {
-    return '刚刚'
+    return 'just now'
   } else if (diff < 3600) {
-    // less 1 hour
-    return Math.ceil(diff / 60) + '分钟前'
+    return Math.ceil(diff / 60) + ' min ago'
   } else if (diff < 3600 * 24) {
-    return Math.ceil(diff / 3600) + '小时前'
+    return Math.ceil(diff / 3600) + ' hours ago'
   } else if (diff < 3600 * 24 * 2) {
-    return '1天前'
+    return '1 day ago'
   }
   if (option) {
     return parseTime(time, option)
   } else {
-    return (
-      d.getMonth() +
-      1 +
-      '月' +
-      d.getDate() +
-      '日' +
-      d.getHours() +
-      '时' +
-      d.getMinutes() +
-      '分'
-    )
+    return parseTime(time, '{y}-{m}-{d} {h}:{i}')
   }
 }
 
-/**
- * @param {string} url
- * @returns {Object}
- */
 export function param2Obj(url) {
   const search = url.split('?')[1]
   if (!search) {
     return {}
   }
-  return JSON.parse(
-    '{"' +
-    decodeURIComponent(search)
-      .replace(/"/g, '\\"')
-      .replace(/&/g, '","')
-      .replace(/=/g, '":"')
-      .replace(/\+/g, ' ') +
-    '"}'
-  )
+  const params = new URLSearchParams(search)
+  const result = {}
+  for (const [key, value] of params) {
+    result[key] = value
+  }
+  return result
 }
 
 export function formatEmpty(value, defaultValue) {
-  return value || value == 0 ? value : (defaultValue ? defaultValue : "-");
+  return value || value === 0 ? value : (defaultValue || "-");
 }
 
 export function parseDateFromUtcSeconds(value) {
@@ -126,32 +94,16 @@ export function formatDate(value) {
   return "";
 }
 
-// convert 2025-01-20T06:37:09+08 to 2024-12-15 13:23:40
 export function formatToLocal(isoString) {
-  if (!isoString) {
-    return ""; // Input is empty
-  }
-  // Parse the ISO string using moment.js
+  if (!isoString) return "";
   const date = moment(isoString);
-  if (!date.isValid()) {
-    return ""; // Invalid date format
-  }
-  // Format the date as YYYY-MM-DD HH:mm:ss
-  return date.format("YYYY-MM-DD HH:mm:ss");
+  return date.isValid() ? date.format("YYYY-MM-DD HH:mm:ss") : "";
 }
 
-// convert 2025-01-20T06:37:09+08 to 2024-12-15 13:23:40
 export function formatToLocalDayTime(dayTime) {
-  if (!dayTime) {
-    return ""; // Input is empty
-  }
-  // Parse the ISO string using moment.js
+  if (!dayTime) return "";
   const date = moment("1970-01-01 " + dayTime);
-  if (!date.isValid()) {
-    return ""; // Invalid date format
-  }
-  // Format the date as YYYY-MM-DD HH:mm:ss
-  return date.format("HH:mm:ss");
+  return date.isValid() ? date.format("HH:mm:ss") : "";
 }
 
 export function formatDayTime(value) {

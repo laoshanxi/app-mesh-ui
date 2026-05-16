@@ -43,13 +43,7 @@ export const constantRoutes = [
   {
     path: "/",
     component: Layout,
-    redirect: "/applications/index"
-  },
-  {
-    path: "/",
-    component: Layout,
-    redirect: "/401",
-    hidden: true,
+    redirect: "/applications/index",
     children: [
       {
         path: "401",
@@ -57,14 +51,7 @@ export const constantRoutes = [
         component: () => import("@/views/errors/401.vue"),
         meta: { title: "No Permission" },
         hidden: true
-      }
-    ]
-  },
-  {
-    path: "/",
-    component: Layout,
-    redirect: "/home",
-    children: [
+      },
       {
         path: "home",
         name: "Home",
@@ -99,16 +86,40 @@ export const constantRoutes = [
     ]
   },
   {
-    path: "/shell",
+    path: "/compute",
     component: Layout,
+    redirect: "/compute/shell",
+    name: "Compute",
+    meta: {
+      title: "Compute",
+      icon: "services"
+    },
     children: [
       {
-        path: "index",
+        path: "shell",
         name: "WebShell",
         component: () => import("@/views/shell/index.vue"),
-        meta: { title: "WebShell", icon: "shell" }
+        meta: { title: "Run Shell", icon: "shell" }
+      },
+      {
+        path: "app",
+        name: "RunApp",
+        component: () => import("@/views/compute/runApp/index.vue"),
+        meta: { title: "Run App", icon: "application" }
+      },
+      {
+        path: "task",
+        name: "RunTask",
+        component: () => import("@/views/compute/task/index.vue"),
+        meta: { title: "Run Task", icon: "task" }
       }
     ]
+  },
+  // back-compat for old bookmarks
+  {
+    path: "/shell",
+    redirect: "/compute/shell",
+    hidden: true
   },
   {
     path: "/security",

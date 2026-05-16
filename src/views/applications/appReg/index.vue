@@ -1,6 +1,5 @@
 <template>
   <div>
-    <!-- {{ form }} -->
     <el-card shadow="never" class="register-card">
       <el-form ref="regForm" :model="registerForm" :rules="regRules" label-width="160px">
         <el-form-item label="Name" prop="name">
@@ -225,7 +224,6 @@ export default {
     this.resetForm();
     this.setFromWithProps();
   },
-  mounted() { },
   methods: {
     setFromWithProps() {
       this.resetForm();
@@ -234,8 +232,8 @@ export default {
       if (Object.keys(this.propForm).length !== 0) {
         this.registerForm = this.merge(deepClone(this.propForm), this.registerForm);
         let permission = this.registerForm.permission + "";
-        this.registerForm.otherPermission = permission.length == 2 ? permission.substring(0, 1) : 3;
-        this.registerForm.groupPermission = permission.length == 2 ? permission.substring(1, 2) : 3;
+        this.registerForm.otherPermission = permission.length === 2 ? permission.substring(0, 1) : 3;
+        this.registerForm.groupPermission = permission.length === 2 ? permission.substring(1, 2) : 3;
         if (this.registerForm.daily_limitation) {
           this.registerForm.daily_limitation.daily_start_TEXT = formatToLocalDayTime(this.registerForm.daily_limitation.daily_start_TEXT);
           this.registerForm.daily_limitation.daily_end_TEXT = formatToLocalDayTime(this.registerForm.daily_limitation.daily_end_TEXT);
@@ -322,7 +320,7 @@ export default {
       }, 100);
     },
     removeEnvReg(item) {
-      var index = this.registerForm.envs.indexOf(item);
+      const index = this.registerForm.envs.indexOf(item);
       if (index !== -1) {
         this.registerForm.envs.splice(index, 1);
       }
@@ -362,7 +360,7 @@ export default {
     },
 
     merge(local, origin) {
-      for (var key in local) {
+      for (const key in local) {
         origin[key] =
           origin[key] && origin[key].toString() === "[object Object]"
             ? this.merge(local[key], origin[key])

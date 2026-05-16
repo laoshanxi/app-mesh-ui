@@ -25,13 +25,6 @@ export default {
       default: 8
     }
   },
-
-  data() {
-    return {
-    };
-  },
-  watch: {
-  }
 };
 </script>
 

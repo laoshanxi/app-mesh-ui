@@ -15,60 +15,46 @@ function runFinished(vueComp) {
   });
 }
 function refreshShellContents(vueComp, content) {
-  let command = vueComp.input;
-  command = command.replace(/^ +/g, "");
-  if (command.indexOf("cd ") == 0) {
+  const command = vueComp.input.replace(/^ +/g, "");
+  if (command.startsWith("cd ")) {
     vueComp.shellApp.working_dir = content;
   }
-  if (typeof (content) == 'object') {
-    vueComp.shellContents.push({
-      type: "json",
-      content: content
+  if (typeof content === 'object') {
+    vueComp.shellContents.push({ type: "json", content });
+    vueComp.$nextTick(() => {
+      const shell = vueComp.$refs['shell_div'];
+      if (!shell) return;
+      shell.scrollTop = shell.scrollHeight;
+      // json-viewer renders its tree asynchronously; scroll again once it settles
+      setTimeout(() => { shell.scrollTop = shell.scrollHeight; }, 50);
     });
     return;
   }
-  content = content + "";
-  if (content.indexOf("ls:") !== 0 && (command.indexOf("ls ") == 0 || command == "ls")) {
+  content = String(content);
+  const isLs = command.startsWith("ls ") || command === "ls";
+  if (!content.startsWith("ls:") && isLs) {
     let dir = vueComp.shellApp.working_dir || ".";
-    let tmpCommand = command;
-    if (command != "ls") {
-      tmpCommand = tmpCommand.replace(/ -[a-z]/g, ' ').replace(/ls /g, '').replace(' ', '');
-      if (tmpCommand.indexOf("/") == 0) {
-        dir = tmpCommand;
-      } else {
-        dir += "/" + tmpCommand;
-      }
+    if (command !== "ls") {
+      const parsed = command.replace(/ -[a-z]/g, ' ').replace(/ls /g, '').replace(' ', '');
+      dir = parsed.startsWith("/") ? parsed : dir + "/" + parsed;
     }
-
-    let contentList = content.split(/[\n\r]/g);
-    contentList[contentList.length - 1].length == 0 ? contentList.pop() : "";
-    contentList.map((item, index) => {
-      let fileName = item;
-      if (command.indexOf(" -l") > 0) {
-        fileName = item.substring(item.lastIndexOf(" ") + 1);
-      }
-      if (command.indexOf(" -l") > 0 && index === 0) {
-        vueComp.shellContents.push({
-          content: item
-        });
+    const hasLongFormat = command.includes(" -l");
+    const lines = content.split(/[\n\r]/g);
+    if (lines[lines.length - 1].length === 0) lines.pop();
+    lines.forEach((item, index) => {
+      const fileName = hasLongFormat ? item.substring(item.lastIndexOf(" ") + 1) : item;
+      if (hasLongFormat && index === 0) {
+        vueComp.shellContents.push({ content: item });
       } else {
-        vueComp.shellContents.push({
-          content: item,
-          dir: dir,
-          fileName: fileName,
-          type: "file"
-        });
+        vueComp.shellContents.push({ content: item, dir, fileName, type: "file" });
       }
     });
   } else {
-    vueComp.shellContents.push({
-      content: content
-    });
+    vueComp.shellContents.push({ content });
   }
 
-
   vueComp.$nextTick(() => {
-    let shell = vueComp.$refs['shell_div'];
+    const shell = vueComp.$refs['shell_div'];
     if (shell) shell.scrollTop = shell.scrollHeight;
   });
 }
@@ -91,14 +77,13 @@ export default {
       });
   },
   run: function (vueComp) {
-    let command = vueComp.input;
-    command = command.replace(/^ +/g, "");
-    if (command.indexOf("cd ") == 0) {
+    let command = vueComp.input.replace(/^ +/g, "");
+    if (command.startsWith("cd ")) {
       command = command + ";pwd";
     }
     vueComp.shellApp.command = command;
     vueComp.$nextTick(() => {
-      let shell = vueComp.$refs['shell_div'];
+      const shell = vueComp.$refs['shell_div'];
       if (shell) shell.scrollTop = shell.scrollHeight;
     });
 
@@ -106,9 +91,6 @@ export default {
 
     if (vueComp.isSync) {
       getClient().run_app_sync(vueComp.shellApp, outputHandler, vueComp.timeout)
-        .then(() => {
-          // noghting
-        })
         .catch((error) => {
           outputHandler("# Failed: " + error.message);
         })
@@ -117,11 +99,7 @@ export default {
         });
     } else {
       getClient().run_app_async(vueComp.shellApp, vueComp.timeout)
-        .then((run) => {
-          run.wait(outputHandler).then(() => {
-            // nothing
-          });
-        })
+        .then((run) => run.wait(outputHandler))
         .catch((error) => {
           outputHandler("# Failed: " + error.message);
         })
@@ -129,6 +107,5 @@ export default {
           runFinished(vueComp);
         });
     }
-
   },
 }

@@ -51,10 +51,16 @@ server {
         add_header X-Frame-Options              "SAMEORIGIN" always;
         add_header Referrer-Policy              "strict-origin-when-cross-origin" always;
 
-        # CORS - Allow-Origin: echo request Origin, fallback to wildcard
-        set $cors_origin $http_origin;
-        if ($cors_origin = '') {
+        # CORS - only allow same-origin requests (no external origins)
+        set $cors_origin '';
+        if ($http_origin = '') {
             set $cors_origin '*';
+        }
+        if ($http_origin = "https://$http_host") {
+            set $cors_origin $http_origin;
+        }
+        if ($http_origin = "http://$http_host") {
+            set $cors_origin $http_origin;
         }
         add_header 'Access-Control-Allow-Origin' $cors_origin always;
         add_header 'Access-Control-Allow-Methods' 'GET,POST,PUT,DELETE,OPTIONS,HEAD' always;

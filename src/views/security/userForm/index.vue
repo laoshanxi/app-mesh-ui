@@ -1,13 +1,12 @@
 <template>
   <div>
-    <!-- {{ form }} -->
     <el-card shadow="never" class="register-card">
       <el-form ref="userFormDom" :model="userForm" :rules="userRules" label-width="160px">
         <el-form-item label="Name" prop="name">
           <label v-if="propForm.name != null && propForm.name.length > 0">{{ propForm.name }}</label>
-          <el-input v-if="propForm.name == null || propForm.name.length == 0" v-model="userForm.name"></el-input>
+          <el-input v-if="propForm.name == null || propForm.name.length === 0" v-model="userForm.name"></el-input>
         </el-form-item>
-        <el-form-item v-if="propForm.name == null || propForm.name.length == 0" label="Password" prop="key">
+        <el-form-item v-if="propForm.name == null || propForm.name.length === 0" label="Password" prop="key">
           <el-input v-model="userForm.key"></el-input>
         </el-form-item>
         <el-form-item label="Metadata" prop="metadata">
@@ -100,8 +99,6 @@ export default {
     this.resetForm();
     this.setFromWithProps();
     this.initRoles();
-  },
-  updated() {
     this.initGroup();
   },
   methods: {
@@ -173,7 +170,7 @@ export default {
     },
 
     merge(local, origin) {
-      for (var key in local) {
+      for (const key in local) {
         origin[key] =
           origin[key] && origin[key].toString() === "[object Object]"
             ? this.merge(origin[key], local[key])

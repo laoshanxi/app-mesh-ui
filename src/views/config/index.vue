@@ -391,6 +391,9 @@ export default {
     saveConfig() {
       configService.saveConfig(this);
     },
+    reset() {
+      configService.refresh(this);
+    },
     editLabel(row) {
       this.isEdit = true;
       row.isEdit = true;
