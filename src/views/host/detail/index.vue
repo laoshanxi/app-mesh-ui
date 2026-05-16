@@ -114,69 +114,11 @@ export default {
     WarningFilled,
   },
   props: { record: { type: [Object, String], default: null } },
-  data() {
-    return {
-      data: [
-        {
-          term: "Name",
-          detail: "app",
-        },
-      ],
-    };
-  },
-  mounted() { },
   methods: {
     formatEmpty,
     formatMemory,
-    createChart(p) {
-      console.info(p);
-    },
     formatPercent(data) {
       return data > 0.85;
-    },
-    formatSwapMemUsageData() {
-      let data = this.record;
-      return [
-        {
-          key: "Usage",
-          label: "Used",
-          value: data.mem_totalSwap_bytes - data.mem_freeSwap_bytes,
-        },
-        {
-          key: "Usage",
-          label: "Free",
-          value: data.mem_freeSwap_bytes,
-        },
-      ];
-    },
-    formatMemUsageData() {
-      let data = this.record;
-      return [
-        {
-          key: "Usage",
-          label: "Used",
-          value: data.mem_total_bytes - data.mem_free_bytes,
-        },
-        {
-          key: "Usage",
-          label: "Free",
-          value: data.mem_free_bytes,
-        },
-      ];
-    },
-    formatUsageData(data) {
-      return [
-        {
-          key: "Usage",
-          label: "Used",
-          value: data.used,
-        },
-        {
-          key: "Usage",
-          label: "Unused",
-          value: data.size - data.used,
-        },
-      ];
     },
   },
 };
@@ -207,12 +149,4 @@ export default {
   text-align: right;
   width: 100px;
 }
-
-/* .el-progress-bar__outer{
-  background-color: #67c23a;
-  border-radius: 2px;
-}
-.el-progress-bar__inner{
-  border-radius: 2px;
-} */
 </style>

@@ -2,14 +2,13 @@ import { setUser, getUser, removeUser } from '@/utils/auth'
 import { getClient } from '@/utils/appmeshClient'
 import { resetRouter } from '@/router'
 
-let user = getUser();
+const user = getUser();
 
 const state = {
-  name: user ? user.name : '',
-  account: user ? user.account : '',
-  auth: user ? user.auth : '',
-  avatar: user ? user.avatar : '',
-  permissions: user ? user.permissions : '',
+  name: user?.name || '',
+  account: user?.account || '',
+  avatar: user?.avatar || '',
+  permissions: user?.permissions || '',
 }
 
 const mutations = {
@@ -18,9 +17,6 @@ const mutations = {
   },
   SET_ACCOUNT: (state, account) => {
     state.account = account
-  },
-  SET_AUTH: (state, auth) => {
-    state.auth = auth
   },
   SET_PERMISSIONS: (state, permissions) => {
     state.permissions = permissions
@@ -37,7 +33,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       getClient().login(UserName, Password, null, 'P1D', Audience).then(() => {
         // Login success without TOTP
-        actions.handleLoginSuccess({ commit, UserName, Password, resolve, reject })
+        actions.handleLoginSuccess({ commit, UserName, resolve, reject })
       }).catch(error => {
         reject(error)
       })
@@ -56,17 +52,15 @@ const actions = {
     })
   },
 
-  handleLoginSuccess({ commit, UserName, Password, resolve, reject }) {
+  handleLoginSuccess({ commit, UserName, resolve, reject }) {
     const user = {
       name: UserName,
       account: UserName,
-      auth: Password,
       avatar: ""
     };
 
     commit('SET_NAME', user.name);
     commit('SET_ACCOUNT', user.account);
-    commit('SET_AUTH', user.auth);
     commit('SET_AVATAR', user.avatar);
 
     getClient().get_user_permissions()
@@ -100,7 +94,7 @@ const actions = {
 
         return getClient().get_user_permissions().then(permissions => {
           commit('SET_PERMISSIONS', permissions)
-          const user = { name, account: name, auth: '', avatar: avatar || '', permissions }
+          const user = { name, account: name, avatar: avatar || '', permissions }
           setUser(user)
           resolve(data)
         })
@@ -121,7 +115,6 @@ const actions = {
       })
       commit('SET_NAME', '')
       commit('SET_ACCOUNT', '')
-      commit('SET_AUTH', '')
       commit('SET_AVATAR', '')
       commit('SET_PERMISSIONS', '')
       removeUser()

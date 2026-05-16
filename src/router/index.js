@@ -43,13 +43,7 @@ export const constantRoutes = [
   {
     path: "/",
     component: Layout,
-    redirect: "/applications/index"
-  },
-  {
-    path: "/",
-    component: Layout,
-    redirect: "/401",
-    hidden: true,
+    redirect: "/applications/index",
     children: [
       {
         path: "401",
@@ -57,14 +51,7 @@ export const constantRoutes = [
         component: () => import("@/views/errors/401.vue"),
         meta: { title: "No Permission" },
         hidden: true
-      }
-    ]
-  },
-  {
-    path: "/",
-    component: Layout,
-    redirect: "/home",
-    children: [
+      },
       {
         path: "home",
         name: "Home",

@@ -31,10 +31,10 @@
         </div>
       </div>
       <div class="shell-command">
-        <el-button v-if="connected == 0" @click.stop="connectHost()">Re-connect</el-button>
+        <el-button v-if="connected === 0" @click.stop="connectHost()">Re-connect</el-button>
 
         <el-input
-          v-if="connected == 2" ref="input" v-model="input" :disabled="inputDisabled" class="shell-input"
+          v-if="connected === 2" ref="input" v-model="input" :disabled="inputDisabled" class="shell-input"
           placeholder="Please enter a command" @keyup.enter="runShell()" @keyup.up="upCommand"
           @keyup.down="downCommand"
         >
@@ -114,7 +114,7 @@ export default {
       if (this.$refs["input"]) this.$refs["input"].focus();
     },
     upCommand() {
-      if (this.commands.length == 0) {
+      if (this.commands.length === 0) {
         return;
       }
       if (this.index == -1) {
@@ -126,7 +126,7 @@ export default {
       return;
     },
     downCommand() {
-      if (this.commands.length == 0) {
+      if (this.commands.length === 0) {
         return;
       }
       if (this.index > -1 && this.index < this.commands.length - 1) {

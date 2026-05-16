@@ -92,7 +92,6 @@ export default {
       'sidebar',
       'avatar',
       'name',
-      'auth',
       'forwarding',
       'loading'
     ])

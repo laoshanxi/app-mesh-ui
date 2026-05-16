@@ -53,7 +53,6 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
 import fileService from "@/services/file";
 import { getClient } from '@/utils/appmeshClient'
 import { ElMessage } from "element-plus";
@@ -73,9 +72,6 @@ export default {
         filepath: "",
       }
     };
-  },
-  computed: {
-    ...mapGetters(["baseUrl"]),
   },
   methods: {
     fileChange(file, fileList) {

@@ -4,7 +4,7 @@
       <el-col :span="24">
         <el-tabs type="border-card">
           <el-tab-pane label="Change Password" style="min-width:600px;">
-            <el-form ref="form" :model="form" label-width="200px">
+            <el-form ref="pwdForm" :model="form" label-width="200px">
               <el-form-item
                 label="Old Password" prop="curPwd" :rules="{
                   required: true, message: 'Old Password is empty', trigger: 'blur'
@@ -34,7 +34,7 @@
             </el-form>
           </el-tab-pane>
           <el-tab-pane label="Two-factor authentication" style="min-width:600px;">
-            <el-form ref="form" :model="form" label-width="200px">
+            <el-form ref="mfaForm" :model="form" label-width="200px">
               <el-form-item label="MFA enabled" prop="mfaEnabled">
                 <el-switch
                   v-model="form.mfaEnabled" active-text="Yes" :active-value="true" inactive-text="No"
@@ -98,10 +98,10 @@ export default {
       }
     },
     reset() {
-      this.$refs.form.resetFields();
+      this.$refs.pwdForm.resetFields();
     },
     async updatePwd() {
-      this.$refs.form.validate(async (valid) => {
+      this.$refs.pwdForm.validate(async (valid) => {
         if (!valid) {
           this.loading = false;
           return;

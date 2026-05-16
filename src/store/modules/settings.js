@@ -34,7 +34,7 @@ const mutations = {
         };
       }
 
-      if (state.apiUrls.filter(createFilter(value)).length == 0) {
+      if (state.apiUrls.filter(createFilter(value)).length === 0) {
         state.apiUrls.push({
           value: value
         });

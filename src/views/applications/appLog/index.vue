@@ -1,8 +1,8 @@
 <template>
   <el-card class="box-card">
     <el-pagination
-      v-model:current-page="curPage" background layout="prev, pager, next" :default-page-size="1"
-      :total="app.stdout_cache_size" @update:current-page="getAppLogByName"
+      v-if="app" v-model:current-page="curPage" v-model:page-size="pageSize" background
+      layout="prev, pager, next" :total="app.stdout_cache_size" @update:current-page="getAppLogByName"
     />
     <pre class="log">{{ loginfo ? loginfo : 'No log' }}</pre>
   </el-card>

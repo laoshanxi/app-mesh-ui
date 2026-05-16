@@ -1,11 +1,10 @@
 <template>
   <div>
-    <!-- {{ form }} -->
     <el-card shadow="never" class="register-card">
       <el-form ref="permissionFormDom" :model="permissionForm" :rules="permissionRules" label-width="160px">
         <el-form-item label="Role">
           <label v-if="propForm.name != null && propForm.name.length > 0">{{ propForm.name }}</label>
-          <el-input v-if="propForm.name == null || propForm.name.length == 0" v-model="permissionForm.name"></el-input>
+          <el-input v-if="propForm.name == null || propForm.name.length === 0" v-model="permissionForm.name"></el-input>
         </el-form-item>
         <el-form-item label="Permissions" prop="permissions">
           <div style="width: 100%;">
@@ -142,7 +141,7 @@ export default {
     },
 
     merge(local, origin) {
-      for (var key in local) {
+      for (const key in local) {
         origin[key] =
           origin[key] && origin[key].toString() === "[object Object]"
             ? this.merge(origin[key], local[key])

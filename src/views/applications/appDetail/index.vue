@@ -18,7 +18,7 @@
       </Description>
       <Description term="Status">
         <div>
-          <el-tag v-if="record.status == 1" :type="'success'">
+          <el-tag v-if="record.status === 1" :type="'success'">
             Enabled
           </el-tag>
           <el-tag v-else :type="'info'">
@@ -33,7 +33,7 @@
         {{ formatEmpty(record.working_dir) }}
       </Description>
       <Description term="Shell mode">
-        <el-tag v-if="record.shell == 1" :type="'success'">
+        <el-tag v-if="record.shell" :type="'success'">
           Yes
         </el-tag>
         <el-tag v-else :type="'info'">
@@ -41,7 +41,7 @@
         </el-tag>
       </Description>
       <Description term="Session login">
-        <el-tag v-if="record.session_login == 1" :type="'success'">
+        <el-tag v-if="record.session_login" :type="'success'">
           Yes
         </el-tag>
         <el-tag v-else :type="'info'">
@@ -179,17 +179,6 @@ export default {
     Description,
   },
   props: { record: { type: Object, default: null } },
-  data() {
-    return {
-      data: [
-        {
-          term: "Name",
-          detail: "app",
-        },
-      ],
-    };
-  },
-  mounted() { },
   methods: {
     formatEmpty,
     formatMemory,
@@ -197,5 +186,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

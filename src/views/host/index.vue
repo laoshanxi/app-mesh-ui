@@ -73,7 +73,6 @@ export default {
   },
   mounted() {
     this.initData();
-    // this.monitor();
   },
   unmounted() {
     if (this.timer) {

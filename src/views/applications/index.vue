@@ -37,7 +37,7 @@
         <el-table-column label="Name" width="200">
           <template #default="scope">
             <el-icon
-              v-if="scope.row.health == 0"
+              v-if="scope.row.health === 0"
               style="color: #85ce61; font-size: 18px; vertical-align: middle"
             >
               <SuccessFilled />
@@ -56,7 +56,7 @@
         </el-table-column>
         <el-table-column class-name="status-col" label="State" width="90">
           <template #default="scope">
-            <el-tag v-if="scope.row.status == 1" :type="'success'">
+            <el-tag v-if="scope.row.status === 1" :type="'success'">
               Enabled
             </el-tag>
             <el-tag v-else :type="'info'">
@@ -130,8 +130,6 @@
       </el-table>
     </el-row>
 
-    <!-- Add application dialog -->
-    <!-- <el-dialog title="Add Application" :visible.sync="registerFormVisible" fullscreen="false"> -->
     <el-drawer v-model="registerFormVisible" custom-class="right-drawer" size="60%">
       <template #header><span>{{ drawerTitle }}</span></template>
       <app-reg :prop-form="selectedForm" @close="registerFormVisible = false" @success="regSuccess()" />
@@ -196,9 +194,6 @@ export default {
       isSelected: false,
       isEnabled: false,
       tableKey: 0,
-      total: 15,
-      pageSize: 15,
-      currentPage: 1,
       list: null,
       listLoading: true,
       application: null,
@@ -230,13 +225,12 @@ export default {
     },
     showLog(curRow) {
       this.appLogInfo = null;
-      this.currentRow = null;
       this.currentRow = curRow;
       if (this.$refs["appLog"]) {
         this.$refs["appLog"].initCurPage();
       }
       this.isShowLog = true;
-      if (curRow.stdout_cache_size == 0) {
+      if (curRow.stdout_cache_size === 0) {
         return;
       }
       this.getAppLogByName(this.currentRow.name);
@@ -279,16 +273,7 @@ export default {
         return;
       }
       this.isSelected = true;
-      if (currentRow.status == 1) {
-        this.isEnabled = true;
-      } else {
-        this.isEnabled = false;
-      }
-    },
-    handleSizeChange(value) {
-      this.pageSize = value;
-    },
-    handleCurrentChange() {
+      this.isEnabled = currentRow.status === 1;
     },
     fetchData() {
       applications.getAppList(this);

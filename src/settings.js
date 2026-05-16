@@ -3,6 +3,12 @@ export default {
 
   /**
    * @type {boolean} true | false
+   * @description Whether show the settings panel
+   */
+  showSettings: false,
+
+  /**
+   * @type {boolean} true | false
    * @description Whether fix the header
    */
   fixedHeader: false,
