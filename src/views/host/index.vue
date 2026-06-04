@@ -115,4 +115,40 @@ export default {
 .line {
   text-align: center;
 }
+
+/* Pixel-free fill: app-main is a flex column, so cascade flex down to the
+   tab card and let it GROW to fill the content area (border-card reaches the
+   bottom), with the tab content scrolling when long. */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-container > .el-row {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.app-container > .el-row > .el-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+:deep(.el-tabs) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+:deep(.el-tabs__content) {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+  overflow: auto;
+}
 </style>

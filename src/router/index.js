@@ -74,18 +74,6 @@ export const constantRoutes = [
     ]
   },
   {
-    path: "/host",
-    component: Layout,
-    children: [
-      {
-        path: "index",
-        name: "Host",
-        component: () => import("@/views/host/index.vue"),
-        meta: { title: "Host", icon: "host" }
-      }
-    ]
-  },
-  {
     path: "/compute",
     component: Layout,
     redirect: "/compute/shell",
@@ -112,6 +100,51 @@ export const constantRoutes = [
         name: "RunTask",
         component: () => import("@/views/compute/task/index.vue"),
         meta: { title: "Run Task", icon: "task" }
+      }
+    ]
+  },
+  // Workflow + AI Agent are merged into one menu group (placed below Compute): the
+  // Workflow engine orchestrates the LLM agent (a DAG `message` step calls llm-agent,
+  // Scenario A), so they live together. Chat / Agents are children here.
+  {
+    path: "/workflow",
+    component: Layout,
+    redirect: "/workflow/index",
+    name: "WorkflowGroup",
+    meta: {
+      title: "AI & Workflow",
+      icon: "nodes"
+    },
+    children: [
+      {
+        path: "index",
+        name: "Workflow",
+        component: () => import("@/views/workflow/index.vue"),
+        meta: { title: "Workflows", icon: "tree" }
+      },
+      {
+        path: "agent/chat",
+        name: "AgentChat",
+        component: () => import("@/views/agent/Chat.vue"),
+        meta: { title: "Chat", icon: "chat" }
+      },
+      {
+        path: "agent/manage",
+        name: "AgentManage",
+        component: () => import("@/views/agent/index.vue"),
+        meta: { title: "Agents", icon: "agent" }
+      }
+    ]
+  },
+  {
+    path: "/host",
+    component: Layout,
+    children: [
+      {
+        path: "index",
+        name: "Host",
+        component: () => import("@/views/host/index.vue"),
+        meta: { title: "Host", icon: "host" }
       }
     ]
   },

@@ -1,5 +1,6 @@
 <template>
   <el-card
+    class="shell-card"
     @keyup="clearScreenByKeyUp"
     @keydown="clearScreenByKeyDown"
   >
@@ -187,6 +188,20 @@ export default {
 }
 </style>
 <style scoped>
+.shell-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.shell-card :deep(.el-card__body) {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 :deep(.el-card__header) {
   padding: 10px 16px;
 }
@@ -216,9 +231,10 @@ export default {
 }
 
 .shell-div {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: auto;
   width: 100%;
-  height: calc(100vh - 92px - 58px);
   background-color: #001528;
   color: #bfcbd9;
 }

@@ -1,11 +1,11 @@
 <template>
-  <el-card class="box-card">
+  <div class="log-wrap">
     <el-pagination
-      v-if="app" v-model:current-page="curPage" v-model:page-size="pageSize" background
+      v-if="app" v-model:current-page="curPage" v-model:page-size="pageSize" background class="log-pager"
       layout="prev, pager, next" :total="app.stdout_cache_size" @update:current-page="getAppLogByName"
     />
     <pre class="log">{{ loginfo ? loginfo : 'No log' }}</pre>
-  </el-card>
+  </div>
 </template>
 
 <script>
@@ -33,18 +33,33 @@ export default {
 };
 </script>
 
-<style>
-.log {
-  color: #606266;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 24px;
-  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
-    Microsoft YaHei, Arial, sans-serif;
+<style scoped>
+/* flat: pagination on top, log fills below — one container, one (log) scroll */
+.log-wrap {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.box-card .el-card__body {
-  height: calc(100vh - 80px) !important;
+.log-pager {
+  flex: 0 0 auto;
+  margin-bottom: 8px;
+}
+
+.log {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 0;
+  padding: 12px 14px;
   overflow: auto;
+  box-sizing: border-box;
+  background-color: #001528;
+  color: #bfcbd9;
+  font-size: 13px;
+  line-height: 1.6;
+  font-family: "Menlo", "Monaco", "Consolas", monospace;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-radius: 6px;
 }
 </style>

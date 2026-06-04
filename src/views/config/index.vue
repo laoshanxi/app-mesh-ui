@@ -9,7 +9,7 @@
                 <el-icon><Setting /></el-icon> Configuration
               </span>
             </template>
-            <el-form ref="form" :model="form" :rules="rules" label-width="260px">
+            <el-form ref="form" class="config-form" :model="form" :rules="rules" label-width="220px" size="small">
               <el-collapse v-model="activeNames">
                 <el-collapse-item name="1">
                   <template #title>
@@ -235,17 +235,15 @@
       </el-col>
     </el-row>
     <div class="control">
-      <el-button v-show="isConfigTab" size="small" type="primary" @click.prevent="saveConfig()">
+      <el-button v-show="isConfigTab" type="primary" @click.prevent="saveConfig()">
         Save
       </el-button>
-      <el-button v-show="isConfigTab" size="small" @click.prevent="reset()">
+      <el-button v-show="isConfigTab" @click.prevent="reset()">
         Reset
       </el-button>
-      <el-button-group v-show="!isConfigTab">
-        <el-button size="small" type="primary" :icon="Plus" :disabled="isEdit" @click="addLabel()">
-          Add
-        </el-button>
-      </el-button-group>
+      <el-button v-show="!isConfigTab" type="primary" :icon="Plus" :disabled="isEdit" @click="addLabel()">
+        Add
+      </el-button>
     </div>
   </div>
 </template>
@@ -451,6 +449,13 @@ export default {
   margin-top: 10px;
 }
 
+/* keep edit controls compact: don't let inputs/selects stretch full-width
+   across the wide pane (input-number stays at its natural compact width). */
+:deep(.config-form .el-input),
+:deep(.config-form .el-select) {
+  max-width: 360px;
+}
+
 .show-pwd {
   position: absolute;
   right: 5px;
@@ -468,7 +473,7 @@ export default {
 
 <style>
 .el-collapse-item__header {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: bold;
   padding: 0 15px;
   cursor: pointer;
@@ -476,6 +481,9 @@ export default {
 }
 
 .el-collapse-item .el-collapse-item__header {
+  height: 28px !important;
+  line-height: 28px !important;
+  min-height: 28px !important;
   background-color: #d6e7fa;
   border-left: 3px solid #409EFF;
 }
@@ -497,7 +505,11 @@ export default {
 .control {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 50px;
+  justify-content: flex-end;
+  gap: 10px;
+  height: 52px;
+  padding: 0 16px;
+  margin-top: 8px;
+  border-top: 1px solid #ebeef5;
 }
 </style>

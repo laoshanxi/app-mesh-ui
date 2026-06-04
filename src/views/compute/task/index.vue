@@ -77,7 +77,18 @@ export default {
 
 <style scoped>
 /* follow Shell: dark, full-height body flush to card edges */
+.console-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .console-card :deep(.el-card__body) {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   padding: 0;
 }
 
@@ -109,9 +120,10 @@ export default {
 
 .console-body {
   display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
   gap: 10px;
   width: 100%;
-  height: calc(100vh - 92px - 58px);
   background-color: #001528;
   color: #bfcbd9;
   padding: 10px;
@@ -123,6 +135,7 @@ export default {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
 }
 
 .pane-title {

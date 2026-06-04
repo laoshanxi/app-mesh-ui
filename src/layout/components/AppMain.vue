@@ -26,6 +26,11 @@ export default {
   width: 100%;
   position: relative;
   overflow: hidden;
+  /* flex column so pages can `flex: 1` to fill the content area without
+     hardcoding any pixel height of their own. Tall block pages that don't
+     opt in still grow naturally (min-height is a floor, not a cap). */
+  display: flex;
+  flex-direction: column;
 }
 .fixed-header+.app-main {
   padding-top: 50px;

@@ -1,118 +1,107 @@
 <template>
-  <div v-if="record != 'No Data'" class="box-card">
-    <DescriptionList title="Host" col="8">
-      <Description term="Host name">{{ formatEmpty(record.host_name) }}</Description>
-      <Description term="Date time">{{ formatEmpty(record.systime) }}</Description>
-      <Description term="Description">{{ formatEmpty(record.host_description) }}</Description>
-    </DescriptionList>
-    <DescriptionList title col="8">
-      <Description term="1 minutes Load">{{ formatEmpty(record.load["1min"]) }}</Description>
-      <Description term="5 minutes Load">{{ formatEmpty(record.load["5min"]) }}</Description>
-      <Description term="15 minutes Load">{{ formatEmpty(record.load["15min"]) }}</Description>
-    </DescriptionList>
-    <el-divider></el-divider>
-    <DescriptionList title="CPU & Memory" col="8">
-      <Description term="Sockets">{{ formatEmpty(record.cpu_sockets) }}</Description>
-      <Description term="Cores">{{ formatEmpty(record.cpu_cores) }}</Description>
-      <Description term="Processors">{{ formatEmpty(record.cpu_processors) }}</Description>
-    </DescriptionList>
-    <DescriptionList title col="24">
-      <Description term="Memory">
-        <div style="margin-left: 39px;">
-          <div class="chart-label-left">free {{ formatMemory(record.mem_free_bytes) }}</div>
-          <div class="chart-div">
-            <el-progress
-              :text-inside="true" :stroke-width="25"
-              :percentage="parseFloat(((record.mem_total_bytes - record.mem_free_bytes) / record.mem_total_bytes * 100).toFixed(2))"
-              status="exception"
-            ></el-progress>
-          </div>
-          <div class="chart-label">total {{ formatMemory(record.mem_total_bytes) }}</div>
-        </div>
-      </Description>
-      <Description term="Swap memory">
-        <el-row>
-          <div class="chart-label-left">free {{ formatMemory(record.mem_freeSwap_bytes) }}</div>
-          <div class="chart-div">
-            <el-progress
-              :text-inside="true" :stroke-width="25"
-              :percentage="record.mem_totalSwap_bytes <= 0 ? 0 : parseFloat(((record.mem_totalSwap_bytes - record.mem_freeSwap_bytes) / record.mem_totalSwap_bytes * 100).toFixed(2))"
-              status="exception"
-            ></el-progress>
-          </div>
-          <div class="chart-label">total {{ formatMemory(record.mem_totalSwap_bytes) }}</div>
-        </el-row>
-      </Description>
-      <Description term="App Mesh memory">{{ formatMemory(record.mem_applications) }}</Description>
-    </DescriptionList>
-    <el-divider></el-divider>
+  <div v-if="record != 'No Data'" class="host-detail">
+    <section class="kv-section">
+      <h3 class="kv-title">Host</h3>
+      <div class="kv-grid">
+        <div class="kv"><span class="k">Host name</span><span class="v">{{ formatEmpty(record.host_name) }}</span></div>
+        <div class="kv"><span class="k">Date time</span><span class="v">{{ formatEmpty(record.systime) }}</span></div>
+        <div class="kv kv--full"><span class="k">Description</span><span class="v">{{ formatEmpty(record.host_description) }}</span></div>
+        <div class="kv"><span class="k">1 min load</span><span class="v">{{ formatEmpty(record.load["1min"]) }}</span></div>
+        <div class="kv"><span class="k">5 min load</span><span class="v">{{ formatEmpty(record.load["5min"]) }}</span></div>
+        <div class="kv"><span class="k">15 min load</span><span class="v">{{ formatEmpty(record.load["15min"]) }}</span></div>
+      </div>
+    </section>
 
-    <DescriptionList title="Disk" col="24" style="margin-bottom: 20px;">
+    <section class="kv-section">
+      <h3 class="kv-title">CPU &amp; Memory</h3>
+      <div class="kv-grid">
+        <div class="kv"><span class="k">Sockets</span><span class="v">{{ formatEmpty(record.cpu_sockets) }}</span></div>
+        <div class="kv"><span class="k">Cores</span><span class="v">{{ formatEmpty(record.cpu_cores) }}</span></div>
+        <div class="kv"><span class="k">Processors</span><span class="v">{{ formatEmpty(record.cpu_processors) }}</span></div>
+        <div class="kv"><span class="k">App Mesh memory</span><span class="v">{{ formatMemory(record.mem_applications) }}</span></div>
+      </div>
+
+      <div class="meter">
+        <div class="meter-row">
+          <span class="meter-name">Memory</span>
+          <el-progress
+            class="meter-bar" :text-inside="true" :stroke-width="22"
+            :percentage="memPercent(record.mem_total_bytes, record.mem_free_bytes)" status="exception"
+          />
+          <span class="meter-note">free {{ formatMemory(record.mem_free_bytes) }} / total {{ formatMemory(record.mem_total_bytes) }}</span>
+        </div>
+        <div class="meter-row">
+          <span class="meter-name">Swap</span>
+          <el-progress
+            class="meter-bar" :text-inside="true" :stroke-width="22"
+            :percentage="memPercent(record.mem_totalSwap_bytes, record.mem_freeSwap_bytes)" status="exception"
+          />
+          <span class="meter-note">free {{ formatMemory(record.mem_freeSwap_bytes) }} / total {{ formatMemory(record.mem_totalSwap_bytes) }}</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="kv-section">
+      <h3 class="kv-title">Disk</h3>
       <el-table
-        :key="1" :data="record.fs" border :default-sort="{ prop: 'size' }" style="width: 100%"
+        :key="1" :data="record.fs" border size="small" :default-sort="{ prop: 'size' }" style="width: 100%"
         highlight-current-row
       >
         <el-table-column label="Device" prop="device">
           <template #default="scope">
-            <el-icon v-if="formatPercent(scope.row.usage)" style="color: firebrick;font-size: 18px; vertical-align: middle;"><WarningFilled /></el-icon>
+            <el-icon v-if="formatPercent(scope.row.usage)" style="color: firebrick; font-size: 16px; vertical-align: middle"><WarningFilled /></el-icon>
             {{ formatEmpty(scope.row.device) }}
           </template>
         </el-table-column>
-        <el-table-column label="Size" width="140">
+        <el-table-column label="Size" width="120">
           <template #default="scope">{{ formatMemory(scope.row.size) }}</template>
         </el-table-column>
-        <el-table-column label="Used" width="140">
+        <el-table-column label="Used" width="120">
           <template #default="scope">{{ formatMemory(scope.row.used) }}</template>
         </el-table-column>
         <el-table-column label="Usage" width="200">
           <template #default="scope">
             <el-progress
-              :text-inside="true" :stroke-width="25"
+              :text-inside="true" :stroke-width="20"
               :percentage="parseFloat((scope.row.usage * 100).toFixed(2))" status="exception"
-            ></el-progress>
+            />
           </template>
         </el-table-column>
         <el-table-column label="Mount point">
           <template #default="scope">{{ formatEmpty(scope.row.mount_point) }}</template>
         </el-table-column>
       </el-table>
-    </DescriptionList>
-    <DescriptionList title="Network" col="24">
+    </section>
+
+    <section class="kv-section">
+      <h3 class="kv-title">Network</h3>
       <el-table
-        :key="2" :data="record.net" :default-sort="{ prop: 'name' }" border style="width: 100%"
+        :key="2" :data="record.net" size="small" :default-sort="{ prop: 'name' }" border style="width: 100%"
         highlight-current-row
       >
         <el-table-column label="Name" width="240" prop="name">
           <template #default="scope">{{ formatEmpty(scope.row.name) }}</template>
         </el-table-column>
-
         <el-table-column label="Protocol" width="100" prop="protocol">
           <template #default="scope">
-            <el-tag v-if="scope.row.ipv6" :type="'success'">IPv6</el-tag>
-            <el-tag v-else :type="'info'">IPv4</el-tag>
+            <el-tag size="small" :type="scope.row.ipv6 ? 'success' : 'info'">{{ scope.row.ipv6 ? "IPv6" : "IPv4" }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="Address" prop="address">
           <template #default="scope">{{ formatEmpty(scope.row.address) }}</template>
         </el-table-column>
       </el-table>
-    </DescriptionList>
+    </section>
   </div>
 </template>
 
 <script>
-import DescriptionList from "@/components/Descriptions/index.vue";
-import Description from "@/components/Description/index.vue";
 import { formatEmpty, formatMemory } from "@/utils";
 import { WarningFilled } from "@element-plus/icons-vue";
 
 export default {
   name: "Detail",
-  components: {
-    DescriptionList,
-    Description,
-    WarningFilled,
-  },
+  components: { WarningFilled },
   props: { record: { type: [Object, String], default: null } },
   methods: {
     formatEmpty,
@@ -120,33 +109,95 @@ export default {
     formatPercent(data) {
       return data > 0.85;
     },
+    memPercent(total, free) {
+      if (!total || total <= 0) return 0;
+      return parseFloat((((total - free) / total) * 100).toFixed(2));
+    },
   },
 };
 </script>
 
-<style>
-.detail {
-  vertical-align: middle;
+<style lang="scss" scoped>
+.host-detail {
+  padding: 4px 4px 16px;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
 }
 
-.detail>div>div {
-  height: 30px;
+.kv-section + .kv-section {
+  margin-top: 18px;
 }
 
-.chart-div {
-  display: inline-block;
-  width: 300px;
+.kv-title {
+  margin: 0 0 10px;
+  padding-left: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #303133;
+  border-left: 3px solid #409eff;
 }
 
-.chart-label {
-  display: inline-block;
-  position: relative;
+.kv-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 28px;
 }
 
-.chart-label-left {
-  display: inline-block;
-  position: relative;
-  text-align: right;
-  width: 100px;
+.kv {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+  padding: 6px 0;
+  border-bottom: 1px dashed #ebeef5;
+  font-size: 13px;
+  line-height: 1.5;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+}
+
+.k {
+  flex: 0 0 auto;
+  width: 150px;
+  color: #909399;
+  white-space: nowrap;
+}
+
+.v {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: #303133;
+  word-break: break-all;
+}
+
+/* memory / swap meters */
+.meter {
+  margin-top: 12px;
+}
+
+.meter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.meter-name {
+  flex: 0 0 auto;
+  width: 60px;
+  font-size: 13px;
+  color: #909399;
+}
+
+.meter-bar {
+  flex: 0 0 320px;
+}
+
+.meter-note {
+  flex: 1 1 auto;
+  font-size: 12px;
+  color: #909399;
 }
 </style>
