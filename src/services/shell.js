@@ -21,6 +21,13 @@ function refreshShellContents(vueComp, content) {
   }
   if (typeof content === 'object') {
     vueComp.shellContents.push({ type: "json", content });
+    vueComp.$nextTick(() => {
+      const shell = vueComp.$refs['shell_div'];
+      if (!shell) return;
+      shell.scrollTop = shell.scrollHeight;
+      // json-viewer renders its tree asynchronously; scroll again once it settles
+      setTimeout(() => { shell.scrollTop = shell.scrollHeight; }, 50);
+    });
     return;
   }
   content = String(content);

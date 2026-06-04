@@ -4,16 +4,11 @@
     @keydown="clearScreenByKeyDown"
   >
     <template #header>
-      <el-row>
-        <el-col :span="3" style="text-align: center;height: 38px; line-height: 38px;">
-          <el-switch v-model="isSync" active-text="Sync" inactive-text="Async"></el-switch>
-        </el-col>
-        <el-col :span="2" style="text-align: center;height: 38px; line-height: 38px;">Timeout</el-col>
-        <el-col :span="10">
-          <el-slider v-model="timeout" :min="5" :max="60" show-input :marks="marks"></el-slider>
-        </el-col>
-        <el-col :span="9"></el-col>
-      </el-row>
+      <div class="toolbar">
+        <el-switch v-model="isSync" active-text="Sync" inactive-text="Async" />
+        <span class="t-label">Timeout</span>
+        <el-input-number v-model="timeout" :min="5" :max="60" :step="5" controls-position="right" class="t-num" />
+      </div>
     </template>
     <div ref="shell_div" v-loading="loading" element-loading-text="Downloading" class="shell-div" @click="moveFocus">
       <el-button-group class="buttonsArea">
@@ -139,6 +134,16 @@ export default {
       shellService.connectHost(this);
     },
     runShell() {
+      // Empty input: just echo a fresh prompt, no backend call (like a real shell).
+      if (this.input.trim().length === 0) {
+        this.shellContents.push({ content: "# " + this.input, type: "command" });
+        this.input = "";
+        this.$nextTick(() => {
+          const shell = this.$refs["shell_div"];
+          if (shell) shell.scrollTop = shell.scrollHeight;
+        });
+        return;
+      }
       this.commands.push(this.input);
       this.shellContents.push({
         content: "# " + this.input,
@@ -182,6 +187,24 @@ export default {
 }
 </style>
 <style scoped>
+:deep(.el-card__header) {
+  padding: 10px 16px;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toolbar .t-num {
+  width: 120px;
+}
+
+.t-label {
+  color: #909399;
+}
+
 .buttonsArea {
   position: absolute;
   right: 35px;
@@ -195,7 +218,7 @@ export default {
 .shell-div {
   overflow: auto;
   width: 100%;
-  height: calc(100vh - 92px - 75px);
+  height: calc(100vh - 92px - 58px);
   background-color: #001528;
   color: #bfcbd9;
 }
