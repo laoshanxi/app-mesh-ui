@@ -31,10 +31,10 @@
     <el-row>
       <el-table
         ref="appTable" :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
-        style="width: 100%" height="100%" class="fix-table" :fit="true" highlight-current-row
+        style="width: 100%" height="100%" class="fix-table" :fit="true" highlight-current-row show-overflow-tooltip
         @current-change="currentRowChange"
       >
-        <el-table-column label="Name" width="200">
+        <el-table-column label="Name" min-width="230">
           <template #default="scope">
             <el-icon
               v-if="scope.row.health === 0"
@@ -49,12 +49,12 @@
             </el-link>
           </template>
         </el-table-column>
-        <el-table-column label="Owner" width="100">
+        <el-table-column label="Owner" min-width="90">
           <template #default="scope">
             {{ formatEmpty(scope.row.owner) }}
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="State" width="90">
+        <el-table-column class-name="status-col" label="State" min-width="110">
           <template #default="scope">
             <el-tag v-if="scope.row.status === 1" :type="'success'">
               Enabled
@@ -65,7 +65,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="PID" width="90">
+        <el-table-column label="PID" min-width="80">
           <template #default="scope">
             <span v-if="scope.row.pstree">
               <el-link underline="always" :title="scope.row.pstree">
@@ -75,42 +75,42 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="User" width="90">
+        <el-table-column label="User" min-width="100">
           <template #default="scope">
             {{ formatEmpty(scope.row.pid_user) }}
           </template>
         </el-table-column>
-        <el-table-column label="Memory" width="110">
+        <el-table-column label="Memory" min-width="90">
           <template #default="scope">
             {{ formatMemory(scope.row.memory) }}
           </template>
         </el-table-column>
-        <el-table-column label="%Cpu" width="110">
+        <el-table-column label="%Cpu" min-width="80">
           <template #default="scope">
             {{ formatCpu(scope.row.cpu) }}
           </template>
         </el-table-column>
-        <el-table-column label="Return" width="70">
+        <el-table-column label="Return" min-width="80">
           <template #default="scope">
             {{ formatEmpty(scope.row.return_code) }}
           </template>
         </el-table-column>
-        <el-table-column label="Starts" width="70">
+        <el-table-column label="Starts" min-width="80">
           <template #default="scope">
             {{ formatEmpty(scope.row.starts) }}
           </template>
         </el-table-column>
-        <el-table-column label="Age" width="120">
+        <el-table-column label="Age" min-width="90">
           <template #default="scope">
             {{ formatEmpty(scope.row.age) }}
           </template>
         </el-table-column>
-        <el-table-column label="Duration" width="120">
+        <el-table-column label="Duration" min-width="100">
           <template #default="scope">
             {{ formatEmpty(scope.row.duration) }}
           </template>
         </el-table-column>
-        <el-table-column prop="last_start_time" label="Last Start Time" width="230">
+        <el-table-column prop="last_start_time" label="Last Start Time" min-width="210">
           <template #default="scope">
             <span v-if="scope.row.last_start_time">
               <el-link underline="always" title="Show log" @click="showLog(scope.row)">
@@ -122,7 +122,7 @@
             <span v-else>-</span>
           </template>
         </el-table-column>
-        <el-table-column label="Command" show-overflow-tooltip>
+        <el-table-column label="Command" min-width="200" show-overflow-tooltip>
           <template #default="scope">
             {{ formatEmpty(scope.row.command) }}
           </template>
@@ -157,7 +157,7 @@
           &nbsp;&nbsp;{{ currentRow ? currentRow.name : "Please select one application" }}
         </span>
       </template>
-      <div v-loading="isLoadingLog" class="detail-card">
+      <div v-loading="isLoadingLog" style="height: 100%; overflow: hidden">
         <app-log
           ref="appLog" :loginfo="appLogInfo" :app="currentRow" @start-loading="isLoadingLog = true"
           @loading-done="logChange"
@@ -292,6 +292,11 @@ export default {
   margin-bottom: 8px;
 }
 
+/* keep cell links (Name, Last Start Time) on one line so show-overflow-tooltip can ellipsis them */
+:deep(.el-table .cell .el-link) {
+  white-space: nowrap;
+}
+
 .el-input {
   width: 200px;
   margin-right: 10px;
@@ -320,7 +325,7 @@ export default {
 }
 
 .detail-card {
-  height: calc(100vh - 77px) !important;
+  height: 100%;
   overflow-y: auto;
 }
 

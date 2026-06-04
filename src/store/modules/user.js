@@ -1,5 +1,5 @@
 import { setUser, getUser, removeUser } from '@/utils/auth'
-import { getClient } from '@/utils/appmeshClient'
+import { getClient, clearClient, captureWorkflowToken } from '@/utils/appmeshClient'
 import { resetRouter } from '@/router'
 
 const user = getUser();
@@ -64,10 +64,14 @@ const actions = {
     commit('SET_AVATAR', user.avatar);
 
     getClient().get_user_permissions()
-      .then(res => {
+      .then(async res => {
         user.permissions = res;
         commit('SET_PERMISSIONS', res);
         setUser(user);
+        // Capture a payload-usable JWT for task-server apps (e.g. Workflow engine)
+        // that authenticate from payload.token rather than the HttpOnly cookie.
+        // Best-effort — never blocks login.
+        await captureWorkflowToken();
         resolve({ needTotp: false });
       })
       .catch(error => {
@@ -118,6 +122,7 @@ const actions = {
       commit('SET_AVATAR', '')
       commit('SET_PERMISSIONS', '')
       removeUser()
+      clearClient() // drop the cached client instance + workflow token
       resetRouter()
       resolve()
     })

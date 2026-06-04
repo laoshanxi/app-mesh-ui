@@ -74,14 +74,14 @@ export const constantRoutes = [
     ]
   },
   {
-    path: "/host",
+    path: "/workflow",
     component: Layout,
     children: [
       {
         path: "index",
-        name: "Host",
-        component: () => import("@/views/host/index.vue"),
-        meta: { title: "Host", icon: "host" }
+        name: "Workflow",
+        component: () => import("@/views/workflow/index.vue"),
+        meta: { title: "Workflows", icon: "tree" }
       }
     ]
   },
@@ -112,6 +112,18 @@ export const constantRoutes = [
         name: "RunTask",
         component: () => import("@/views/compute/task/index.vue"),
         meta: { title: "Run Task", icon: "task" }
+      }
+    ]
+  },
+  {
+    path: "/host",
+    component: Layout,
+    children: [
+      {
+        path: "index",
+        name: "Host",
+        component: () => import("@/views/host/index.vue"),
+        meta: { title: "Host", icon: "host" }
       }
     ]
   },

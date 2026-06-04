@@ -100,6 +100,16 @@ export function formatToLocal(isoString) {
   return date.isValid() ? date.format("YYYY-MM-DD HH:mm:ss") : "";
 }
 
+// Same display format as formatDate ("YYYY-MM-DDTHH:mm:ss+TZ") but for an ISO/RFC3339
+// input (e.g. workflow timestamps) — keeps the workflow tables consistent with Applications.
+export function formatToLocalIso(isoString) {
+  if (!isoString) return "";
+  const date = moment(isoString);
+  if (!date.isValid()) return "";
+  const str = date.format("YYYY-MM-DDTHH:mm:ssZ");
+  return str.slice(0, str.length - 3);
+}
+
 export function formatToLocalDayTime(dayTime) {
   if (!dayTime) return "";
   const date = moment("1970-01-01 " + dayTime);
