@@ -1,7 +1,8 @@
 <template>
-  <div>
-    <el-card shadow="never" class="register-card">
-      <el-form ref="regForm" :model="registerForm" :rules="regRules" label-width="160px">
+  <div class="reg-wrap">
+    <div class="register-card">
+      <el-form ref="regForm" :model="registerForm" :rules="regRules" label-width="150px">
+        <h3 class="sec-title">Basic</h3>
         <el-form-item label="Name" prop="name">
           <el-input v-model="registerForm.name"></el-input>
         </el-form-item>
@@ -30,32 +31,28 @@
         </el-form-item>
 
         <el-form-item label="Permission">
-          <el-row>
-            <el-col :span="2">Group:</el-col>
-            <el-col :span="22">
-              <el-radio-group v-model="registerForm.groupPermission">
-                <el-radio-button value="1">Deny</el-radio-button>
-                <el-radio-button value="2">Read</el-radio-button>
-                <el-radio-button value="3">Write</el-radio-button>
-              </el-radio-group>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="2">Other:</el-col>
-            <el-col :span="22">
-              <el-radio-group v-model="registerForm.otherPermission">
-                <el-radio-button value="1">Deny</el-radio-button>
-                <el-radio-button value="2">Read</el-radio-button>
-                <el-radio-button value="3">Write</el-radio-button>
-              </el-radio-group>
-            </el-col>
-          </el-row>
+          <div class="perm-row">
+            <span class="perm-label">Group</span>
+            <el-radio-group v-model="registerForm.groupPermission" size="small">
+              <el-radio-button value="1">Deny</el-radio-button>
+              <el-radio-button value="2">Read</el-radio-button>
+              <el-radio-button value="3">Write</el-radio-button>
+            </el-radio-group>
+          </div>
+          <div class="perm-row">
+            <span class="perm-label">Other</span>
+            <el-radio-group v-model="registerForm.otherPermission" size="small">
+              <el-radio-button value="1">Deny</el-radio-button>
+              <el-radio-button value="2">Read</el-radio-button>
+              <el-radio-button value="3">Write</el-radio-button>
+            </el-radio-group>
+          </div>
         </el-form-item>
         <el-form-item label="stdout cache number" prop="stdout_cache_num">
           <el-input-number v-model="registerForm.stdout_cache_num" :min="0"></el-input-number>
         </el-form-item>
 
-        <el-divider></el-divider>
+        <h3 class="sec-title">Metadata &amp; health</h3>
 
         <el-form-item label="Metadata" prop="metadata">
           <el-input v-model="registerForm.metadata" type="textarea" :autosize="{ minRows: 2, maxRows: 6 }" />
@@ -64,23 +61,23 @@
           <el-input v-model="registerForm.health_check_cmd"></el-input>
         </el-form-item>
 
-        <el-divider></el-divider>
+        <h3 class="sec-title">Scheduling</h3>
 
         <el-form-item label="Start interval" prop="start_interval_seconds">
-          <el-input v-model="registerForm.start_interval_seconds"></el-input>(ISO 8601 durations / seconds / cron expr)
+          <el-input v-model="registerForm.start_interval_seconds"></el-input><span class="hint">ISO 8601 durations / seconds / cron expr</span>
         </el-form-item>
         <el-form-item label="Cron interval expr" prop="cron">
           <el-switch v-model="registerForm.cron" :active-value="true" :inactive-value="false"></el-switch>
         </el-form-item>
         <el-form-item label="Retention" prop="retention">
-          <el-input v-model="registerForm.retention"></el-input>(ISO 8601 durations or seconds)
+          <el-input v-model="registerForm.retention"></el-input><span class="hint">ISO 8601 durations or seconds</span>
         </el-form-item>
         <el-form-item label="Exit behavior" prop="behavior.exit">
           <el-select v-model="registerForm.behavior.exit" placeholder="Please select">
             <el-option v-for="item in Behaviors" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
-        <el-divider></el-divider>
+        <h3 class="sec-title">Time window</h3>
 
         <el-form-item label="Start time" prop="start_time">
           <el-date-picker
@@ -101,7 +98,7 @@
           >
           </el-time-picker>
         </el-form-item>
-        <el-divider></el-divider>
+        <h3 class="sec-title">Resource limits</h3>
 
         <el-form-item label="CPU shares" prop="resource_limit.cpu_shares">
           <el-input-number v-model="registerForm.resource_limit.cpu_shares" :min="0"></el-input-number>
@@ -112,13 +109,13 @@
         <el-form-item label="Virtual memory" prop="resource_limit.memory_virt_mb">
           <el-input-number v-model="registerForm.resource_limit.memory_virt_mb" :min="0"></el-input-number>Mi
         </el-form-item>
-        <el-divider></el-divider>
+        <h3 class="sec-title">Attach</h3>
 
         <el-form-item label="Pid(for attach)" prop="pid">
           <el-input-number v-model="registerForm.pid" :min="0"></el-input-number>
         </el-form-item>
 
-        <el-divider></el-divider>
+        <h3 class="sec-title">Docker</h3>
         <el-form-item label="Docker image" prop="docker_image">
           <el-input v-model="registerForm.docker_image"></el-input>
         </el-form-item>
@@ -129,7 +126,7 @@
           <el-input-number v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT" :min="0"></el-input-number>S
         </el-form-item>
 
-        <el-divider></el-divider>
+        <h3 class="sec-title">Environment variables</h3>
 
         <el-form-item
           v-for="(env, index) in registerForm.envs" :key="env.key" :label="'Env ' + index"
@@ -144,7 +141,7 @@
           <el-button :icon="Delete" @click.prevent="removeEnvReg(env)"></el-button>
         </el-form-item>
       </el-form>
-    </el-card>
+    </div>
     <div class="dialog-footer">
       <el-button @click="cancel()">Cancel</el-button>
       <el-button @click="reset()">Reset</el-button>
@@ -390,31 +387,80 @@ export default {
 </script>
 
 <style scoped>
+/* Flex column: form area scrolls once, footer pinned below — no nested drawer/card scroll. */
+.reg-wrap {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .register-card {
-  height: calc(100vh - 136px) !important;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
+  padding: 14px 20px 4px;
 }
 
 .register-card .el-input,
 .register-card .el-input-number {
-  width: 350px;
+  width: 340px;
   margin-right: 10px;
 }
 
-.right-drawer .dialog-footer {
-  border-top: 1px solid #bfcbd9;
-  background-color: #ffffff;
-  width: 100%;
-  position: absolute;
-  bottom: 0px;
-  text-align: right;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-right: 30px;
+/* section headers — same blue accent bar as the detail pages */
+.sec-title {
+  margin: 0 0 14px;
+  padding-left: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #303133;
+  border-left: 3px solid #409eff;
 }
 
-.detail-card {
-  height: calc(100vh - 77px) !important;
-  overflow-y: auto;
+.sec-title:not(:first-child) {
+  margin-top: 22px;
+  padding-top: 16px;
+  border-top: 1px solid #ebeef5;
+}
+
+.hint {
+  margin-left: 10px;
+  color: #909399;
+  font-size: 12px;
+}
+
+/* Permission: fixed-width inline labels so "Group"/"Other" never get clipped. */
+.perm-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.perm-row + .perm-row {
+  margin-top: 6px;
+}
+
+.perm-label {
+  flex: 0 0 auto;
+  width: 48px;
+  color: #606266;
+}
+
+/* Compact spacing: tighter rows and dividers than Element defaults. */
+.register-card :deep(.el-form-item) {
+  margin-bottom: 12px;
+}
+
+.register-card :deep(.el-divider--horizontal) {
+  margin: 10px 0;
+}
+
+.dialog-footer {
+  flex: 0 0 auto;
+  border-top: 1px solid #ebeef5;
+  background-color: #ffffff;
+  text-align: right;
+  padding: 14px 20px;
 }
 </style>

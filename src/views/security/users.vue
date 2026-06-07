@@ -289,6 +289,26 @@ export default {
   margin-bottom: 8px;
 }
 
+/* Flex-fill: app-main is a flex column, so this page flexes to fill the
+   content area; the table row then flexes to fill what's left below the
+   title/toolbar. No pixel heights -> can't overflow or leave a bottom gap. */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-container > .el-row:last-child {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+:deep(.fix-table) {
+  height: 100% !important;
+}
+
 .register-card {
   height: calc(100vh - 136px) !important;
   overflow-y: auto;

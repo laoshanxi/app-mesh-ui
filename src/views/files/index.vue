@@ -19,9 +19,9 @@
                   ref="upload" class="upload-demo" action="#" :auto-upload="false" :on-change="fileChange"
                   :limit="1"
                 >
-                  <template #trigger><el-button size="small" type="primary">Select File</el-button></template>
+                  <template #trigger><el-button type="primary">Select File</el-button></template>
                   <el-button
-                    style="margin-left: 10px" size="small" type="success" :disabled="form.disabled"
+                    style="margin-left: 10px" type="success" :disabled="form.disabled"
                     @click="submitUpload"
                   >
                     Upload
@@ -42,7 +42,7 @@
               </el-form-item>
 
               <el-form-item>
-                <el-button size="small" type="primary" @click="download">Download</el-button>
+                <el-button type="primary" @click="download">Download</el-button>
               </el-form-item>
             </el-form>
           </el-tab-pane>
@@ -114,5 +114,41 @@ export default {
 <style scoped>
 .line {
   text-align: center;
+}
+
+/* Pixel-free fill: cascade flex from the flex-column app-main so the tab
+   card fits its (short) content instead of the global forced 100vh-174px
+   height that left a large empty area below the upload/download forms. */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-container > .el-row {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.app-container > .el-row > .el-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+:deep(.el-tabs) {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+:deep(.el-tabs__content) {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+  overflow: auto;
 }
 </style>

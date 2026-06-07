@@ -115,4 +115,40 @@ export default {
 .line {
   text-align: center;
 }
+
+/* Pixel-free fill: app-main is a flex column, so cascade flex down to the
+   tab card. `flex: 0 1 auto` makes it fit its content (no empty area below
+   the short host detail) yet shrink-and-scroll when the JSON tab is long. */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-container > .el-row {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.app-container > .el-row > .el-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+:deep(.el-tabs) {
+  display: flex;
+  flex-direction: column;
+  flex: 0 1 auto;
+  min-height: 0;
+}
+
+:deep(.el-tabs__content) {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+  overflow: auto;
+}
 </style>

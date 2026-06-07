@@ -70,7 +70,7 @@
     </el-row>
 
     <!-- Add workflow (YAML editor) -->
-    <el-drawer v-model="isShowAdd" size="60%">
+    <el-drawer v-model="isShowAdd" size="50%">
       <template #header><span>Add Workflow</span></template>
       <textarea v-model="addContent" class="yaml-box" placeholder="Paste workflow YAML here"></textarea>
       <template #footer>
@@ -179,6 +179,7 @@
       <div v-loading="monitorLoading" class="detail-card">
         <run-detail
           v-if="isShowMonitor && monitorRunId" :workflow="monitorName" :run-id="monitorRunId"
+          @rerun="onMonitorRerun"
         />
         <el-empty v-else-if="!monitorLoading" description="No runs yet — trigger a Run first" />
       </div>
@@ -308,6 +309,11 @@ export default {
       }).catch(() => {
         this.monitorLoading = false;
       });
+    },
+
+    // rerun from inside the Monitor drawer created a new run -> follow it
+    onMonitorRerun(newRunId) {
+      if (newRunId) this.monitorRunId = newRunId;
     },
 
     // ---- Add ----
@@ -451,6 +457,26 @@ export default {
 /* keep table links (Name, Run ID) on one line; the cell handles ellipsis */
 :deep(.el-table .el-link) {
   white-space: nowrap;
+}
+
+/* Flex-fill: app-main is a flex column, so this page flexes to fill the
+   content area; the table row then flexes to fill what's left below the
+   title/toolbar. No pixel heights -> can't overflow or leave a bottom gap. */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-container > .el-row:last-child {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+:deep(.fix-table) {
+  height: 100% !important;
 }
 
 .detail-card {

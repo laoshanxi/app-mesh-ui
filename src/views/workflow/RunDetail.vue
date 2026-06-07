@@ -75,6 +75,7 @@
       </div>
 
       <!-- jobs / pruned-run info (scrolls if long) -->
+      <div class="section-title"><span>Jobs</span></div>
       <div class="run-jobs">
         <template v-if="!hasJobs">
           <el-alert
@@ -155,7 +156,7 @@ export default {
     // renders its own runs table and lets the user drill in.
     runId: { type: String, default: "" }
   },
-  emits: ["changed"],
+  emits: ["changed", "rerun"],
   data() {
     return {
       Refresh: markRaw(Refresh),
@@ -438,11 +439,25 @@ export default {
         { type: "info", confirmButtonText: "Rerun", cancelButtonText: "Cancel" }
       )
         .then(() => workflow.rerun(this, this.workflow, runId))
-        .then(() => {
-          // a new run_id was created
+        .then(res => {
+          // a new run_id was created; in standalone mode, switch the detail
+          // view to that new run so the user lands on the rerun directly.
+          const newRunId = res && res.data && res.data.run_id;
           if (!this.runId) {
-            this.backToRuns();
+            // standalone mode: switch our own detail view to the new run
             this.fetchRuns();
+            if (newRunId) {
+              this.stopMonitor();
+              this.internalRunRow = null;
+              this.internalRunId = newRunId;
+              this.fetchDetail();
+            } else {
+              this.backToRuns();
+            }
+          } else if (newRunId) {
+            // prop-driven mode (e.g. Monitor drawer): the host owns the run_id,
+            // so ask it to switch to the freshly created run.
+            this.$emit("rerun", newRunId);
           }
           this.$emit("changed");
         })
@@ -478,7 +493,9 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 120px;
-  margin-top: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #ebeef5;
 }
 
 .run-log .log-box {
@@ -527,8 +544,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 4px;
-  color: #909399;
+  margin-bottom: 6px;
+  padding-left: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #303133;
+  border-left: 3px solid #409eff;
 }
 
 .detail-card {

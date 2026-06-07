@@ -4,7 +4,7 @@
       <el-col :span="24">
         <el-tabs type="border-card">
           <el-tab-pane label="Change Password" style="min-width:600px;">
-            <el-form ref="pwdForm" :model="form" label-width="200px">
+            <el-form ref="pwdForm" :model="form" label-width="150px">
               <el-form-item
                 label="Old Password" prop="curPwd" :rules="{
                   required: true, message: 'Old Password is empty', trigger: 'blur'
@@ -28,13 +28,13 @@
               </el-form-item>
 
               <el-form-item>
-                <el-button size="small" type="primary" @click.prevent="updatePwd">Submit</el-button>
-                <el-button size="small" @click.prevent="reset">Reset</el-button>
+                <el-button type="primary" @click.prevent="updatePwd">Submit</el-button>
+                <el-button @click.prevent="reset">Reset</el-button>
               </el-form-item>
             </el-form>
           </el-tab-pane>
           <el-tab-pane label="Two-factor authentication" style="min-width:600px;">
-            <el-form ref="mfaForm" :model="form" label-width="200px">
+            <el-form ref="mfaForm" :model="form" label-width="150px">
               <el-form-item label="MFA enabled" prop="mfaEnabled">
                 <el-switch
                   v-model="form.mfaEnabled" active-text="Yes" :active-value="true" inactive-text="No"
@@ -196,6 +196,50 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+/* Pixel-free fill (mirrors the Prometheus page): cascade flex from the
+   flex-column app-main so the tab card fills the content area with the same
+   bottom margin — overriding the global forced 100vh-174px tab-content height. */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-container > .el-row {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.app-container > .el-row > .el-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+:deep(.el-tabs) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+:deep(.el-tabs__content) {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
+  overflow: auto;
+}
+
+/* keep password inputs a sane width instead of stretching across the card
+   (was overflowing the viewport on wide screens). */
+:deep(.el-form .el-input) {
+  max-width: 360px;
+}
+</style>
 
 <style>
 .line {

@@ -34,7 +34,7 @@
         style="width: 100%" height="100%" class="fix-table" :fit="true" highlight-current-row show-overflow-tooltip
         @current-change="currentRowChange"
       >
-        <el-table-column label="Name" min-width="230">
+        <el-table-column label="Name" min-width="230" :show-overflow-tooltip="false">
           <template #default="scope">
             <el-icon
               v-if="scope.row.health === 0"
@@ -44,7 +44,12 @@
             </el-icon>
             <el-icon v-else style="color: #f56c6c; font-size: 18px; vertical-align: middle"><WarningFilled /></el-icon>
 
-            <el-link underline="always" :title="scope.row.desc" @click="showDetail()">
+            <el-link
+              underline="always"
+              :title="scope.row.desc"
+              style="display: inline; white-space: normal; word-break: break-all; vertical-align: middle"
+              @click="showDetail()"
+            >
               {{ scope.row.name }}
             </el-link>
           </template>
@@ -130,7 +135,7 @@
       </el-table>
     </el-row>
 
-    <el-drawer v-model="registerFormVisible" custom-class="right-drawer" size="60%">
+    <el-drawer v-model="registerFormVisible" custom-class="right-drawer" size="50%">
       <template #header><span>{{ drawerTitle }}</span></template>
       <app-reg :prop-form="selectedForm" @close="registerFormVisible = false" @success="regSuccess()" />
     </el-drawer>
@@ -292,6 +297,26 @@ export default {
   margin-bottom: 8px;
 }
 
+/* Flex-fill: app-main is a flex column, so this page flexes to fill the
+   content area; the table row then flexes to fill what's left below the
+   title/toolbar. No pixel heights -> can't overflow or leave a bottom gap. */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-container > .el-row:last-child {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+:deep(.fix-table) {
+  height: 100% !important;
+}
+
 /* keep cell links (Name, Last Start Time) on one line so show-overflow-tooltip can ellipsis them */
 :deep(.el-table .cell .el-link) {
   white-space: nowrap;
@@ -312,16 +337,11 @@ export default {
   margin-right: 10px;
 }
 
-.right-drawer .dialog-footer {
-  border-top: 1px solid #bfcbd9;
-  background-color: #ffffff;
-  width: 100%;
-  position: absolute;
-  bottom: 0px;
-  text-align: right;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-right: 30px;
+/* The register/edit form manages its own flex layout (scroll area + footer),
+   so let it fill the drawer body edge-to-edge — no body padding, single scroll. */
+:deep(.right-drawer .el-drawer__body) {
+  padding: 0;
+  overflow: hidden;
 }
 
 .detail-card {

@@ -43,8 +43,39 @@ export default {
     Microsoft YaHei, Arial, sans-serif;
 }
 
-.box-card .el-card__body {
-  height: calc(100vh - 80px) !important;
+/* Pixel-free fill: cascade flex from the flex-column app-main so the tab
+   card fills the content area (no bottom gap) and the metrics text scrolls
+   inside it — replaces the global forced 100vh-174px tab-content height. */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.app-container > .el-row {
+  flex: 1 1 auto;
+  min-height: 0;
+  margin-bottom: 0;
+}
+
+.app-container > .el-row > .el-col {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+:deep(.el-tabs) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+:deep(.el-tabs__content) {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto !important;
   overflow: auto;
 }
 </style>
