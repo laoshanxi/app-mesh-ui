@@ -54,7 +54,7 @@
 
 <script>
 import { validUsername } from "@/utils/validate";
-import { HttpStatus } from "@/utils/constants";
+import { TotpRequiredError } from "appmesh";
 import { ElMessage } from "element-plus";
 
 export default {
@@ -209,22 +209,20 @@ export default {
     },
 
     /**
-     * Check if TOTP verification is required
-     * @param {AppMeshError} error - Error object
+     * Check if TOTP verification is required (SDK throws TotpRequiredError on HTTP 428)
+     * @param {Error} error - Error object
      * @returns {boolean}
      */
     isTotpChallenge(error) {
-      return error &&
-        error.statusCode === HttpStatus.PRECONDITION_REQUIRED &&
-        error.responseData && error.responseData["totp_challenge"];
+      return error instanceof TotpRequiredError && !!error.totpChallenge;
     },
 
     /**
      * Handle TOTP challenge
-     * @param {AppMeshError} error - Error object
+     * @param {TotpRequiredError} error - Error object
      */
     handleTotpChallenge(error) {
-      this.loginForm.TotpChallenge = error.responseData["totp_challenge"];
+      this.loginForm.TotpChallenge = error.totpChallenge;
       this.totpMode = true;
       ElMessage({
           message: 'Please enter TOTP code',

@@ -1,8 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row style="color: #909399">
-      <h4>Workflows</h4>
-    </el-row>
+    <div class="page-title">Workflows</div>
     <el-row>
       <el-button-group>
         <el-button type="primary" :icon="Plus" @click="btnClick('add')">

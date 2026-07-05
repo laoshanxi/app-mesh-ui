@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container" style="clear: both">
+  <div class="app-container">
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">

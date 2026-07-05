@@ -1,7 +1,6 @@
 import { AppMeshClient } from "appmesh";
 import { ElMessage } from "element-plus";
 import axios from "axios";
-import Cookies from "js-cookie";
 import { HttpStatus } from "./constants";
 import store from "@/store";
 import router from "@/router";
@@ -87,9 +86,8 @@ export function clearClient() {
  * way the Python/CLI samples do (they pass `_get_access_token()` in the payload).
  *
  * `token/renew` is cookie-authenticated and returns a fresh JWT (`access_token`) in its
- * body. CSRF double-submit requires echoing the readable `appmesh_csrf_token` cookie.
+ * body. CSRF is enforced server-side via an Origin check, so no CSRF token is echoed here.
  */
-const CSRF_COOKIE_NAME = "appmesh_csrf_token";
 let workflowToken = null;
 let capturePromise = null; // de-dupes concurrent captures
 
@@ -110,10 +108,8 @@ export function captureWorkflowToken() {
   if (capturePromise) return capturePromise;
   capturePromise = (async () => {
     try {
-      const csrf = Cookies.get(CSRF_COOKIE_NAME);
       const res = await axios.post("/appmesh/token/renew", null, {
         withCredentials: true,
-        headers: csrf ? { "X-CSRF-Token": csrf } : {},
       });
       workflowToken = res?.data?.access_token || null;
     } catch (error) {

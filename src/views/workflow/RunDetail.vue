@@ -2,9 +2,7 @@
   <div class="run-detail">
     <!-- ===================== RUNS HISTORY (standalone mode only) ===================== -->
     <template v-if="!runId">
-      <el-row style="color: #909399">
-        <h4>Runs &mdash; {{ workflow }}</h4>
-      </el-row>
+      <div class="page-title">Runs &mdash; {{ workflow }}</div>
       <el-row>
         <el-button-group>
           <el-button type="primary" :icon="Refresh" @click="fetchRuns">
@@ -69,7 +67,7 @@
         <el-button size="small" type="success" :icon="VideoPlay" @click="onRerun">
           Rerun
         </el-button>
-        <el-button size="small" type="warning" :icon="Close" :disabled="runStatus !== 'running'" @click="onCancel">
+        <el-button size="small" type="warning" :icon="Close" :disabled="runStatus !== 'running' && runStatus !== 'pending'" @click="onCancel">
           Cancel
         </el-button>
       </div>

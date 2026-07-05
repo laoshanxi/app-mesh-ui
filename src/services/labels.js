@@ -8,7 +8,7 @@ export default {
         vueComp.labels = Object.entries(res).map(([key, value]) => ({ key, value }));
       })
       .catch(err => {
-        ElMessage.error(`Get labels failed: ${err.data}`);
+        ElMessage.error(`Get labels failed: ${err.message}`);
       })
       .finally(() => {
         vueComp.listLoading = false;
@@ -28,7 +28,7 @@ export default {
         vueComp.refresh();
       })
       .catch(err => {
-        ElMessage.error(`Update label failed: ${err.data}`);
+        ElMessage.error(`Update label failed: ${err.message}`);
       })
       .finally(() => {
         vueComp.listLoading = false;

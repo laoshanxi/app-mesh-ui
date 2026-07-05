@@ -32,6 +32,12 @@ export default {
     }
     getClient().run_task(vueComp.selectedApp, vueComp.payload, vueComp.timeout)
       .then(res => {
+        // run_task may resolve to either an object or a JSON string -> parse defensively.
+        if (typeof res === 'object' && res !== null) {
+          vueComp.result = res
+          vueComp.resultIsJson = true
+          return
+        }
         try {
           vueComp.result = JSON.parse(res)
           vueComp.resultIsJson = true

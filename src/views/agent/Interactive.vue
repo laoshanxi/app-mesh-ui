@@ -177,6 +177,7 @@ export default {
           input: "",
           sending: false,
           outPos: 0,
+          ended: false,
         });
         this.activeSid = built.sid;
       } catch (e) {
@@ -346,7 +347,7 @@ export default {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: 16px;
+  padding: 10px 16px;
   background-color: #f5f7fa;
 }
 
@@ -358,7 +359,7 @@ export default {
 
 .msg {
   display: flex;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 }
 
 .msg.user {
@@ -405,7 +406,7 @@ export default {
 .composer {
   display: flex;
   gap: 10px;
-  padding: 10px 12px;
+  padding: 10px 16px;
   border-top: 1px solid #ebeef5;
   background-color: #fff;
 }

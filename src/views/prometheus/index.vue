@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" class="app-container" style="clear:both;">
+  <div v-loading="loading" class="app-container">
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">

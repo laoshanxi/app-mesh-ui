@@ -1,8 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row style="color: #909399">
-      <h4>Applications</h4>
-    </el-row>
+    <div class="page-title">Applications</div>
     <el-row>
       <el-button-group>
         <el-button type="primary" :icon="Plus" @click="btnClick('register')">

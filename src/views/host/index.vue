@@ -12,11 +12,6 @@
             <detail :record="resources" />
           </el-col>
         </el-row>
-        <!-- <el-row class="detail-card">
-          <el-col :span="24">
-            <div id="memory"></div>
-          </el-col>
-        </el-row>-->
       </el-tab-pane>
 
       <el-tab-pane>

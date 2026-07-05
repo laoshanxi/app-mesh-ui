@@ -18,7 +18,7 @@ export default {
         this.setConfig(vueComp, res);
       })
       .catch(err => {
-        ElMessage.error(`Get configuration failed: ${err.data}`);
+        ElMessage.error(`Get configuration failed: ${err.message}`);
       })
       .finally(() => {
         vueComp.loading = false;
@@ -36,7 +36,7 @@ export default {
           ElMessage.success('Configuration updated successfully.');
         })
         .catch(err => {
-          ElMessage.error(`Update failed: ${err.data}`);
+          ElMessage.error(`Update failed: ${err.message}`);
         })
         .finally(() => {
           vueComp.loading = false;
@@ -46,12 +46,12 @@ export default {
 
   getPrometheus(vueComp) {
     vueComp.loading = true;
-    getClient().metrics()
+    getClient().get_metrics()
       .then(res => {
         vueComp.content = res;
       })
       .catch(err => {
-        ElMessage.error(`Get metrics failed: ${err.data}`);
+        ElMessage.error(`Get metrics failed: ${err.message}`);
       })
       .finally(() => {
         vueComp.loading = false;

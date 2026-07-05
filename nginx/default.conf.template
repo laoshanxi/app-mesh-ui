@@ -65,7 +65,7 @@ server {
         add_header 'Access-Control-Allow-Origin' $cors_origin always;
         add_header 'Access-Control-Allow-Methods' 'GET,POST,PUT,DELETE,OPTIONS,HEAD' always;
         # Allow-Headers: all X-* request headers used by SDK/client
-        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,X-CSRF-Token,X-Permission,X-Expire-Seconds,X-Audience,X-Totp-Code,X-Set-Cookie,X-Target-Host,X-File-Path,X-File-Mode,X-File-User,X-File-Group,X-Send-File-Socket,X-Recv-File-Socket,X-Consul-Token,X-Request-HMAC' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,X-Permission,X-Expire-Seconds,X-Audience,X-Totp-Code,X-Set-Cookie,X-Target-Host,X-File-Path,X-File-Mode,X-File-User,X-File-Group,X-Send-File-Socket,X-Recv-File-Socket,X-Consul-Token,X-Request-HMAC' always;
         # Expose-Headers: all X-* response headers returned by server
         add_header 'Access-Control-Expose-Headers' 'Content-Type,Content-Disposition,X-Exit-Code,X-Output-Position,X-File-Mode,X-File-User,X-File-Group,X-Subscription-Id,X-Event-Type,X-App-Name' always;
         add_header 'Access-Control-Max-Age' '86400' always;
@@ -73,6 +73,11 @@ server {
         if ($request_method = 'OPTIONS') {
             return 204;
         }
+
+        # Forward the browser-facing host/scheme so the daemon's CSRF Origin check recognizes
+        # same-origin requests (otherwise it sees the upstream Host and would reject the UI).
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
 
         # Environment Variable: PROXY_SSL_VERIFY=on/off
         proxy_ssl_verify ${PROXY_SSL_VERIFY};

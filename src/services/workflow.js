@@ -154,7 +154,7 @@ export default {
   },
 
   // cancel {workflow, run_id} -> message "cancelled" (no data).
-  // Only works on RUNNING runs; pending/queued cannot be cancelled by id (engine errors).
+  // Works on RUNNING runs and PENDING (queued) runs.
   // Returns Promise<{status,message}>.
   cancel(vueComp, workflow, runId) {
     return call('cancel', { workflow, run_id: runId }).then(res => {

@@ -231,7 +231,7 @@ export default {
   flex: 1 1 auto;
   min-height: 0;
   overflow-y: auto;
-  padding: 16px;
+  padding: 10px 16px;
   background-color: #f5f7fa;
 }
 
@@ -243,7 +243,7 @@ export default {
 
 .msg {
   display: flex;
-  margin-bottom: 12px;
+  margin-bottom: 4px;
 }
 
 .msg.user {
@@ -280,7 +280,7 @@ export default {
 .bubble .meta {
   margin-top: 4px;
   font-size: 12px;
-  color: #909399;
+  color: #7a808f;
 }
 
 .composer {

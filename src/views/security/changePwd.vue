@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" class="app-container" style="clear:both;">
+  <div v-loading="loading" class="app-container">
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
@@ -159,7 +159,8 @@ export default {
             type: 'warning'
           });
 
-          this.qrCodeData = await getClient().get_totp_secret();
+          // otpauth:// provisioning URI, rendered as a QR code below
+          this.qrCodeData = await getClient().get_totp_uri();
           this.qrDialogVisible = true;
         } catch (error) {
           if (error === 'cancel') {

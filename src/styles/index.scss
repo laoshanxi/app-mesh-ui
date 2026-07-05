@@ -64,6 +64,14 @@ div:focus {
   padding: 10px;
 }
 
+// Standard page heading — replaces ad-hoc gray <h4> titles for a consistent hierarchy.
+.page-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303133;
+  margin: 0 0 12px;
+}
+
 .iconfont{
   font-family: "iconfont" !important;
   font-size: 14px;
@@ -88,7 +96,7 @@ div:focus {
   max-width:400px !important;
 }
 tr.current-row>td {
-    background-color: #E4E7ED !important;
+    background-color: rgba(64, 158, 255, 0.1) !important;
 }
 
 .fix-table {

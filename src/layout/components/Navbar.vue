@@ -127,6 +127,9 @@ export default {
         throw new Error('Forward target cannot be empty');
       }
 
+      const client = getClient();
+      const previousForwardingHost = client.forwardingHost;
+
       try {
         await ElMessageBox.confirm(
           `Forward requests to [${this.forward}]?`,
@@ -140,8 +143,10 @@ export default {
 
         this.fullscreenLoading = true;
 
-        getClient().forwardingHost = this.forward;
-        await getClient().authenticate();
+        client.forwardingHost = this.forward;
+        // Cookie-authenticated probe: no Authorization header (it would shadow the
+        // HttpOnly auth cookie the daemon converts server-side). Throws on failure.
+        await client.get_current_user();
         await this.$store.dispatch("settings/changeSetting", {
           key: "forwarding",
           value: this.forward
@@ -152,6 +157,8 @@ export default {
         this.refresh();
 
       } catch (error) {
+        // Undo the unverified forwarding target on the shared client
+        client.forwardingHost = previousForwardingHost;
         if (error === 'cancel' || error.toString().includes('cancel')) {
           throw 'cancel';
         }

@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="loading" class="app-container" style="clear: both">
+  <div v-loading="loading" class="app-container">
     <el-row>
       <el-col :span="24">
         <el-tabs ref="tabs" v-model="activeTab" type="border-card">
@@ -80,6 +80,13 @@
                     <el-switch
                       v-model="form.REST.CorsDisabled" active-text="Yes" :active-value="true"
                       inactive-text="No" :inactive-value="false"
+                    />
+                  </el-form-item>
+                  <el-form-item label="CSRF allowed origins" prop="REST.CsrfAllowedOrigins">
+                    <el-select
+                      v-model="form.REST.CsrfAllowedOrigins" multiple filterable allow-create default-first-option
+                      :reserve-keyword="false" style="width: 100%"
+                      placeholder="e.g. https://ui.example.com (empty = same-origin only)"
                     />
                   </el-form-item>
                   <el-form-item label="File allowed base dir" prop="REST.FileAllowedBaseDir">
@@ -293,6 +300,7 @@ export default {
           IOThreadPoolSize: 2,
           PasswordComplexityEnabled: false,
           CorsDisabled: false,
+          CsrfAllowedOrigins: [],
           FileAllowedBaseDir: "",
           SSL: {
             SSLCaPath: "ssl/ca.pem",

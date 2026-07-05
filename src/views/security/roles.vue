@@ -1,8 +1,6 @@
 <template>
   <div class="app-container">
-    <el-row style="color: #909399;">
-      <h4>Roles</h4>
-    </el-row>
+    <div class="page-title">Roles</div>
     <el-row>
       <el-button-group>
         <el-button type="primary" :icon="Plus" @click="btnClick('new')">New</el-button>
@@ -115,7 +113,6 @@ export default {
     btnClick(action) {
       switch (action) {
         case "new": {
-          // this.registerFormVisible = true;
           this.selectedForm = {};
           this.permissionsVisible = true;
           return;

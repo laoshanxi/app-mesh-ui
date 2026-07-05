@@ -1,105 +1,66 @@
 <template>
-  <div class="errPage-container">
-    <el-button :icon="ArrowLeft" class="pan-back-btn" @click="back">
-      Back
-    </el-button>
-    <el-row>
-      <el-col :span="12">
-        <h1 class="text-jumbo text-ginormous">
-          Oops!
-        </h1>
-        <h2>You don't have permission to go to this page</h2>
-        <h6>If you are dissatisfied, please contact your leader</h6>
-        <ul class="list-unstyled">
-          <li>Or you can go:</li>
-          <li class="link-type">
-            <router-link to="/home">
-              Home
-            </router-link>
-          </li>
-          <li><a href="#" @click.prevent="dialogVisible = true">Look at the picture</a></li>
-        </ul>
-      </el-col>
-      <el-col :span="12">
-        <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream.">
-      </el-col>
-    </el-row>
-    <el-dialog v-model="dialogVisible" title="Look around">
-      <img :src="ewizardClap" class="pan-img">
-    </el-dialog>
+  <div class="error-page">
+    <div class="error-code">401</div>
+    <div class="error-title">Access denied</div>
+    <div class="error-desc">
+      You don't have permission to view this page. Contact your administrator if
+      you believe this is a mistake.
+    </div>
+    <div class="error-actions">
+      <el-button @click="back">Back</el-button>
+      <el-button type="primary" @click="$router.push('/home')">Home</el-button>
+    </div>
   </div>
 </template>
 
 <script>
-import errGif from '@/assets/401_images/401.gif'
-import { markRaw } from 'vue'
-import { ArrowLeft } from "@element-plus/icons-vue";
 export default {
-  name: 'Page401',
-  data() {
-    return {
-      ArrowLeft: markRaw(ArrowLeft),
-      errGif: errGif + '?' + +new Date(),
-      ewizardClap: 'https://wpimg.wallstcn.com/007ef517-bafd-4066-aae4-6883632d9646',
-      dialogVisible: false
-    }
-  },
+  name: "Page401",
   methods: {
     back() {
       if (this.$route.query.noGoBack) {
-        this.$router.push({ path: '/home' })
+        this.$router.push({ path: "/home" });
       } else {
-        this.$router.go(-1)
+        this.$router.go(-1);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-.errPage-container {
-  width: 800px;
-  max-width: 100%;
-  margin: 100px auto;
+.error-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  text-align: center;
+}
 
-  .pan-back-btn {
-    background: #008489;
-    color: #fff;
-    border: none !important;
-  }
+.error-code {
+  font-size: 96px;
+  font-weight: 700;
+  line-height: 1;
+  color: #e6a23c;
+}
 
-  .pan-gif {
-    margin: 0 auto;
-    display: block;
-  }
+.error-title {
+  margin-top: 16px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #303133;
+}
 
-  .pan-img {
-    display: block;
-    margin: 0 auto;
-    width: 100%;
-  }
+.error-desc {
+  max-width: 420px;
+  margin: 8px 0 24px;
+  font-size: 14px;
+  color: #909399;
+}
 
-  .text-jumbo {
-    font-size: 60px;
-    font-weight: 700;
-    color: #484848;
-  }
-
-  .list-unstyled {
-    font-size: 14px;
-
-    li {
-      padding-bottom: 5px;
-    }
-
-    a {
-      color: #008489;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
+.error-actions {
+  display: flex;
+  gap: 12px;
 }
 </style>

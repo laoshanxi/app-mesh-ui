@@ -1,5 +1,4 @@
 VER=3.0.0
-NODE_VER=20
 DOCKER_IMG_NAME=laoshanxi/appmesh-ui
 
 build:
@@ -9,14 +8,18 @@ push:
 	docker push ${DOCKER_IMG_NAME}:${VER}
 	docker push ${DOCKER_IMG_NAME}:latest
 
+# Register the UI container as an App Mesh app (exec user follows daemon BaseConfig.DefaultExecUser)
 run:
-	appc logon -u admin -x admin123
-	appc unreg -n appweb -f
-	appc reg -n appweb --perm 11 --exit restart -u root -e APP_DOCKER_OPTS="--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -d "${DOCKER_IMG_NAME}:${VER}" -f
+	appm logon -U admin -X admin123
+	-appm rm -a appweb -f
+	appm add -a appweb -p 11 -Q restart -I ${DOCKER_IMG_NAME}:${VER} -e "APP_DOCKER_OPTS=--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -f
 
 dev:
-	npm install --legacy-peer-deps
+	npm install
 	npm run dev
+
+lint:
+	npm run lint
 
 clean:
 	-docker rmi -f ${DOCKER_IMG_NAME}:${VER}
