@@ -1,5 +1,8 @@
 FROM node:20-alpine AS builder
 WORKDIR /workspace
+# JS SDK staged from the sibling app-mesh repo (see `make sdk`); must be present
+# before npm install because package.json references it as a file: dependency.
+COPY third_party/appmesh-sdk ./third_party/appmesh-sdk
 COPY package*.json ./
 RUN npm install --legacy-peer-deps && npm cache clean --force
 COPY . .
@@ -13,7 +16,7 @@ COPY nginx/default.conf.template /etc/nginx/templates/
 COPY nginx/config.sh /docker-entrypoint.d/99-custom-config.sh
 RUN apk add --no-cache curl && \
     chmod +x /docker-entrypoint.d/99-custom-config.sh
-ENV VUE_APP_TITLE="App Mesh" APP_MESH_API_URL="https://127.0.0.1:6060" PROXY_SSL_VERIFY="off"
+ENV VUE_APP_TITLE="App Mesh" APP_MESH_API_URL="https://127.0.0.1:6060" APP_MESH_AUTH_URL="http://127.0.0.1:6062" PROXY_SSL_VERIFY="off"
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -fsk https://localhost:443/health >/dev/null 2>&1 || exit 1
 EXPOSE 443

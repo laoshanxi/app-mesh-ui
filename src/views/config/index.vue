@@ -70,12 +70,6 @@
                   <el-form-item label="IO thread pool size" prop="REST.IOThreadPoolSize">
                     <el-input-number v-model="form.REST.IOThreadPoolSize" />
                   </el-form-item>
-                  <el-form-item label="Password complexity enabled" prop="REST.PasswordComplexityEnabled">
-                    <el-switch
-                      v-model="form.REST.PasswordComplexityEnabled" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false"
-                    />
-                  </el-form-item>
                   <el-form-item label="CORS disabled" prop="REST.CorsDisabled">
                     <el-switch
                       v-model="form.REST.CorsDisabled" active-text="Yes" :active-value="true"
@@ -144,39 +138,6 @@
                   </el-form-item>
                   <el-form-item label="SSL CA file" prop="REST.SSL.SSLCaPath">
                     <el-input v-model="form.REST.SSL.SSLCaPath" />
-                  </el-form-item>
-                </el-collapse-item>
-                <el-collapse-item name="3">
-                  <template #title>
-                    <el-icon style="margin-right: 8px;"><Key /></el-icon>
-                    JWT
-                  </template>
-                  <el-form-item label="JWT Salt" prop="REST.JWT.JWTSalt">
-                    <el-input v-model="form.REST.JWT.JWTSalt" />
-                  </el-form-item>
-                  <el-form-item label="JWT Algorithm" prop="REST.JWT.Algorithm">
-                    <el-select v-model="form.REST.JWT.Algorithm" placeholder="Please select">
-                      <el-option label="HS256" value="HS256" />
-                      <el-option label="RS256" value="RS256" />
-                      <el-option label="ES256" value="ES256" />
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="JWT Issuer" prop="REST.JWT.Issuer">
-                    <el-input v-model="form.REST.JWT.Issuer" />
-                  </el-form-item>
-                  <el-form-item label="JWT Audience" prop="REST.JWT.Audience">
-                    <el-select
-                      v-model="form.REST.JWT.Audience" multiple filterable allow-create
-                      :default-first-option="true" placeholder="Enter audience values"
-                    >
-                      <el-option v-for="item in form.REST.JWT.Audience" :key="item" :label="item" :value="item">
-                      </el-option>
-                    </el-select>
-                  </el-form-item>
-                  <el-form-item label="JWT Interface" prop="REST.JWT.SecurityInterface">
-                    <el-select v-model="form.REST.JWT.SecurityInterface" placeholder="Please select">
-                      <el-option v-for="item in JWTOptions" :key="item.value" :label="item.label" :value="item.value" />
-                    </el-select>
                   </el-form-item>
                 </el-collapse-item>
               </el-collapse>
@@ -257,7 +218,7 @@
 
 <script>
 import { markRaw } from 'vue'
-import { Setting, Connection, Key, CollectionTag, Edit as EditIcon, CircleCheck, Delete, Plus } from '@element-plus/icons-vue'
+import { Setting, Connection, CollectionTag, Edit as EditIcon, CircleCheck, Delete, Plus } from '@element-plus/icons-vue'
 import configService from "@/services/config";
 import labelsService from "@/services/labels";
 
@@ -265,7 +226,6 @@ export default {
   components: {
     Setting,
     Connection,
-    Key,
     CollectionTag,
   },
   data() {
@@ -275,7 +235,7 @@ export default {
       Delete: markRaw(Delete),
       Plus: markRaw(Plus),
       loading: false,
-      activeNames: ["1", "2", "3", "4"],
+      activeNames: ["1", "2"],
       activeTab: 'config',
       passwordType: 'password',
       form: {
@@ -298,7 +258,6 @@ export default {
           PrometheusExporterListenPort: 0,
           WorkerThreadPoolSize: 2,
           IOThreadPoolSize: 2,
-          PasswordComplexityEnabled: false,
           CorsDisabled: false,
           CsrfAllowedOrigins: [],
           FileAllowedBaseDir: "",
@@ -311,13 +270,6 @@ export default {
             VerifyServer: true,
             VerifyClient: false,
             VerifyServerDelegate: false,
-          },
-          JWT: {
-            JWTSalt: "How_AreU!ApPMEsh",
-            Algorithm: "HS256",
-            Issuer: "",
-            Audience: ["appmesh-service", "appmesh-file-service", "your-service-api"],
-            SecurityInterface: "local",
           },
         },
       },
@@ -355,20 +307,6 @@ export default {
           label: "ERROR",
           value: "ERROR",
           description: "Error level messages"
-        },
-      ],
-      JWTOptions: [
-        {
-          label: "local",
-          value: "local",
-        },
-        {
-          label: "consul",
-          value: "consul",
-        },
-        {
-          label: "oauth2",
-          value: "oauth2",
         },
       ],
       value: '',

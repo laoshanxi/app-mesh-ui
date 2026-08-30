@@ -15,7 +15,7 @@
           v-model="forward"
           size="small"
           class="forward-input"
-          placeholder="Forward to host:port"
+          placeholder="Forward to host (port defaults to 6059)"
           clearable
           list="forward-suggestions"
         >
@@ -38,9 +38,9 @@
         </div>
         <template #dropdown>
           <el-dropdown-menu class="user-dropdown">
-            <router-link to="/security/changePwd">
+            <router-link to="/security/principals">
               <el-dropdown-item>
-                <i class="iconfont icon-lock"></i>Change Password
+                <i class="iconfont icon-lock"></i>Security
               </el-dropdown-item>
             </router-link>
             <a target="_blank" href="/ui/dc1/kv">
@@ -126,6 +126,13 @@ export default {
       if (!this.forward) {
         throw new Error('Forward target cannot be empty');
       }
+      // Without an explicit port the HTTP SDK would append its base port (6060),
+      // but the Engine gateway cannot forward to a 6060 HTTPS listener (it would
+      // pick TCP-msgpack for that port). The TCP API port 6059 is the port every
+      // gateway (Engine and Go Agent) can forward to.
+      if (!this.forward.includes(":")) {
+        this.forward = `${this.forward}:6059`;
+      }
 
       const client = getClient();
       const previousForwardingHost = client.forwardingHost;
@@ -144,9 +151,9 @@ export default {
         this.fullscreenLoading = true;
 
         client.forwardingHost = this.forward;
-        // Cookie-authenticated probe: no Authorization header (it would shadow the
-        // HttpOnly auth cookie the daemon converts server-side). Throws on failure.
-        await client.get_current_user();
+        // Probe: the bearer is forwarded unchanged; the target node re-validates
+        // it against the same issuer. Throws on failure.
+        await client.get_current_principal();
         await this.$store.dispatch("settings/changeSetting", {
           key: "forwarding",
           value: this.forward

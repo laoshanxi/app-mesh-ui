@@ -157,7 +157,7 @@ export const constantRoutes = [
   {
     path: "/security",
     component: Layout,
-    redirect: "/security/changePwd",
+    redirect: "/security/principals",
     name: "Security",
     meta: {
       title: "Security",
@@ -165,13 +165,13 @@ export const constantRoutes = [
     },
     children: [
       {
-        path: "users",
-        name: "Users",
-        component: () => import("@/views/security/users.vue"),
+        path: "principals",
+        name: "Principals",
+        component: () => import("@/views/security/principals.vue"),
         meta: {
-          title: "Users",
+          title: "Principals",
           icon: "user",
-          roles: ["user-list"]
+          roles: ["principal-list"]
         }
       },
       {
@@ -183,12 +183,6 @@ export const constantRoutes = [
           icon: "role",
           roles: ["role-view"]
         }
-      },
-      {
-        path: "changePwd",
-        name: "ChangePwd",
-        component: () => import("@/views/security/changePwd.vue"),
-        meta: { title: "Password", icon: "password" }
       }
     ]
   },

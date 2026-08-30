@@ -1,5 +1,6 @@
 import { setUser, getUser, removeUser } from '@/utils/auth'
-import { getClient, clearClient, captureWorkflowToken } from '@/utils/appmeshClient'
+import { getClient, clearClient } from '@/utils/appmeshClient'
+import { passwordLogin, hasSession, clearSession } from '@/utils/oidc'
 import { resetRouter } from '@/router'
 
 const user = getUser();
@@ -27,102 +28,70 @@ const mutations = {
 }
 
 const actions = {
-  // user login
+  // user login: direct password grant against Dex (builtin auth mode).
+  // PKCE logins complete in the router guard (utils/oidc.js), not here.
   login({ commit }, userInfo) {
-    const { UserName, Password, Audience } = userInfo
-    return new Promise((resolve, reject) => {
-      getClient().login(UserName, Password, null, 'P1D', Audience).then(() => {
-        // Login success without TOTP
-        actions.handleLoginSuccess({ commit, UserName, resolve, reject })
-      }).catch(error => {
-        reject(error)
+    const { UserName, Password } = userInfo
+    return passwordLogin(UserName, Password).then(() => {
+      return actions.handleLoginSuccess({ commit, resolve: null, reject: null })
+    })
+  },
+
+  // Fetch principal + effective permissions and persist the UI session.
+  handleLoginSuccess({ commit }) {
+    const client = getClient()
+    return client.get_current_principal().then(async (principal) => {
+      const name = principal.display_name || principal.principal_id
+      const account = principal.principal_id
+
+      commit('SET_NAME', name)
+      commit('SET_ACCOUNT', account)
+      commit('SET_AVATAR', '')
+
+      const permissions = await client.get_principal_permissions()
+      commit('SET_PERMISSIONS', permissions)
+      setUser({ name, account, avatar: '', permissions })
+      return { name, account, permissions }
+    })
+  },
+
+  // Validate the stored Dex token and (re)load identity + permissions.
+  getInfo({ commit }) {
+    if (!hasSession()) {
+      // No token to validate: skip the API round-trip (it would only 401).
+      return Promise.reject(new Error('No active session'))
+    }
+    return getClient().get_current_principal().then((principal) => {
+      if (!principal) {
+        return Promise.reject(new Error('Verification failed, please Login again.'))
+      }
+
+      const name = principal.display_name || principal.principal_id
+      const account = principal.principal_id
+      commit('SET_NAME', name)
+      commit('SET_ACCOUNT', account)
+      commit('SET_AVATAR', '')
+
+      return getClient().get_principal_permissions().then((permissions) => {
+        commit('SET_PERMISSIONS', permissions)
+        setUser({ name, account, avatar: '', permissions })
+        return principal
       })
     })
   },
 
-  // TOTP login
-  validateTotp({ commit }, { username, challenge, totp, expireSeconds }) {
-    return new Promise((resolve, reject) => {
-      getClient().validate_totp(username, challenge, totp, expireSeconds).then(() => {
-        actions.handleLoginSuccess({ commit, UserName: username, resolve, reject })
-      }).catch(error => {
-        console.error('TOTP validation error:', error)
-        reject(error)
-      })
-    })
-  },
-
-  handleLoginSuccess({ commit, UserName, resolve, reject }) {
-    const user = {
-      name: UserName,
-      account: UserName,
-      avatar: ""
-    };
-
-    commit('SET_NAME', user.name);
-    commit('SET_ACCOUNT', user.account);
-    commit('SET_AVATAR', user.avatar);
-
-    getClient().get_user_permissions()
-      .then(async res => {
-        user.permissions = res;
-        commit('SET_PERMISSIONS', res);
-        setUser(user);
-        // Capture a payload-usable JWT for task-server apps (e.g. Workflow engine)
-        // that authenticate from payload.token rather than the HttpOnly cookie.
-        // Best-effort — never blocks login.
-        await captureWorkflowToken();
-        resolve({ needTotp: false });
-      })
-      .catch(error => {
-        console.error('Get permissions error:', error)
-        actions.logout({ commit });
-        reject(error);
-      });
-  },
-
-  // get user info (used for cookie-based authentication)
-  getInfo({ commit, state: _state }) {
-    return new Promise((resolve, reject) => {
-      getClient().get_current_user().then(data => {
-        if (!data) {
-          console.error('Get user info failed: Empty response')
-          reject('Verification failed, please Login again.')
-          return
-        }
-
-        const { name, avatar } = data
-        commit('SET_NAME', name)
-        commit('SET_ACCOUNT', name)
-        commit('SET_AVATAR', avatar)
-
-        return getClient().get_user_permissions().then(permissions => {
-          commit('SET_PERMISSIONS', permissions)
-          const user = { name, account: name, avatar: avatar || '', permissions }
-          setUser(user)
-          resolve(data)
-        })
-      }).catch(error => {
-        console.error('Get user info error:', error)
-        reject(error)
-      })
-    })
-  },
-
-  // user logout
+  // Drop the local session. The Dex bearer simply becomes unused; the SDK has
+  // no server-side logout and RP-initiated logout is left to the IdP portal.
   logout({ commit }) {
     return new Promise((resolve) => {
-      getClient().logout().then(() => {
-        console.log('Logged off')
-      }).catch((error) => {
-        console.error('Failed to log off:', error)
-      })
+      clearSession()
+      getClient().clear_bearer_token()
       commit('SET_NAME', '')
       commit('SET_ACCOUNT', '')
       commit('SET_AVATAR', '')
       commit('SET_PERMISSIONS', '')
       removeUser()
-      clearClient() // drop the cached client instance + workflow token
+      clearClient() // drop the cached client instance
       resetRouter()
       resolve()
     })

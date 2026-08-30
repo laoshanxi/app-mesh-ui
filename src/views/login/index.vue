@@ -8,17 +8,17 @@
         <h3 class="title">{{ loginForm.appName }} Login</h3>
       </div>
 
-      <el-form-item v-show="!totpMode" prop="UserName">
+      <el-form-item v-if="passwordFlow" prop="UserName">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="UserName" v-model="loginForm.UserName" placeholder="Username" name="UserName" type="text"
-          tabindex="1" auto-complete="on"
+          ref="UserName" v-model="loginForm.UserName" placeholder="User name or email" name="UserName"
+          type="text" tabindex="1" auto-complete="on"
         />
       </el-form-item>
 
-      <el-form-item v-show="!totpMode" prop="Password">
+      <el-form-item v-if="passwordFlow" prop="Password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
         </span>
@@ -31,22 +31,18 @@
         </span>
       </el-form-item>
 
-      <el-form-item v-show="totpMode" prop="Totp">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input
-          ref="Totp" v-model="loginForm.Totp" placeholder="Please enter your TOTP code" name="Totp" type="text"
-          tabindex="3" auto-complete="on" @keyup.enter="handleTotpSubmit"
-        />
-      </el-form-item>
+      <el-button
+        v-if="passwordFlow" :loading="loading" type="primary" tabindex="3" style="width:100%;margin-bottom:30px;"
+        @click.prevent="handleLogin()"
+      >
+        Sign In
+      </el-button>
 
       <el-button
-        :loading="loading" type="primary" tabindex="4" style="width:100%;margin-bottom:30px;"
-        @click.prevent="totpMode ? handleTotpSubmit() : handleLogin()"
-        @keyup.enter="totpMode ? handleTotpSubmit() : handleLogin()"
+        :loading="loading" tabindex="4" style="width:100%;margin-left:0;margin-bottom:30px;"
+        @click.prevent="providerLogin()"
       >
-        {{ totpMode ? 'Submit TOTP' : 'Login' }}
+        Sign in with SSO
       </el-button>
     </el-form>
   </div>
@@ -54,8 +50,8 @@
 
 <script>
 import { validUsername } from "@/utils/validate";
-import { TotpRequiredError } from "appmesh";
 import { ElMessage } from "element-plus";
+import { getAuthConfig, startAuthorizationLogin, completeAuthorizationWithCode } from "@/utils/oidc";
 
 export default {
   name: "Login",
@@ -78,16 +74,8 @@ export default {
       loginForm: {
         appName: window.VUE_APP_TITLE || "App Mesh",
         UserName: "",
-        Totp: "",
         Password: "",
-        TotpChallenge: "",
-        Audience: "",
       },
-      restaurants: [
-        {
-          value: window.location.origin,
-        },
-      ],
       loginRules: {
         UserName: [
           { required: true, trigger: "blur", validator: validateUsername },
@@ -99,7 +87,9 @@ export default {
       loading: false,
       passwordType: "Password",
       redirect: undefined,
-      totpMode: false,
+      // auth/config: "password" flow is advertised only in builtin auth mode;
+      // otherwise only the provider redirect (authorization code + PKCE) works.
+      passwordFlow: false,
     };
   },
   watch: {
@@ -112,8 +102,19 @@ export default {
       immediate: true,
     },
   },
-  created() {
-    this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
+  mounted() {
+    getAuthConfig().then((cfg) => {
+      this.passwordFlow = (cfg?.flows || []).includes("password");
+    }).catch(() => {
+      ElMessage({
+        message: "Failed to load the authentication configuration",
+        type: "error",
+        duration: 5000,
+      });
+    });
+  },
+  beforeUnmount() {
+    window.removeEventListener("message", this.onOAuthMessage);
   },
 
   methods: {
@@ -126,7 +127,9 @@ export default {
     },
 
     /**
-     * Handle login request
+     * Password-grant login through the Vuex action (which then loads the
+     * principal). The forwarding target is temporarily cleared: authentication
+     * always happens on the local node.
      * @returns {Promise<void>}
      */
     async handleLogin() {
@@ -144,64 +147,14 @@ export default {
         });
         await this.$store.dispatch("user/login", this.loginForm);
 
-        this.totpMode = false;
-        await this.$store.dispatch("settings/changeSetting", {
-          key: "forwarding",
-          value: originalForwarding
-        });
-
+        await this.restoreForwarding(originalForwarding);
         this.$router.push({ path: this.redirect || "/" });
       } catch (error) {
-        if (this.isTotpChallenge(error)) {
-          this.handleTotpChallenge(error);
-        } else {
-          ElMessage({
-            message: error.message || 'Login failed',
-            type: 'error',
-            duration: 5000
-          });
-        }
-        await this.restoreForwarding(originalForwarding);
-      } finally {
-        this.loading = false;
-      }
-
-    },
-
-    /**
-     * Handle TOTP verification
-     * @returns {Promise<void>}
-     */
-    async handleTotpSubmit() {
-      if (!this.loginForm.Totp) {
         ElMessage({
-          message: 'Please enter TOTP code',
-          type: 'info',
+          message: error.message || 'Login failed',
+          type: 'error',
           duration: 5000
         });
-        return;
-      }
-
-      this.loading = true;
-      const originalForwarding = this.$store.getters.forwarding;
-
-      try {
-        await this.$store.dispatch("settings/changeSetting", {
-          key: "forwarding",
-          value: null
-        });
-
-        await this.$store.dispatch("user/validateTotp", {
-          username: this.loginForm.UserName,
-          challenge: this.loginForm.TotpChallenge,
-          totp: this.loginForm.Totp,
-          expireSeconds: "P1D"
-        });
-
-        await this.restoreForwarding(originalForwarding);
-        this.$router.push({ path: this.redirect || "/" });
-      } catch (error) {
-        ElMessage.error(error.message || 'TOTP validation failed');
         await this.restoreForwarding(originalForwarding);
       } finally {
         this.loading = false;
@@ -209,27 +162,47 @@ export default {
     },
 
     /**
-     * Check if TOTP verification is required (SDK throws TotpRequiredError on HTTP 428)
-     * @param {Error} error - Error object
-     * @returns {boolean}
+     * OAuth login (authorization code + PKCE) in a popup window. The popup
+     * relays the code back via postMessage; this window owns the PKCE verifier
+     * and completes the exchange. Falls back to a full-page redirect when the
+     * popup is blocked.
      */
-    isTotpChallenge(error) {
-      return error instanceof TotpRequiredError && !!error.totpChallenge;
+    async providerLogin() {
+      this.loading = true;
+      try {
+        const mode = await startAuthorizationLogin({ popup: true });
+        if (mode !== "popup") return; // full-page redirect in progress
+        window.addEventListener("message", this.onOAuthMessage);
+      } catch (error) {
+        this.loading = false;
+        ElMessage({
+          message: error.message || 'Login failed',
+          type: 'error',
+          duration: 5000
+        });
+      }
     },
 
     /**
-     * Handle TOTP challenge
-     * @param {TotpRequiredError} error - Error object
+     * Receive the authorization code from the login popup and finish login.
+     * @param {MessageEvent} event
      */
-    handleTotpChallenge(error) {
-      this.loginForm.TotpChallenge = error.totpChallenge;
-      this.totpMode = true;
-      ElMessage({
-          message: 'Please enter TOTP code',
-          type: 'info',
+    async onOAuthMessage(event) {
+      if (event.origin !== window.location.origin) return;
+      if (event.data?.type !== "appmesh-oauth") return;
+      window.removeEventListener("message", this.onOAuthMessage);
+      try {
+        await completeAuthorizationWithCode(event.data.code, event.data.state);
+        await this.$store.dispatch("user/handleLoginSuccess");
+        this.$router.push({ path: this.redirect || "/" });
+      } catch (error) {
+        this.loading = false;
+        ElMessage({
+          message: error.message || 'Login failed',
+          type: 'error',
           duration: 5000
         });
-      this.$nextTick(() => this.$refs.Totp.focus());
+      }
     },
 
     /**

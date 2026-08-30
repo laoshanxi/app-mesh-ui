@@ -34,6 +34,23 @@ server {
         proxy_pass http://127.0.0.1:8500;
     }
 
+    # Dex login-page logo: frontend.logoURL is issuer-path relative, so the
+    # browser resolves it to <origin>/auth/logo.svg whatever host or port it
+    # used. Dex has no such route; hand the request to the appmesh backend
+    # (the existing /appmesh/ proxy below carries TLS and header settings).
+    location = /auth/logo.svg {
+        rewrite ^ /appmesh/logo.svg last;
+    }
+
+    # Dex issuer path (e.g. /auth/token, /auth/auth) for the browser OIDC flow.
+    # 6060 serves the appmesh API only; Dex traffic goes to the authentication
+    # service itself (default loopback Dex listener). The same-origin proxy is
+    # required: Dex sends no CORS headers and an https page cannot call http.
+    # No URI part in proxy_pass: the full /auth/... path is forwarded as-is.
+    location /auth/ {
+        proxy_pass ${APP_MESH_AUTH_URL};
+    }
+
     # App Mesh 6060 proxy
     location /appmesh/ {
         # Hide server-side CORS headers to avoid duplication
@@ -76,6 +93,9 @@ server {
 
         # Forward the browser-facing host/scheme so the daemon's CSRF Origin check recognizes
         # same-origin requests (otherwise it sees the upstream Host and would reject the UI).
+        # The Go Agent (front proxy on 6060) derives X-Forwarded-Host from the Host header,
+        # so Host itself must be the browser-facing host, not the upstream address.
+        proxy_set_header Host $http_host;
         proxy_set_header X-Forwarded-Host $http_host;
         proxy_set_header X-Forwarded-Proto $scheme;
 
@@ -84,6 +104,13 @@ server {
         proxy_ssl_server_name on;
 
         proxy_pass ${APP_MESH_API_URL};
+    }
+
+    # OAuth redirect target (appmesh-web client): the SPA itself completes the
+    # authorization-code exchange from the query string after index.html loads.
+    location = /oauth/callback {
+        root   /usr/share/nginx/html;
+        try_files /index.html =404;
     }
 
     # Web
