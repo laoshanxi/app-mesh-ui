@@ -1,8 +1,5 @@
 FROM node:20-alpine AS builder
 WORKDIR /workspace
-# JS SDK staged from the sibling app-mesh repo (see `make sdk`); must be present
-# before npm install because package.json references it as a file: dependency.
-COPY third_party/appmesh-sdk ./third_party/appmesh-sdk
 COPY package*.json ./
 RUN npm install --legacy-peer-deps && npm cache clean --force
 COPY . .

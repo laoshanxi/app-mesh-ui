@@ -14,11 +14,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
-      'path': 'path-browserify',
-      // Local JS SDK source until it is published to npm (the published package
-      // still predates the Dex/OIDC API). Browser-safe: Node fs/https are lazy.
-      // Staged by `make sdk` from ../app-mesh so the Docker context is complete.
-      'appmesh': path.resolve(__dirname, 'third_party/appmesh-sdk/src/appmesh.js')
+      'path': 'path-browserify'
     }
   },
   css: {
