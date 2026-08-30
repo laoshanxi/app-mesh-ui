@@ -42,6 +42,12 @@ server {
         rewrite ^ /appmesh/logo.svg last;
     }
 
+    # Dex hardcodes the login-page favicon to the issuer-relative theme path;
+    # the same hand-off serves the appmesh favicon from the backend.
+    location = /auth/theme/favicon.png {
+        rewrite ^ /appmesh/favicon.png last;
+    }
+
     # Dex issuer path (e.g. /auth/token, /auth/auth) for the browser OIDC flow.
     # 6060 serves the appmesh API only; Dex traffic goes to the authentication
     # service itself (default loopback Dex listener). The same-origin proxy is
