@@ -35,8 +35,10 @@ The daemon removed the legacy local auth stack and moved to Dex-only OIDC:
   `delete_principal`, `set_bearer_token` (in-memory bearer only; no cookies).
 - Dex (issuer `http://127.0.0.1:6062/auth`) is proxied to the public surface only
   through the Go Agent on the issuer path `/auth/*`. The static browser client
-  `appmesh-web` (public, PKCE) has redirect URI `<surface>/oauth/callback`.
-  Nothing serves `/oauth/callback` server-side — the SPA must own that route.
+  `appmesh-web` (public, PKCE) has redirect URI
+  `<browser_entry-origin>/oauth/callback` (from `/appmesh/auth/config`). The
+  entry serves `/oauth/callback`: the SPA here, or a static relay page (agent /
+  daemon) that returns the code to the UI origin carried in `state`.
 - Error shape: every error body is `{"message": string}`. 401 = token
   missing/expired (refresh or re-login); 403 = valid token, lacking permission
   (do NOT log out); 503 = auth service unreachable (retry).
@@ -103,9 +105,13 @@ The daemon removed the legacy local auth stack and moved to Dex-only OIDC:
 
 ## 3. Open items
 - Verify PKCE flow end-to-end against a live stack (nginx `/auth/` proxy chain).
-- The OAuth redirect/popup flow requires Dex's registered `web_callback`
-  (auth-stack.yaml) to equal `<UI origin>/oauth/callback` — e.g.
-  `http://localhost:9528/oauth/callback` for local dev.
+- The OAuth redirect always goes to `<browser_entry-origin>/oauth/callback`
+  (one Dex registration, rendered by `appmesh-auth.sh` from `browser_entry`).
+  The UI origin travels inside `state`
+  (`base64url(JSON {"o": <ui-origin>, "s": <nonce>})`); the entry relay page
+  returns the code to `<ui-origin>/oauth/callback`. A vite dev server on
+  `http://localhost:9528` needs no manual registration: the redirect goes to
+  the advertised entry and the relay page bounces the code back.
 - Login page offers both modes: password form (builtin mode only, advertised by
   `flows`) and "Login with provider" (authorization code + PKCE in a popup
   window, same-tab redirect fallback; the popup relays the code via postMessage

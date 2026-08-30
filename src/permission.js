@@ -53,10 +53,12 @@ const handleRouterError = (error, type = "error") => {
 
 // Navigation guard - runs before each route change
 router.beforeEach(async (to, from, next) => {
-  // The Dex authorization redirect lands on /oauth/callback?code=...&state=...
-  // The hash router never routes that path, so the code exchange happens here,
-  // once, before any navigation decision. A popup callback only relays the code
-  // to the opener window and closes itself — nothing to navigate.
+  // The Dex authorization redirect ends here on /oauth/callback?code=...&state=...
+  // The browser lands on this UI origin directly, or a browser-entry relay page
+  // returns it here with the state echoed verbatim. The hash router never
+  // routes that path, so the code exchange happens here, once, before any
+  // navigation decision. A popup callback only relays the code to the opener
+  // window and closes itself — nothing to navigate.
   if (window.location.search.includes("code=")) {
     let result;
     try {

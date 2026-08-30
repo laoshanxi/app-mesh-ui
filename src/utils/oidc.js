@@ -186,32 +186,94 @@ async function pkceChallenge(verifier) {
   return base64Url(new Uint8Array(digest));
 }
 
-function webRedirectUri() {
+/**
+ * redirect_uri for the browser authorization-code flow: always the advertised
+ * `browser_entry` origin plus `/oauth/callback`, never this window's origin,
+ * so one Dex registration covers every address a browser uses to reach this UI.
+ * The entry (agent or daemon REST listener) serves `/oauth/callback`: the SPA
+ * itself, or a static relay page that returns the code to the UI origin carried
+ * in `state`. An entry with a path prefix (e.g. `/auth`) loses that path.
+ * Without a usable `browser_entry` (older daemon), keep the legacy same-origin
+ * callback.
+ */
+function webRedirectUri(cfg) {
+  if (cfg?.browser_entry) {
+    try {
+      const url = new URL(cfg.browser_entry);
+      if (url.protocol === "http:" || url.protocol === "https:") {
+        return `${url.origin}/oauth/callback`;
+      }
+    } catch {
+      // Unusable entry value: fall back to the legacy same-origin callback.
+    }
+  }
   return `${window.location.origin}/oauth/callback`;
 }
 
 /**
- * Start the authorization-code flow. In popup mode the provider login opens in
- * a small window and the SPA stays loaded; the popup relays the code back via
+ * Front-channel (authorize) base: the advertised `browser_entry` origin plus
+ * the issuer path, so the browser loads the login page from the entry that
+ * also serves its assets (logo) and the callback relay. Without a usable
+ * `browser_entry` (older daemon), keep the same-origin base.
+ */
+function authorizeBaseUrl(cfg) {
+  const issuerPath = new URL(cfg.issuer).pathname.replace(/\/+$/, "");
+  if (cfg?.browser_entry) {
+    try {
+      const url = new URL(cfg.browser_entry);
+      if (url.protocol === "http:" || url.protocol === "https:") {
+        return `${url.origin}${issuerPath}`;
+      }
+    } catch {
+      // Unusable entry value: fall back to the same-origin authorization page.
+    }
+  }
+  return `${window.location.origin}${issuerPath}`;
+}
+
+// `state` carries the UI origin (`o`) next to the CSRF nonce (`s`) as
+// base64url(JSON). The entry relay page reads `o` and sends the code back to
+// `<o>/oauth/callback?code=...&state=<verbatim>`. Dex echoes state verbatim.
+function encodeStateParam(origin, nonce) {
+  return btoa(JSON.stringify({ o: origin, s: nonce }))
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
+}
+
+function decodeStateParam(state) {
+  try {
+    const decoded = JSON.parse(atob(String(state).replace(/-/g, "+").replace(/_/g, "/")));
+    return typeof decoded?.o === "string" && typeof decoded?.s === "string" ? decoded : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Start the authorization-code flow. The redirect goes to the advertised
+ * browser entry, which returns the code to this UI origin through `state`
+ * (see webRedirectUri). In popup mode the provider login opens in a small
+ * window and the SPA stays loaded; the popup relays the code back via
  * postMessage (see completeAuthorizationLogin). Falls back to a full-page
  * redirect when the popup is blocked.
  * @returns {Promise<"popup"|"redirect">}
  */
 export async function startAuthorizationLogin({ popup = false } = {}) {
   const cfg = await getAuthConfig();
-  const state = randomUrlSafe(24);
   const verifier = randomUrlSafe(48);
+  const state = encodeStateParam(window.location.origin, randomUrlSafe(24));
   sessionStorage.setItem(PKCE_STORE_KEY, JSON.stringify({ state, verifier }));
   const params = new URLSearchParams({
     client_id: WEB_CLIENT_ID,
     response_type: "code",
-    redirect_uri: webRedirectUri(),
+    redirect_uri: webRedirectUri(cfg),
     scope: scopeString(cfg),
     state,
     code_challenge: await pkceChallenge(verifier),
     code_challenge_method: "S256",
   });
-  const base = await authBaseUrl();
+  const base = authorizeBaseUrl(cfg);
   const url = `${base}/auth?${params.toString()}`;
   if (popup) {
     // Center the popup on the parent window.
@@ -230,9 +292,11 @@ export async function startAuthorizationLogin({ popup = false } = {}) {
 
 /**
  * Finish the authorization-code flow when the SPA lands on
- * /oauth/callback?code=... (hash router never sees that path itself).
- * In a popup (opened by startAuthorizationLogin) the code is relayed to the
- * opener window, which owns the PKCE verifier and performs the exchange.
+ * /oauth/callback?code=...&state=... (hash router never sees that path itself).
+ * One code path for both landing shapes: the browser reaches this UI origin
+ * directly, or an entry relay page returns it here with the state echoed
+ * verbatim. In a popup (opened by startAuthorizationLogin) the code is relayed
+ * to the opener window, which owns the PKCE verifier and performs the exchange.
  * @returns {Promise<boolean|"relayed">} true when a callback was consumed
  */
 export async function completeAuthorizationLogin() {
@@ -256,18 +320,22 @@ export async function completeAuthorizationLogin() {
 
 /**
  * Exchange an authorization code for tokens using the PKCE verifier stored in
- * this window's session (the same-tab flow and the popup-opener flow).
+ * this window's session (the same-tab flow and the popup-opener flow). The
+ * state must decode and match the value stored at flow start, which verifies
+ * the nonce and binds the code to this origin's verifier: a code relayed to any
+ * other origin cannot pass.
  */
 export async function completeAuthorizationWithCode(code, state) {
   const saved = JSON.parse(sessionStorage.getItem(PKCE_STORE_KEY) || "null");
   sessionStorage.removeItem(PKCE_STORE_KEY);
-  if (!saved || saved.state !== state) {
+  if (!saved || saved.state !== state || !decodeStateParam(state)) {
     throw new Error("Login state mismatch, please retry");
   }
+  const cfg = await getAuthConfig();
   const form = {
     grant_type: "authorization_code",
     code,
-    redirect_uri: webRedirectUri(),
+    redirect_uri: webRedirectUri(cfg),
     code_verifier: saved.verifier,
     client_id: WEB_CLIENT_ID,
   };

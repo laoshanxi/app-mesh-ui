@@ -39,7 +39,7 @@
       </el-button>
 
       <el-button
-        :loading="loading" tabindex="4" style="width:100%;margin-left:0;margin-bottom:30px;"
+        :loading="loading" type="primary" tabindex="4" style="width:100%;margin-left:0;margin-bottom:30px;"
         @click.prevent="providerLogin()"
       >
         Sign in with SSO
