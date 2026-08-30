@@ -1,6 +1,8 @@
 .DS_Store
 node_modules/
 dist/
+# JS SDK staged from ../app-mesh by `make sdk` (local reference until published)
+third_party/
 release/
 dockerbuild/
 _cacache/

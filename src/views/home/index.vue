@@ -60,8 +60,8 @@
               <span>Security</span>
             </div>
           </template>
-          <p>Manage users, roles, permissions, and two-factor authentication.</p>
-          <router-link to="/security/changePwd">
+          <p>Manage principal authorization overlays, roles, and permissions.</p>
+          <router-link to="/security/principals">
             <el-button type="primary" text>Go to Security &rarr;</el-button>
           </router-link>
         </el-card>

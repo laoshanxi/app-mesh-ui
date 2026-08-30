@@ -1,7 +1,7 @@
 import { AppMeshClient } from "appmesh";
 import { ElMessage } from "element-plus";
-import axios from "axios";
 import { HttpStatus } from "./constants";
+import { getAccessToken, hasSession, refreshSession, ensureFreshToken } from "./oidc";
 import store from "@/store";
 import router from "@/router";
 
@@ -14,26 +14,33 @@ export class VueAppMeshClient extends AppMeshClient {
   }
 
   /**
- * Override error handler to add Vue-specific behavior
- * @protected
- * @param {Error} error - The caught error
- * @returns {Error} The original error
- */
+   * Override error handler to add Vue-specific behavior
+   * @protected
+   * @param {Error} error - The caught error
+   * @returns {Error} The original error
+   */
   onError(error) {
-    // Handle 401 Unauthorized errors
     if (error?.statusCode === HttpStatus.UNAUTHORIZED) {
-      // Logout user and redirect to login page
-      store.dispatch("user/logout").catch(err =>
-        console.error("Logout error:", err)
-      );
-
-      // Prevent redirect loops
-      const currentPath = router.currentRoute.value.path;
-      if (!currentPath.startsWith("/login")) {
-        const redirectParam = encodeURIComponent(router.currentRoute.value.fullPath);
-        router.push(`/login?redirect=${redirectParam}`);
+      // 401 = bearer missing/expired: try one silent refresh at Dex. Only when
+      // that fails (or there is nothing to refresh) do we force a re-login.
+      if (hasSession()) {
+        refreshSession().then((token) => {
+          if (token) {
+            ElMessage({
+              message: "Session refreshed, please retry your action",
+              type: "info",
+              duration: 5000,
+            });
+          } else {
+            forceRelogin();
+          }
+        });
+      } else {
+        forceRelogin();
       }
     }
+    // 403 (no permission) and 503 (auth service unreachable) keep the session:
+    // the token is valid, only the action is not allowed right now.
 
     // Display error message
     ElMessage({
@@ -46,10 +53,24 @@ export class VueAppMeshClient extends AppMeshClient {
   }
 }
 
+/**
+ * Drop the local session and send the user to the login page (loop-guarded).
+ */
+export function forceRelogin() {
+  store.dispatch("user/logout").catch((err) => console.error("Logout error:", err));
+  const currentPath = router.currentRoute.value.path;
+  if (!currentPath.startsWith("/login")) {
+    const redirectParam = encodeURIComponent(router.currentRoute.value.fullPath);
+    router.push(`/login?redirect=${redirectParam}`);
+  }
+}
+
 const INSTANCE_KEY = "__APP_MESH_CLIENT__";
 
 /**
- * Get the AppMesh client instance
+ * Get the AppMesh client instance with the current Dex bearer attached.
+ * The token lives in the OIDC layer (sessionStorage-backed); attaching it here
+ * on every call means a refresh is picked up without rebuilding the client.
  * @param {Object} [data] - Optional configuration data
  * @param {Object} [data.headers] - Optional headers
  * @returns {VueAppMeshClient}
@@ -67,6 +88,13 @@ export function getClient(data = null) {
     client.forwardingHost = forwardingHost;
   }
 
+  const token = getAccessToken();
+  if (token) {
+    client.set_bearer_token(token);
+  } else {
+    client.clear_bearer_token();
+  }
+
   return client;
 }
 
@@ -75,59 +103,15 @@ export function getClient(data = null) {
  */
 export function clearClient() {
   window[INSTANCE_KEY] = null;
-  workflowToken = null;
 }
 
 /**
- * Some daemon task-server apps (notably the Workflow engine) authenticate the caller
- * from a `token` field INSIDE the task payload — not from the HTTP auth cookie. The
- * daemon does not inject it (see RestHandler::apiSendMessage), and the session JWT lives
- * in an HttpOnly cookie that JS cannot read. So we capture an explicit JWT here, the same
- * way the Python/CLI samples do (they pass `_get_access_token()` in the payload).
- *
- * `token/renew` is cookie-authenticated and returns a fresh JWT (`access_token`) in its
- * body. CSRF is enforced server-side via an Origin check, so no CSRF token is echoed here.
- */
-let workflowToken = null;
-let capturePromise = null; // de-dupes concurrent captures
-
-export function getWorkflowToken() {
-  return workflowToken;
-}
-
-/**
- * Capture (or refresh) a payload-usable JWT via the cookie-authenticated token/renew
- * endpoint, which returns a fresh `access_token` in its body. Works after login and on a
- * restored session (the auth cookie exists either way). Best-effort: never throws.
- *
- * Concurrent callers share a single in-flight request so a page that fires several workflow
- * actions at once doesn't trigger multiple token/renew calls.
+ * Token for task payloads (e.g. the Workflow engine authenticates the caller
+ * from a `token` field INSIDE the run_task payload). The daemon no longer
+ * mints/renews tokens (no /appmesh/token/renew): the payload token is the same
+ * Dex access token the SDK sends as bearer.
  * @returns {Promise<string|null>}
  */
-export function captureWorkflowToken() {
-  if (capturePromise) return capturePromise;
-  capturePromise = (async () => {
-    try {
-      const res = await axios.post("/appmesh/token/renew", null, {
-        withCredentials: true,
-      });
-      workflowToken = res?.data?.access_token || null;
-    } catch (error) {
-      workflowToken = null;
-      // token/renew is a raw axios call (bypasses the SDK's onError). A 401 means the
-      // session cookie is invalid/expired -> force re-login, like onError does for 401.
-      if (error?.response?.status === HttpStatus.UNAUTHORIZED) {
-        store.dispatch("user/logout").catch(() => {});
-        const currentPath = router.currentRoute.value.path;
-        if (!currentPath.startsWith("/login")) {
-          router.push(`/login?redirect=${encodeURIComponent(router.currentRoute.value.fullPath)}`);
-        }
-      } else {
-        console.warn("captureWorkflowToken failed:", error?.message || error);
-      }
-    }
-    return workflowToken;
-  })();
-  capturePromise.finally(() => { capturePromise = null; });
-  return capturePromise;
+export function getWorkflowToken() {
+  return ensureFreshToken();
 }

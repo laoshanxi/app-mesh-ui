@@ -4,6 +4,7 @@ import { ElMessage } from "element-plus";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import getPageTitle from "@/utils/get-page-title";
+import { completeAuthorizationLogin } from "@/utils/oidc";
 
 // Configure NProgress
 NProgress.configure({ showSpinner: false });
@@ -11,7 +12,7 @@ NProgress.configure({ showSpinner: false });
 // Has the restored (cached) session been validated against the server this page-load?
 // The user identity is cached in sessionStorage, so the guard would otherwise trust it
 // blindly — even if the auth cookie is stale (daemon restarted / expired). We validate
-// once via get_current_user so a dead session is sent to login instead of showing a
+// once via get_current_principal so a dead session is sent to login instead of showing a
 // logged-in-looking UI whose API calls all fail.
 let sessionValidated = false;
 
@@ -52,6 +53,25 @@ const handleRouterError = (error, type = "error") => {
 
 // Navigation guard - runs before each route change
 router.beforeEach(async (to, from, next) => {
+  // The Dex authorization redirect ends here on /oauth/callback?code=...&state=...
+  // The browser lands on this UI origin directly, or a browser-entry relay page
+  // returns it here with the state echoed verbatim. The hash router never
+  // routes that path, so the code exchange happens here, once, before any
+  // navigation decision. A popup callback only relays the code to the opener
+  // window and closes itself — nothing to navigate.
+  if (window.location.search.includes("code=")) {
+    let result;
+    try {
+      result = await completeAuthorizationLogin();
+    } catch (error) {
+      console.error("Authorization callback failed:", error);
+      ElMessage.error(error?.message || "Login failed");
+      next("/login");
+      return;
+    }
+    if (result === "relayed") return;
+  }
+
   // Start loading indicators
   NProgress.start();
   store.dispatch("app/setLoading", true);

@@ -1,4 +1,4 @@
-import { getClient, getWorkflowToken, captureWorkflowToken } from '@/utils/appmeshClient'
+import { getClient, getWorkflowToken } from '@/utils/appmeshClient'
 import { ElMessage } from 'element-plus'
 
 // "workflow" is the trigger app name (WORKFLOW_TRIGGER_APP). All Workflow engine
@@ -10,11 +10,10 @@ const TRIGGER_APP = 'workflow'
  *
  * AUTH: the Workflow engine authenticates the caller from a `token` field INSIDE the
  * task payload (task_handler.go authenticate(): empty token -> "token required"), NOT
- * from the HTTP auth cookie. The cookie only authenticates the run_task call to the
+ * from the HTTP bearer. The bearer only authenticates the run_task call to the
  * daemon; the daemon forwards the payload to the engine unchanged (it does not inject a
- * token). The session JWT is in an HttpOnly cookie JS cannot read, so we attach the JWT
- * captured at login (see appmeshClient.captureWorkflowToken) — exactly as the Python/CLI
- * samples do via `_get_access_token()`.
+ * token). The token is the same Dex access token the SDK sends as bearer — the daemon
+ * no longer mints or renews tokens itself (see utils/oidc.js).
  *
  * run_task may resolve to either an object or a JSON string -> parse defensively.
  * On status === 'error', throw new Error(message); getClient().onError shows the
@@ -36,7 +35,7 @@ function parse(raw) {
 }
 
 // The engine returns a 200 body with status:"error" for auth problems (the daemon-level
-// cookie auth already passed). Detect those so we can refresh the payload token and retry.
+// bearer auth already passed). Detect those so we can refresh the payload token and retry.
 function isAuthError(res) {
   return res && res.status === 'error' && /token|auth|unauthor|expired|forbidden/i.test(res.message || '')
 }
@@ -47,14 +46,14 @@ async function send(action, extra, timeout, token) {
 }
 
 async function call(action, extra = {}, timeout = 60) {
-  // The engine authenticates from a `token` in the payload (not the HTTP cookie). The token is
-  // captured at login; on a restored session / reload it's null, and a cached token can expire.
-  let token = getWorkflowToken() || (await captureWorkflowToken())
+  // The engine authenticates from a `token` in the payload (not the HTTP bearer).
+  // ensureFreshToken refreshes at Dex when the stored token is close to expiry.
+  let token = await getWorkflowToken()
   let res = await send(action, extra, timeout, token)
 
-  // One re-capture + retry on an auth error (expired / restored-session token).
+  // One refresh + retry on an auth error (expired token).
   if (isAuthError(res)) {
-    token = await captureWorkflowToken()
+    token = await getWorkflowToken()
     if (token) res = await send(action, extra, timeout, token)
   }
 
