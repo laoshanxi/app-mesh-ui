@@ -28,10 +28,19 @@ export default defineConfig({
     port: 9528,
     open: true,
     proxy: {
+      // No changeOrigin: the browser's Host header must reach the Go agent
+      // unchanged. The agent derives X-Forwarded-Host from it, and the daemon's
+      // CSRF check compares that against Origin — with a rewritten Host every
+      // browser POST is rejected with "CSRF validation failed: origin not allowed".
       '/appmesh': {
         target: 'https://localhost:6060',
-        changeOrigin: true,
         secure: false
+      },
+      // Dex issuer path — same-origin doorway to the authentication service
+      // itself (Dex sends no CORS headers, so the browser cannot call it directly).
+      '/auth': {
+        target: 'http://127.0.0.1:6062',
+        changeOrigin: true
       }
     }
   },

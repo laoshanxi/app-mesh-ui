@@ -10,7 +10,7 @@ push:
 
 # Register the UI container as an App Mesh app (exec user follows daemon BaseConfig.DefaultExecUser)
 run:
-	appm logon -U admin -X admin123
+	appm logon -U admin@appmesh.local
 	-appm rm -a appweb -f
 	appm add -a appweb -p 11 -Q restart -I ${DOCKER_IMG_NAME}:${VER} -e "APP_DOCKER_OPTS=--net=host -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro" -f
 

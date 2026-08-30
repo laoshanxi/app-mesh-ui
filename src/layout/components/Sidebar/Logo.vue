@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar-logo-container" :class="{ collapse: collapse }">
     <router-link class="sidebar-logo-link" to="/">
-      <img src="@/icons/svg/logo.svg" class="sidebar-logo" />
+      <img src="@/icons/svg/logo-glyph.svg" class="sidebar-logo" />
       <span v-show="!collapse" class="sidebar-title">{{ title }}</span>
     </router-link>
   </div>

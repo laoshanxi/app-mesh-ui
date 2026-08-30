@@ -13,12 +13,6 @@
               filter-placeholder="Filter" :titles="['All permissions', 'Role permissions']"
               :data="permissions"
             ></el-transfer>
-            <div style="margin-top:10px;">
-              <el-input v-model="newPermission" style="width: 350px; margin-right: 10px;"></el-input>
-              <el-button @click="addNewPermission">Add new permission</el-button>
-              <br />
-              <span style="color:#909399;">* Note: Multiple permissions separated by commas</span>
-            </div>
           </div>
         </el-form-item>
       </el-form>
@@ -45,9 +39,7 @@ export default {
         permissions: [],
       },
       permissions: [],
-      permissionsMap: {},
       permissionRules: {},
-      newPermission: "",
     };
   },
   watch: {
@@ -81,27 +73,11 @@ export default {
                 key: permission,
                 pinyin: permission,
               });
-              this.permissionsMap[permission] = permission;
             }
           }
         })
         .catch((err) => { console.warn(err); })
         .then(() => { });
-    },
-    addNewPermission() {
-      let newPermissions = this.newPermission.split(",");
-      for (let i = 0; i < newPermissions.length; i++) {
-        let permission = newPermissions[i];
-        if (this.permissionsMap[permission] == null) {
-          this.permissions.splice(0, 0, {
-            label: permission,
-            key: permission,
-            pinyin: permission,
-          });
-        }
-      }
-
-      this.newPermission = "";
     },
     setFromWithProps() {
       if (Object.keys(this.propForm).length !== 0) {
