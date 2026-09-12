@@ -59,7 +59,15 @@
         </el-table-column>
         <el-table-column class-name="status-col" label="State" min-width="110">
           <template #default="scope">
-            <el-tag v-if="scope.row.status === 1" :type="'success'">
+            <el-tooltip
+              v-if="scope.row.status === 1 && !scope.row.pid && scope.row.waiting_for && scope.row.waiting_for.length"
+              :content="'Waiting for: ' + scope.row.waiting_for.join(', ')" placement="top"
+            >
+              <el-tag :type="'warning'">
+                Waiting
+              </el-tag>
+            </el-tooltip>
+            <el-tag v-else-if="scope.row.status === 1" :type="'success'">
               Enabled
             </el-tag>
             <el-tag v-else :type="'info'">

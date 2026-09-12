@@ -47,6 +47,8 @@ export default {
         ? `${r.daily_limitation.daily_start_TEXT} - ${r.daily_limitation.daily_end_TEXT}`
         : null;
       const rl = r.resource_limit || {};
+      const depends = r.depends_on && r.depends_on.length ? r.depends_on.join(", ") : null;
+      const waiting = r.waiting_for && r.waiting_for.length ? r.waiting_for.join(", ") : null;
       return [
         {
           title: "Basic information",
@@ -61,6 +63,7 @@ export default {
             { k: "Shell mode", bool: !!r.shell },
             { k: "Session login", bool: !!r.session_login },
             { k: "Healthcheck cmd", v: r.health_check_cmd, mono: true },
+            { k: "Depends on", v: depends, mono: true },
             { k: "Start time", v: r.start_time_TEXT },
             { k: "End time", v: r.end_time_TEXT },
             { k: "Period run interval(S)", v: r.start_interval_seconds },
@@ -87,6 +90,7 @@ export default {
             { k: "File descriptors", v: r.fd },
             { k: "Container id", v: r.container_id, mono: true },
             { k: "Last error", v: r.last_error, full: true, mono: true },
+            { k: "Waiting for", v: waiting, mono: true },
           ],
         },
         {

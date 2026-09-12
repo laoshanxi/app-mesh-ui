@@ -63,6 +63,14 @@
 
         <h3 class="sec-title">Scheduling</h3>
 
+        <el-form-item label="Depends on" prop="depends_on">
+          <el-select
+            v-model="registerForm.depends_on" multiple filterable allow-create default-first-option
+            placeholder="Select or type app names" class="depends-select"
+          >
+            <el-option v-for="name in appNames" :key="name" :label="name" :value="name"></el-option>
+          </el-select><span class="hint">start only after each dependency is healthy</span>
+        </el-form-item>
         <el-form-item label="Start interval" prop="start_interval_seconds">
           <el-input v-model="registerForm.start_interval_seconds"></el-input><span class="hint">ISO 8601 durations / seconds / cron expr</span>
         </el-form-item>
@@ -153,6 +161,7 @@
 
 <script>
 import applications from "@/services/applications";
+import { getClient } from "@/utils/appmeshClient";
 import { formatToLocal, formatToLocalDayTime, deepClone } from "@/utils";
 import { markRaw } from 'vue'
 import { Delete } from "@element-plus/icons-vue";
@@ -165,6 +174,7 @@ export default {
     return {
       Delete: markRaw(Delete),
       daily_time_range: null,
+      appNames: [],
       initRegisterForm: null,
       registerForm: {},
       regRules: {
@@ -220,6 +230,11 @@ export default {
   created() {
     this.resetForm();
     this.setFromWithProps();
+    // Dependency picker options: names of the currently registered apps.
+    getClient().list_apps().then(
+      (data) => { this.appNames = data.map((a) => a.name); },
+      () => { /* picker falls back to free-text entry */ }
+    );
   },
   methods: {
     setFromWithProps() {
@@ -288,6 +303,7 @@ export default {
         envs: [],
         docker_image: '',
         pid: null,
+        depends_on: [],
         start_interval_seconds: null,
         cron: false,
         start_time: 0,
@@ -402,7 +418,8 @@ export default {
 }
 
 .register-card .el-input,
-.register-card .el-input-number {
+.register-card .el-input-number,
+.register-card .depends-select {
   width: 340px;
   margin-right: 10px;
 }
