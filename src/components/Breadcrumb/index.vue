@@ -44,7 +44,7 @@ export default {
       return name.trim().toLocaleLowerCase() === 'Home'.toLocaleLowerCase()
     },
     pathCompile(path) {
-      // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561
+      // handle route params in the path (vue-element-admin#561)
       const { params } = this.$route
       const toPath = compile(path)
       return toPath(params)

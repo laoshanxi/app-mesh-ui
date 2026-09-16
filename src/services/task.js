@@ -2,8 +2,7 @@ import { getClient } from '@/utils/appmeshClient'
 import { ElMessage } from 'element-plus'
 
 export default {
-  // Only task-server apps expose task_status ("idle"/"busy");
-  // auto-select a sensible default (prefer "pytask").
+  // only task-server apps expose task_status ("idle"/"busy"); auto-select a default (prefer "pytask").
   getTaskApps(vueComp) {
     vueComp.appsLoading = true
     getClient().list_apps().then(data => {
@@ -32,7 +31,7 @@ export default {
     }
     getClient().run_task(vueComp.selectedApp, vueComp.payload, vueComp.timeout)
       .then(res => {
-        // run_task may resolve to either an object or a JSON string -> parse defensively.
+        // run_task resolves to an object or a JSON string -> parse defensively.
         if (typeof res === 'object' && res !== null) {
           vueComp.result = res
           vueComp.resultIsJson = true

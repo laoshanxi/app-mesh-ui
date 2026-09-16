@@ -1,29 +1,11 @@
 import { getClient, getWorkflowToken } from '@/utils/appmeshClient'
 import { ElMessage } from 'element-plus'
 
-// "workflow" is the trigger app name (WORKFLOW_TRIGGER_APP). All Workflow engine
-// operations are driven through the App Mesh Task API; there is NO workflow REST API.
+// "workflow" is the trigger app name; all engine ops go through the Task API — no workflow REST API.
 const TRIGGER_APP = 'workflow'
 
-/**
- * Centralized run_task wrapper for the Workflow engine.
- *
- * AUTH: the Workflow engine authenticates the caller from a `token` field INSIDE the
- * task payload (task_handler.go authenticate(): empty token -> "token required"), NOT
- * from the HTTP bearer. The bearer only authenticates the run_task call to the
- * daemon; the daemon forwards the payload to the engine unchanged (it does not inject a
- * token). The token is the same Dex access token the SDK sends as bearer — the daemon
- * no longer mints or renews tokens itself (see utils/oidc.js).
- *
- * run_task may resolve to either an object or a JSON string -> parse defensively.
- * On status === 'error', throw new Error(message); getClient().onError shows the
- * toast and handles 401 on the rejected promise.
- *
- * @param {string} action  - one of the documented engine actions
- * @param {object} [extra]  - additional payload fields (workflow, run_id, job, step, inputs, content)
- * @param {number} [timeout] - task timeout in seconds
- * @returns {Promise<{status:string, message?:string, data?:*}>}
- */
+// run_task wrapper for the Workflow engine. AUTH: the engine authenticates from a `token` field
+// INSIDE the task payload (not the HTTP bearer) — the same Dex access token; daemon mints nothing.
 // run_task may resolve to an object or a JSON string -> parse defensively.
 function parse(raw) {
   if (typeof raw !== 'string') return raw
@@ -34,8 +16,7 @@ function parse(raw) {
   }
 }
 
-// The engine returns a 200 body with status:"error" for auth problems (the daemon-level
-// bearer auth already passed). Detect those so we can refresh the payload token and retry.
+// 200 + status:"error" = auth problem (bearer passed) — used to refresh the payload token and retry.
 function isAuthError(res) {
   return res && res.status === 'error' && /token|auth|unauthor|expired|forbidden/i.test(res.message || '')
 }
@@ -46,12 +27,9 @@ async function send(action, extra, timeout, token) {
 }
 
 async function call(action, extra = {}, timeout = 60) {
-  // The engine authenticates from a `token` in the payload (not the HTTP bearer).
-  // ensureFreshToken refreshes at Dex when the stored token is close to expiry.
   let token = await getWorkflowToken()
   let res = await send(action, extra, timeout, token)
 
-  // One refresh + retry on an auth error (expired token).
   if (isAuthError(res)) {
     token = await getWorkflowToken()
     if (token) res = await send(action, extra, timeout, token)
@@ -66,8 +44,7 @@ async function call(action, extra = {}, timeout = 60) {
 export default {
   // ---- list / state-mutating-into-vueComp ----
 
-  // workflow_list {} -> data: WorkflowListItem[] (always an array)
-  // Writes vueComp.list, toggles vueComp.listLoading. No return value relied upon.
+  // workflow_list -> data: WorkflowListItem[]; writes vueComp.list, toggles listLoading.
   listWorkflows(vueComp) {
     vueComp.listLoading = true
     call('workflow_list', {}).then(
@@ -83,48 +60,39 @@ export default {
 
   // ---- fetch-on-demand (RETURN the promise; caller places data) ----
 
-  // workflow_get {workflow} -> data: string (raw YAML). Returns Promise<string>.
+  // workflow_get {workflow} -> data: raw YAML string.
   getWorkflow(vueComp, workflow) {
     return call('workflow_get', { workflow }).then(res => res.data)
   },
 
-  // workflow_inputs {workflow} -> data: map<inputKey, InputParam> ({} when none).
-  // NOTE: InputParam keys are PascalCase (Type/Required/Default/Description).
-  // Returns Promise<object> (the map).
+  // workflow_inputs -> data: map<inputKey, InputParam> (PascalCase keys; {} when none).
   getInputs(vueComp, workflow) {
     return call('workflow_inputs', { workflow }).then(res => res.data || {})
   },
 
-  // runs {workflow} -> data: RunIndex[] (newest first; runs[0] = latest; always an array).
-  // Returns Promise<RunIndex[]>.
+  // runs {workflow} -> data: RunIndex[] (newest first).
   listRuns(vueComp, workflow) {
     return call('runs', { workflow }).then(res => res.data || [])
   },
 
-  // run_detail {workflow, run_id} -> data: RunRecord (has .jobs) OR degraded RunIndex (no .jobs).
-  // Polymorphic: caller must branch on presence of data.jobs. Returns Promise<object>.
+  // run_detail -> data: RunRecord (has .jobs) or degraded RunIndex — branch on data.jobs.
   getRunDetail(vueComp, workflow, runId) {
-    // longer timeout: detail can be large for big runs
     return call('run_detail', { workflow, run_id: runId }, 120).then(res => res.data)
   },
 
-  // log {workflow, run_id} -> data: string (full flow.log). Throws "log not found" if absent.
-  // Returns Promise<string>.
+  // log -> data: full flow.log (throws "log not found" if absent).
   getLog(vueComp, workflow, runId) {
     return call('log', { workflow, run_id: runId }, 120).then(res => res.data)
   },
 
-  // step_log {workflow, run_id, job, step} -> data: string (step stdout).
-  // Throws "step log not found" if empty/missing. Returns Promise<string>.
+  // step_log -> data: step stdout (throws "step log not found" if empty).
   getStepLog(vueComp, workflow, runId, job, step) {
     return call('step_log', { workflow, run_id: runId, job, step }, 120).then(res => res.data)
   },
 
   // ---- mutations (RETURN the promise; caller toasts + refreshes) ----
 
-  // workflow_add {workflow, content} -> message "workflow registered" (no data).
-  // content must parse and its YAML `name:` must equal `workflow`.
-  // Returns Promise<{status,message}>.
+  // workflow_add {workflow, content}; YAML `name:` must equal `workflow`.
   addWorkflow(vueComp, workflow, content) {
     return call('workflow_add', { workflow, content }).then(res => {
       ElMessage.success(res.message || 'workflow registered')
@@ -132,8 +100,7 @@ export default {
     })
   },
 
-  // workflow_rm {workflow} -> message "workflow removed" (no data).
-  // Returns Promise<{status,message}>.
+  // workflow_rm {workflow}.
   removeWorkflow(vueComp, workflow) {
     return call('workflow_rm', { workflow }).then(res => {
       ElMessage.success(res.message || 'workflow removed')
@@ -141,9 +108,7 @@ export default {
     })
   },
 
-  // run {workflow, inputs} -> message "running"|"pending"; data: { run_id }.
-  // inputs is map<string,string> (stringify number/boolean before sending).
-  // Returns Promise<{status,message,data:{run_id}}>.
+  // run {workflow, inputs} -> data: {run_id}; inputs values are strings (stringify first).
   run(vueComp, workflow, inputs) {
     return call('run', { workflow, inputs }, 60).then(res => {
       const id = res.data && res.data.run_id
@@ -152,9 +117,7 @@ export default {
     })
   },
 
-  // cancel {workflow, run_id} -> message "cancelled" (no data).
-  // Works on RUNNING runs and PENDING (queued) runs.
-  // Returns Promise<{status,message}>.
+  // cancel {workflow, run_id}; works on RUNNING and PENDING runs.
   cancel(vueComp, workflow, runId) {
     return call('cancel', { workflow, run_id: runId }).then(res => {
       ElMessage.success(res.message || 'cancelled')
@@ -162,8 +125,7 @@ export default {
     })
   },
 
-  // rerun {workflow, run_id} -> message "running"|"pending"; data: { run_id } (NEW id, reuses inputs).
-  // Returns Promise<{status,message,data:{run_id}}>.
+  // rerun -> data: {run_id} (NEW id, reuses inputs).
   rerun(vueComp, workflow, runId) {
     return call('rerun', { workflow, run_id: runId }, 60).then(res => {
       const id = res.data && res.data.run_id

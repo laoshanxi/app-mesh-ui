@@ -230,7 +230,6 @@ export default {
   created() {
     this.resetForm();
     this.setFromWithProps();
-    // Dependency picker options: names of the currently registered apps.
     getClient().list_apps().then(
       (data) => { this.appNames = data.map((a) => a.name); },
       () => { /* picker falls back to free-text entry */ }
@@ -352,20 +351,20 @@ export default {
       let group = this.registerForm.groupPermission ? this.registerForm.groupPermission + "" : "3";
       this.registerForm.permission = other + group;
       if (this.registerForm.start_time_TEXT && this.registerForm.start_time_TEXT !== "") {
-        // convert "2025-01-19 18:06:57" with current browser zone to UTC seconds
+        // browser-zone datetime -> UTC seconds
         this.registerForm.start_time = Date.parse(this.registerForm.start_time_TEXT) / 1000;
       }
       if (this.registerForm.end_time_TEXT && this.registerForm.end_time_TEXT !== "") {
-        // convert "2025-01-19 18:06:57" with current browser zone to UTC seconds
+        // browser-zone datetime -> UTC seconds
         this.registerForm.end_time = Date.parse(this.registerForm.end_time_TEXT) / 1000;
       }
       if (this.registerForm.daily_limitation.daily_start_TEXT && this.registerForm.daily_limitation.daily_start_TEXT !== "") {
-        // convert day time "08:00:00" with current browser zone to UTC seconds
+        // browser-zone day time -> UTC seconds
         let fullDateString = `1970-01-02 ${this.registerForm.daily_limitation.daily_start_TEXT}`; // Combine with time (no 'Z' for local time)
         this.registerForm.daily_limitation.daily_start = Date.parse(fullDateString) / 1000; // Convert to seconds
       }
       if (this.registerForm.daily_limitation.daily_end_TEXT && this.registerForm.daily_limitation.daily_end_TEXT !== "") {
-        // convert day time "08:00:00" with current browser zone to UTC seconds
+        // browser-zone day time -> UTC seconds
         let fullDateString = `1970-01-02 ${this.registerForm.daily_limitation.daily_end_TEXT}`; // Combine with time (no 'Z' for local time)
         this.registerForm.daily_limitation.daily_end = Date.parse(fullDateString) / 1000; // Convert to seconds
       }
@@ -374,6 +373,8 @@ export default {
 
     merge(local, origin) {
       for (const key in local) {
+        // never copy unsafe keys (prototype pollution via API rows)
+        if (key === "__proto__" || key === "constructor" || key === "prototype") continue;
         origin[key] =
           origin[key] && origin[key].toString() === "[object Object]"
             ? this.merge(local[key], origin[key])
@@ -447,7 +448,7 @@ export default {
   font-size: 12px;
 }
 
-/* Permission: fixed-width inline labels so "Group"/"Other" never get clipped. */
+/* fixed-width labels so "Group"/"Other" never clip */
 .perm-row {
   display: flex;
   align-items: center;

@@ -157,7 +157,7 @@
           </el-table-column>
         </el-table>
 
-        <!-- Run detail (nested) — delegated to the self-contained RunDetail component -->
+        <!-- nested run detail (self-contained RunDetail component) -->
         <el-drawer v-model="isShowDetail" size="50%" append-to-body destroy-on-close>
           <template #header>
             <span>Run {{ detailRunId }}</span>
@@ -211,28 +211,23 @@ export default {
       listLoading: true,
       currentRow: null,
       isSelected: false,
-      // add
       isShowAdd: false,
       addContent: "",
       addLoading: false,
-      // view yaml
       isShowYaml: false,
       yamlName: "",
       yamlContent: "",
       yamlLoading: false,
-      // run
       isShowRun: false,
       runName: "",
       inputsSpec: {},
       inputsForm: {},
       inputsLoading: false,
       runLoading: false,
-      // runs
       isShowRuns: false,
       runsName: "",
       runs: [],
       runsLoading: false,
-      // run detail
       isShowDetail: false,
       detailRunId: "",
       // monitor latest run (live)
@@ -287,7 +282,6 @@ export default {
       }
     },
 
-    // ---- Monitor (open the latest run's live detail) ----
     openMonitor(row) {
       if (!row) return;
       this.monitorName = row.name;
@@ -296,8 +290,7 @@ export default {
       this.isShowMonitor = true;
       workflow.listRuns(this, row.name).then(runs => {
         const list = runs || [];
-        // prefer the active run; otherwise the newest by started_at (order isn't guaranteed).
-        // started_at may be an epoch number or an ISO string -> parse numerically either way.
+        // prefer the active run; else newest by started_at (epoch number or ISO string).
         const ts = v => {
           const n = Number(v);
           return Number.isFinite(n) && v ? n : (Date.parse(v) || 0);
@@ -312,16 +305,12 @@ export default {
       });
     },
 
-    // rerun from inside the Monitor drawer created a new run -> follow it
+    // a rerun inside Monitor created a new run -> follow it
     onMonitorRerun(newRunId) {
       if (newRunId) this.monitorRunId = newRunId;
     },
 
-    // ---- Add ----
-    // Fill the editor with a runnable Scenario-A (batch/DAG) example that drives llm-agent.
-    // Scenario B (interactive/streaming) is NOT a DAG concept, so there is no DAG form of it.
-    // The session is created on first use keyed by ${{ workflow.run_id }} (the agent does
-    // get-or-create), so the author never manages a session id.
+    // Scenario-A batch/DAG example; the session auto-creates per run keyed by run_id.
     loadAgentExample() {
       this.addContent = [
         "name: llm-agent-demo",
@@ -365,12 +354,11 @@ export default {
         this.fetchData();
       }, (e) => {
         this.addLoading = false;
-        // Surface the engine's reason instead of failing silently (was: swallowed).
+        // surface the engine's reason instead of failing silently
         ElMessage.error("Save failed: " + ((e && e.message) || "unknown error"));
       });
     },
 
-    // ---- View YAML ----
     openViewYaml(row) {
       if (!row) return;
       this.yamlName = row.name;
@@ -385,7 +373,6 @@ export default {
       });
     },
 
-    // ---- Run ----
     openRun(row) {
       if (!row) return;
       this.runName = row.name;
@@ -434,7 +421,6 @@ export default {
       }, () => {});
     },
 
-    // ---- Remove ----
     removeWorkflow(row) {
       if (!row) return;
       ElMessageBox.confirm(`Do you want to remove the workflow <${row.name}>?`, "Tooltip", {
@@ -446,7 +432,6 @@ export default {
       }).catch(() => {});
     },
 
-    // ---- Runs ----
     openRuns(row) {
       if (!row) return;
       this.runsName = row.name;
@@ -454,7 +439,7 @@ export default {
       this.isShowRuns = true;
       this.refreshRuns();
     },
-    // reset the nested run-detail so it unmounts (stops its polling) when Runs closes
+    // reset the nested run-detail so it unmounts (stops polling) when Runs closes
     closeRuns() {
       this.isShowDetail = false;
       this.detailRunId = "";
@@ -469,9 +454,6 @@ export default {
       });
     },
 
-    // ---- Run detail ----
-    // The single-run detail (jobs/steps, flow log, step stdout, cancel/rerun)
-    // is rendered by the self-contained RunDetail component.
     openRunDetail(row) {
       this.detailRunId = row.run_id;
       this.isShowDetail = true;
@@ -490,9 +472,7 @@ export default {
   white-space: nowrap;
 }
 
-/* Flex-fill: app-main is a flex column, so this page flexes to fill the
-   content area; the table row then flexes to fill what's left below the
-   title/toolbar. No pixel heights -> can't overflow or leave a bottom gap. */
+/* Flex-fill: page fills app-main; the table row fills the rest. No pixel heights. */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -521,9 +501,7 @@ export default {
   line-height: 1.4;
 }
 
-/* Native textarea for the YAML editor/viewer: full width, fills the drawer height,
-   clean monospace box. Scoped works here because the textarea is our own element
-   (it carries the scope id and travels with the drawer's teleport). */
+/* Native textarea YAML editor; scoped works (the textarea carries the scope id through teleport). */
 .yaml-wrap {
   width: 100%;
   height: 100%;

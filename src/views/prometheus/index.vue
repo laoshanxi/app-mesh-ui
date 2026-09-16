@@ -43,9 +43,7 @@ export default {
     Microsoft YaHei, Arial, sans-serif;
 }
 
-/* Pixel-free fill: cascade flex from the flex-column app-main so the tab
-   card fills the content area (no bottom gap) and the metrics text scrolls
-   inside it — replaces the global forced 100vh-174px tab-content height. */
+/* Pixel-free fill: cascade flex from app-main; metrics text scrolls inside. */
 .app-container {
   display: flex;
   flex-direction: column;

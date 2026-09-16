@@ -21,7 +21,9 @@
           <el-tag
             v-for="(h, i) in history" :key="i" size="small" style="margin: 0 6px 6px 0; cursor: pointer"
             @click="payload = h"
-          >{{ h }}</el-tag>
+          >
+            {{ h }}
+          </el-tag>
         </div>
       </div>
       <div class="pane">

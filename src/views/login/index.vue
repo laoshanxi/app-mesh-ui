@@ -51,7 +51,7 @@
 <script>
 import { validUsername } from "@/utils/validate";
 import { ElMessage } from "element-plus";
-import { getAuthConfig, startAuthorizationLogin, completeAuthorizationWithCode, webRedirectUri } from "@/utils/oidc";
+import { getAuthConfig, startAuthorizationLogin, completeAuthorizationWithCode } from "@/utils/oidc";
 
 export default {
   name: "Login",
@@ -87,8 +87,7 @@ export default {
       loading: false,
       passwordType: "Password",
       redirect: undefined,
-      // auth/config: "password" flow is advertised only in builtin auth mode;
-      // otherwise only the provider redirect (authorization code + PKCE) works.
+      // auth/config advertises "password" only in builtin mode; else only the SSO redirect works.
       passwordFlow: false,
     };
   },
@@ -118,20 +117,12 @@ export default {
   },
 
   methods: {
-    /**
-     * Toggle password visibility
-     */
     showPwd() {
       this.passwordType = this.passwordType === "Password" ? "" : "Password";
       this.$nextTick(() => this.$refs.Password.focus());
     },
 
-    /**
-     * Password-grant login through the Vuex action (which then loads the
-     * principal). The forwarding target is temporarily cleared: authentication
-     * always happens on the local node.
-     * @returns {Promise<void>}
-     */
+    /** Password-grant login; forwarding is cleared so auth happens on the local node. */
     async handleLogin() {
       this.loading = true;
       const originalForwarding = this.$store.getters.forwarding;
@@ -161,12 +152,7 @@ export default {
       }
     },
 
-    /**
-     * OAuth login (authorization code + PKCE) in a popup window. The popup
-     * relays the code back via postMessage; this window owns the PKCE verifier
-     * and completes the exchange. Falls back to a full-page redirect when the
-     * popup is blocked.
-     */
+    /** OAuth login (auth code + PKCE) in a popup; falls back to full-page redirect if blocked. */
     async providerLogin() {
       this.loading = true;
       try {
@@ -183,16 +169,11 @@ export default {
       }
     },
 
-    /**
-     * Receive the authorization code from the login popup and finish login.
-     * @param {MessageEvent} event
-     */
+    /** Receive the code from the login popup and finish the exchange. */
     async onOAuthMessage(event) {
       if (event.data?.type !== "appmesh-oauth") return;
-      // The popup lands on the registered redirect entry, which may be another
-      // origin than this UI.
-      const cfg = await getAuthConfig();
-      if (event.origin !== new URL(webRedirectUri(cfg)).origin) return;
+      // The relayed popup posts to <o>/oauth/callback (o = this UI origin) — require same-origin.
+      if (event.origin !== window.location.origin) return;
       window.removeEventListener("message", this.onOAuthMessage);
       try {
         await completeAuthorizationWithCode(event.data.code, event.data.state);
@@ -208,10 +189,6 @@ export default {
       }
     },
 
-    /**
-     * Restore forwarding settings
-     * @param {string} originalForwarding - Original forwarding setting
-     */
     async restoreForwarding(originalForwarding) {
       await this.$store.dispatch("settings/changeSetting", {
         key: "forwarding",
@@ -223,8 +200,7 @@ export default {
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
+/* 修复input背景与光标变色，见 vue-element-admin#927 */
 
 $bg: #283443;
 $light_gray: #fff;

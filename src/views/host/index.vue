@@ -111,9 +111,7 @@ export default {
   text-align: center;
 }
 
-/* Pixel-free fill: app-main is a flex column, so cascade flex down to the
-   tab card and let it GROW to fill the content area (border-card reaches the
-   bottom), with the tab content scrolling when long. */
+/* Pixel-free fill: cascade flex from app-main; the tab card grows, content scrolls. */
 .app-container {
   display: flex;
   flex-direction: column;

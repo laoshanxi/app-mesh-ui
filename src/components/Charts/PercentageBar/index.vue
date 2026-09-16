@@ -41,7 +41,6 @@ export default {
         width:this.width,
         padding: this.padding ? this.padding : [0, 0, 0, 0]
       });
-      // chart.source(this.data);
       chart.source(dv, {
           percent: {
             min: 0,

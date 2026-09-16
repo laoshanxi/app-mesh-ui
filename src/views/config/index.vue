@@ -395,8 +395,7 @@ export default {
   margin-top: 10px;
 }
 
-/* keep edit controls compact: don't let inputs/selects stretch full-width
-   across the wide pane (input-number stays at its natural compact width). */
+/* keep edit controls compact; input-number keeps its natural width. */
 :deep(.config-form .el-input),
 :deep(.config-form .el-select) {
   max-width: 360px;

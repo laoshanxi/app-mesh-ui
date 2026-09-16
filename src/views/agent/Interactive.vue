@@ -64,8 +64,7 @@
       </div>
     </div>
 
-    <!-- Credential prompt — secrets aren't cloned from the template, so each session
-         re-enters the provider credential (its kind depends on the template's provider). -->
+    <!-- Credential prompt: secrets aren't cloned — each session re-enters its provider credential -->
     <el-dialog v-model="keyVisible" :title="`Enter your ${credLabel}`" width="460px" align-center>
       <p style="color: #909399; margin-top: 0">
         Enter your {{ credLabel }} to start the chat — it's stored
@@ -120,7 +119,7 @@ export default {
     canSend() {
       return this.active && !!this.active.input.trim() && !this.active.sending;
     },
-    // The selected template's provider drives which credential a new session re-enters.
+    // the template's provider drives which credential a new session re-enters
     templateProvider() {
       const app = this.agents.find(a => a.name === this.template);
       return agentService.envToMap(app && app.env).LLMAGENT_PROVIDER || "anthropic";
@@ -143,7 +142,7 @@ export default {
     });
   },
   beforeUnmount() {
-    // Best-effort cleanup of every open worker on navigation away.
+    // best-effort cleanup of every open worker on navigation away
     this.sessions.forEach(s => agentService.closeWorker(s.name, s.sid));
   },
   methods: {
@@ -155,7 +154,7 @@ export default {
     },
     newSession() {
       if (!this.template) return;
-      // Vertex uses ADC — there's no static credential to enter, so skip the prompt.
+      // Vertex uses ADC — no static credential to enter.
       if (this.templateProvider === "vertex") { this.provision(""); return; }
       this.pendingKey = "";
       this.keyVisible = true; // each session re-enters its provider credential
@@ -204,7 +203,7 @@ export default {
           s.outPos
         );
         s.outPos = position;
-        // Fallback: if streaming produced nothing, show the final answer from metadata.
+        // if streaming produced nothing, show the final answer from metadata
         if (!reply.content && meta.answer) reply.content = meta.answer;
       } catch (e) {
         const msg = e.message || "request failed";

@@ -5,24 +5,15 @@ import { getAccessToken, hasSession, refreshSession, ensureFreshToken } from "./
 import store from "@/store";
 import router from "@/router";
 
-/**
- * Vue-specific implementation of AppMeshClient with UI integration
- */
+/** Vue-specific AppMeshClient with UI integration. */
 export class VueAppMeshClient extends AppMeshClient {
   constructor(options = {}) {
     super(options.baseURL, options.sslConfig);
   }
 
-  /**
-   * Override error handler to add Vue-specific behavior
-   * @protected
-   * @param {Error} error - The caught error
-   * @returns {Error} The original error
-   */
   onError(error) {
     if (error?.statusCode === HttpStatus.UNAUTHORIZED) {
-      // 401 = bearer missing/expired: try one silent refresh at Dex. Only when
-      // that fails (or there is nothing to refresh) do we force a re-login.
+      // 401 = bearer missing/expired: one silent refresh; re-login only if that fails.
       if (hasSession()) {
         refreshSession().then((token) => {
           if (token) {
@@ -39,23 +30,21 @@ export class VueAppMeshClient extends AppMeshClient {
         forceRelogin();
       }
     }
-    // 403 (no permission) and 503 (auth service unreachable) keep the session:
-    // the token is valid, only the action is not allowed right now.
+    // 403/503 keep the session: the token is valid, only the action is not allowed.
 
-    // Display error message
+    // Grouped toast: poll loops can fire the same error repeatedly.
     ElMessage({
       message: error?.message || "Unknown error occurred",
       type: "error",
       duration: 5000,
+      grouping: true,
     });
 
     return error;
   }
 }
 
-/**
- * Drop the local session and send the user to the login page (loop-guarded).
- */
+/** Drop the local session and go to login (loop-guarded). */
 export function forceRelogin() {
   store.dispatch("user/logout").catch((err) => console.error("Logout error:", err));
   const currentPath = router.currentRoute.value.path;
@@ -67,26 +56,15 @@ export function forceRelogin() {
 
 const INSTANCE_KEY = "__APP_MESH_CLIENT__";
 
-/**
- * Get the AppMesh client instance with the current Dex bearer attached.
- * The token lives in the OIDC layer (sessionStorage-backed); attaching it here
- * on every call means a refresh is picked up without rebuilding the client.
- * @param {Object} [data] - Optional configuration data
- * @param {Object} [data.headers] - Optional headers
- * @returns {VueAppMeshClient}
- */
-export function getClient(data = null) {
+/** Client with the current Dex bearer re-attached per call (refresh picked up without rebuild). */
+export function getClient() {
   if (!window[INSTANCE_KEY]) {
     window[INSTANCE_KEY] = new VueAppMeshClient();
   }
 
   const client = window[INSTANCE_KEY];
-  const forwardingHost = store.getters?.forwarding;
-  const headers = data?.headers || {};
-
-  if (forwardingHost && !("X-Target-Host" in headers)) {
-    client.forwardingHost = forwardingHost;
-  }
+  // Always resync from the store: a cleared setting must clear the client (login clears forwarding).
+  client.forwardingHost = store.getters?.forwarding || null;
 
   const token = getAccessToken();
   if (token) {
@@ -98,20 +76,12 @@ export function getClient(data = null) {
   return client;
 }
 
-/**
- * Clear the client instance
- */
+/** Clear the client instance. */
 export function clearClient() {
   window[INSTANCE_KEY] = null;
 }
 
-/**
- * Token for task payloads (e.g. the Workflow engine authenticates the caller
- * from a `token` field INSIDE the run_task payload). The daemon no longer
- * mints/renews tokens (no /appmesh/token/renew): the payload token is the same
- * Dex access token the SDK sends as bearer.
- * @returns {Promise<string|null>}
- */
+/** Task-payload token: the engine authenticates from `token` INSIDE the payload; same Dex bearer token. */
 export function getWorkflowToken() {
   return ensureFreshToken();
 }

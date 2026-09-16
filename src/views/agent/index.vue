@@ -54,7 +54,7 @@
       </el-table>
     </el-row>
 
-    <!-- Register dialog (admin). Credentials are sent to sec_env (encrypted); never logged. -->
+    <!-- Register dialog (admin); credentials go to sec_env (encrypted) -->
     <el-dialog v-model="registerVisible" title="Register Agent App" width="600px" align-center>
       <el-form ref="regForm" :model="form" :rules="rules" label-width="140px">
         <el-form-item label="Provider" prop="provider">
@@ -92,7 +92,7 @@
           </el-form-item>
         </template>
 
-        <!-- Custom gateway: non-Claude models reached via an Anthropic-compatible endpoint -->
+        <!-- Custom gateway (Anthropic-compatible endpoint) -->
         <template v-else-if="form.provider === 'gateway'">
           <el-form-item label="Preset">
             <el-select v-model="form.gatewayPreset" style="width: 100%" @change="applyPreset(true)">
@@ -154,7 +154,7 @@
           </el-form-item>
         </template>
 
-        <!-- Advanced: non-secret extra env (escape hatch for knobs not covered above) -->
+        <!-- Advanced: non-secret extra env -->
         <el-form-item label="Advanced env">
           <div style="width: 100%">
             <div style="color: #909399; font-size: 12px; line-height: 1.5; margin-bottom: 6px">
@@ -211,8 +211,7 @@ export default {
       outputName: "",
       output: "",
       form: this.emptyForm(),
-      // Tracks whether the user has typed in a field, so preset/provider selection only
-      // fills defaults the user hasn't supplied (never clobbers manual input).
+      // tracks which fields the user typed so presets never clobber manual input
       userEdited: { model: false, baseUrl: false },
     };
   },
@@ -220,8 +219,7 @@ export default {
     isSelected() { return !!this.currentRow; },
     isEnabled() { return this.currentRow && this.currentRow.status === 1; },
     gatewayPresets() { return agentService.gatewayPresets(); },
-    // Required fields depend on the selected provider (e.g. Anthropic needs an API key;
-    // a gateway needs base URL + auth token; Bedrock/Vertex can rely on roles/ADC).
+    // required fields vary by provider (Bedrock/Vertex can rely on roles/ADC)
     rules() {
       const req = (msg) => [{ required: true, message: msg, trigger: "blur" }];
       const r = {
@@ -267,15 +265,12 @@ export default {
         extraEnv: [],                                         // non-secret extra env
       };
     },
-    // Preset dropdown changed by the user (explicit=true): authoritative — reset the edit
-    // flags so the preset re-fills Base URL / Model even if a prior selection filled them.
+    // explicit preset change: reset edit flags so the preset re-fills Base URL/Model
     applyPreset(explicit) {
       if (explicit === true) { this.userEdited.model = false; this.userEdited.baseUrl = false; }
       agentService.applyGatewayPreset(this.form, this.form.gatewayPreset, this.userEdited);
     },
-    // Provider picked: for gateway, re-apply the selected preset so Model/Base URL stay
-    // consistent with it; for the others, drop any preset alias env left over from gateway
-    // and suggest the provider's default model (only if the user hasn't typed one).
+    // gateway: re-apply the preset; others: drop preset env, suggest the default model (if untouched)
     onProviderChange() {
       if (this.form.provider === "gateway") { this.applyPreset(); return; }
       this.form.extraEnv = agentService.stripPresetEnv(this.form.extraEnv);
@@ -317,8 +312,7 @@ export default {
   margin-bottom: 8px;
 }
 
-/* Flex-fill: page flexes to fill app-main, the table row fills what's left below
-   the title/toolbar — no pixel heights, so no bottom gap. */
+/* Flex-fill: page fills app-main; the table row fills the rest — no pixel heights. */
 .app-container {
   display: flex;
   flex-direction: column;

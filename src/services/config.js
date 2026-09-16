@@ -17,9 +17,7 @@ export default {
       .then(res => {
         this.setConfig(vueComp, res);
       })
-      .catch(err => {
-        ElMessage.error(`Get configuration failed: ${err.message}`);
-      })
+      .catch(() => { }) // onError already showed the toast
       .finally(() => {
         vueComp.loading = false;
       });
@@ -35,9 +33,7 @@ export default {
           vueComp.form = res;
           ElMessage.success('Configuration updated successfully.');
         })
-        .catch(err => {
-          ElMessage.error(`Update failed: ${err.message}`);
-        })
+        .catch(() => { }) // onError already showed the toast
         .finally(() => {
           vueComp.loading = false;
         });
@@ -50,9 +46,7 @@ export default {
       .then(res => {
         vueComp.content = res;
       })
-      .catch(err => {
-        ElMessage.error(`Get metrics failed: ${err.message}`);
-      })
+      .catch(() => { }) // onError already showed the toast
       .finally(() => {
         vueComp.loading = false;
       });

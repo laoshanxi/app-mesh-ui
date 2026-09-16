@@ -50,13 +50,8 @@
       </el-table>
     </el-row>
 
-    <!--
-      Principal overlay editor. Identities live in the authentication service
-      (Dex); the engine only stores an authorization overlay per principal:
-      status / execution_user / roles. "New" registers an overlay for a not yet
-      seen (issuer, subject) pair — the backend requires the principal_id to be
-      the stable id derived from issuer + subject, which we compute the same way.
-    -->
+    <!-- Principal overlay editor: identities live in Dex; the engine stores only the overlay
+         (status/execution_user/roles). principal_id = stable id derived from issuer + subject. -->
     <el-drawer v-model="formVisible" custom-class="right-drawer" size="50%">
       <template #header>
         <span>{{ formMode === 'new' ? 'Add principal overlay' : 'Update principal overlay' }}</span>
@@ -148,8 +143,7 @@ export default {
     },
   },
   watch: {
-    // The backend derives the principal id from issuer + subject; show it live
-    // so the operator sees the exact overlay that will be created.
+    // the backend derives the principal id from issuer + subject; show it live
     "principalForm.issuer": "updatePrincipalId",
     "principalForm.subject": "updatePrincipalId",
   },
@@ -201,7 +195,6 @@ export default {
               }
             }
             this.listLoading = false;
-            // restore previous selection
             if (selectedId && this.$refs.principalTable) {
               const row = this.list.find((r) => r.principal_id === selectedId);
               if (row) {
@@ -273,8 +266,7 @@ export default {
           };
           if (this.formMode === "new") {
             principalId = await computePrincipalId(form.issuer.trim(), form.subject.trim());
-            // Creation requires the full identity in the body; the id must be
-            // the stable id derived from issuer + subject.
+            // creation requires the full identity in the body; id = stable id from issuer+subject
             await getClient().update_principal(principalId, {
               kind: form.kind,
               issuer: form.issuer.trim(),
@@ -341,9 +333,7 @@ export default {
   margin-bottom: 8px;
 }
 
-/* Flex-fill: app-main is a flex column, so this page flexes to fill the
-   content area; the table row then flexes to fill what's left below the
-   title/toolbar. No pixel heights -> can't overflow or leave a bottom gap. */
+/* Flex-fill: page fills app-main; the table row fills the rest. No pixel heights. */
 .app-container {
   display: flex;
   flex-direction: column;

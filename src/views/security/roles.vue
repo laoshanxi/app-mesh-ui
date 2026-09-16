@@ -95,7 +95,6 @@ export default {
             }
           }
           this.listLoading = false;
-          // restore previous selection
           if (selectedName && this.$refs.roleTable) {
             const row = this.list.find(r => r.name === selectedName);
             if (row) {
@@ -122,7 +121,6 @@ export default {
           return;
         }
         case "permissions": {
-          // this.$alert("Nothing here", "Permissions");
           this.selectedForm = {
             name: this.currentRow.name,
             permissions: this.currentRow.permissions,
@@ -180,9 +178,7 @@ export default {
   margin-bottom: 8px;
 }
 
-/* Flex-fill: app-main is a flex column, so this page flexes to fill the
-   content area; the table row then flexes to fill what's left below the
-   title/toolbar. No pixel heights -> can't overflow or leave a bottom gap. */
+/* Flex-fill: page fills app-main; the table row fills the rest. No pixel heights. */
 .app-container {
   display: flex;
   flex-direction: column;

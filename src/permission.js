@@ -6,14 +6,9 @@ import "nprogress/nprogress.css";
 import getPageTitle from "@/utils/get-page-title";
 import { completeAuthorizationLogin } from "@/utils/oidc";
 
-// Configure NProgress
 NProgress.configure({ showSpinner: false });
 
-// Has the restored (cached) session been validated against the server this page-load?
-// The user identity is cached in sessionStorage, so the guard would otherwise trust it
-// blindly — even if the auth cookie is stale (daemon restarted / expired). We validate
-// once via get_current_principal so a dead session is sent to login instead of showing a
-// logged-in-looking UI whose API calls all fail.
+// Validate the cached session once per page-load (the sessionStorage identity is otherwise trusted blindly).
 let sessionValidated = false;
 
 const hasRequiredPermission = (userPermissions, requiredRoles) => {
@@ -51,14 +46,9 @@ const handleRouterError = (error, type = "error") => {
   finishLoading(true);
 };
 
-// Navigation guard - runs before each route change
 router.beforeEach(async (to, from, next) => {
-  // The Dex authorization redirect ends here on /oauth/callback?code=...&state=...
-  // The browser lands on this UI origin directly, or a browser-entry relay page
-  // returns it here with the state echoed verbatim. The hash router never
-  // routes that path, so the code exchange happens here, once, before any
-  // navigation decision. A popup callback only relays the code to the opener
-  // window and closes itself — nothing to navigate.
+  // The Dex redirect lands on /oauth/callback?code&state (directly or via an entry relay);
+  // the hash router never routes it, so exchange the code here before any navigation.
   if (window.location.search.includes("code=")) {
     let result;
     try {
@@ -72,16 +62,13 @@ router.beforeEach(async (to, from, next) => {
     if (result === "relayed") return;
   }
 
-  // Start loading indicators
   NProgress.start();
   store.dispatch("app/setLoading", true);
 
-  // Set page title based on route metadata
   document.title = getPageTitle(to.meta?.title);
 
   const userInfo = store.getters.user;
 
-  // Redirect logged-in users away from login page
   if (to.path === "/login") {
     if (userInfo?.name) {
       next({ path: "/" });
@@ -91,24 +78,20 @@ router.beforeEach(async (to, from, next) => {
     return;
   }
 
-  // Handle authentication check
   if (!userInfo?.name) {
     try {
-      // No cached identity: verify the session cookie with the server (or go to login).
+      // No cached identity: verify with the server (or go to login).
       await store.dispatch("user/getInfo");
       sessionValidated = true;
-      // Continue to requested page after successful authentication
       next({ ...to, replace: true });
     } catch (error) {
-      // Authentication failed, redirect to login
       await store.dispatch("user/logout");
       next(`/login?redirect=${encodeURIComponent(to.fullPath)}`);
     }
     return;
   }
 
-  // Cached identity restored from sessionStorage but not yet validated this page-load:
-  // confirm the session is actually alive, else force re-login.
+  // Cached identity not yet validated this page-load: confirm it is alive, else re-login.
   if (!sessionValidated) {
     try {
       await store.dispatch("user/getInfo");
@@ -120,26 +103,22 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  // Check route permission requirements
   if (
     to.meta?.roles &&
     !hasRequiredPermission(userInfo.permissions, to.meta.roles)
   ) {
     ElMessage.error("You do not have permission to access this page");
-    next({ path: "/401", replace: true }); // Redirect without adding to history
+    next({ path: "/401", replace: true });
     return;
   }
 
-  // Proceed with navigation
   next();
 });
 
-// After each successful navigation
 router.afterEach(() => {
   finishLoading(true);
 });
 
-// Global error handler for router
 router.onError((error) => {
   handleRouterError(error);
   finishLoading(true);

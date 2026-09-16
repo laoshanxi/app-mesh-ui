@@ -89,11 +89,12 @@ export default {
         ElMessage.warning("Please select a file");
         return;
       }
-      const file = this.$refs.upload.uploadFiles[0];
       const parts = [this.form.filepath, this.form.filename].filter(Boolean);
       const path = parts.join('/').replace(/\/+/g, '/');
 
-      getClient().upload_file(file.raw, path)
+      // form.file is the on-change UploadFile; .raw is the native File. The
+      // el-upload ref no longer exposes its internal uploadFiles list (2.14.x).
+      getClient().upload_file(this.form.file.raw, path)
         .then(() => {
           this.$refs.upload.clearFiles();
           this.form.disabled = true;
@@ -116,9 +117,7 @@ export default {
   text-align: center;
 }
 
-/* Pixel-free fill: cascade flex from the flex-column app-main so the tab
-   card fits its (short) content instead of the global forced 100vh-174px
-   height that left a large empty area below the upload/download forms. */
+/* Pixel-free fill: cascade flex from app-main so the card fits its content. */
 .app-container {
   display: flex;
   flex-direction: column;

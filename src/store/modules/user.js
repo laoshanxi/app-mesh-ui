@@ -1,6 +1,6 @@
 import { setUser, getUser, removeUser } from '@/utils/auth'
 import { getClient, clearClient } from '@/utils/appmeshClient'
-import { passwordLogin, hasSession, clearSession } from '@/utils/oidc'
+import { passwordLogin, hasSession, clearSession, ensureFreshToken } from '@/utils/oidc'
 import { resetRouter } from '@/router'
 
 const user = getUser();
@@ -28,8 +28,7 @@ const mutations = {
 }
 
 const actions = {
-  // user login: direct password grant against Dex (builtin auth mode).
-  // PKCE logins complete in the router guard (utils/oidc.js), not here.
+  // password grant against Dex (builtin mode); PKCE logins complete in the router guard (oidc.js).
   login({ commit }, userInfo) {
     const { UserName, Password } = userInfo
     return passwordLogin(UserName, Password).then(() => {
@@ -56,11 +55,13 @@ const actions = {
   },
 
   // Validate the stored Dex token and (re)load identity + permissions.
-  getInfo({ commit }) {
+  // Refresh an expired/near-expiry token first so a restored session
+  // survives startup instead of bouncing to the login page on a 401.
+  async getInfo({ commit }) {
     if (!hasSession()) {
-      // No token to validate: skip the API round-trip (it would only 401).
       return Promise.reject(new Error('No active session'))
     }
+    await ensureFreshToken()
     return getClient().get_current_principal().then((principal) => {
       if (!principal) {
         return Promise.reject(new Error('Verification failed, please Login again.'))
@@ -80,8 +81,7 @@ const actions = {
     })
   },
 
-  // Drop the local session. The Dex bearer simply becomes unused; the SDK has
-  // no server-side logout and RP-initiated logout is left to the IdP portal.
+  // Drop the local session; no server-side logout — RP-initiated logout is the IdP portal's job.
   logout({ commit }) {
     return new Promise((resolve) => {
       clearSession()

@@ -1,12 +1,5 @@
-// import parseTime, formatTime and set to filter
 export { parseTime, formatTime, formatEmpty, parseDateFromUtcSeconds, formatDate, formatDayTime, formatMemory, formatCpu } from '@/utils'
 
-/**
- * Show plural label if time is plural number
- * @param {number} time
- * @param {string} label
- * @return {string}
- */
 function pluralize(time, label) {
   if (time === 1) {
     return time + label
@@ -14,9 +7,6 @@ function pluralize(time, label) {
   return time + label + 's'
 }
 
-/**
- * @param {number} time
- */
 export function timeAgo(time) {
   const between = Date.now() / 1000 - Number(time)
   if (between < 3600) {
@@ -28,12 +18,7 @@ export function timeAgo(time) {
   }
 }
 
-/**
- * Number formatting
- * like 10000 => 10k
- * @param {number} num
- * @param {number} digits
- */
+// 10000 => 10k
 export function numberFormatter(num, digits) {
   const si = [
     { value: 1E18, symbol: 'E' },
@@ -51,18 +36,11 @@ export function numberFormatter(num, digits) {
   return num.toString()
 }
 
-/**
- * 10000 => "10,000"
- * @param {number} num
- */
+// 10000 => "10,000"
 export function toThousandFilter(num) {
   return (+num || 0).toString().replace(/^-?\d+/g, m => m.replace(/(?=(?!\b)(\d{3})+$)/g, ','))
 }
 
-/**
- * Upper case first char
- * @param {String} string
- */
 export function uppercaseFirst(string) {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }

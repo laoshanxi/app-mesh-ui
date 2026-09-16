@@ -171,8 +171,7 @@ export default {
 </script>
 
 <style scoped>
-/* Flex-fill: app-main is a flex column, so the page flexes to fill the content
-   area; no pixel heights -> can't overflow or leave a bottom gap. */
+/* Flex-fill: the page fills the content area; no pixel heights -> no bottom gap. */
 .agent-chat {
   display: flex;
   flex-direction: column;

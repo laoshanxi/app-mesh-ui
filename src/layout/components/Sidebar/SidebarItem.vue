@@ -35,7 +35,6 @@ export default {
   components: { Item, AppLink, 'el-submenu': ElSubMenu, 'el-menu-item': ElMenuItem },
   mixins: [FixiOSBug],
   props: {
-    // route object
     item: {
       type: Object,
       required: true
@@ -62,18 +61,18 @@ export default {
         if (item.hidden) {
           return false
         } else {
-          // Temp set(will be used if only has one showing child)
+          // remember for the single-child case
           this.onlyOneChild = item
           return true
         }
       })
 
-      // When there is only one child router, the child router is displayed by default
+      // single child: show it directly
       if (showingChildren.length === 1) {
         return true
       }
 
-      // Show parent if there are no child router to display
+      // no children: show the parent itself
       if (showingChildren.length === 0) {
         this.onlyOneChild = { ...parent, path: '', noShowingChildren: true }
         return true

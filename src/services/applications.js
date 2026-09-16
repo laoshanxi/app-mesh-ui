@@ -17,7 +17,6 @@ export default {
       })
       vueComp.list = data;
       vueComp.listLoading = false;
-      // restore previous selection
       if (selectedName && vueComp.$refs.appTable) {
         const row = data.find(r => r.name === selectedName);
         if (row) {
@@ -129,7 +128,7 @@ export default {
       return hasValue;
     }
     function formatData(data) {
-      if (data.cache_lines) data.cache_lines = parseInt(data.cache_lines);
+      if (data.stdout_cache_num) data.stdout_cache_num = parseInt(data.stdout_cache_num);
       if (data.permission) data.permission = parseInt(data.permission);
       if (data.pid) data.pid = parseInt(data.pid);
       if (data.resource_limit) {

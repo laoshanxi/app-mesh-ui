@@ -54,7 +54,7 @@
         </el-table-column>
         <el-table-column label="Owner" min-width="90">
           <template #default="scope">
-            {{ formatEmpty(scope.row.owner) }}
+            {{ formatEmpty(scope.row.owner_display_name || scope.row.owner_principal_id) }}
           </template>
         </el-table-column>
         <el-table-column class-name="status-col" label="State" min-width="110">
@@ -303,9 +303,7 @@ export default {
   margin-bottom: 8px;
 }
 
-/* Flex-fill: app-main is a flex column, so this page flexes to fill the
-   content area; the table row then flexes to fill what's left below the
-   title/toolbar. No pixel heights -> can't overflow or leave a bottom gap. */
+/* Flex-fill: page fills app-main; the table row fills the rest. No pixel heights. */
 .app-container {
   display: flex;
   flex-direction: column;
@@ -323,7 +321,7 @@ export default {
   height: 100% !important;
 }
 
-/* keep cell links (Name, Last Start Time) on one line so show-overflow-tooltip can ellipsis them */
+/* keep cell links on one line so show-overflow-tooltip can ellipsis them */
 :deep(.el-table .cell .el-link) {
   white-space: nowrap;
 }
@@ -343,8 +341,7 @@ export default {
   margin-right: 10px;
 }
 
-/* The register/edit form manages its own flex layout (scroll area + footer),
-   so let it fill the drawer body edge-to-edge — no body padding, single scroll. */
+/* the register/edit form manages its own flex layout — no body padding, single scroll */
 :deep(.right-drawer .el-drawer__body) {
   padding: 0;
   overflow: hidden;

@@ -43,11 +43,6 @@
                 <i class="iconfont icon-lock"></i>Security
               </el-dropdown-item>
             </router-link>
-            <a target="_blank" href="/ui/dc1/kv">
-              <el-dropdown-item>
-                Consul
-              </el-dropdown-item>
-            </a>
             <el-dropdown-item divided>
               <span style="display:block;" @click="logout">
                 <i class="iconfont icon-log-out"></i>Log Out
@@ -107,9 +102,6 @@ export default {
     });
   },
   methods: {
-    /**
-     * Refresh current page
-     */
     refresh() {
       this.$router.replace({
         path: '/refresh',
@@ -117,19 +109,12 @@ export default {
       });
     },
 
-    /**
-     * Enable request forwarding to specified target
-     * @returns {Promise<void>}
-     */
     async enableForward() {
       this.forward = this.forward.trim();
       if (!this.forward) {
         throw new Error('Forward target cannot be empty');
       }
-      // Without an explicit port the HTTP SDK would append its base port (6060),
-      // but the Engine gateway cannot forward to a 6060 HTTPS listener (it would
-      // pick TCP-msgpack for that port). The TCP API port 6059 is the port every
-      // gateway (Engine and Go Agent) can forward to.
+      // No port -> the SDK appends base port 6060 (TCP-msgpack, unforwardable); 6059 is the TCP API port.
       if (!this.forward.includes(":")) {
         this.forward = `${this.forward}:6059`;
       }
@@ -151,8 +136,7 @@ export default {
         this.fullscreenLoading = true;
 
         client.forwardingHost = this.forward;
-        // Probe: the bearer is forwarded unchanged; the target node re-validates
-        // it against the same issuer. Throws on failure.
+        // Probe: the bearer is forwarded unchanged; the target re-validates it against the same issuer.
         await client.get_current_principal();
         await this.$store.dispatch("settings/changeSetting", {
           key: "forwarding",
@@ -178,10 +162,6 @@ export default {
       }
     },
 
-    /**
-     * Disable request forwarding
-     * @returns {Promise<void>}
-     */
     async disableForward() {
       try {
         await ElMessageBox.confirm(
@@ -217,11 +197,6 @@ export default {
       }
     },
 
-    /**
-     * Query suggestion list
-     * @param {string} queryString - Query string
-     * @param {Function} callback - Callback function
-     */
     querySearch(queryString, callback) {
       const results = queryString
         ? this.restaurants.filter(item => this.createFilter(queryString)(item))
@@ -229,11 +204,6 @@ export default {
       callback(results);
     },
 
-    /**
-     * Create filter function
-     * @param {string} queryString - Query string
-     * @returns {Function} Filter function
-     */
     createFilter(queryString) {
       return (restaurant) => {
         return restaurant?.value?.toLowerCase().indexOf(queryString.toLowerCase()) === 0;
@@ -263,7 +233,7 @@ export default {
         this.forwardEnabled = !this.forwardEnabled
 
         if (error === 'cancel' || error.toString().includes('cancel')) {
-          // do nothing for cancled
+          // user cancelled — ignore
         } else {
           ElMessage.error(`Failed to forward request: ${error.message || error}`);
         }

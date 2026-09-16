@@ -1,6 +1,6 @@
 <template>
   <div class="run-detail">
-    <!-- ===================== RUNS HISTORY (standalone mode only) ===================== -->
+    <!-- runs history (standalone mode only) -->
     <template v-if="!runId">
       <div class="page-title">Runs &mdash; {{ workflow }}</div>
       <el-row>
@@ -57,7 +57,7 @@
       </el-row>
     </template>
 
-    <!-- ===================== SINGLE-RUN DETAIL ===================== -->
+    <!-- single-run detail -->
     <div v-if="effectiveRunId" v-loading="detailLoading" class="run-detail">
       <div class="run-head">
         <span class="rid">{{ effectiveRunId }}</span>
@@ -72,7 +72,7 @@
         </el-button>
       </div>
 
-      <!-- jobs / pruned-run info (scrolls if long) -->
+      <!-- jobs / pruned-run info (scrolls) -->
       <div class="section-title"><span>Jobs</span></div>
       <div class="run-jobs">
         <template v-if="!hasJobs">
@@ -127,7 +127,7 @@
         </template>
       </div>
 
-      <!-- flow log (fills remaining height to the bottom) -->
+      <!-- flow log (fills remaining height) -->
       <div class="run-log">
         <div class="section-title"><span>Flow Log</span></div>
         <textarea ref="flowBox" v-model="flowLog" readonly class="log-box" placeholder="No flow log."></textarea>
@@ -158,11 +158,8 @@ import { Refresh, Back, Close, VideoPlay } from "@element-plus/icons-vue";
 export default {
   name: "WorkflowRunDetail",
   props: {
-    // workflow name whose runs we list/detail
     workflow: { type: String, required: true },
-    // when provided, render ONLY the single-run detail for this run_id
-    // (the host page owns the runs table). When omitted, this component
-    // renders its own runs table and lets the user drill in.
+    // when provided, render only the single-run detail (host owns the runs table)
     runId: { type: String, default: "" }
   },
   emits: ["changed", "rerun"],
@@ -176,7 +173,7 @@ export default {
       runs: [],
       runsLoading: false,
 
-      // standalone-mode selection (when no runId prop is supplied)
+      // standalone-mode selection (no runId prop)
       internalRunId: "",
       internalRunRow: null,
 
@@ -193,20 +190,17 @@ export default {
       stepLogStep: "",
       stepLogTimer: null,
 
-      // live monitoring: re-fetch detail + flow log while the run is active
+      // live monitoring: re-fetch while the run is active
       pollTimer: null,
 
-      // jobName -> { stepName -> target app } parsed from the workflow YAML, so a DAG
-      // step that drives the LLM agent (message.app = llm-agent, Scenario A) is linkable.
+      // jobName -> { stepName -> app } from the workflow YAML, to flag llm-agent steps
       stepApps: {}
     };
   },
   computed: {
-    // the run we are showing detail for: prop wins, else internal selection
     effectiveRunId() {
       return this.runId || this.internalRunId;
     },
-    // run-level status: prefer the live detail, fall back to the index row
     runStatus() {
       return (this.detail && this.detail.status) || (this.internalRunRow && this.internalRunRow.status) || "";
     },
@@ -214,9 +208,7 @@ export default {
     hasJobs() {
       return !!(this.detail && this.detail.jobs && typeof this.detail.jobs === "object");
     },
-    // Render jobs/steps from the run_detail maps sorted by name, with no fabricated
-    // `needs` edges (the run record carries no DAG topology). The workflow YAML is parsed
-    // separately in loadStepApps() only to flag llm-agent steps.
+    // jobs/steps sorted by name; no fabricated `needs` edges (the record has no DAG topology)
     orderedJobs() {
       if (!this.hasJobs) return [];
       return Object.keys(this.detail.jobs)
@@ -238,7 +230,6 @@ export default {
     }
   },
   watch: {
-    // host page may swap which run is shown
     runId: {
       immediate: true,
       handler(id) {
@@ -248,7 +239,6 @@ export default {
     }
   },
   created() {
-    // only fetch the runs list when operating standalone
     if (!this.runId) this.fetchRuns();
     this.loadStepApps();
   },
@@ -260,7 +250,6 @@ export default {
     formatEmpty,
     formatToLocalIso,
 
-    // success=success, failure/cancelled=danger, running=warning, pending/skipped=info
     statusTagType(status) {
       switch ((status || "").toLowerCase()) {
         case "success":
@@ -282,8 +271,7 @@ export default {
       return `${Math.round(d)}s`;
     },
 
-    // Parse the workflow YAML to map each step to the App its `message` step calls,
-    // so we can flag steps that drive the LLM agent. Best-effort: failures degrade silently.
+    // Map steps to the App their `message` calls, to flag LLM-agent steps; best-effort.
     loadStepApps() {
       workflow.getWorkflow(this, this.workflow).then(text => {
         const map = {};
@@ -309,7 +297,7 @@ export default {
       }).catch(() => { /* no read permission / not found -> no badges */ });
     },
 
-    // Return the target App name if this step drives a Scenario-A llm-agent, else null.
+    // target App name if this step drives a Scenario-A llm-agent, else null
     agentAppFor(jobName, stepName) {
       const app = this.stepApps[jobName] && this.stepApps[jobName][stepName];
       if (!app || app.includes("-sess-")) return null;
@@ -346,8 +334,7 @@ export default {
       this.flowLog = "";
     },
 
-    // silent=true is used by the live monitor: refresh in place without
-    // clearing the view or flashing the loading spinner.
+    // silent=true (live monitor): refresh in place without clearing the view/spinner
     fetchDetail(silent = false) {
       const runId = this.effectiveRunId;
       if (!runId) return;
@@ -360,7 +347,7 @@ export default {
         .getRunDetail(this, this.workflow, runId)
         .then(detail => {
           this.detail = detail || {};
-          // flow log is only meaningful (and present) for non-pruned runs
+          // flow log is only present for non-pruned runs
           if (this.hasJobs) {
             this.fetchLog();
           }
@@ -372,9 +359,7 @@ export default {
         });
     },
 
-    // Live "follow" (CLI `-f`): keep refreshing while the run is active,
-    // stop once it reaches a terminal status. Single re-armed timeout so
-    // requests never overlap.
+    // Live follow: refresh while active, stop at terminal status; single re-armed timeout.
     scheduleMonitor() {
       this.stopMonitor();
       const st = (this.runStatus || "").toLowerCase();
@@ -399,14 +384,14 @@ export default {
         .getLog(this, this.workflow, runId)
         .then(log => {
           this.flowLog = log || "";
-          // tail behaviour: keep the latest lines in view as the log streams
+          // tail: keep the latest lines in view
           this.$nextTick(() => {
             const el = this.$refs.flowBox;
             if (el) el.scrollTop = el.scrollHeight;
           });
         })
         .catch(() => {
-          // "log not found" etc. already toasted; leave area empty
+          // "log not found" already toasted
           this.flowLog = "";
         });
     },
@@ -422,7 +407,7 @@ export default {
       this.fetchStepLog(false);
     },
 
-    // silent=true: live re-poll without flashing the spinner or blanking on transient error
+    // silent=true: live re-poll without spinner/transient blanking
     fetchStepLog(silent = false) {
       const runId = this.effectiveRunId;
       if (!runId || !this.stepLogJob) return;
@@ -444,7 +429,7 @@ export default {
         });
     },
 
-    // Live "follow" of a step's stdout while the drawer is open and the run is active.
+    // Live follow of step stdout while the drawer is open and the run is active.
     scheduleStepLog() {
       this.stopStepLog();
       const st = (this.runStatus || "").toLowerCase();
@@ -475,7 +460,7 @@ export default {
           this.$emit("changed");
         })
         .catch(() => {
-          // user dismissed or engine error already toasted
+          // user dismissed or already toasted
         });
     },
 
@@ -489,11 +474,9 @@ export default {
       )
         .then(() => workflow.rerun(this, this.workflow, runId))
         .then(res => {
-          // a new run_id was created; in standalone mode, switch the detail
-          // view to that new run so the user lands on the rerun directly.
           const newRunId = res && res.data && res.data.run_id;
           if (!this.runId) {
-            // standalone mode: switch our own detail view to the new run
+            // standalone: switch our own detail view to the new run
             this.fetchRuns();
             if (newRunId) {
               this.stopMonitor();
@@ -504,8 +487,7 @@ export default {
               this.backToRuns();
             }
           } else if (newRunId) {
-            // prop-driven mode (e.g. Monitor drawer): the host owns the run_id,
-            // so ask it to switch to the freshly created run.
+            // prop-driven mode: the host owns the run_id, ask it to switch
             this.$emit("rerun", newRunId);
           }
           this.$emit("changed");

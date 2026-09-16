@@ -17,7 +17,7 @@
     "@antv/data-set": "^0.11.8",
     "@antv/g2": "^4.2.12",
     "@element-plus/icons-vue": "^2.3.1",
-    "appmesh": "^3.1.0",
+    "appmesh": "^3.1.1",
     "axios": "^1.16.1",
     "element-plus": "^2.14.0",
     "js-base64": "^3.7.8",
@@ -44,7 +44,7 @@
     "sass": "^1.99.0",
     "svgo": "^3.3.3",
     "vite": "^6.4.2",
-    "vite-plugin-svg-icons": "^2.0.1"
+    "vite-plugin-svg-icons-ng": "^1.9.3"
   },
   "engines": {
     "node": ">=18.20.0",

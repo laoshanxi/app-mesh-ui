@@ -25,15 +25,6 @@ server {
     # access_log  /var/log/nginx/host.access.log        main;
     # error_log  /var/log/nginx/error.log               error;
 
-    # Consul 8500 proxy
-    location /ui/ {
-        proxy_pass http://127.0.0.1:8500;
-    }
-
-    location /v1/ {
-        proxy_pass http://127.0.0.1:8500;
-    }
-
     # Dex login-page logo: frontend.logoURL is issuer-path relative, so the
     # browser resolves it to <origin>/auth/logo.svg whatever host or port it
     # used. Dex has no such route; hand the request to the appmesh backend
@@ -88,7 +79,7 @@ server {
         add_header 'Access-Control-Allow-Origin' $cors_origin always;
         add_header 'Access-Control-Allow-Methods' 'GET,POST,PUT,DELETE,OPTIONS,HEAD' always;
         # Allow-Headers: all X-* request headers used by SDK/client
-        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,X-Permission,X-Expire-Seconds,X-Audience,X-Totp-Code,X-Set-Cookie,X-Target-Host,X-File-Path,X-File-Mode,X-File-User,X-File-Group,X-Send-File-Socket,X-Recv-File-Socket,X-Consul-Token,X-Request-HMAC' always;
+        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,X-Permission,X-Expire-Seconds,X-Audience,X-Totp-Code,X-Set-Cookie,X-Target-Host,X-File-Path,X-File-Mode,X-File-User,X-File-Group,X-Send-File-Socket,X-Recv-File-Socket,X-Request-HMAC' always;
         # Expose-Headers: all X-* response headers returned by server
         add_header 'Access-Control-Expose-Headers' 'Content-Type,Content-Disposition,X-Exit-Code,X-Output-Position,X-File-Mode,X-File-User,X-File-Group,X-Subscription-Id,X-Event-Type,X-App-Name' always;
         add_header 'Access-Control-Max-Age' '86400' always;

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
+// maintained fork of vite-plugin-svg-icons (same API); the original pulls a vulnerable svg-baker chain
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons-ng'
 import path from 'path'
 
 export default defineConfig({
@@ -26,18 +27,15 @@ export default defineConfig({
   },
   server: {
     port: 9528,
+    strictPort: true, // fail loudly if taken — never silently drift to another port
     open: true,
     proxy: {
-      // No changeOrigin: the browser's Host header must reach the Go agent
-      // unchanged. The agent derives X-Forwarded-Host from it, and the daemon's
-      // CSRF check compares that against Origin — with a rewritten Host every
-      // browser POST is rejected with "CSRF validation failed: origin not allowed".
+      // No changeOrigin: the agent derives X-Forwarded-Host from the browser Host; a rewritten Host fails the daemon's CSRF origin check on every POST.
       '/appmesh': {
         target: 'https://localhost:6060',
         secure: false
       },
-      // Dex issuer path — same-origin doorway to the authentication service
-      // itself (Dex sends no CORS headers, so the browser cannot call it directly).
+      // Dex issuer path: same-origin proxy (Dex sends no CORS headers).
       '/auth': {
         target: 'http://127.0.0.1:6062',
         changeOrigin: true

@@ -7,9 +7,7 @@ export default {
       .then(res => {
         vueComp.labels = Object.entries(res).map(([key, value]) => ({ key, value }));
       })
-      .catch(err => {
-        ElMessage.error(`Get labels failed: ${err.message}`);
-      })
+      .catch(() => { }) // onError already showed the toast
       .finally(() => {
         vueComp.listLoading = false;
       });
@@ -27,9 +25,7 @@ export default {
         ElMessage.success('Label updated successfully');
         vueComp.refresh();
       })
-      .catch(err => {
-        ElMessage.error(`Update label failed: ${err.message}`);
-      })
+      .catch(() => { }) // onError already showed the toast
       .finally(() => {
         vueComp.listLoading = false;
       });
@@ -58,11 +54,7 @@ export default {
         ElMessage.success(`Label "${row.key}" removed successfully`);
         vueComp.refresh();
       })
-      .catch(err => {
-        if (err !== 'cancel') {
-          ElMessage.error(`Delete label failed: ${err}`);
-        }
-      })
+      .catch(() => { }) // cancel, or onError already showed the toast
       .finally(() => {
         vueComp.listLoading = false;
       });

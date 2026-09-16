@@ -26,17 +26,17 @@
           <span class="meter-name">Memory</span>
           <el-progress
             class="meter-bar" :text-inside="true" :stroke-width="22"
-            :percentage="memPercent(record.mem_total_bytes, record.mem_free_bytes)" status="exception"
+            :percentage="memPercent(record.mem_total_bytes, record.mem_available_bytes)" status="exception"
           />
-          <span class="meter-note">free {{ formatMemory(record.mem_free_bytes) }} / total {{ formatMemory(record.mem_total_bytes) }}</span>
+          <span class="meter-note">available {{ formatMemory(record.mem_available_bytes) }} / total {{ formatMemory(record.mem_total_bytes) }}</span>
         </div>
         <div class="meter-row">
           <span class="meter-name">Swap</span>
           <el-progress
             class="meter-bar" :text-inside="true" :stroke-width="22"
-            :percentage="memPercent(record.mem_totalSwap_bytes, record.mem_freeSwap_bytes)" status="exception"
+            :percentage="memPercent(record.mem_swap_total_bytes, record.mem_swap_free_bytes)" status="exception"
           />
-          <span class="meter-note">free {{ formatMemory(record.mem_freeSwap_bytes) }} / total {{ formatMemory(record.mem_totalSwap_bytes) }}</span>
+          <span class="meter-note">free {{ formatMemory(record.mem_swap_free_bytes) }} / total {{ formatMemory(record.mem_swap_total_bytes) }}</span>
         </div>
       </div>
     </section>
@@ -63,7 +63,7 @@
           <template #default="scope">
             <el-progress
               :text-inside="true" :stroke-width="20"
-              :percentage="parseFloat((scope.row.usage * 100).toFixed(2))" status="exception"
+              :percentage="fsPercent(scope.row.usage)" status="exception"
             />
           </template>
         </el-table-column>
@@ -109,9 +109,16 @@ export default {
     formatPercent(data) {
       return data > 0.85;
     },
+    // clamp fs usage (0..1) to a valid ElProgress percentage
+    fsPercent(usage) {
+      const pct = Number(usage) * 100;
+      return Number.isFinite(pct) ? Math.min(100, Math.max(0, parseFloat(pct.toFixed(2)))) : 0;
+    },
+    // daemon field names: mem_total_bytes/mem_available_bytes/mem_swap_* (ResourceCollection.cpp)
     memPercent(total, free) {
-      if (!total || total <= 0) return 0;
-      return parseFloat((((total - free) / total) * 100).toFixed(2));
+      if (!total || total <= 0 || free == null) return 0;
+      const pct = parseFloat((((total - free) / total) * 100).toFixed(2));
+      return Number.isFinite(pct) ? Math.min(100, Math.max(0, pct)) : 0;
     },
   },
 };

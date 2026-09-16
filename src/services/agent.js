@@ -1,47 +1,30 @@
 import { getClient } from '@/utils/appmeshClient'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
-/**
- * LLM Agent service (UI ↔ the llm-agent App).
- *
- * AUTH: the daemon authorizes `run_task` via the logged-in session's RBAC; the agent
- * reads no token from the payload, so none is sent. Worker access is further gated by
- * the worker App's owner-permission.
- *
- * Covers Scenario A (batch chat against the shared `llm-agent` App) and provisioning +
- * driving Scenario B (interactive streaming) worker Apps. The agent's model/provider is
- * chosen via env (Anthropic / Bedrock / Vertex / a gateway) — see providerEnv / GATEWAY_PRESETS.
- */
+// LLM Agent service (UI ↔ llm-agent App). run_task is authorized by the daemon via the
+// session's RBAC (no token in the payload); workers are gated by owner-permission.
 
-// llm-agent Scenario-A App naming convention + metadata tag (see app-mesh llm-agent README).
+// llm-agent Scenario-A App naming convention + metadata tag.
 const AGENT_METADATA_TYPE = 'llm-agent-system'
 const SESSION_WORKER_MARK = '-sess-'
 
-// Names that hold secrets — never written to plain `env` (only sec_env). The regex also
-// catches custom secret-ish names a user might type into Advanced env. AWS_ACCESS_KEY_ID is
-// deliberately NOT secret (it is an identifier, like a username), so it lives in env.
+// Secret names — only ever written to sec_env, never plain `env`; the regex catches custom
+// secret-ish names. AWS_ACCESS_KEY_ID is an identifier, not a secret -> stays in env.
 const SECRET_ENV_NAMES = ['ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN', 'AWS_SECRET_ACCESS_KEY', 'AWS_SESSION_TOKEN']
 function isSecretEnvName(name) {
   return SECRET_ENV_NAMES.includes(name) || /(SECRET|TOKEN|PASSWORD|CREDENTIAL|API_KEY|PRIVATE_KEY)/i.test(name)
 }
 
-// Non-secret provider env carried from a Scenario-A template to its session workers,
-// so an interactive worker talks to the same model/provider as its template. Secrets
-// are NOT here (the daemon strips encrypted sec_env from responses) — they are re-entered.
-// AWS_ACCESS_KEY_ID is here (non-secret id) so static-key Bedrock workers get it; only the
-// secret key is re-entered per worker.
+// Non-secret provider env inherited by session workers; secrets are NOT here (the daemon
+// strips sec_env) and are re-entered per worker. AWS_ACCESS_KEY_ID: static-key Bedrock workers.
 const WORKER_INHERIT_ENV = [
   'LLMAGENT_PROVIDER', 'LLMAGENT_MODEL', 'ANTHROPIC_BASE_URL',
   'CLAUDE_CODE_USE_BEDROCK', 'AWS_REGION', 'AWS_ACCESS_KEY_ID',
   'CLAUDE_CODE_USE_VERTEX', 'CLOUD_ML_REGION', 'ANTHROPIC_VERTEX_PROJECT_ID'
 ]
 
-// Convenience presets for the `gateway` provider — providers that ship a native
-// Anthropic-compatible endpoint, so no separate translating proxy is needed. `aliases`
-// map Claude Code's model slots (used by quick/subagent calls) onto the provider's models
-// so those calls don't fall back to a Claude id the endpoint won't serve. Endpoints/models
-// per the providers' own Claude Code docs (DeepSeek api-docs; Alibaba Model Studio); all
-// fields stay editable after a preset fills them. The credential is always entered by hand.
+// `gateway` presets: providers with a native Anthropic-compatible endpoint. `aliases` map
+// Claude Code model slots to provider models; fields stay editable, credential hand-entered.
 const GATEWAY_PRESETS = [
   { key: 'custom', label: 'Custom', baseUrl: '', model: '', aliases: null },
   {
@@ -98,8 +81,7 @@ const GATEWAY_PRESETS = [
   }
 ]
 
-// Env keys any preset manages — the union of all presets' alias keys. Applying a preset
-// replaces exactly these (so switching presets is clean); user-added Advanced env is kept.
+// Env keys any preset manages; applying a preset replaces exactly these, keeping user-added env.
 const PRESET_MANAGED_KEYS = [...new Set(
   GATEWAY_PRESETS.flatMap(p => (p.aliases ? Object.keys(p.aliases) : []))
 )]
@@ -113,7 +95,7 @@ function parseMaybeJson(raw) {
   }
 }
 
-// metadata may arrive as an object or a JSON string -> normalize to an object.
+// metadata may be an object or a JSON string -> normalize to an object.
 function appMetadata(app) {
   const m = app && app.metadata
   if (!m) return {}
@@ -123,8 +105,7 @@ function appMetadata(app) {
   return typeof m === 'object' ? m : {}
 }
 
-// A Scenario-A agent App: tagged metadata, or named `llm-agent`,
-// excluding per-session worker Apps (`*-sess-*`, Scenario B).
+// A Scenario-A agent App: tagged metadata or `llm-agent` name, excluding `*-sess-*` workers.
 function isAgentApp(app) {
   const name = app && app.name
   if (!name) return false
@@ -141,10 +122,7 @@ function isAgentRelated(app) {
   return name === 'llm-agent' || name.startsWith('llm-agent-')
 }
 
-// The engine returns a 200 body with status:"error" for auth problems (the daemon-level
-// cookie auth already passed). Detect those so we can refresh the payload token and retry.
-// run_task against an agent App. The daemon authorizes the call (RBAC via the logged-in
-// session); llm-agent reads no token from the payload, so none is sent.
+// run_task; the engine returns 200 with status:"error" for auth problems — surfaced as a throw.
 async function call(appName, payload, timeout = 120) {
   const res = parseMaybeJson(await getClient().run_task(appName, payload, timeout))
   if (!res || res.status === 'error') {
@@ -155,21 +133,15 @@ async function call(appName, payload, timeout = 120) {
 
 export default {
   // ---- gateway presets (admin register form) ----
-
-  // Named gateway providers that ship a native Anthropic-compatible endpoint.
   gatewayPresets() { return GATEWAY_PRESETS },
 
-  // Apply a preset to the guided form in place: fill baseUrl/model and replace the
-  // preset-managed Advanced env entries, preserving any user-added ones. Fields the user
-  // has already edited (`edited.baseUrl` / `edited.model`) are left untouched — defaults
-  // only fill what the user hasn't typed. 'custom' just drops the managed entries.
+  // Apply a preset in place: fill un-edited baseUrl/model, replace managed env, keep user-added.
   applyGatewayPreset(form, key, edited = {}) {
     const p = GATEWAY_PRESETS.find(x => x.key === key)
     if (!p) return
     const kept = (form.extraEnv || []).filter(e => !PRESET_MANAGED_KEYS.includes(e.name))
     if (!p.aliases) {
-      // 'custom': no managed aliases. Clear preset-filled (un-edited) baseUrl/model so no
-      // stale value from a previously selected preset lingers; keep anything the user typed.
+      // 'custom': clear un-edited preset-filled baseUrl/model so nothing lingers.
       form.extraEnv = kept
       if (!edited.baseUrl) form.baseUrl = ''
       if (!edited.model) form.model = ''
@@ -181,13 +153,12 @@ export default {
     form.extraEnv = [...added, ...kept]
   },
 
-  // Drop all preset-managed env entries (model-slot aliases, compact window) from extraEnv —
-  // used when leaving the gateway provider so they don't pollute a Claude/Bedrock/Vertex App.
+  // Drop preset-managed env when leaving gateway so it doesn't pollute other providers.
   stripPresetEnv(extraEnv) {
     return (extraEnv || []).filter(e => !PRESET_MANAGED_KEYS.includes(e.name))
   },
 
-  // Default model id suggested when a provider is picked (gateway models come from presets).
+  // Default model id per provider (gateway models come from presets).
   defaultModelFor(provider) {
     return {
       anthropic: 'claude-opus-4-8',
@@ -198,9 +169,7 @@ export default {
 
   // ---- chat (Scenario A) ----
 
-  // List Scenario-A agent Apps for the chat target dropdown. Writes vueComp.agents and
-  // defaults vueComp.selectedAgent. Returns the promise so callers can chain (e.g. to
-  // default a separate `template` field).
+  // Scenario-A Apps for the chat dropdown; writes vueComp.agents/selectedAgent.
   listChatAgents(vueComp) {
     vueComp.agentsLoading = true
     return getClient().list_apps().then(
@@ -217,8 +186,7 @@ export default {
     )
   },
 
-  // session_send -> data: { answer, iterations, turn_tokens }. The session id is
-  // caller-chosen (genSessionId); an unknown id is get-or-created on first use.
+  // session_send -> data:{answer,iterations,turn_tokens}; unknown session ids get-or-created.
   sendMessage(appName, sessionId, input, limits = {}) {
     const payload = { action: 'session_send', session_id: sessionId, input }
     if (limits.max_iterations) payload.max_iterations = parseInt(limits.max_iterations, 10)
@@ -232,7 +200,7 @@ export default {
 
   // ---- management ----
 
-  // List all llm-agent-related Apps (Scenario-A Apps + session workers). Writes vueComp.list.
+  // All llm-agent-related Apps (Scenario-A Apps + session workers); writes vueComp.list.
   listAgentApps(vueComp) {
     vueComp.listLoading = true
     getClient().list_apps().then(
@@ -267,8 +235,7 @@ export default {
     }, () => {})).catch(() => {})
   },
 
-  // Load an agent App's stdout (from the start, up to 256 KB) for the Management drawer.
-  // Writes vueComp.output.
+  // Load an App's stdout (from the start, up to 256 KB) into vueComp.output.
   loadOutput(vueComp, name) {
     return getClient().get_app_output(name, 0, 0, 262144).then(
       out => { vueComp.output = (out && out.output) || '' },
@@ -278,14 +245,8 @@ export default {
 
   // ---- admin: register a Scenario-A agent App ----
 
-  // Map the guided form to the env Claude Code reads to pick a model/provider, split into
-  // regular `env` (config) and `secEnv` (credentials). Secrets ALWAYS go to secEnv so the
-  // daemon stores them encrypted — never to env, logs, or responses. The Claude Agent SDK
-  // inherits the App's process env and passes it through to the bundled Claude Code CLI.
-  //
-  // Claude Code has no native OpenAI/Gemini support: non-Anthropic models must go through
-  // an Anthropic-Messages-API-compatible gateway (the `gateway` provider) — base URL +
-  // auth token, with the gateway's own model name in LLMAGENT_MODEL.
+  // Map the guided form to Claude Code env: `env` = config, `secEnv` = credentials (ALWAYS
+  // sec_env, encrypted; never env/logs/responses). Non-Anthropic models need a gateway.
   providerEnv(form) {
     const env = { LLMAGENT_PROVIDER: form.provider || 'anthropic' }
     const secEnv = {}
@@ -294,8 +255,7 @@ export default {
       case 'bedrock':
         env.CLAUDE_CODE_USE_BEDROCK = '1'
         if (form.awsRegion) env.AWS_REGION = form.awsRegion
-        // Access key id is an identifier, not a secret → env, so workers inherit it
-        // (only the secret key is re-entered per worker). The secret stays in sec_env.
+        // access key id is an identifier -> env (workers inherit it); secret key -> sec_env.
         if (form.awsAccessKeyId) env.AWS_ACCESS_KEY_ID = form.awsAccessKeyId
         if (form.awsSecretAccessKey) secEnv.AWS_SECRET_ACCESS_KEY = form.awsSecretAccessKey
         break
@@ -317,15 +277,11 @@ export default {
     return { env, secEnv }
   },
 
-  // Build the App definition from the guided form. Credentials go into `sec_env`
-  // (a NAME->value map) so the daemon stores them encrypted; they are NEVER placed in
-  // `env`, logged, or echoed back (the daemon strips encrypted sec_env from responses).
+  // Build the App definition; credentials go to sec_env (encrypted, never in env/logs/responses).
   buildAgentApp(form) {
     const { env, secEnv } = this.providerEnv(form)
     env.LLMAGENT_WORKSPACE_DIR = form.workspaceDir || './llm-agent-workspace'
-    // Escape hatch for provider knobs not in the guided form (e.g. ANTHROPIC_DEFAULT_*_MODEL,
-    // GOOGLE_APPLICATION_CREDENTIALS). Guarded: a secret-looking name is dropped (never leaks
-    // to plaintext env — use the credential fields), and guided/provider keys win over it.
+    // Escape hatch for provider knobs; secret-looking names dropped, guided keys win.
     ;(form.extraEnv || []).forEach(e => {
       if (e && e.name && !isSecretEnvName(e.name) && !(e.name in env)) env[e.name] = e.value
     })
@@ -344,7 +300,7 @@ export default {
     return app
   },
 
-  // Register (or update) a Scenario-A agent App via add_app. Returns Promise.
+  // Register/update a Scenario-A agent App via add_app.
   registerAgentApp(vueComp, form) {
     const app = this.buildAgentApp(form)
     return getClient().add_app(app.name, app).then(() => {
@@ -355,7 +311,7 @@ export default {
 
   // ---- Scenario B: interactive streaming session worker ----
 
-  // env may come back as a NAME->value map or an array of {name,value} -> normalize to a map.
+  // env may be a map or [{name,value}] -> normalize to a map.
   envToMap(env) {
     if (!env) return {}
     if (Array.isArray(env)) {
@@ -374,10 +330,7 @@ export default {
     return 's' + Date.now().toString(36) + rnd.slice(0, 6)
   },
 
-  // Pick the sec_env var name for a worker's re-entered credential, by the template's
-  // provider. Bedrock needs two keys but a worker re-enters only one — we store the secret
-  // key and rely on AWS_ACCESS_KEY_ID coming from the worker's env/instance role; Vertex
-  // uses ADC (no static secret). For those, prefer instance-role/ADC over static keys.
+  // sec_env var for a worker's re-entered credential, by provider (Bedrock: secret key only).
   workerSecretEnv(tEnv, secret) {
     switch (tEnv.LLMAGENT_PROVIDER) {
       case 'gateway': return { ANTHROPIC_AUTH_TOKEN: secret }
@@ -387,10 +340,8 @@ export default {
     }
   },
 
-  // Build a Scenario-B worker App by cloning deploy params from a Scenario-A template App.
-  // Provider config (non-secret) is carried over from the template; secrets are NOT in the
-  // template (the daemon strips encrypted sec_env), so each worker re-enters its credential
-  // via sec_env (encrypted), routed to the right var by the template's provider.
+  // Clone a Scenario-A template into a session worker: non-secret config is carried over;
+  // secrets are not in the template (daemon strips sec_env), so each worker re-enters one.
   buildWorkerApp(templateApp, sid, owner, secret) {
     const tEnv = this.envToMap(templateApp.env)
     const workspace = tEnv.LLMAGENT_WORKSPACE_DIR || './llm-agent-workspace'
@@ -401,8 +352,7 @@ export default {
       LLMAGENT_SESSION_IDLE_MINUTES: '30',
       LLMAGENT_SESSION_MAX_HOURS: '8'
     }
-    // Carry the provider config + any gateway model-slot aliases (so a worker's subagent/
-    // quick calls hit the same provider model, not a Claude id the endpoint won't serve).
+    // Carry provider config + gateway aliases so subagent/quick calls hit the same model.
     ;[...WORKER_INHERIT_ENV, ...PRESET_MANAGED_KEYS].forEach(k => { if (tEnv[k] != null) env[k] = tEnv[k] })
 
     const app = {
@@ -423,8 +373,7 @@ export default {
     return { app, name, sid }
   },
 
-  // Best-effort wait until a just-created worker App is running (has a pid / is healthy),
-  // so the first session_send doesn't race worker startup. Never throws; returns ready?.
+  // Best-effort wait until the worker runs so the first session_send doesn't race startup.
   async waitWorkerReady(name, timeoutMs = 6000) {
     const deadline = Date.now() + timeoutMs
     while (Date.now() < deadline) {
@@ -437,8 +386,7 @@ export default {
     return false
   },
 
-  // Create a worker: fetch the Scenario-A template, clone, add_app, wait for readiness.
-  // Returns the built descriptor.
+  // Fetch the template, clone, add_app, wait for readiness; returns the built descriptor.
   async createWorker(templateName, owner, apiKey) {
     const template = await getClient().get_app(templateName)
     const built = this.buildWorkerApp(template, this.genSessionId(), owner, apiKey)
@@ -447,8 +395,7 @@ export default {
     return built // { app, name, sid }
   },
 
-  // One stdout poll from `position`. Returns { text, position, exitCode }.
-  // 64 KB per read (vs the SDK's 10 KB default) so a fast token burst isn't chunked thin.
+  // One stdout poll from `position`; 64 KB per read so token bursts aren't chunked thin.
   async pollOutput(worker, position) {
     const out = await getClient().get_app_output(worker, position, 0, 65536)
     return {
@@ -458,9 +405,8 @@ export default {
     }
   },
 
-  // Run one interactive turn: stream the worker's STDOUT into onToken (browsers can't TCP
-  // subscribe, so we poll get_app_output advancing `position`) while run_task drives the turn.
-  // Returns { meta, position }. Throws if the turn errors (e.g. worker gone -> 404).
+  // One interactive turn: poll get_app_output into onToken (browsers can't subscribe) while
+  // run_task drives the turn; throws on turn error. Returns { meta, position }.
   async sendInteractive(worker, sid, input, onToken, startPos = 0) {
     let pos = startPos
     let done = false
@@ -475,8 +421,7 @@ export default {
       } catch { /* transient poll error; the turn promise governs completion */ }
       await new Promise(res => setTimeout(res, 250))
     }
-    // Final drain: keep reading until the position stops advancing, so a large
-    // end-of-turn burst isn't truncated by get_app_output's per-read size cap.
+    // Drain until the position stops advancing so an end-of-turn burst isn't truncated.
     try {
       for (let i = 0; i < 100; i++) {
         const r = await this.pollOutput(worker, pos)
@@ -490,8 +435,7 @@ export default {
     return { meta: (res && res.data) || {}, position: pos }
   },
 
-  // Close a session: session_close makes the worker exit -> exit:remove deletes the App.
-  // Best-effort; never throws (used on explicit close, agent switch, and page unload).
+  // session_close makes the worker exit -> exit:remove deletes the App; never throws.
   closeWorker(worker, sid) {
     return call(worker, { action: 'session_close', session_id: sid }, 30).catch(() => {})
   }
