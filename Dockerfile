@@ -10,9 +10,10 @@ WORKDIR /usr/share/nginx/html
 COPY --from=builder /workspace/dist/ /workspace/nginx/config.js.template ./
 COPY nginx/server.* /etc/nginx/conf.d/
 COPY nginx/default.conf.template /etc/nginx/templates/
+COPY nginx/wait-upstream.sh /docker-entrypoint.d/98-wait-upstream.sh
 COPY nginx/config.sh /docker-entrypoint.d/99-custom-config.sh
 RUN apk add --no-cache curl && \
-    chmod +x /docker-entrypoint.d/99-custom-config.sh
+    chmod +x /docker-entrypoint.d/98-wait-upstream.sh /docker-entrypoint.d/99-custom-config.sh
 ENV VUE_APP_TITLE="App Mesh" APP_MESH_API_URL="https://127.0.0.1:6060" APP_MESH_AUTH_URL="http://127.0.0.1:6062" PROXY_SSL_VERIFY="off"
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -fsk https://localhost:443/health >/dev/null 2>&1 || exit 1
