@@ -35,8 +35,8 @@
         </el-table-column>
         <el-table-column label="State" min-width="100">
           <template #default="scope">
-            <el-tag :type="scope.row.status === 1 ? 'success' : 'info'">
-              {{ scope.row.status === 1 ? 'Enabled' : 'Disabled' }}
+            <el-tag :type="scope.row.enabled ? 'success' : 'info'">
+              {{ scope.row.enabled ? 'Enabled' : 'Disabled' }}
             </el-tag>
           </template>
         </el-table-column>
@@ -54,7 +54,7 @@
       </el-table>
     </el-row>
 
-    <!-- Register dialog (admin); credentials go to sec_env (encrypted) -->
+    <!-- Register dialog (admin); credentials go to secret_env (encrypted) -->
     <el-dialog v-model="registerVisible" title="Register Agent App" width="600px" align-center>
       <el-form ref="regForm" :model="form" :rules="rules" label-width="140px">
         <el-form-item label="Provider" prop="provider">
@@ -81,7 +81,7 @@
           <el-form-item label="API Key" prop="apiKey">
             <el-input
               v-model="form.apiKey" type="password" show-password autocomplete="new-password"
-              placeholder="ANTHROPIC_API_KEY — stored encrypted (sec_env), not displayed afterwards"
+              placeholder="ANTHROPIC_API_KEY — stored encrypted (secret_env), not displayed afterwards"
             />
           </el-form-item>
           <el-form-item label="Base URL">
@@ -115,7 +115,7 @@
           <el-form-item label="Auth Token" prop="authToken">
             <el-input
               v-model="form.authToken" type="password" show-password autocomplete="new-password"
-              placeholder="ANTHROPIC_AUTH_TOKEN — gateway credential, stored encrypted (sec_env)"
+              placeholder="ANTHROPIC_AUTH_TOKEN — gateway credential, stored encrypted (secret_env)"
             />
           </el-form-item>
         </template>
@@ -134,7 +134,7 @@
           <el-form-item label="Secret Access Key">
             <el-input
               v-model="form.awsSecretAccessKey" type="password" show-password autocomplete="new-password"
-              placeholder="optional — AWS_SECRET_ACCESS_KEY (sec_env)"
+              placeholder="optional — AWS_SECRET_ACCESS_KEY (secret_env)"
             />
           </el-form-item>
         </template>
@@ -217,7 +217,7 @@ export default {
   },
   computed: {
     isSelected() { return !!this.currentRow; },
-    isEnabled() { return this.currentRow && this.currentRow.status === 1; },
+    isEnabled() { return this.currentRow && !!this.currentRow.enabled; },
     gatewayPresets() { return agentService.gatewayPresets(); },
     // required fields vary by provider (Bedrock/Vertex can rely on roles/ADC)
     rules() {

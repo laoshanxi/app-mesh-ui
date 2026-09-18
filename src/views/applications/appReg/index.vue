@@ -23,10 +23,10 @@
           <el-input v-model="registerForm.working_dir"></el-input>
         </el-form-item>
 
-        <el-form-item label="Status">
+        <el-form-item label="Enabled">
           <el-switch
-            v-model="registerForm.status" active-text="Enabled" :active-value="1" inactive-text="Disabled"
-            :inactive-value="0"
+            v-model="registerForm.enabled" active-text="Enabled" :active-value="true" inactive-text="Disabled"
+            :inactive-value="false"
           ></el-switch>
         </el-form-item>
 
@@ -48,8 +48,8 @@
             </el-radio-group>
           </div>
         </el-form-item>
-        <el-form-item label="stdout cache number" prop="stdout_cache_num">
-          <el-input-number v-model="registerForm.stdout_cache_num" :min="0"></el-input-number>
+        <el-form-item label="stdout backup count" prop="stdout_backup_count">
+          <el-input-number v-model="registerForm.stdout_backup_count" :min="0"></el-input-number>
         </el-form-item>
 
         <h3 class="sec-title">Metadata &amp; health</h3>
@@ -71,14 +71,14 @@
             <el-option v-for="name in appNames" :key="name" :label="name" :value="name"></el-option>
           </el-select><span class="hint">start only after each dependency is healthy</span>
         </el-form-item>
-        <el-form-item label="Start interval" prop="start_interval_seconds">
-          <el-input v-model="registerForm.start_interval_seconds"></el-input><span class="hint">ISO 8601 durations / seconds / cron expr</span>
+        <el-form-item label="Run interval" prop="interval">
+          <el-input v-model="registerForm.interval" @input="onIntervalInput"></el-input><span class="hint">seconds or ISO 8601 duration, e.g. 5m — exclusive with cron</span>
         </el-form-item>
-        <el-form-item label="Cron interval expr" prop="cron">
-          <el-switch v-model="registerForm.cron" :active-value="true" :inactive-value="false"></el-switch>
+        <el-form-item label="Cron schedule" prop="cron_schedule">
+          <el-input v-model="registerForm.cron_schedule" @input="onCronScheduleInput"></el-input><span class="hint">cron expression, e.g. */5 * * * *</span>
         </el-form-item>
-        <el-form-item label="Retention" prop="retention">
-          <el-input v-model="registerForm.retention"></el-input><span class="hint">ISO 8601 durations or seconds</span>
+        <el-form-item label="Stop grace period" prop="stop_grace_period">
+          <el-input v-model="registerForm.stop_grace_period"></el-input><span class="hint">ISO 8601 durations or seconds</span>
         </el-form-item>
         <el-form-item label="Exit behavior" prop="behavior.exit">
           <el-select v-model="registerForm.behavior.exit" placeholder="Please select">
@@ -181,13 +181,6 @@ export default {
         name: [
           { required: true, message: "Name is not empty", trigger: "blur" },
         ],
-        start_interval_timeout: [
-          {
-            pattern: /^P((([0-9]+Y)?([0-9]+M)?([0-9]+D)?(T([0-9]+H)?([0-9]+M)?([0-9]+S)?)?)|([0-9]+W))$/g,
-            message: "Start interval timeout seconds is invalid.",
-            trigger: "blur",
-          },
-        ],
       },
       Behaviors: [
         {
@@ -284,8 +277,8 @@ export default {
         otherPermission: 3,
         groupPermission: 3,
         metadata: '',
-        stdout_cache_num: 0,
-        status: 1, //0 disabled, 1 enabled
+        stdout_backup_count: 0,
+        enabled: true,
         daily_limitation: {
           daily_start: 0,
           daily_start_TEXT: '',
@@ -303,17 +296,24 @@ export default {
         docker_image: '',
         pid: null,
         depends_on: [],
-        start_interval_seconds: null,
-        cron: false,
+        interval: null,
+        cron_schedule: null,
         start_time: 0,
         start_time_TEXT: '',
         end_time: 0,
         end_time_TEXT: '',
-        retention: null,
+        stop_grace_period: null,
         behavior: {
           exit: 'standby'
         }
       };
+    },
+    // interval and cron_schedule are mutually exclusive on the daemon — clear the other side
+    onIntervalInput(value) {
+      if (value) this.registerForm.cron_schedule = null;
+    },
+    onCronScheduleInput(value) {
+      if (value) this.registerForm.interval = null;
     },
     cancel() {
       this.$emit("close");

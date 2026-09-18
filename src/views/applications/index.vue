@@ -60,14 +60,14 @@
         <el-table-column class-name="status-col" label="State" min-width="110">
           <template #default="scope">
             <el-tooltip
-              v-if="scope.row.status === 1 && !scope.row.pid && scope.row.waiting_for && scope.row.waiting_for.length"
+              v-if="scope.row.enabled && !scope.row.pid && scope.row.waiting_for && scope.row.waiting_for.length"
               :content="'Waiting for: ' + scope.row.waiting_for.join(', ')" placement="top"
             >
               <el-tag :type="'warning'">
                 Waiting
               </el-tag>
             </el-tooltip>
-            <el-tag v-else-if="scope.row.status === 1" :type="'success'">
+            <el-tag v-else-if="scope.row.enabled" :type="'success'">
               Enabled
             </el-tag>
             <el-tag v-else :type="'info'">
@@ -241,7 +241,7 @@ export default {
         this.$refs["appLog"].initCurPage();
       }
       this.isShowLog = true;
-      if (curRow.stdout_cache_size === 0) {
+      if (curRow.stdout_file_count === 0) {
         return;
       }
       this.getAppLogByName(this.currentRow.name);
@@ -284,7 +284,7 @@ export default {
         return;
       }
       this.isSelected = true;
-      this.isEnabled = currentRow.status === 1;
+      this.isEnabled = !!currentRow.enabled;
     },
     fetchData() {
       applications.getAppList(this);

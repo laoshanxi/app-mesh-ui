@@ -8,7 +8,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 const AGENT_METADATA_TYPE = 'llm-agent-system'
 const SESSION_WORKER_MARK = '-sess-'
 
-// Secret names — only ever written to sec_env, never plain `env`; the regex catches custom
+// Secret names — only ever written to secret_env, never plain `env`; the regex catches custom
 // secret-ish names. AWS_ACCESS_KEY_ID is an identifier, not a secret -> stays in env.
 const SECRET_ENV_NAMES = ['ANTHROPIC_API_KEY', 'ANTHROPIC_AUTH_TOKEN', 'AWS_SECRET_ACCESS_KEY', 'AWS_SESSION_TOKEN']
 function isSecretEnvName(name) {
@@ -16,7 +16,7 @@ function isSecretEnvName(name) {
 }
 
 // Non-secret provider env inherited by session workers; secrets are NOT here (the daemon
-// strips sec_env) and are re-entered per worker. AWS_ACCESS_KEY_ID: static-key Bedrock workers.
+// strips secret_env) and are re-entered per worker. AWS_ACCESS_KEY_ID: static-key Bedrock workers.
 const WORKER_INHERIT_ENV = [
   'LLMAGENT_PROVIDER', 'LLMAGENT_MODEL', 'ANTHROPIC_BASE_URL',
   'CLAUDE_CODE_USE_BEDROCK', 'AWS_REGION', 'AWS_ACCESS_KEY_ID',
@@ -246,7 +246,7 @@ export default {
   // ---- admin: register a Scenario-A agent App ----
 
   // Map the guided form to Claude Code env: `env` = config, `secEnv` = credentials (ALWAYS
-  // sec_env, encrypted; never env/logs/responses). Non-Anthropic models need a gateway.
+  // secret_env, encrypted; never env/logs/responses). Non-Anthropic models need a gateway.
   providerEnv(form) {
     const env = { LLMAGENT_PROVIDER: form.provider || 'anthropic' }
     const secEnv = {}
@@ -255,7 +255,7 @@ export default {
       case 'bedrock':
         env.CLAUDE_CODE_USE_BEDROCK = '1'
         if (form.awsRegion) env.AWS_REGION = form.awsRegion
-        // access key id is an identifier -> env (workers inherit it); secret key -> sec_env.
+        // access key id is an identifier -> env (workers inherit it); secret key -> secret_env.
         if (form.awsAccessKeyId) env.AWS_ACCESS_KEY_ID = form.awsAccessKeyId
         if (form.awsSecretAccessKey) secEnv.AWS_SECRET_ACCESS_KEY = form.awsSecretAccessKey
         break
@@ -277,7 +277,7 @@ export default {
     return { env, secEnv }
   },
 
-  // Build the App definition; credentials go to sec_env (encrypted, never in env/logs/responses).
+  // Build the App definition; credentials go to secret_env (encrypted, never in env/logs/responses).
   buildAgentApp(form) {
     const { env, secEnv } = this.providerEnv(form)
     env.LLMAGENT_WORKSPACE_DIR = form.workspaceDir || './llm-agent-workspace'
@@ -291,12 +291,12 @@ export default {
       description: form.description || 'llm-agent — Claude Agent SDK handler',
       command: form.command || 'python3 -m llm_agent --server 127.0.0.1:6059',
       working_dir: form.workingDir,
-      status: 1,
+      enabled: true,
       behavior: { exit: 'restart' },
       metadata: { type: AGENT_METADATA_TYPE },
       env
     }
-    if (Object.keys(secEnv).length) app.sec_env = secEnv
+    if (Object.keys(secEnv).length) app.secret_env = secEnv
     return app
   },
 
@@ -330,7 +330,7 @@ export default {
     return 's' + Date.now().toString(36) + rnd.slice(0, 6)
   },
 
-  // sec_env var for a worker's re-entered credential, by provider (Bedrock: secret key only).
+  // secret_env var for a worker's re-entered credential, by provider (Bedrock: secret key only).
   workerSecretEnv(tEnv, secret) {
     switch (tEnv.LLMAGENT_PROVIDER) {
       case 'gateway': return { ANTHROPIC_AUTH_TOKEN: secret }
@@ -341,7 +341,7 @@ export default {
   },
 
   // Clone a Scenario-A template into a session worker: non-secret config is carried over;
-  // secrets are not in the template (daemon strips sec_env), so each worker re-enters one.
+  // secrets are not in the template (daemon strips secret_env), so each worker re-enters one.
   buildWorkerApp(templateApp, sid, owner, secret) {
     const tEnv = this.envToMap(templateApp.env)
     const workspace = tEnv.LLMAGENT_WORKSPACE_DIR || './llm-agent-workspace'
@@ -361,15 +361,15 @@ export default {
       command: `python3 -m llm_agent --session-worker --session-id=${sid} --server=127.0.0.1:6059`,
       working_dir: templateApp.working_dir,
       owner, // session owner — the daemon's owner-permission gates access
-      status: 1,
+      enabled: true,
       permission: 11, // owner(+admin) only
-      stdout_cache_num: 1000, // let polling catch up to recent tokens
+      stdout_backup_count: 1000, // let polling catch up to recent tokens
       behavior: { exit: 'remove' }, // worker exit -> daemon removes the App
       metadata: { type: AGENT_METADATA_TYPE },
       env
     }
     const secEnv = secret ? this.workerSecretEnv(tEnv, secret) : {}
-    if (Object.keys(secEnv).length) app.sec_env = secEnv
+    if (Object.keys(secEnv).length) app.secret_env = secEnv
     return { app, name, sid }
   },
 

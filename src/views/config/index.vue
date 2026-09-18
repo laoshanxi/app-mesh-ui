@@ -93,8 +93,8 @@
                     <el-input-number v-model="form.REST.RestListenPort" :min="1024" :max="65534" />
                   </el-form-item>
 
-                  <el-form-item label="TCP rest listen port" prop="REST.RestTcpPort">
-                    <el-input-number v-model="form.REST.RestTcpPort" :min="1024" :max="65534" />
+                  <el-form-item label="TCP API port" prop="REST.TcpApiPort">
+                    <el-input-number v-model="form.REST.TcpApiPort" :min="1024" :max="65534" />
                   </el-form-item>
 
                   <el-form-item label="WebSocket port" prop="REST.WebSocketPort">
@@ -114,12 +114,6 @@
                   <el-form-item label="SSL verify client" prop="REST.SSL.VerifyClient">
                     <el-switch
                       v-model="form.REST.SSL.VerifyClient" active-text="Yes" :active-value="true"
-                      inactive-text="No" :inactive-value="false"
-                    />
-                  </el-form-item>
-                  <el-form-item label="Forwarding SSL verify" prop="REST.SSL.VerifyServerDelegate">
-                    <el-switch
-                      v-model="form.REST.SSL.VerifyServerDelegate" active-text="Yes" :active-value="true"
                       inactive-text="No" :inactive-value="false"
                     />
                   </el-form-item>
@@ -253,7 +247,7 @@ export default {
           RestEnabled: true,
           RestListenAddress: "127.0.0.1",
           RestListenPort: 6060,
-          RestTcpPort: 6059,
+          TcpApiPort: 6059,
           WebSocketPort: 6058,
           PrometheusExporterListenPort: 0,
           WorkerThreadPoolSize: 2,
@@ -269,7 +263,6 @@ export default {
             SSLClientCertificateKeyFile: "ssl/client-key.pem",
             VerifyServer: true,
             VerifyClient: false,
-            VerifyServerDelegate: false,
           },
         },
       },

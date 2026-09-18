@@ -5,7 +5,6 @@
       <div class="kv-grid">
         <div class="kv"><span class="k">Host name</span><span class="v">{{ formatEmpty(record.host_name) }}</span></div>
         <div class="kv"><span class="k">Date time</span><span class="v">{{ formatEmpty(record.systime) }}</span></div>
-        <div class="kv kv--full"><span class="k">Description</span><span class="v">{{ formatEmpty(record.host_description) }}</span></div>
         <div class="kv"><span class="k">1 min load</span><span class="v">{{ formatEmpty(record.load["1min"]) }}</span></div>
         <div class="kv"><span class="k">5 min load</span><span class="v">{{ formatEmpty(record.load["5min"]) }}</span></div>
         <div class="kv"><span class="k">15 min load</span><span class="v">{{ formatEmpty(record.load["15min"]) }}</span></div>

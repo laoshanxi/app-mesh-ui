@@ -2,7 +2,7 @@
   <div class="log-wrap">
     <el-pagination
       v-if="app" v-model:current-page="curPage" v-model:page-size="pageSize" background class="log-pager"
-      layout="prev, pager, next" :total="app.stdout_cache_size" @update:current-page="getAppLogByName"
+      layout="prev, pager, next" :total="app.stdout_file_count" @update:current-page="getAppLogByName"
     />
     <pre class="log">{{ loginfo ? loginfo : 'No log' }}</pre>
   </div>

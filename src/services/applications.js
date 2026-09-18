@@ -128,7 +128,7 @@ export default {
       return hasValue;
     }
     function formatData(data) {
-      if (data.stdout_cache_num) data.stdout_cache_num = parseInt(data.stdout_cache_num);
+      if (data.stdout_backup_count) data.stdout_backup_count = parseInt(data.stdout_backup_count);
       if (data.permission) data.permission = parseInt(data.permission);
       if (data.pid) data.pid = parseInt(data.pid);
       if (data.resource_limit) {
