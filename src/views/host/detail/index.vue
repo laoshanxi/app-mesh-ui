@@ -1,10 +1,22 @@
 <template>
   <div v-if="record != 'No Data'" class="host-detail">
+    <el-alert
+      v-if="record.collector_errors && record.collector_errors.length"
+      class="collector-errors" type="warning" :closable="false"
+      :title="'Collector degraded: ' + record.collector_errors.join(', ')"
+    />
+
     <section class="kv-section">
       <h3 class="kv-title">Host</h3>
       <div class="kv-grid">
         <div class="kv"><span class="k">Host name</span><span class="v">{{ formatEmpty(record.host_name) }}</span></div>
         <div class="kv"><span class="k">Date time</span><span class="v">{{ formatEmpty(record.systime) }}</span></div>
+        <div class="kv"><span class="k">OS / Arch</span><span class="v">{{ formatEmpty(record.os) }} / {{ formatEmpty(record.architecture) }}</span></div>
+        <div class="kv"><span class="k">In container</span><span class="v"><el-tag size="small" effect="light" :type="record.in_container ? 'warning' : 'info'">{{ record.in_container ? "Yes" : "No" }}</el-tag></span></div>
+        <div class="kv"><span class="k">OS user</span><span class="v">{{ formatEmpty(record.os_user) }}</span></div>
+        <div class="kv"><span class="k">App Mesh version</span><span class="v">{{ formatEmpty(record.appmesh_version) }}</span></div>
+        <div class="kv"><span class="k">Daemon start time</span><span class="v">{{ formatEmpty(record.appmesh_start_time) }}</span></div>
+        <div class="kv"><span class="k">Daemon PID</span><span class="v">{{ formatEmpty(record.pid) }}</span></div>
         <div class="kv"><span class="k">1 min load</span><span class="v">{{ formatEmpty(record.load["1min"]) }}</span></div>
         <div class="kv"><span class="k">5 min load</span><span class="v">{{ formatEmpty(record.load["5min"]) }}</span></div>
         <div class="kv"><span class="k">15 min load</span><span class="v">{{ formatEmpty(record.load["15min"]) }}</span></div>
@@ -17,7 +29,16 @@
         <div class="kv"><span class="k">Sockets</span><span class="v">{{ formatEmpty(record.cpu_sockets) }}</span></div>
         <div class="kv"><span class="k">Cores</span><span class="v">{{ formatEmpty(record.cpu_cores) }}</span></div>
         <div class="kv"><span class="k">Processors</span><span class="v">{{ formatEmpty(record.cpu_processors) }}</span></div>
+        <div class="kv"><span class="k">Effective processors</span><span class="v">{{ formatEmpty(record.cpu_effective_processors) }}</span></div>
+        <div class="kv"><span class="k">CPU quota cores</span><span class="v">{{ formatEmpty(record.cpu_quota_cores) }}</span></div>
+        <div class="kv"><span class="k">CPU source</span><span class="v">{{ formatEmpty(record.cpu_source) }}</span></div>
+        <div class="kv"><span class="k">Cgroup version</span><span class="v">{{ formatEmpty(record.cgroup_version) }}</span></div>
+        <div class="kv"><span class="k">Memory source</span><span class="v">{{ formatEmpty(record.memory_source) }}</span></div>
+        <div class="kv"><span class="k">Swap source</span><span class="v">{{ formatEmpty(record.swap_source) }}</span></div>
         <div class="kv"><span class="k">App Mesh memory</span><span class="v">{{ formatMemory(record.mem_applications) }}</span></div>
+        <div class="kv"><span class="k">Daemon tree memory</span><span class="v">{{ formatMemory(record.mem_daemon_process_tree_bytes) }}</span></div>
+        <div class="kv"><span class="k">Daemon tree fds</span><span class="v">{{ formatEmpty(record.fd) }}</span></div>
+        <div class="kv"><span class="k">Daemon fds</span><span class="v">{{ formatEmpty(record.fd_daemon) }}</span></div>
       </div>
 
       <div class="meter">
@@ -57,6 +78,9 @@
         </el-table-column>
         <el-table-column label="Used" width="120">
           <template #default="scope">{{ formatMemory(scope.row.used) }}</template>
+        </el-table-column>
+        <el-table-column label="Available" width="120">
+          <template #default="scope">{{ formatMemory(scope.row.available) }}</template>
         </el-table-column>
         <el-table-column label="Usage" width="200">
           <template #default="scope">
@@ -127,6 +151,11 @@ export default {
 .host-detail {
   padding: 4px 4px 16px;
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+}
+
+/* schema v3 degradation hints (ResourceCollection collector_errors) */
+.collector-errors {
+  margin-bottom: 14px;
 }
 
 .kv-section + .kv-section {

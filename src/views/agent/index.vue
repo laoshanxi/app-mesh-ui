@@ -31,7 +31,7 @@
           </template>
         </el-table-column>
         <el-table-column label="Owner" min-width="100">
-          <template #default="scope">{{ formatEmpty(scope.row.owner) }}</template>
+          <template #default="scope">{{ formatEmpty(scope.row.owner_display_name || scope.row.owner_principal_id) }}</template>
         </el-table-column>
         <el-table-column label="State" min-width="100">
           <template #default="scope">

@@ -100,6 +100,27 @@ export function formatToLocal(isoString) {
   return date.isValid() ? date.format("YYYY-MM-DD HH:mm:ss") : "";
 }
 
+// epoch seconds -> local "YYYY-MM-DD HH:mm:ss" (daemon *_time fields)
+export function formatEpochSeconds(value) {
+  if (!value) return "";
+  const date = moment.unix(value);
+  return date.isValid() ? date.format("YYYY-MM-DD HH:mm:ss") : "";
+}
+
+// seconds within a day -> "HH:mm:ss" (daemon daily_limitation units, tz-free)
+export function formatDaySeconds(value) {
+  if (value == null || value === "") return "";
+  const seconds = ((Number(value) % 86400) + 86400) % 86400;
+  return moment.utc(seconds * 1000).format("HH:mm:ss");
+}
+
+// inverse of formatDaySeconds: "HH:mm:ss" -> seconds within a day
+export function dayTimeToSeconds(text) {
+  const m = /^(\d{1,2}):(\d{2})(?::(\d{2}))?$/.exec((text || "").trim());
+  if (!m) return null;
+  return Number(m[1]) * 3600 + Number(m[2]) * 60 + (m[3] ? Number(m[3]) : 0);
+}
+
 // formatDate's display format, but for ISO/RFC3339 input (e.g. workflow timestamps).
 export function formatToLocalIso(isoString) {
   if (!isoString) return "";

@@ -49,13 +49,20 @@ export default {
       const rl = r.resource_limit || {};
       const depends = r.depends_on && r.depends_on.length ? r.depends_on.join(", ") : null;
       const waiting = r.waiting_for && r.waiting_for.length ? r.waiting_for.join(", ") : null;
+      const codeActions = r.behavior && r.behavior.exit_code_actions
+        ? Object.entries(r.behavior.exit_code_actions).map(([code, action]) => `${code}: ${action}`).join(", ")
+        : null;
       return [
         {
           title: "Basic information",
           items: [
             { k: "Name", v: r.name },
             { k: "Add time", v: r.register_time_TEXT },
-            { k: "Owner", v: r.owner },
+            // daemon emits owner_display_name (mutable label) + owner_principal_id (stable key); there is no plain `owner`
+            { k: "Owner", v: r.owner_display_name || r.owner_principal_id },
+            { k: "Execution user", v: r.execution_user },
+            { k: "System app", bool: !!r.system },
+            { k: "Startup phase", v: r.startup_phase },
             { k: "Command", v: r.command, mono: true },
             { k: "Permission", v: r.permission },
             { k: "State", tag: r.enabled ? { type: "success", label: "Enabled" } : { type: "info", label: "Disabled" } },
@@ -70,6 +77,7 @@ export default {
             { k: "Cron schedule", v: r.cron_schedule },
             { k: "Stop grace period", v: r.stop_grace_period },
             { k: "Exit behavior", v: r.behavior && r.behavior.exit },
+            { k: "Exit code actions", v: codeActions, mono: true },
             { k: "Docker image", v: r.docker_image },
             { k: "Stdout backup count", v: r.stdout_backup_count },
             { k: "Description", v: r.description, full: true },
@@ -90,8 +98,11 @@ export default {
             { k: "Start number", v: r.starts },
             { k: "File descriptors", v: r.fd },
             { k: "Container id", v: r.container_id, mono: true },
+            { k: "Pending task", v: r.task_id },
+            { k: "Pending task status", v: r.task_status },
             { k: "Last error", v: r.last_error, full: true, mono: true },
             { k: "Waiting for", v: waiting, mono: true },
+            { k: "Process tree", v: r.pstree, full: true, mono: true },
           ],
         },
         {

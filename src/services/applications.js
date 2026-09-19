@@ -1,13 +1,29 @@
 import { getClient } from '@/utils/appmeshClient'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { parseDateFromUtcSeconds } from '@/utils';
+import { parseDateFromUtcSeconds, formatEpochSeconds, formatDaySeconds } from '@/utils';
 export default {
+  // Populate the *_TEXT display fields that appDetail/appReg read. The daemon
+  // emits epoch seconds (or day seconds for daily_limitation); it never sends *_TEXT.
+  addDisplayFields: function (app) {
+    if (!app) return;
+    app.register_time_TEXT = formatEpochSeconds(app.register_time);
+    app.start_time_TEXT = formatEpochSeconds(app.start_time);
+    app.end_time_TEXT = formatEpochSeconds(app.end_time);
+    app.next_start_time_TEXT = formatEpochSeconds(app.next_start_time);
+    app.last_start_time_TEXT = formatEpochSeconds(app.last_start_time);
+    app.last_exit_time_TEXT = formatEpochSeconds(app.last_exit_time);
+    if (app.daily_limitation) {
+      app.daily_limitation.daily_start_TEXT = formatDaySeconds(app.daily_limitation.daily_start);
+      app.daily_limitation.daily_end_TEXT = formatDaySeconds(app.daily_limitation.daily_end);
+    }
+  },
   getAppList: function (vueComp) {
     const selectedName = vueComp.currentRow ? vueComp.currentRow.name : null;
     vueComp.listLoading = true;
     getClient().list_apps().then(data => {
       data.forEach(m => {
         m.desc = m.description
+        this.addDisplayFields(m);
         m.age = this.humanReadableDuration(parseDateFromUtcSeconds(m.register_time), new Date())
         if (m.last_start_time && m.pid) {
           m.duration = this.humanReadableDuration(parseDateFromUtcSeconds(m.last_start_time), new Date())
@@ -46,6 +62,7 @@ export default {
   getAppByName: function (vueComp, name) {
     vueComp.isLoadingDetail = true
     getClient().get_app(name).then(data => {
+      this.addDisplayFields(data);
       vueComp.application = data;
       vueComp.isLoadingDetail = false
     }, () => {
@@ -147,6 +164,16 @@ export default {
         }
 
         data.env = data.envs.length > 0 ? envs : null;
+
+        // secret_env: write-only, never returned by the daemon — send only what the user (re)entered
+        let secretEnvs = {};
+        for (let i = 0; i < (vueComp.registerForm.secretEnvs || []).length; i++) {
+          const item = vueComp.registerForm.secretEnvs[i];
+          if (item.name && item.value) secretEnvs[item.name] = item.value;
+        }
+        data.secret_env = Object.keys(secretEnvs).length > 0 ? secretEnvs : null;
+        delete data.secretEnvs;
+        delete data.exitCodeActions; // UI-only rows; behavior.exit_code_actions carries the payload
 
         if (data.APP_DOCKER_OPTS && data.APP_DOCKER_OPTS.length > 0) {
           data.env = !data.env ? {} : data.env;

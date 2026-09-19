@@ -85,6 +85,17 @@
             <el-option v-for="item in Behaviors" :key="item.value" :label="item.label" :value="item.value"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="Exit code actions">
+          <div v-for="rule in registerForm.exitCodeActions" :key="rule.key" class="exit-code-row">
+            <el-input v-model="rule.code" style="width:120px" placeholder="code"></el-input>
+            <el-select v-model="rule.action" style="width:140px">
+              <el-option v-for="item in Behaviors" :key="item.value" :label="item.label" :value="item.value"></el-option>
+            </el-select>
+            <el-button :icon="Delete" @click.prevent="removeExitCodeAction(rule)"></el-button>
+          </div>
+          <el-button size="small" @click="addExitCodeAction()">Add exit code action</el-button>
+          <span class="hint">per exit code; a signal-terminated run reports the signal number</span>
+        </el-form-item>
         <h3 class="sec-title">Time window</h3>
 
         <el-form-item label="Start time" prop="start_time">
@@ -148,12 +159,25 @@
           <el-input v-model="env.value" style="width:200px"></el-input>
           <el-button :icon="Delete" @click.prevent="removeEnvReg(env)"></el-button>
         </el-form-item>
+
+        <el-form-item
+          v-for="(env, index) in registerForm.secretEnvs" :key="env.key" :label="'Secret env ' + index"
+        >
+          <el-input ref="secretEnvs" v-model="env.name" style="width:200px"></el-input>=
+          <el-input v-model="env.value" type="password" show-password style="width:200px"></el-input>
+          <el-button :icon="Delete" @click.prevent="removeSecretEnvReg(env)"></el-button>
+        </el-form-item>
+        <el-alert
+          v-if="registerForm.secretEnvs.length" class="secret-note" type="info" :closable="false"
+          title="Protected variables are encrypted on save and never shown again; re-enter them on every edit."
+        />
       </el-form>
     </div>
     <div class="dialog-footer">
       <el-button @click="cancel()">Cancel</el-button>
       <el-button @click="reset()">Reset</el-button>
       <el-button @click="addEnvReg()">Add Env</el-button>
+      <el-button @click="addSecretEnvReg()">Add Secret Env</el-button>
       <el-button type="primary" @click="registerApp()">Save</el-button>
     </div>
   </div>
@@ -162,7 +186,7 @@
 <script>
 import applications from "@/services/applications";
 import { getClient } from "@/utils/appmeshClient";
-import { formatToLocal, formatToLocalDayTime, deepClone } from "@/utils";
+import { formatToLocal, formatToLocalDayTime, dayTimeToSeconds, deepClone } from "@/utils";
 import { markRaw } from 'vue'
 import { Delete } from "@element-plus/icons-vue";
 
@@ -262,6 +286,14 @@ export default {
             });
           }
         }
+        // exit_code_actions object -> editable rows; secret_env is write-only, so it always starts empty on edit
+        this.registerForm.exitCodeActions = [];
+        const codeActions = this.registerForm.behavior && this.registerForm.behavior.exit_code_actions;
+        if (codeActions && typeof codeActions === "object") {
+          for (const code in codeActions) {
+            this.registerForm.exitCodeActions.push({ key: code, code: code, action: codeActions[code] });
+          }
+        }
       }
     },
     resetForm() {
@@ -293,6 +325,8 @@ export default {
         APP_DOCKER_IMG_PULL_TIMEOUT: null,
         APP_DOCKER_OPTS: '',
         envs: [],
+        secretEnvs: [],
+        exitCodeActions: [],
         docker_image: '',
         pid: null,
         depends_on: [],
@@ -337,6 +371,32 @@ export default {
         this.registerForm.envs.splice(index, 1);
       }
     },
+    addSecretEnvReg() {
+      this.registerForm.secretEnvs.push({
+        name: "",
+        value: "",
+        key: Date.now(),
+      });
+      setTimeout(() => {
+        const refs = this.$refs["secretEnvs"];
+        refs[refs.length - 1].focus();
+      }, 100);
+    },
+    removeSecretEnvReg(item) {
+      const index = this.registerForm.secretEnvs.indexOf(item);
+      if (index !== -1) {
+        this.registerForm.secretEnvs.splice(index, 1);
+      }
+    },
+    addExitCodeAction() {
+      this.registerForm.exitCodeActions.push({ key: Date.now(), code: "", action: "standby" });
+    },
+    removeExitCodeAction(item) {
+      const index = this.registerForm.exitCodeActions.indexOf(item);
+      if (index !== -1) {
+        this.registerForm.exitCodeActions.splice(index, 1);
+      }
+    },
     onDailyTimeChange(value) {
       if (value) {
         this.registerForm.daily_limitation.daily_start_TEXT = value[0];
@@ -350,6 +410,14 @@ export default {
       let other = this.registerForm.otherPermission ? this.registerForm.otherPermission + "" : "3";
       let group = this.registerForm.groupPermission ? this.registerForm.groupPermission + "" : "3";
       this.registerForm.permission = other + group;
+      // editable rows -> behavior.exit_code_actions map (string keys, daemon contract)
+      const exitCodeActions = {};
+      for (const rule of this.registerForm.exitCodeActions) {
+        const code = (rule.code || "").trim();
+        if (code !== "") exitCodeActions[code] = rule.action;
+      }
+      this.registerForm.behavior = this.registerForm.behavior || {};
+      this.registerForm.behavior.exit_code_actions = Object.keys(exitCodeActions).length > 0 ? exitCodeActions : null;
       if (this.registerForm.start_time_TEXT && this.registerForm.start_time_TEXT !== "") {
         // browser-zone datetime -> UTC seconds
         this.registerForm.start_time = Date.parse(this.registerForm.start_time_TEXT) / 1000;
@@ -359,14 +427,11 @@ export default {
         this.registerForm.end_time = Date.parse(this.registerForm.end_time_TEXT) / 1000;
       }
       if (this.registerForm.daily_limitation.daily_start_TEXT && this.registerForm.daily_limitation.daily_start_TEXT !== "") {
-        // browser-zone day time -> UTC seconds
-        let fullDateString = `1970-01-02 ${this.registerForm.daily_limitation.daily_start_TEXT}`; // Combine with time (no 'Z' for local time)
-        this.registerForm.daily_limitation.daily_start = Date.parse(fullDateString) / 1000; // Convert to seconds
+        // day time -> seconds within a day (daemon units); Date.parse would shift by the zone offset
+        this.registerForm.daily_limitation.daily_start = dayTimeToSeconds(this.registerForm.daily_limitation.daily_start_TEXT);
       }
       if (this.registerForm.daily_limitation.daily_end_TEXT && this.registerForm.daily_limitation.daily_end_TEXT !== "") {
-        // browser-zone day time -> UTC seconds
-        let fullDateString = `1970-01-02 ${this.registerForm.daily_limitation.daily_end_TEXT}`; // Combine with time (no 'Z' for local time)
-        this.registerForm.daily_limitation.daily_end = Date.parse(fullDateString) / 1000; // Convert to seconds
+        this.registerForm.daily_limitation.daily_end = dayTimeToSeconds(this.registerForm.daily_limitation.daily_end_TEXT);
       }
       applications.registerApp(this);
     },
@@ -446,6 +511,18 @@ export default {
   margin-left: 10px;
   color: #909399;
   font-size: 12px;
+}
+
+/* exit-code rule rows: code input + action select + remove button on one line */
+.exit-code-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.secret-note {
+  max-width: 480px;
 }
 
 /* fixed-width labels so "Group"/"Other" never clip */
