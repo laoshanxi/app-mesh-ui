@@ -56,6 +56,6 @@ export default {
     if (!vueComp.selectedApp) return
     getClient().cancel_task(vueComp.selectedApp).then(ok => {
       ElMessage[ok ? 'success' : 'warning'](ok ? 'Task cancelled' : 'Cancel failed')
-    })
+    }).catch(() => { }) // onError already showed the toast
   },
 }

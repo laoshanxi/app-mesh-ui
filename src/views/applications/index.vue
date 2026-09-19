@@ -70,9 +70,7 @@
             <el-tag v-else-if="scope.row.enabled" :type="'success'">
               Enabled
             </el-tag>
-            <el-tag v-else :type="'info'">
-              Disabled
-            </el-tag>
+            <span v-else>-</span>
           </template>
         </el-table-column>
 

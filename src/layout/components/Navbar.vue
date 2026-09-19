@@ -150,7 +150,7 @@ export default {
       } catch (error) {
         // Undo the unverified forwarding target on the shared client
         client.forwardingHost = previousForwardingHost;
-        if (error === 'cancel' || error.toString().includes('cancel')) {
+        if (error === 'cancel') { // element-plus rejects user cancel/close with exactly 'cancel'
           throw 'cancel';
         }
         if (this.lastForward?.length > 0) {
@@ -188,7 +188,7 @@ export default {
         ElMessage.success('Disable forward successful');
         this.refresh();
       } catch (error) {
-        if (error === 'cancel' || error.toString().includes('cancel')) {
+        if (error === 'cancel') { // element-plus rejects user cancel/close with exactly 'cancel'
           throw 'cancel';
         }
         throw error;
@@ -232,7 +232,7 @@ export default {
         this.forward = oldForward;
         this.forwardEnabled = !this.forwardEnabled
 
-        if (error === 'cancel' || error.toString().includes('cancel')) {
+        if (error === 'cancel') { // element-plus rejects user cancel/close with exactly 'cancel'
           // user cancelled — ignore
         } else {
           ElMessage.error(`Failed to forward request: ${error.message || error}`);

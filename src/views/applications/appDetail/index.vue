@@ -65,7 +65,7 @@ export default {
             { k: "Startup phase", v: r.startup_phase },
             { k: "Command", v: r.command, mono: true },
             { k: "Permission", v: r.permission },
-            { k: "State", tag: r.enabled ? { type: "success", label: "Enabled" } : { type: "info", label: "Disabled" } },
+            { k: "State", tag: r.enabled ? { type: "success", label: "Enabled" } : null },
             { k: "Working dir", v: r.working_dir, mono: true },
             { k: "Shell mode", bool: !!r.shell },
             { k: "Session login", bool: !!r.session_login },

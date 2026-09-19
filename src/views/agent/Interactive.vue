@@ -207,7 +207,9 @@ export default {
         if (!reply.content && meta.answer) reply.content = meta.answer;
       } catch (e) {
         const msg = e.message || "request failed";
-        const ended = /session not found|not found|no such app|404/i.test(msg);
+        // daemon 404 (worker App removed) branches on the status code; the engine's
+        // 200 error envelope has no code field, so its text stays the fallback
+        const ended = e.statusCode === 404 || /session not found|not found|no such app|404/i.test(msg);
         reply.content = (reply.content ? reply.content + "\n" : "") +
           (ended ? "Session ended — close it and start a new chat." : "Failed: " + msg);
         reply.role = "error";

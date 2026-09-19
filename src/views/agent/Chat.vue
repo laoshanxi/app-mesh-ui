@@ -149,7 +149,9 @@ export default {
         });
       } catch (e) {
         const msg = e.message || "request failed";
-        if (/session not found|not found/i.test(msg)) {
+        // daemon 404 (worker App removed) branches on the status code; the engine's
+        // 200 error envelope has no code field, so its text stays the fallback
+        if (e.statusCode === 404 || /session not found|not found/i.test(msg)) {
           this.sessionId = ""; // expired/closed — the next send opens a fresh session
           this.messages.push({ role: "error", content: "Session expired. Send again to start a new one." });
         } else {

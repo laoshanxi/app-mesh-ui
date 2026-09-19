@@ -69,20 +69,20 @@ function oauthErrorMessage(error) {
 
 async function tokenRequest(form) {
   const base = await authBaseUrl();
+  let data;
   try {
-    const { data } = await axios.post(
+    ({ data } = await axios.post(
       `${base}/token`,
       new URLSearchParams(form).toString(),
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
-    );
-    if (!data?.access_token) {
-      throw new Error("The authentication service returned no access token");
-    }
-    return data;
+    ));
   } catch (error) {
-    if (error instanceof Error && error.message.includes("no access token")) throw error;
     throw new Error(oauthErrorMessage(error));
   }
+  if (!data?.access_token) {
+    throw new Error("The authentication service returned no access token");
+  }
+  return data;
 }
 
 function installTokens(data, clientId) {
@@ -215,6 +215,15 @@ function decodeStateParam(state) {
   }
 }
 
+// PKCE flow state; corrupted storage counts as no stored flow (state-mismatch error path).
+function readPkceStore() {
+  try {
+    return JSON.parse(sessionStorage.getItem(PKCE_STORE_KEY) || "null");
+  } catch {
+    return null;
+  }
+}
+
 /** Start the auth-code flow; a popup relays the code via postMessage, else full-page redirect. */
 export async function startAuthorizationLogin({ popup = false } = {}) {
   const cfg = await getAuthConfig();
@@ -303,7 +312,7 @@ export async function completeAuthorizationLogin() {
  * flow-start value — it verifies the nonce and binds the code to this verifier.
  */
 export async function completeAuthorizationWithCode(code, state) {
-  const saved = JSON.parse(sessionStorage.getItem(PKCE_STORE_KEY) || "null");
+  const saved = readPkceStore();
   sessionStorage.removeItem(PKCE_STORE_KEY);
   if (!saved || saved.state !== state || !decodeStateParam(state)) {
     throw new Error("Login state mismatch, please retry");

@@ -186,7 +186,7 @@
 <script>
 import applications from "@/services/applications";
 import { getClient } from "@/utils/appmeshClient";
-import { formatToLocal, formatToLocalDayTime, dayTimeToSeconds, deepClone } from "@/utils";
+import { formatToLocal, formatToLocalDayTime, dayTimeToSeconds, localTimeToSeconds, deepClone } from "@/utils";
 import { markRaw } from 'vue'
 import { Delete } from "@element-plus/icons-vue";
 
@@ -420,11 +420,11 @@ export default {
       this.registerForm.behavior.exit_code_actions = Object.keys(exitCodeActions).length > 0 ? exitCodeActions : null;
       if (this.registerForm.start_time_TEXT && this.registerForm.start_time_TEXT !== "") {
         // browser-zone datetime -> UTC seconds
-        this.registerForm.start_time = Date.parse(this.registerForm.start_time_TEXT) / 1000;
+        this.registerForm.start_time = localTimeToSeconds(this.registerForm.start_time_TEXT);
       }
       if (this.registerForm.end_time_TEXT && this.registerForm.end_time_TEXT !== "") {
         // browser-zone datetime -> UTC seconds
-        this.registerForm.end_time = Date.parse(this.registerForm.end_time_TEXT) / 1000;
+        this.registerForm.end_time = localTimeToSeconds(this.registerForm.end_time_TEXT);
       }
       if (this.registerForm.daily_limitation.daily_start_TEXT && this.registerForm.daily_limitation.daily_start_TEXT !== "") {
         // day time -> seconds within a day (daemon units); Date.parse would shift by the zone offset

@@ -132,8 +132,16 @@ export function formatToLocalIso(isoString) {
 
 export function formatToLocalDayTime(dayTime) {
   if (!dayTime) return "";
-  const date = moment("1970-01-01 " + dayTime);
+  const date = moment(dayTime, "HH:mm:ss");
   return date.isValid() ? date.format("HH:mm:ss") : "";
+}
+
+// local "YYYY-MM-DD HH:mm:ss" -> UTC epoch seconds (app schedule datetimes);
+// moment parses this non-ISO shape deterministically, Date.parse is engine-defined
+export function localTimeToSeconds(text) {
+  if (!text) return null;
+  const date = moment(text, "YYYY-MM-DD HH:mm:ss");
+  return date.isValid() ? Math.floor(date.valueOf() / 1000) : null;
 }
 
 export function formatDayTime(value) {
