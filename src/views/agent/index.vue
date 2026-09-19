@@ -35,9 +35,12 @@
         </el-table-column>
         <el-table-column label="State" min-width="100">
           <template #default="scope">
-            <el-tag :type="scope.row.enabled ? 'success' : 'info'">
-              {{ scope.row.enabled ? 'Enabled' : 'Disabled' }}
+            <el-tag v-if="scope.row.enabled" type="success">
+              Enabled
             </el-tag>
+            <el-tooltip v-else content="Disabled" placement="top">
+              <el-icon style="color: #909399; font-size: 18px; vertical-align: middle"><TurnOff /></el-icon>
+            </el-tooltip>
           </template>
         </el-table-column>
         <el-table-column label="Health" min-width="90">
@@ -197,7 +200,7 @@ import { formatEmpty, formatMemory } from "@/utils";
 
 export default {
   name: "AgentManage",
-  components: { SuccessFilled, WarningFilled },
+  components: { SuccessFilled, WarningFilled, TurnOff },
   data() {
     return {
       Plus: markRaw(Plus), Delete: markRaw(Delete), Open: markRaw(Open),

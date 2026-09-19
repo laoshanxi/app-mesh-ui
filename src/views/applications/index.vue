@@ -70,7 +70,9 @@
             <el-tag v-else-if="scope.row.enabled" :type="'success'">
               Enabled
             </el-tag>
-            <span v-else>-</span>
+            <el-tooltip v-else content="Disabled" placement="top">
+              <el-icon style="color: #909399; font-size: 18px; vertical-align: middle"><TurnOff /></el-icon>
+            </el-tooltip>
           </template>
         </el-table-column>
 
@@ -190,7 +192,7 @@ export default {
     AppDetail,
     AppLog,
     AppReg,
-    SuccessFilled, WarningFilled, ViewIcon, Document, Clock,
+    SuccessFilled, WarningFilled, ViewIcon, Document, Clock, TurnOff,
   },
   data() {
     return {

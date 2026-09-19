@@ -10,6 +10,9 @@
             <template v-else-if="'bool' in it">
               <el-tag size="small" effect="light" :type="it.bool ? 'success' : 'info'">{{ it.bool ? "Yes" : "No" }}</el-tag>
             </template>
+            <el-tooltip v-else-if="it.offIcon" content="Disabled" placement="top">
+              <el-icon style="color: #909399; font-size: 18px; vertical-align: middle"><TurnOff /></el-icon>
+            </el-tooltip>
             <span v-else :class="{ mono: it.mono, empty: isEmpty(it.v) }">{{ display(it.v) }}</span>
           </span>
         </div>
@@ -34,10 +37,12 @@
 </template>
 
 <script>
+import { TurnOff } from "@element-plus/icons-vue";
 import { formatEmpty, formatMemory, formatCpu } from "@/utils";
 
 export default {
   name: "AppDetail",
+  components: { TurnOff },
   props: { record: { type: Object, default: null } },
   computed: {
     sections() {
@@ -65,7 +70,7 @@ export default {
             { k: "Startup phase", v: r.startup_phase },
             { k: "Command", v: r.command, mono: true },
             { k: "Permission", v: r.permission },
-            { k: "State", tag: r.enabled ? { type: "success", label: "Enabled" } : null },
+            { k: "State", tag: r.enabled ? { type: "success", label: "Enabled" } : null, offIcon: !r.enabled },
             { k: "Working dir", v: r.working_dir, mono: true },
             { k: "Shell mode", bool: !!r.shell },
             { k: "Session login", bool: !!r.session_login },
