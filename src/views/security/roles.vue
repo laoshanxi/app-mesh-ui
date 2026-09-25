@@ -3,22 +3,22 @@
     <div class="page-title">Roles</div>
     <el-row>
       <el-button-group>
-        <el-button type="primary" :icon="Plus" @click="btnClick('new')">New</el-button>
+        <el-button type="primary" :icon="Plus" :disabled="!canSet" @click="btnClick('new')">New</el-button>
         <el-button
-          type="danger" :icon="Delete" :disabled="!isSelected"
+          type="danger" :icon="Delete" :disabled="!isSelected || !canDelete"
           @click="btnClick('delete')"
         >
           Delete
         </el-button>
         <el-button
-          type="success" :icon="Key" :disabled="!isSelected"
+          type="success" :icon="Key" :disabled="!isSelected || !canSet"
           @click="btnClick('permissions')"
         >
           Permissions
         </el-button>
       </el-button-group>
     </el-row>
-    <el-row>
+    <el-row class="fill-row">
       <el-table
         ref="roleTable" :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange"
@@ -30,7 +30,7 @@
         <el-table-column label="Permissions">
           <template #default="scope">
             <el-tag
-              v-for="permission in scope.row.permissions" :key="permission.id" type="info"
+              v-for="permission in scope.row.permissions" :key="permission" type="info"
               style="margin:0px 5px 5px 0px;"
             >
               {{ permission }}
@@ -73,6 +73,14 @@ export default {
       permissionsVisible: false,
       selectedForm: {},
     };
+  },
+  computed: {
+    canSet() {
+      return this.$store.getters.user?.permissions?.includes("role-set");
+    },
+    canDelete() {
+      return this.$store.getters.user?.permissions?.includes("role-delete");
+    },
   },
   mounted() {
     this.refreshData();
@@ -186,10 +194,14 @@ export default {
   min-height: 0;
 }
 
-.app-container > .el-row:last-child {
+.app-container > .el-row.fill-row {
   flex: 1 1 auto;
   min-height: 0;
   margin-bottom: 0;
+  /* el-row is a wrapping row-flex container: a height:100% child inside it resolves
+     against content height and overflows. Block layout keeps the percentage chain
+     so the table's horizontal scrollbar pins to the bottom of the viewport. */
+  display: block;
 }
 
 :deep(.fix-table) {

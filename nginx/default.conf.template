@@ -48,6 +48,35 @@ server {
         proxy_pass ${APP_MESH_AUTH_URL};
     }
 
+    # dexuser administration UI (Dex user/client/session/MFA management, served by the
+    # dexuser System App on the daemon host, loopback-only by default). Embedded by the
+    # Security > Users page under /dexuser/; its HTML uses absolute paths, rewritten here
+    # with sub_filter. The admin UI has NO authentication of its own: exposing this
+    # location makes user management available to anyone who can reach this origin —
+    # keep APP_MESH_ADMIN_UI_URL unreachable in untrusted deployments.
+    location /dexuser/ {
+        proxy_hide_header X-Frame-Options;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        # sub_filter cannot see compressed bodies
+        proxy_set_header Accept-Encoding "";
+        proxy_redirect ~^/(.*)$ /dexuser/$1;
+        sub_filter_once off;
+        # text/html is sub_filter_types' built-in default; re-listing it warns
+        # "duplicate MIME type" at startup, so only the extra type goes here.
+        sub_filter_types text/css;
+        sub_filter 'href="/' 'href="/dexuser/';
+        sub_filter 'src="/' 'src="/dexuser/';
+        sub_filter 'action="/' 'action="/dexuser/';
+        sub_filter 'url(/' 'url(/dexuser/';
+        # the demo home ("Flows") does an OIDC prompt=none roundtrip with an
+        # unregistered client — keep nav inside the admin surface instead
+        sub_filter 'href="/dexuser/"' 'href="/dexuser/admin"';
+        # Trailing slash: the /dexuser/ prefix is stripped before forwarding
+        proxy_pass ${APP_MESH_ADMIN_UI_URL}/;
+    }
+
     # App Mesh 6060 proxy
     location /appmesh/ {
         # Hide server-side CORS headers to avoid duplication
@@ -125,6 +154,12 @@ server {
         proxy_ssl_server_name on;
         proxy_pass ${APP_MESH_API_URL}/;
     }
+
+    # A browser that typed http:// against this TLS-only listener gets nginx's
+    # raw 497 page ("The plain HTTP request was sent to HTTPS port"). Bounce it
+    # to the https URL instead. $http_host (not $host) keeps a non-default
+    # published port, so a -p 8443:443 mapping still redirects where it should.
+    error_page 497 =301 https://$http_host$request_uri;
 
     # error_page  404             /404.html;
     # redirect server error pages to the static page /50x.html

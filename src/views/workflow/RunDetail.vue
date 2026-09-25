@@ -255,8 +255,9 @@ export default {
         case "success":
           return "success";
         case "failure":
-        case "cancelled":
           return "danger";
+        case "cancelled":
+          return "info";
         case "running":
           return "warning";
         case "pending":

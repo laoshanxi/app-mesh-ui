@@ -54,8 +54,8 @@ export default {
 
   cancel(vueComp) {
     if (!vueComp.selectedApp) return
-    getClient().cancel_task(vueComp.selectedApp).then(ok => {
-      ElMessage[ok ? 'success' : 'warning'](ok ? 'Task cancelled' : 'Cancel failed')
+    getClient().cancel_task(vueComp.selectedApp).then(() => {
+      ElMessage.success('Cancel request sent')
     }).catch(() => { }) // onError already showed the toast
   },
 }

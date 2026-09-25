@@ -72,7 +72,7 @@
           </el-select><span class="hint">start only after each dependency is healthy</span>
         </el-form-item>
         <el-form-item label="Run interval" prop="interval">
-          <el-input v-model="registerForm.interval" @input="onIntervalInput"></el-input><span class="hint">seconds or ISO 8601 duration, e.g. 5m — exclusive with cron</span>
+          <el-input v-model="registerForm.interval" @input="onIntervalInput"></el-input><span class="hint">seconds or ISO 8601 duration, e.g. PT5M — exclusive with cron</span>
         </el-form-item>
         <el-form-item label="Cron schedule" prop="cron_schedule">
           <el-input v-model="registerForm.cron_schedule" @input="onCronScheduleInput"></el-input><span class="hint">cron expression, e.g. */5 * * * *</span>
@@ -186,6 +186,7 @@
 <script>
 import applications from "@/services/applications";
 import { getClient } from "@/utils/appmeshClient";
+import { ElMessage } from "element-plus";
 import { formatToLocal, formatToLocalDayTime, dayTimeToSeconds, localTimeToSeconds, deepClone } from "@/utils";
 import { markRaw } from 'vue'
 import { Delete } from "@element-plus/icons-vue";
@@ -414,7 +415,13 @@ export default {
       const exitCodeActions = {};
       for (const rule of this.registerForm.exitCodeActions) {
         const code = (rule.code || "").trim();
-        if (code !== "") exitCodeActions[code] = rule.action;
+        if (code === "") continue;
+        // daemon requires numeric exit code keys (AppBehavior)
+        if (!/^-?\d+$/.test(code)) {
+          ElMessage.error(`Exit code "${code}" must be an integer.`);
+          return;
+        }
+        exitCodeActions[code] = rule.action;
       }
       this.registerForm.behavior = this.registerForm.behavior || {};
       this.registerForm.behavior.exit_code_actions = Object.keys(exitCodeActions).length > 0 ? exitCodeActions : null;

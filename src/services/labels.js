@@ -18,6 +18,11 @@ export default {
       ElMessage.error('Label key and value cannot be empty');
       return;
     }
+    // backend route /appmesh/label/([^/\*]+) rejects keys containing '/' or '*'
+    if (/[/*]/.test(row.key.trim())) {
+      ElMessage.error('Label key cannot contain "/" or "*"');
+      return;
+    }
 
     vueComp.listLoading = true;
     return getClient().add_label(row.key.trim(), row.value.trim())

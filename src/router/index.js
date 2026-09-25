@@ -160,6 +160,16 @@ export const constantRoutes = [
           icon: "role",
           roles: ["role-view"]
         }
+      },
+      {
+        path: "users",
+        name: "AuthUsers",
+        component: () => import("@/views/security/dexuser.vue"),
+        meta: {
+          title: "Users",
+          icon: "user",
+          roles: ["principal-set"]
+        }
       }
     ]
   },

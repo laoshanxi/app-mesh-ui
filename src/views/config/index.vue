@@ -19,9 +19,6 @@
                   <el-form-item label="Version" prop="Version">
                     <el-input v-model="form.Version" :readonly="true" :disabled="true" />
                   </el-form-item>
-                  <el-form-item label="Description" prop="BaseConfig.Description">
-                    <el-input v-model="form.BaseConfig.Description" />
-                  </el-form-item>
                   <el-form-item label="Log level" prop="BaseConfig.LogLevel">
                     <el-select v-model="form.BaseConfig.LogLevel" placeholder="Please select">
                       <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
@@ -49,7 +46,10 @@
                     <el-input v-model="form.BaseConfig.WorkingDirectory" />
                   </el-form-item>
                   <el-form-item label="Posix timezone" prop="BaseConfig.PosixTimezone">
-                    <el-input v-model="form.BaseConfig.PosixTimezone" />
+                    <el-input v-model="form.BaseConfig.PosixTimezone" :readonly="true" :disabled="true" />
+                    <el-tooltip content="Requires restart to take effect" placement="right">
+                      <el-icon class="field-hint"><InfoFilled /></el-icon>
+                    </el-tooltip>
                   </el-form-item>
                 </el-collapse-item>
 
@@ -146,7 +146,7 @@
             <el-row>
               <el-table
                 :key="tableKey" v-loading="listLoading" :data="labels" element-loading-text="Loading" border
-                style="width: 100%" height="100%" class="fix-table" highlight-current-row
+                size="small" style="width: 100%" height="100%" class="fix-table" highlight-current-row
                 @current-change="currentRowChange"
               >
                 <el-table-column label="Key" width="300">
@@ -212,7 +212,7 @@
 
 <script>
 import { markRaw } from 'vue'
-import { Setting, Connection, CollectionTag, Edit as EditIcon, CircleCheck, Delete, Plus } from '@element-plus/icons-vue'
+import { Setting, Connection, CollectionTag, Edit as EditIcon, CircleCheck, Delete, Plus, InfoFilled } from '@element-plus/icons-vue'
 import configService from "@/services/config";
 import labelsService from "@/services/labels";
 
@@ -221,6 +221,7 @@ export default {
     Setting,
     Connection,
     CollectionTag,
+    InfoFilled,
   },
   data() {
     return {
@@ -235,7 +236,6 @@ export default {
       form: {
         Version: "",
         BaseConfig: {
-          Description: "MYHOST",
           DefaultExecUser: "",
           DisableExecUser: false,
           ScheduleIntervalSeconds: 1,
@@ -386,6 +386,12 @@ export default {
 
 .fix-table {
   margin-top: 10px;
+}
+
+.field-hint {
+  margin-left: 8px;
+  color: #909399;
+  vertical-align: middle;
 }
 
 /* keep edit controls compact; input-number keeps its natural width. */

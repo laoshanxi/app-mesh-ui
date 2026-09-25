@@ -17,9 +17,19 @@ function runFinished(vueComp) {
 function refreshShellContents(vueComp, content) {
   const command = vueComp.input.replace(/^ +/g, "");
   if (command.startsWith("cd ")) {
-    vueComp.shellApp.working_dir = content;
+    const path = String(content).trim();
+    if (path.startsWith("/") && !/[\r\n]/.test(path)) {
+      vueComp.shellApp.working_dir = path;
+    }
   }
-  if (typeof content === 'object') {
+  if (typeof content === 'string') {
+    try {
+      content = JSON.parse(content);
+    } catch (e) {
+      // not JSON, keep the raw text
+    }
+  }
+  if (typeof content === 'object' && content !== null) {
     vueComp.shellContents.push({ type: "json", content });
     vueComp.$nextTick(() => {
       const shell = vueComp.$refs['shell_div'];
