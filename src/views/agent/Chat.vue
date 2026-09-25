@@ -1,5 +1,6 @@
 <template>
   <div class="agent-chat">
+    <div class="page-title">Chat</div>
     <div class="mode-bar">
       <el-radio-group v-model="mode" size="small">
         <el-radio-button value="batch">Quick answer</el-radio-button>

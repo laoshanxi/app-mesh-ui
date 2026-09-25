@@ -1,8 +1,8 @@
 <template>
   <div class="home-container">
+    <div class="page-title">Home</div>
     <div class="welcome-section">
       <img src="@/icons/svg/logo.svg" class="home-logo" />
-      <h1 class="home-title">Welcome to App Mesh</h1>
       <p class="home-subtitle">Cloud-native application management platform</p>
     </div>
 
@@ -129,15 +129,8 @@ export default {
   margin-bottom: 16px;
 }
 
-.home-title {
-  font-size: 28px;
-  font-weight: 600;
-  color: #303133;
-  margin: 0 0 8px 0;
-}
-
 .home-subtitle {
-  font-size: 16px;
+  font-size: 13px;
   color: #909399;
   margin: 0;
 }

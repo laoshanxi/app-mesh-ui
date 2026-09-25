@@ -5,6 +5,14 @@
   font-weight: 400 !important;
 }
 
+// The global `label { font-weight: 700 }` only reaches labels Element Plus
+// renders as a <label>. When a form item's content is not a single form control
+// (the Permission rows, the exit-code action rows) it renders something else and
+// the label falls back to 400, so pin the weight on the class instead.
+.el-form-item__label {
+  font-weight: 700;
+}
+
 .el-upload {
   input[type="file"] {
     display: none !important;

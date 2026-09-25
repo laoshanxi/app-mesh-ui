@@ -1,5 +1,6 @@
 <template>
   <div v-loading="loading" class="app-container">
+    <div class="page-title">Configuration</div>
     <el-row>
       <el-col :span="24">
         <el-tabs ref="tabs" v-model="activeTab" type="border-card">

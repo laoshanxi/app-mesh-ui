@@ -45,8 +45,8 @@ export default {
 }
 
 .sidebar-logo {
-  width: 46px;
-  height: 46px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
 }
 

@@ -1,38 +1,41 @@
 <template>
-  <el-card class="console-card">
-    <template #header>
-      <div class="toolbar">
-        <el-select v-model="selectedApp" filterable placeholder="Task-capable app" :loading="appsLoading" class="app-select">
-          <el-option v-for="a in apps" :key="a.name" :label="a.name" :value="a.name" />
-        </el-select>
-        <el-tag v-if="taskStatus" :type="taskStatus === 'idle' ? 'success' : 'warning'">{{ taskStatus }}</el-tag>
-        <span class="t-label">Timeout</span>
-        <el-input-number v-model="timeout" :min="1" :max="3600" :step="10" controls-position="right" class="t-num" />
-        <span class="spacer" />
-        <el-button type="primary" :loading="sending" :disabled="!selectedApp" @click="send">Send Task</el-button>
-        <el-button :disabled="!selectedApp" @click="cancel">Cancel</el-button>
-      </div>
-    </template>
-    <div class="console-body">
-      <div class="pane">
-        <div class="pane-title">Payload</div>
-        <textarea v-model="payload" class="dark-area" placeholder="e.g. print(1+2)"></textarea>
-        <div v-if="history.length" class="history">
-          <el-tag
-            v-for="(h, i) in history" :key="i" size="small" style="margin: 0 6px 6px 0; cursor: pointer"
-            @click="payload = h"
-          >
-            {{ h }}
-          </el-tag>
+  <div class="app-container">
+    <div class="page-title">Run Task</div>
+    <el-card class="console-card">
+      <template #header>
+        <div class="toolbar">
+          <el-select v-model="selectedApp" filterable placeholder="Task-capable app" :loading="appsLoading" class="app-select">
+            <el-option v-for="a in apps" :key="a.name" :label="a.name" :value="a.name" />
+          </el-select>
+          <el-tag v-if="taskStatus" :type="taskStatus === 'idle' ? 'success' : 'warning'">{{ taskStatus }}</el-tag>
+          <span class="t-label">Timeout</span>
+          <el-input-number v-model="timeout" :min="1" :max="3600" :step="10" controls-position="right" class="t-num" />
+          <span class="spacer" />
+          <el-button type="primary" :loading="sending" :disabled="!selectedApp" @click="send">Send Task</el-button>
+          <el-button :disabled="!selectedApp" @click="cancel">Cancel</el-button>
+        </div>
+      </template>
+      <div class="console-body">
+        <div class="pane">
+          <div class="pane-title">Payload</div>
+          <textarea v-model="payload" class="dark-area" placeholder="e.g. print(1+2)"></textarea>
+          <div v-if="history.length" class="history">
+            <el-tag
+              v-for="(h, i) in history" :key="i" size="small" style="margin: 0 6px 6px 0; cursor: pointer"
+              @click="payload = h"
+            >
+              {{ h }}
+            </el-tag>
+          </div>
+        </div>
+        <div class="pane">
+          <div class="pane-title">Result</div>
+          <json-viewer v-if="resultIsJson" :value="result" boxed />
+          <pre v-else class="dark-area">{{ result }}</pre>
         </div>
       </div>
-      <div class="pane">
-        <div class="pane-title">Result</div>
-        <json-viewer v-if="resultIsJson" :value="result" boxed />
-        <pre v-else class="dark-area">{{ result }}</pre>
-      </div>
-    </div>
-  </el-card>
+    </el-card>
+  </div>
 </template>
 
 <script>
@@ -79,6 +82,14 @@ export default {
 
 <style scoped>
 /* follow Shell: dark, full-height body flush to card edges */
+/* Fill app-main below the page title (same pattern as the other pages). */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .console-card {
   display: flex;
   flex-direction: column;

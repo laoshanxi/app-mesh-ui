@@ -19,11 +19,6 @@
       </div>
     </section>
 
-    <section v-if="record.metadata" class="kv-section">
-      <h3 class="kv-title">Metadata</h3>
-      <json-viewer :value="record.metadata" :expand-depth="2" class="meta-json" />
-    </section>
-
     <section v-if="record.env && Object.keys(record.env).length" class="kv-section">
       <h3 class="kv-title">Environment variables</h3>
       <div class="kv-grid kv-grid--one">
@@ -32,6 +27,11 @@
           <span class="v mono" :class="{ empty: isEmpty(value) }">{{ display(value) }}</span>
         </div>
       </div>
+    </section>
+
+    <section v-if="record.metadata" class="kv-section">
+      <h3 class="kv-title">Metadata</h3>
+      <pre class="meta-json">{{ metadataText }}</pre>
     </section>
   </div>
 </template>
@@ -122,6 +122,28 @@ export default {
         },
       ];
     },
+
+    // Metadata is a display value, not a tree to click through. Valid JSON is
+    // pretty-printed; any other format is kept exactly as the daemon sent it.
+    metadataText() {
+      const m = this.record.metadata;
+      if (typeof m !== "string") {
+        try {
+          return JSON.stringify(m, null, 2);
+        } catch {
+          return String(m);
+        }
+      }
+      const trimmed = m.trim();
+      if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+        try {
+          return JSON.stringify(JSON.parse(trimmed), null, 2);
+        } catch {
+          // not valid JSON after all — keep it verbatim below
+        }
+      }
+      return m;
+    },
   },
   methods: {
     formatEmpty,
@@ -148,7 +170,7 @@ export default {
 .kv-title {
   margin: 0 0 10px;
   padding-left: 9px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   line-height: 1.2;
   color: #303133;
@@ -161,8 +183,31 @@ export default {
   column-gap: 28px;
   row-gap: 0;
 
+  // Env var names are identifiers of arbitrary length, so a flex row with a fixed
+  // label width let long names paint straight over the value beside them. Table
+  // layout auto-sizes the label column to the longest name: names stay on one line
+  // and the values stay aligned. Only the environment section uses this modifier.
   &--one {
-    grid-template-columns: minmax(0, 1fr);
+    display: table;
+    width: 100%;
+
+    .kv {
+      display: table-row;
+      padding: 0;
+      border-bottom: 0;
+    }
+
+    .k,
+    .v {
+      display: table-cell;
+      padding: 6px 0;
+      border-bottom: 1px dashed #ebeef5;
+      vertical-align: baseline;
+    }
+
+    .v {
+      padding-left: 10px; // replaces the flex row's gap
+    }
   }
 }
 
@@ -205,9 +250,15 @@ export default {
 }
 
 .meta-json {
+  margin: 0;
   font-size: 12px;
+  line-height: 1.5;
+  font-family: Menlo, Monaco, Consolas, monospace;
+  color: #303133;
   border-radius: 6px;
   background-color: #fafafa;
   padding: 8px 10px;
+  white-space: pre-wrap; // wrap long values instead of scrolling sideways
+  word-break: break-all;
 }
 </style>

@@ -10,12 +10,12 @@
         @click="refresh()"
       />
 
-      <el-tooltip content="Request Forwarding" placement="bottom">
+      <el-tooltip content="Request Forwarding (port defaults to 6059)" placement="bottom">
         <el-input
           v-model="forward"
           size="small"
           class="forward-input"
-          placeholder="Forward to host (port defaults to 6059)"
+          placeholder="Forward to host"
           clearable
           list="forward-suggestions"
         >

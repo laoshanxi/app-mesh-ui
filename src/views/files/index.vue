@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <div class="page-title">File Management</div>
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">

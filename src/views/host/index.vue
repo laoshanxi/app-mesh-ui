@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+    <div class="page-title">Host</div>
     <el-tabs type="border-card">
       <el-tab-pane>
         <template #label>

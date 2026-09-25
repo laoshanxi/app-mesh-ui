@@ -1,46 +1,49 @@
 <template>
-  <el-card
-    class="shell-card"
-    @keyup="clearScreenByKeyUp"
-    @keydown="clearScreenByKeyDown"
-  >
-    <template #header>
-      <div class="toolbar">
-        <el-switch v-model="isSync" active-text="Sync" inactive-text="Async" />
-        <span class="t-label">Timeout</span>
-        <el-input-number v-model="timeout" :min="5" :max="60" :step="5" controls-position="right" class="t-num" />
-      </div>
-    </template>
-    <div ref="shell_div" v-loading="loading" element-loading-text="Downloading" class="shell-div" @click="moveFocus">
-      <el-button-group class="buttonsArea">
-        <el-icon @click="clearScreen"><Delete /></el-icon>
-      </el-button-group>
-      <div class="shell-content">
-        <div v-for="(line, lineIndex) in shellContents" :key="lineIndex" class="shell-line">
-          <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{ line.content }}</pre>
-          <json-viewer
-            v-else-if="line.type == 'json'" boxed theme="my-awesome-json-theme" :value="line.content"
-            style="line-height: 18px"
+  <div class="app-container">
+    <div class="page-title">Run Shell</div>
+    <el-card
+      class="shell-card"
+      @keyup="clearScreenByKeyUp"
+      @keydown="clearScreenByKeyDown"
+    >
+      <template #header>
+        <div class="toolbar">
+          <el-switch v-model="isSync" active-text="Sync" inactive-text="Async" />
+          <span class="t-label">Timeout</span>
+          <el-input-number v-model="timeout" :min="5" :max="60" :step="5" controls-position="right" class="t-num" />
+        </div>
+      </template>
+      <div ref="shell_div" v-loading="loading" element-loading-text="Downloading" class="shell-div" @click="moveFocus">
+        <el-button-group class="buttonsArea">
+          <el-icon @click="clearScreen"><Delete /></el-icon>
+        </el-button-group>
+        <div class="shell-content">
+          <div v-for="(line, lineIndex) in shellContents" :key="lineIndex" class="shell-line">
+            <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{ line.content }}</pre>
+            <json-viewer
+              v-else-if="line.type == 'json'" boxed theme="my-awesome-json-theme" :value="line.content"
+              style="line-height: 18px"
+            >
+            </json-viewer>
+            <pre v-else :class="{ 'command': line.type == 'command' }">{{ line.content }}</pre>
+          </div>
+        </div>
+        <div class="shell-command">
+          <el-button v-if="connected === 0" @click.stop="connectHost()">Re-connect</el-button>
+
+          <el-input
+            v-if="connected === 2" ref="input" v-model="input" :disabled="inputDisabled" class="shell-input"
+            placeholder="Please enter a command" @keyup.enter="runShell()" @keyup.up="upCommand"
+            @keyup.down="downCommand"
           >
-          </json-viewer>
-          <pre v-else :class="{ 'command': line.type == 'command' }">{{ line.content }}</pre>
+            <template #prepend>
+              <pre># </pre>
+            </template>
+          </el-input>
         </div>
       </div>
-      <div class="shell-command">
-        <el-button v-if="connected === 0" @click.stop="connectHost()">Re-connect</el-button>
-
-        <el-input
-          v-if="connected === 2" ref="input" v-model="input" :disabled="inputDisabled" class="shell-input"
-          placeholder="Please enter a command" @keyup.enter="runShell()" @keyup.up="upCommand"
-          @keyup.down="downCommand"
-        >
-          <template #prepend>
-            <pre># </pre>
-          </template>
-        </el-input>
-      </div>
-    </div>
-  </el-card>
+    </el-card>
+  </div>
 </template>
 
 <script>
@@ -188,6 +191,14 @@ export default {
 }
 </style>
 <style scoped>
+/* Fill app-main below the page title (same pattern as the other pages). */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 .shell-card {
   display: flex;
   flex-direction: column;

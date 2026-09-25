@@ -4,12 +4,28 @@
 @use './element-ui.scss';
 @use './sidebar.scss';
 
+// Type scale — four sizes, one per purpose, applied app-wide:
+//   18px  page title / brand  (.page-title, sidebar brand)
+//   14px  nav chrome          Element Plus base: sidebar menu, buttons, inputs
+//   13px  page content        tables, key/value rows, form labels
+//   12px  secondary           tags, monospace meta, hints
+// Chrome deliberately keeps Element Plus's own 14px base, so only the content
+// tier is stepped down here rather than the whole component library.
 body {
   height: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  font-size: 13px; // non-component text sits on the content tier
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+// Content sits one step below chrome. Dense tables opt into
+// --el-font-size-extra-small (12px) in Element Plus, so they are pinned here too.
+.el-table,
+.el-table--small,
+.el-form-item__label {
+  font-size: 13px;
 }
 
 label {

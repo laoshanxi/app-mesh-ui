@@ -261,8 +261,8 @@ export default {
       if (Object.keys(this.propForm).length !== 0) {
         this.registerForm = this.merge(deepClone(this.propForm), this.registerForm);
         let permission = this.registerForm.permission + "";
-        this.registerForm.otherPermission = permission.length === 2 ? permission.substring(0, 1) : 3;
-        this.registerForm.groupPermission = permission.length === 2 ? permission.substring(1, 2) : 3;
+        this.registerForm.otherPermission = permission.length === 2 ? permission.substring(0, 1) : "3";
+        this.registerForm.groupPermission = permission.length === 2 ? permission.substring(1, 2) : "3";
         if (this.registerForm.daily_limitation) {
           this.registerForm.daily_limitation.daily_start_TEXT = formatToLocalDayTime(this.registerForm.daily_limitation.daily_start_TEXT);
           this.registerForm.daily_limitation.daily_end_TEXT = formatToLocalDayTime(this.registerForm.daily_limitation.daily_end_TEXT);
@@ -307,8 +307,10 @@ export default {
         shell: false,
         session_login: false,
         permission: null,
-        otherPermission: 3,
-        groupPermission: 3,
+        // Strings: the radio buttons bind value="1|2|3", and a numeric default
+        // would match none of them, leaving both rows unselected on a new app.
+        otherPermission: "3",
+        groupPermission: "3",
         metadata: '',
         stdout_backup_count: 0,
         enabled: true,
@@ -491,9 +493,15 @@ export default {
 }
 
 .register-card .el-input,
-.register-card .el-input-number,
 .register-card .depends-select {
   width: 340px;
+  margin-right: 10px;
+}
+
+/* A number stepper only ever holds a short count, so it does not need the
+   full text-input width. */
+.register-card .el-input-number {
+  width: 130px;
   margin-right: 10px;
 }
 
@@ -537,10 +545,13 @@ export default {
   display: flex;
   align-items: center;
   gap: 10px;
+  /* The form content is a wrapping flex row, so two short rows sat side by side
+     and the margin-top below never took effect. Claiming a full line stacks them. */
+  flex: 0 0 100%;
 }
 
 .perm-row + .perm-row {
-  margin-top: 6px;
+  margin-top: 2px;
 }
 
 .perm-label {

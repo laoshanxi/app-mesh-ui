@@ -1,5 +1,6 @@
 <template>
   <div v-loading="loading" class="app-container">
+    <div class="page-title">Prometheus</div>
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
@@ -55,12 +56,17 @@ export default {
   flex: 1 1 auto;
   min-height: 0;
   margin-bottom: 0;
+  /* Same reason as principals.vue: el-row is a wrapping row-flex container, so a
+     child resolves its height against the content and the inner scroller never
+     engages. Block layout keeps the percentage chain intact. */
+  display: block;
 }
 
 .app-container > .el-row > .el-col {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  height: 100%;
 }
 
 :deep(.el-tabs) {

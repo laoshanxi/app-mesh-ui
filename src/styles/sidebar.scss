@@ -66,6 +66,16 @@
       width: 100% !important;
       background-color: $menuBg;
       color: $menuText !important;
+      // Row heights live in Element Plus variables so top-level and submenu rows
+      // stay consistent; the per-element rules below used to pin only the submenu.
+      --el-menu-item-height: 44px;
+      --el-menu-sub-item-height: 40px;
+
+      // Menu labels sit on the chrome type tier, not the content tier.
+      .el-menu-item,
+      .el-submenu__title {
+        font-size: 14px;
+      }
     }
 
     // menu hover
@@ -117,8 +127,8 @@
       .el-menu-item {
         margin: 0 !important;
         padding-left: 48px !important;
-        height: 50px !important;
-        line-height: 50px !important;
+        height: 40px !important;
+        line-height: 40px !important;
         background-color: $subMenuBg !important;
 
         &:hover {
@@ -135,8 +145,8 @@
       .el-submenu__title {
         margin: 0 !important;
         padding: 0 20px !important;
-        height: 50px !important;
-        line-height: 50px !important;
+        height: 40px !important;
+        line-height: 40px !important;
       }
     }
 
@@ -217,7 +227,7 @@
         display: flex !important;
         align-items: center;
         justify-content: center;
-        height: 56px;
+        height: 44px;
       }
 
       // hide ALL text spans inside collapsed menu

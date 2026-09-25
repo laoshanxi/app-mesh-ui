@@ -18,15 +18,18 @@
         ref="principalTable" :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange"
       >
-        <el-table-column label="Principal" min-width="220">
+        <!-- A principal_id is "oidc:" + a 64-char hash (69 chars, ~502px), and rows with no
+             display_name show it in full; it needs the room that the sparse columns were
+             holding. The tooltip is a safety net for an even longer id. -->
+        <el-table-column label="Principal" min-width="520" show-overflow-tooltip>
           <template #default="scope">{{ scope.row.display_name || scope.row.principal_id }}</template>
         </el-table-column>
 
-        <el-table-column label="Kind" width="100">
+        <el-table-column label="Kind" width="90">
           <template #default="scope">{{ scope.row.kind }}</template>
         </el-table-column>
 
-        <el-table-column class-name="status-col" label="Status" width="110">
+        <el-table-column class-name="status-col" label="Status" width="100">
           <template #default="scope">
             <el-tag :type="statusTagType(scope.row.status)">{{ scope.row.status }}</el-tag>
           </template>
@@ -36,11 +39,13 @@
           <template #default="scope">{{ scope.row.email }}</template>
         </el-table-column>
 
-        <el-table-column label="Exec user" width="140">
+        <el-table-column label="Exec user" width="100">
           <template #default="scope">{{ scope.row.execution_user }}</template>
         </el-table-column>
 
-        <el-table-column label="Roles">
+        <!-- min-width so role tags keep their room; without it this column just
+             absorbs whatever the flexible columns leave and clips the tags. -->
+        <el-table-column label="Roles" min-width="200">
           <template #default="scope">
             <el-tag v-for="(role, index) in scope.row.roles" :key="index" type="info" style="margin:0px 5px 5px 0px;">
               {{ role }}

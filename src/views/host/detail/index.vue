@@ -165,7 +165,7 @@ export default {
 .kv-title {
   margin: 0 0 10px;
   padding-left: 9px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   line-height: 1.2;
   color: #303133;
