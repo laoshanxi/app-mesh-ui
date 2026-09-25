@@ -17,9 +17,9 @@
         <div class="kv"><span class="k">App Mesh version</span><span class="v">{{ formatEmpty(record.appmesh_version) }}</span></div>
         <div class="kv"><span class="k">Daemon start time</span><span class="v">{{ formatEmpty(record.appmesh_start_time) }}</span></div>
         <div class="kv"><span class="k">Daemon PID</span><span class="v">{{ formatEmpty(record.pid) }}</span></div>
-        <div class="kv"><span class="k">1 min load</span><span class="v">{{ formatEmpty(record.load["1min"]) }}</span></div>
-        <div class="kv"><span class="k">5 min load</span><span class="v">{{ formatEmpty(record.load["5min"]) }}</span></div>
-        <div class="kv"><span class="k">15 min load</span><span class="v">{{ formatEmpty(record.load["15min"]) }}</span></div>
+        <div class="kv"><span class="k">1 min load</span><span class="v">{{ formatEmpty(record.load?.["1min"]) }}</span></div>
+        <div class="kv"><span class="k">5 min load</span><span class="v">{{ formatEmpty(record.load?.["5min"]) }}</span></div>
+        <div class="kv"><span class="k">15 min load</span><span class="v">{{ formatEmpty(record.load?.["15min"]) }}</span></div>
       </div>
     </section>
 

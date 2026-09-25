@@ -61,28 +61,14 @@ export default {
       showCollapse: false,
       button: "Expand",
       btnIcon: markRaw(CirclePlus),
-      timer: null,
-      memoryChart: null,
-      memoryData: [],
     };
   },
   mounted() {
     this.initData();
   },
-  unmounted() {
-    if (this.timer) {
-      clearInterval(this.timer);
-    }
-  },
   methods: {
     initData() {
       hostService.getResources(this);
-    },
-    monitor() {
-      hostService.drawChart(this);
-      this.timer = setInterval(() => {
-        hostService.getResourcesForChart(this);
-      }, 1000);
     },
     expandJson() {
       let tmpJson = this.resources;

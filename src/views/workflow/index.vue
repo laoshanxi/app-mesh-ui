@@ -11,7 +11,7 @@
         </el-button>
       </el-button-group>
     </el-row>
-    <el-row>
+    <el-row class="fill-row">
       <el-table
         ref="wfTable" :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         style="width: 100%" height="100%" class="fix-table" :fit="true" highlight-current-row
@@ -26,7 +26,7 @@
         </el-table-column>
         <el-table-column label="Owner" width="130">
           <template #default="scope">
-            {{ formatEmpty(scope.row.owner) }}
+            {{ formatEmpty(scope.row.owner_display_name || scope.row.owner) }}
           </template>
         </el-table-column>
         <el-table-column label="Last Run" width="110">
@@ -251,7 +251,7 @@ export default {
         case "success": return "success";
         case "failure": return "danger";
         case "running": return "primary";
-        case "cancelled": return "warning";
+        case "cancelled": return "info";
         case "skipped": return "info";
         case "pending": return "info";
         default: return "info";
@@ -480,10 +480,14 @@ export default {
   min-height: 0;
 }
 
-.app-container > .el-row:last-child {
+.app-container > .el-row.fill-row {
   flex: 1 1 auto;
   min-height: 0;
   margin-bottom: 0;
+  /* el-row is a wrapping row-flex container: a height:100% child inside it resolves
+     against content height and overflows. Block layout keeps the percentage chain
+     so the table's horizontal scrollbar pins to the bottom of the viewport. */
+  display: block;
 }
 
 :deep(.fix-table) {

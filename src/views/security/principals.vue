@@ -5,7 +5,7 @@
       <el-button-group>
         <el-button type="primary" :icon="Plus" :disabled="!canSet" @click="btnClick('new')">New</el-button>
         <el-button
-          type="success" :disabled="!isSelected || !canSet"
+          type="success" :disabled="!isSelected || !canSet || isTombstoned"
           @click="btnClick('update')"
         >
           <i class="iconfont icon-role" style="margin-right: 4px;" />Edit
@@ -13,7 +13,7 @@
         <el-button type="danger" :icon="Delete" :disabled="!isSelected || !canDelete" @click="delPrincipal()">Delete</el-button>
       </el-button-group>
     </el-row>
-    <el-row>
+    <el-row class="fill-row">
       <el-table
         ref="principalTable" :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         style="width: 100%" height="100%" class="fix-table" highlight-current-row @current-change="currentRowChange"
@@ -141,6 +141,10 @@ export default {
     canDelete() {
       return this.$store.getters.user?.permissions?.includes("principal-delete");
     },
+    // tombstoned overlays are not editable: the backend only accepts active/disabled
+    isTombstoned() {
+      return this.currentRow?.status === "tombstoned";
+    },
   },
   watch: {
     // the backend derives the principal id from issuer + subject; show it live
@@ -161,7 +165,11 @@ export default {
       if (this.formMode !== "new") return;
       const { issuer, subject } = this.principalForm;
       this.principalForm.principal_id =
-        issuer && subject ? await computePrincipalId(issuer.trim(), subject.trim()) : "";
+        issuer && subject ? await computePrincipalId(this.normalizeIssuer(issuer), subject.trim()) : "";
+    },
+    // mirror the backend's normalizeIssuer: trim and drop trailing '/'
+    normalizeIssuer(issuer) {
+      return issuer.trim().replace(/\/+$/, "");
     },
     loadRoles() {
       getClient()
@@ -265,11 +273,11 @@ export default {
             roles: form.roles,
           };
           if (this.formMode === "new") {
-            principalId = await computePrincipalId(form.issuer.trim(), form.subject.trim());
+            principalId = await computePrincipalId(this.normalizeIssuer(form.issuer), form.subject.trim());
             // creation requires the full identity in the body; id = stable id from issuer+subject
             await getClient().update_principal(principalId, {
               kind: form.kind,
-              issuer: form.issuer.trim(),
+              issuer: this.normalizeIssuer(form.issuer),
               subject: form.subject.trim(),
               ...policy,
             });
@@ -341,10 +349,14 @@ export default {
   min-height: 0;
 }
 
-.app-container > .el-row:last-child {
+.app-container > .el-row.fill-row {
   flex: 1 1 auto;
   min-height: 0;
   margin-bottom: 0;
+  /* el-row is a wrapping row-flex container: a height:100% child inside it resolves
+     against content height and overflows. Block layout keeps the percentage chain
+     so the table's horizontal scrollbar pins to the bottom of the viewport. */
+  display: block;
 }
 
 :deep(.fix-table) {

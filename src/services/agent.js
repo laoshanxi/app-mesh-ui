@@ -360,7 +360,6 @@ export default {
       description: `llm-agent interactive worker (session=${sid})`,
       command: `python3 -m llm_agent --session-worker --session-id=${sid} --server=127.0.0.1:6059`,
       working_dir: templateApp.working_dir,
-      owner, // session owner — the daemon's owner-permission gates access
       enabled: true,
       permission: 11, // owner(+admin) only
       stdout_backup_count: 1000, // let polling catch up to recent tokens

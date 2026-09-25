@@ -20,7 +20,7 @@
     <div class="dialog-footer">
       <el-button @click="cancel()">Cancel</el-button>
       <el-button @click="reset()">Reset</el-button>
-      <el-button type="primary" @click="savePermissions()">Save</el-button>
+      <el-button type="primary" :disabled="permissionsLoadFailed" @click="savePermissions()">Save</el-button>
     </div>
   </div>
 </template>
@@ -39,6 +39,7 @@ export default {
         permissions: [],
       },
       permissions: [],
+      permissionsLoadFailed: false,
       permissionRules: {},
     };
   },
@@ -75,8 +76,13 @@ export default {
               });
             }
           }
+          this.permissionsLoadFailed = false;
         })
-        .catch((err) => { console.warn(err); })
+        .catch((err) => {
+          console.warn(err);
+          this.permissionsLoadFailed = true;
+          ElMessage.error("Failed to load the permission list (requires the \"permission-list\" permission); saving is disabled.");
+        })
         .then(() => { });
     },
     setFromWithProps() {
@@ -99,6 +105,7 @@ export default {
     },
 
     savePermissions() {
+      if (this.permissionsLoadFailed) return;
       getClient().update_role(
         this.permissionForm.name,
         this.permissionForm.permissions

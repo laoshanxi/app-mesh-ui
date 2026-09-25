@@ -67,7 +67,7 @@ export default {
             { k: "Owner", v: r.owner_display_name || r.owner_principal_id },
             { k: "Execution user", v: r.execution_user },
             { k: "System app", bool: !!r.system },
-            { k: "Startup phase", v: r.startup_phase },
+            { k: "Startup phase", v: r.startup_phase || "normal" },
             { k: "Command", v: r.command, mono: true },
             { k: "Permission", v: r.permission },
             { k: "State", tag: r.enabled ? { type: "success", label: "Enabled" } : null, offIcon: !r.enabled },
@@ -93,7 +93,7 @@ export default {
           items: [
             { k: "PID", v: r.pid },
             { k: "PID user", v: r.pid_user },
-            { k: "Health", v: r.health },
+            { k: "Health", tag: r.health === 0 ? { type: "success", label: "Healthy" } : (r.health === 1 ? { type: "danger", label: "Unhealthy" } : null) },
             { k: "Memory", v: formatMemory(r.memory) },
             { k: "CPU usage", v: formatCpu(r.cpu) },
             { k: "Next start time", v: r.next_start_time_TEXT },

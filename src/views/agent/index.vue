@@ -13,7 +13,7 @@
       </el-button-group>
     </el-row>
 
-    <el-row>
+    <el-row class="fill-row">
       <el-table
         ref="agentTable" v-loading="listLoading" :data="list" border style="width: 100%" height="100%"
         class="fix-table" highlight-current-row show-overflow-tooltip @current-change="currentRowChange"
@@ -323,10 +323,14 @@ export default {
   min-height: 0;
 }
 
-.app-container > .el-row:last-child {
+.app-container > .el-row.fill-row {
   flex: 1 1 auto;
   min-height: 0;
   margin-bottom: 0;
+  /* el-row is a wrapping row-flex container: a height:100% child inside it resolves
+     against content height and overflows. Block layout keeps the percentage chain
+     so the table's horizontal scrollbar pins to the bottom of the viewport. */
+  display: block;
 }
 
 :deep(.fix-table) {

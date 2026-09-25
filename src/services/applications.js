@@ -157,6 +157,15 @@ export default {
     vueComp.$refs["regForm"].validate((valid) => {
       if (valid) {
         let data = JSON.parse(JSON.stringify(vueComp.registerForm));
+        // both times empty means no daily window: drop the whole object so the
+        // daemon doesn't persist a 0:00-0:00 DailyLimitation
+        if (data.daily_limitation && !data.daily_limitation.daily_start_TEXT && !data.daily_limitation.daily_end_TEXT) {
+          delete data.daily_limitation;
+        } else if (data.daily_limitation) {
+          // *_TEXT are UI helpers; the daemon only reads daily_start/daily_end
+          delete data.daily_limitation.daily_start_TEXT;
+          delete data.daily_limitation.daily_end_TEXT;
+        }
         let envs = {
         };
         for (let i = 0; i < vueComp.registerForm.envs.length; i++) {
@@ -190,8 +199,22 @@ export default {
         formatData(data);
         removeEmptyProperties(data);
 
-        getClient().add_app(data.name, data).then(() => {
-          ElMessage.success('Application ' + data.name + ' register successfully.');
+        // whitelist: add_app only accepts definition keys parsed by Application::FromJson;
+        // edited rows also carry runtime fields (pid state, health, pstree, register_time, ...)
+        const definitionKeys = [
+          'name', 'command', 'description', 'enabled', 'working_dir', 'docker_image',
+          'env', 'secret_env', 'resource_limit', 'daily_limitation', 'interval',
+          'cron_schedule', 'stop_grace_period', 'stdout_backup_count', 'behavior',
+          'permission', 'metadata', 'health_check_cmd', 'shell', 'session_login',
+          'depends_on', 'start_time', 'end_time', 'pid'
+        ];
+        let payload = {};
+        for (const key of definitionKeys) {
+          if (data[key] !== undefined && data[key] !== null) payload[key] = data[key];
+        }
+
+        getClient().add_app(payload.name, payload).then(() => {
+          ElMessage.success('Application ' + payload.name + ' register successfully.');
           vueComp.$emit("success");
           vueComp.reset();
         }, () => {

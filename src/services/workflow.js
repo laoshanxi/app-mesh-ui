@@ -112,7 +112,7 @@ export default {
   run(vueComp, workflow, inputs) {
     return call('run', { workflow, inputs }, 60).then(res => {
       const id = res.data && res.data.run_id
-      ElMessage.success(`Run ${res.message || 'started'}: ${id}`)
+      ElMessage.success(`Run started: ${id}`)
       return res
     })
   },
@@ -129,7 +129,7 @@ export default {
   rerun(vueComp, workflow, runId) {
     return call('rerun', { workflow, run_id: runId }, 60).then(res => {
       const id = res.data && res.data.run_id
-      ElMessage.success(`Rerun ${res.message || 'started'}: ${id}`)
+      ElMessage.success(`Rerun started: ${id}`)
       return res
     })
   },

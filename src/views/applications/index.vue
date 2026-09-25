@@ -26,7 +26,7 @@
         </el-button>
       </el-button-group>
     </el-row>
-    <el-row>
+    <el-row class="fill-row">
       <el-table
         ref="appTable" :key="tableKey" v-loading="listLoading" :data="list" element-loading-text="Loading" border
         style="width: 100%" height="100%" class="fix-table" :fit="true" highlight-current-row show-overflow-tooltip
@@ -57,22 +57,15 @@
             {{ formatEmpty(scope.row.owner_display_name || scope.row.owner_principal_id) }}
           </template>
         </el-table-column>
-        <el-table-column class-name="status-col" label="State" min-width="110">
+        <el-table-column class-name="status-col" label="Enabled" min-width="90">
           <template #default="scope">
-            <el-tooltip
-              v-if="scope.row.enabled && !scope.row.pid && scope.row.waiting_for && scope.row.waiting_for.length"
-              :content="'Waiting for: ' + scope.row.waiting_for.join(', ')" placement="top"
+            <el-icon
+              v-if="scope.row.enabled"
+              style="color: #85ce61; font-size: 18px; vertical-align: middle"
             >
-              <el-tag :type="'warning'">
-                Waiting
-              </el-tag>
-            </el-tooltip>
-            <el-tag v-else-if="scope.row.enabled" :type="'success'">
-              Enabled
-            </el-tag>
-            <el-tooltip v-else content="Disabled" placement="top">
-              <el-icon style="color: #909399; font-size: 18px; vertical-align: middle"><TurnOff /></el-icon>
-            </el-tooltip>
+              <SuccessFilled />
+            </el-icon>
+            <span v-else>-</span>
           </template>
         </el-table-column>
 
@@ -192,7 +185,7 @@ export default {
     AppDetail,
     AppLog,
     AppReg,
-    SuccessFilled, WarningFilled, ViewIcon, Document, Clock, TurnOff,
+    SuccessFilled, WarningFilled, ViewIcon, Document, Clock,
   },
   data() {
     return {
@@ -241,7 +234,7 @@ export default {
         this.$refs["appLog"].initCurPage();
       }
       this.isShowLog = true;
-      if (curRow.stdout_file_count === 0) {
+      if (!curRow.stdout_file_count) {
         return;
       }
       this.getAppLogByName(this.currentRow.name);
@@ -311,10 +304,14 @@ export default {
   min-height: 0;
 }
 
-.app-container > .el-row:last-child {
+.app-container > .el-row.fill-row {
   flex: 1 1 auto;
   min-height: 0;
   margin-bottom: 0;
+  /* el-row is a wrapping row-flex container: a height:100% child inside it resolves
+     against content height and overflows. Block layout keeps the percentage chain
+     so the table's horizontal scrollbar pins to the bottom of the viewport. */
+  display: block;
 }
 
 :deep(.fix-table) {
