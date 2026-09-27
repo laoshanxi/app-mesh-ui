@@ -255,13 +255,13 @@ export async function startAuthorizationLogin({ popup = false } = {}) {
   return "redirect";
 }
 
-// http(s)-only check for relay targets decoded from the OAuth state.
-function isHttpOrigin(value) {
+// http(s)-only relay targets decoded from the OAuth state, normalized to a bare origin.
+function parseHttpOrigin(value) {
   try {
-    const protocol = new URL(value).protocol;
-    return protocol === "http:" || protocol === "https:";
+    const url = new URL(value);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.origin : null;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -275,15 +275,13 @@ export async function completeAuthorizationLogin() {
 
   // Security: `o` in state is attacker-controllable — only the registered browser entry
   // may relay a code to a foreign origin; any other foreign `o` is an open redirect (DOM-XSS).
+  // parseHttpOrigin normalizes to a bare http(s) origin (no userinfo/path/scheme tricks).
   const cfg = await getAuthConfig();
   const entryOrigin = new URL(webRedirectUri(cfg)).origin;
+  const foreignOrigin =
+    origin && origin !== window.location.origin ? parseHttpOrigin(origin) : null;
   const relayTarget =
-    origin &&
-    origin !== window.location.origin &&
-    isHttpOrigin(origin) &&
-    window.location.origin === entryOrigin
-      ? origin
-      : null;
+    foreignOrigin && window.location.origin === entryOrigin ? foreignOrigin : null;
 
   if (window.opener) {
     // Popup: hand the code to the opener (relayTarget when the entry is another origin).
@@ -297,7 +295,8 @@ export async function completeAuthorizationLogin() {
 
   // Redirect entry differs from the UI origin: relay the code there (like the static relay pages).
   if (relayTarget) {
-    window.location.replace(`${relayTarget}/oauth/callback${window.location.search}`);
+    // codeql[js/client-side-unvalidated-url-redirection] relayTarget is a parsed http/https origin honored only when this window is the registered browser entry; the relayed code is unusable without the PKCE verifier held in the originating session.
+    window.location.replace(`${relayTarget}/oauth/callback${window.location.search}`); // codeql[js/xss] relayTarget is pinned to an http(s) origin by parseHttpOrigin, so a javascript: URL is impossible.
     return "relayed";
   }
 
