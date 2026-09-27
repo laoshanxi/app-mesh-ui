@@ -1,4 +1,5 @@
-FROM node:20-alpine AS builder
+# Deliberate LTS pin: node 20 is EOL, newer lines are non-LTS (see dependabot.yml)
+FROM node:22-alpine AS builder
 WORKDIR /workspace
 COPY package*.json ./
 RUN npm install --legacy-peer-deps && npm cache clean --force
