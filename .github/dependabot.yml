@@ -1,0 +1,38 @@
+# Dependabot version updates — takes effect once this file is on the default branch.
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  # npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    # Non-breaking updates arrive as a single PR
+    groups:
+      npm-minor-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      # `latest` is the Vue 2 line (2.2.22); we use 3.0.4 from the `vue3` tag,
+      # so an update here would be a breaking downgrade
+      - dependency-name: "vue-json-viewer"
+      # Majors here are migrations (eslint flat config, vite 8, vue-router 5, G2 5), not bumps
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # Base images in the Dockerfile
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    ignore:
+      # Builder is pinned to an LTS on purpose; a major bump lands on a non-LTS release
+      - dependency-name: "node"
+        update-types: ["version-update:semver-major"]
+
+  # Actions used by the workflows
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
