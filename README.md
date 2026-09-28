@@ -4,7 +4,7 @@
 
 This is the Web GUI implementation for [App Mesh](https://github.com/laoshanxi/app-mesh).
 
-<div align=center><img src="https://github.com/laoshanxi/picture/raw/master/appmesh/web-diagram.png" align=center /></div>
+<div align=center><img src="https://github.com/laoshanxi/picture/raw/master/appmesh/web-diagram.svg" align=center /></div>
 
 ## Features
 
