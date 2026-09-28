@@ -3,14 +3,14 @@
     <div class="page-title">Principals</div>
     <el-row>
       <el-button-group>
-        <el-button type="primary" :icon="Plus" :disabled="!canSet" @click="btnClick('new')">New</el-button>
+        <el-button v-if="$hasPermission('principal-set')" type="primary" :icon="Plus" @click="btnClick('new')">New</el-button>
         <el-button
-          type="success" :disabled="!isSelected || !canSet || isTombstoned"
+          v-if="$hasPermission('principal-set')" type="success" :disabled="!isSelected || isTombstoned"
           @click="btnClick('update')"
         >
           <i class="iconfont icon-role" style="margin-right: 4px;" />Edit
         </el-button>
-        <el-button type="danger" :icon="Delete" :disabled="!isSelected || !canDelete" @click="delPrincipal()">Delete</el-button>
+        <el-button v-if="$hasPermission('principal-delete')" type="danger" :icon="Delete" :disabled="!isSelected" @click="delPrincipal()">Delete</el-button>
       </el-button-group>
     </el-row>
     <el-row class="fill-row">

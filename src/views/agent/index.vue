@@ -3,13 +3,12 @@
     <div class="page-title">Agents</div>
     <el-row>
       <el-button-group>
-        <el-button type="primary" :icon="Plus" @click="openRegister">Register Agent</el-button>
-        <el-button :icon="Refresh" @click="fetchData">Refresh</el-button>
+        <el-button v-if="$hasPermission('app-reg')" type="primary" :icon="Plus" @click="openRegister">Register Agent</el-button>
       </el-button-group>
       <el-button-group>
-        <el-button type="success" :icon="Open" :disabled="!isSelected || isEnabled" @click="enable">Enable</el-button>
-        <el-button type="warning" :icon="TurnOff" :disabled="!isSelected || !isEnabled" @click="disable">Disable</el-button>
-        <el-button type="danger" :icon="Delete" :disabled="!isSelected" @click="remove">Delete</el-button>
+        <el-button v-if="$hasPermission('app-control')" type="success" :icon="Open" :disabled="!isSelected || isEnabled" @click="enable">Enable</el-button>
+        <el-button v-if="$hasPermission('app-control')" type="warning" :icon="TurnOff" :disabled="!isSelected || !isEnabled" @click="disable">Disable</el-button>
+        <el-button v-if="$hasPermission('app-delete')" type="danger" :icon="Delete" :disabled="!isSelected" @click="remove">Delete</el-button>
       </el-button-group>
     </el-row>
 
@@ -20,7 +19,8 @@
       >
         <el-table-column label="Name" min-width="220">
           <template #default="scope">
-            <el-link underline="always" @click="showOutput(scope.row)">{{ scope.row.name }}</el-link>
+            <el-link v-if="$hasPermission('app-output-view')" underline="always" @click="showOutput(scope.row)">{{ scope.row.name }}</el-link>
+            <span v-else>{{ scope.row.name }}</span>
           </template>
         </el-table-column>
         <el-table-column label="Type" min-width="120">
@@ -194,7 +194,7 @@
 
 <script>
 import { markRaw } from "vue";
-import { Plus, Delete, Open, TurnOff, Refresh, SuccessFilled, WarningFilled } from "@element-plus/icons-vue";
+import { Plus, Delete, Open, TurnOff, SuccessFilled, WarningFilled } from "@element-plus/icons-vue";
 import agentService from "@/services/agent";
 import { formatEmpty, formatMemory } from "@/utils";
 
@@ -204,7 +204,7 @@ export default {
   data() {
     return {
       Plus: markRaw(Plus), Delete: markRaw(Delete), Open: markRaw(Open),
-      TurnOff: markRaw(TurnOff), Refresh: markRaw(Refresh),
+      TurnOff: markRaw(TurnOff),
       list: [],
       listLoading: false,
       currentRow: null,

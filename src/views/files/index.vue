@@ -4,7 +4,7 @@
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
-          <el-tab-pane style="max-width: 600px">
+          <el-tab-pane v-if="$hasPermission('file-upload')" style="max-width: 600px">
             <template #label>
               <span>
                 <el-icon><Upload /></el-icon> Upload file
@@ -31,7 +31,7 @@
               </el-form-item>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane>
+          <el-tab-pane v-if="$hasPermission('file-download')">
             <template #label>
               <span>
                 <el-icon><Download /></el-icon> Download file

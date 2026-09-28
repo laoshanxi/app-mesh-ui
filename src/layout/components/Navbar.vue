@@ -31,14 +31,14 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <el-avatar shape="circle" :size="30" :src="avatar">
-            <span>User</span>
+            <el-icon><User /></el-icon>
           </el-avatar>
           <span class="UserName-avatar">{{ name }}</span>
           <el-icon class="arrow-down"><ArrowDown /></el-icon>
         </div>
         <template #dropdown>
           <el-dropdown-menu class="user-dropdown">
-            <router-link to="/security/principals">
+            <router-link v-if="$hasPermission(['principal-list', 'role-view', 'principal-set'])" :to="securityPath">
               <el-dropdown-item>
                 <i class="iconfont icon-lock"></i>Security
               </el-dropdown-item>
@@ -59,7 +59,7 @@
 import { mapGetters } from 'vuex'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { markRaw } from 'vue'
-import { Refresh, ArrowDown } from '@element-plus/icons-vue'
+import { Refresh, ArrowDown, User } from '@element-plus/icons-vue'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
 import { getClient } from '@/utils/appmeshClient'
@@ -70,7 +70,8 @@ export default {
   components: {
     Breadcrumb,
     Hamburger,
-    ArrowDown
+    ArrowDown,
+    User
   },
   data() {
     return {
@@ -89,7 +90,12 @@ export default {
       'name',
       'forwarding',
       'loading'
-    ])
+    ]),
+    securityPath() {
+      if (this.$hasPermission('principal-list')) return '/security/principals';
+      if (this.$hasPermission('role-view')) return '/security/roles';
+      return '/security/users';
+    }
   },
   created() {
     this.forward = this.$store.getters.forwarding;

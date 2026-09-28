@@ -4,7 +4,7 @@
     <el-row>
       <el-col :span="24">
         <el-tabs ref="tabs" v-model="activeTab" type="border-card">
-          <el-tab-pane name="config" style="min-width: 600px">
+          <el-tab-pane v-if="$hasPermission('config-view')" name="config" style="min-width: 600px">
             <template #label>
               <span>
                 <el-icon><Setting /></el-icon> Configuration
@@ -138,7 +138,7 @@
               </el-collapse>
             </el-form>
           </el-tab-pane>
-          <el-tab-pane name="labels" style="min-width: 600px">
+          <el-tab-pane v-if="$hasPermission('label-view')" name="labels" style="min-width: 600px">
             <template #label>
               <span>
                 <el-icon><CollectionTag /></el-icon> Labels
@@ -169,7 +169,7 @@
                     <span v-else>{{ scope.row.value }}</span>
                   </template>
                 </el-table-column>
-                <el-table-column label="Action" width="260">
+                <el-table-column v-if="$hasPermission(['label-set', 'label-delete'])" label="Action" width="260">
                   <template #default="scope">
                     <el-button
                       v-if="!scope.row.isEdit" text :icon="EditIcon" :disabled="isEdit"
@@ -180,11 +180,11 @@
                     <el-button v-if="scope.row.isEdit" text :icon="CircleCheck" @click="cancelUpdate(scope.row)">
                       Cancel
                     </el-button>
-                    <el-button v-if="scope.row.isEdit" text :icon="CircleCheck" @click="updateLabel(scope.row)">
+                    <el-button v-if="scope.row.isEdit && $hasPermission('label-set')" text :icon="CircleCheck" @click="updateLabel(scope.row)">
                       Save
                     </el-button>
                     <el-button
-                      v-if="!scope.row.isNew" text :icon="Delete" :disabled="isEdit"
+                      v-if="!scope.row.isNew && $hasPermission('label-delete')" text :icon="Delete" :disabled="isEdit"
                       @click="removeLabel(scope.row)"
                     >
                       Remove
@@ -198,13 +198,13 @@
       </el-col>
     </el-row>
     <div class="control">
-      <el-button v-show="isConfigTab" type="primary" @click.prevent="saveConfig()">
+      <el-button v-if="$hasPermission('config-set')" v-show="isConfigTab" type="primary" @click.prevent="saveConfig()">
         Save
       </el-button>
       <el-button v-show="isConfigTab" @click.prevent="reset()">
         Reset
       </el-button>
-      <el-button v-show="!isConfigTab" type="primary" :icon="Plus" :disabled="isEdit" @click="addLabel()">
+      <el-button v-if="$hasPermission('label-set')" v-show="!isConfigTab" type="primary" :icon="Plus" :disabled="isEdit" @click="addLabel()">
         Add
       </el-button>
     </div>
@@ -232,7 +232,7 @@ export default {
       Plus: markRaw(Plus),
       loading: false,
       activeNames: ["1", "2"],
-      activeTab: 'config',
+      activeTab: this.$hasPermission('config-view') ? 'config' : 'labels',
       passwordType: 'password',
       form: {
         Version: "",
@@ -323,14 +323,20 @@ export default {
   },
   methods: {
     refresh() {
-      configService.refresh(this);
-      this.refreshLabels();
+      if (this.$hasPermission('config-view')) {
+        configService.refresh(this);
+      }
+      if (this.$hasPermission('label-view')) {
+        this.refreshLabels();
+      }
     },
     saveConfig() {
       configService.saveConfig(this);
     },
     reset() {
-      configService.refresh(this);
+      if (this.$hasPermission('config-view')) {
+        configService.refresh(this);
+      }
     },
     editLabel(row) {
       this.isEdit = true;

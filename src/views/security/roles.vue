@@ -3,15 +3,15 @@
     <div class="page-title">Roles</div>
     <el-row>
       <el-button-group>
-        <el-button type="primary" :icon="Plus" :disabled="!canSet" @click="btnClick('new')">New</el-button>
+        <el-button v-if="$hasPermission('role-set')" type="primary" :icon="Plus" @click="btnClick('new')">New</el-button>
         <el-button
-          type="danger" :icon="Delete" :disabled="!isSelected || !canDelete"
+          v-if="$hasPermission('role-delete')" type="danger" :icon="Delete" :disabled="!isSelected"
           @click="btnClick('delete')"
         >
           Delete
         </el-button>
         <el-button
-          type="success" :icon="Key" :disabled="!isSelected || !canSet"
+          v-if="$hasPermission('role-set')" type="success" :icon="Key" :disabled="!isSelected"
           @click="btnClick('permissions')"
         >
           Permissions

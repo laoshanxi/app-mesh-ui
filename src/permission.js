@@ -1,27 +1,16 @@
-import router from "./router";
+import router, { constantRoutes } from "./router";
 import store from "./store";
 import { ElMessage } from "element-plus";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 import getPageTitle from "@/utils/get-page-title";
 import { completeAuthorizationLogin } from "@/utils/oidc";
+import { checkPermission, filterRoutes, firstMenuPath } from "@/utils/permission";
 
 NProgress.configure({ showSpinner: false });
 
 // Validate the cached session once per page-load (the sessionStorage identity is otherwise trusted blindly).
 let sessionValidated = false;
-
-const hasRequiredPermission = (userPermissions, requiredRoles) => {
-  if (!Array.isArray(requiredRoles)) return false;
-  if (requiredRoles.length === 0) return true;
-
-  if (!Array.isArray(userPermissions) || userPermissions.length === 0)
-    return false;
-
-  return requiredRoles.some(
-    (role) => typeof role === "string" && userPermissions.includes(role)
-  );
-};
 
 const finishLoading = (immediate = false) => {
   NProgress.done();
@@ -105,8 +94,15 @@ router.beforeEach(async (to, from, next) => {
 
   if (
     to.meta?.roles &&
-    !hasRequiredPermission(userInfo.permissions, to.meta.roles)
+    !checkPermission(userInfo.permissions, to.meta.roles)
   ) {
+    // Root landing on the default page without its permission: fall through to
+    // the first menu entry the user may actually open instead of showing 401.
+    if (from.path === "/" && to.path === "/applications/index") {
+      const fallback = firstMenuPath(filterRoutes(constantRoutes));
+      next(fallback && fallback !== to.path ? { path: fallback, replace: true } : { path: "/401", replace: true });
+      return;
+    }
     ElMessage.error("You do not have permission to access this page");
     next({ path: "/401", replace: true });
     return;

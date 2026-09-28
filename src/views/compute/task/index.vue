@@ -11,8 +11,8 @@
           <span class="t-label">Timeout</span>
           <el-input-number v-model="timeout" :min="1" :max="3600" :step="10" controls-position="right" class="t-num" />
           <span class="spacer" />
-          <el-button type="primary" :loading="sending" :disabled="!selectedApp" @click="send">Send Task</el-button>
-          <el-button :disabled="!selectedApp" @click="cancel">Cancel</el-button>
+          <el-button v-if="$hasPermission('app-run-task')" type="primary" :loading="sending" :disabled="!selectedApp" @click="send">Send Task</el-button>
+          <el-button v-if="$hasPermission('app-run-task')" :disabled="!selectedApp" @click="cancel">Cancel</el-button>
         </div>
       </template>
       <div class="console-body">

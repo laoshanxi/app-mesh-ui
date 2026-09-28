@@ -48,7 +48,7 @@ export const constantRoutes = [
         path: "index",
         name: "Applications",
         component: () => import("@/views/applications/index.vue"),
-        meta: { title: "Applications", icon: "application" }
+        meta: { title: "Applications", icon: "application", roles: ["app-view-all"] }
       }
     ]
   },
@@ -66,19 +66,19 @@ export const constantRoutes = [
         path: "shell",
         name: "WebShell",
         component: () => import("@/views/shell/index.vue"),
-        meta: { title: "Run Shell", icon: "shell" }
+        meta: { title: "Run Shell", icon: "shell", roles: ["app-run-sync", "app-run-async"] }
       },
       {
         path: "app",
         name: "RunApp",
         component: () => import("@/views/compute/runApp/index.vue"),
-        meta: { title: "Run App", icon: "application" }
+        meta: { title: "Run App", icon: "application", roles: ["app-run-sync", "app-run-async"] }
       },
       {
         path: "task",
         name: "RunTask",
         component: () => import("@/views/compute/task/index.vue"),
-        meta: { title: "Run Task", icon: "task" }
+        meta: { title: "Run Task", icon: "task", roles: ["app-run-task"] }
       }
     ]
   },
@@ -97,19 +97,19 @@ export const constantRoutes = [
         path: "index",
         name: "Workflow",
         component: () => import("@/views/workflow/index.vue"),
-        meta: { title: "Workflows", icon: "tree" }
+        meta: { title: "Workflows", icon: "tree", roles: ["app-run-task"] }
       },
       {
         path: "agent/chat",
         name: "AgentChat",
         component: () => import("@/views/agent/Chat.vue"),
-        meta: { title: "Chat", icon: "chat" }
+        meta: { title: "Chat", icon: "chat", roles: ["app-run-task"] }
       },
       {
         path: "agent/manage",
         name: "AgentManage",
         component: () => import("@/views/agent/index.vue"),
-        meta: { title: "Agents", icon: "agent" }
+        meta: { title: "Agents", icon: "agent", roles: ["app-view-all"] }
       }
     ]
   },
@@ -121,7 +121,7 @@ export const constantRoutes = [
         path: "index",
         name: "Host",
         component: () => import("@/views/host/index.vue"),
-        meta: { title: "Host", icon: "host" }
+        meta: { title: "Host", icon: "host", roles: ["host-resource-view"] }
       }
     ]
   },
@@ -181,7 +181,7 @@ export const constantRoutes = [
         path: "index",
         name: "File Management",
         component: () => import("@/views/files/index.vue"),
-        meta: { title: "File Management", icon: "files" }
+        meta: { title: "File Management", icon: "files", roles: ["file-download", "file-upload"] }
       }
     ]
   },
@@ -193,7 +193,7 @@ export const constantRoutes = [
         path: "index",
         name: "Prometheus",
         component: () => import("@/views/prometheus/index.vue"),
-        meta: { title: "Prometheus", icon: "Prometheus" }
+        meta: { title: "Prometheus", icon: "Prometheus", roles: ["host-resource-view"] }
       }
     ]
   },
@@ -205,7 +205,7 @@ export const constantRoutes = [
         path: "index",
         name: "Config",
         component: () => import("@/views/config/index.vue"),
-        meta: { title: "Configuration", icon: "config" }
+        meta: { title: "Configuration", icon: "config", roles: ["config-view", "label-view"] }
       }
     ]
   },

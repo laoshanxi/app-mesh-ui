@@ -3,22 +3,23 @@
     <div class="page-title">Applications</div>
     <el-row>
       <el-button-group>
-        <el-button type="primary" :icon="Plus" @click="btnClick('register')">
+        <el-button v-if="$hasPermission('app-reg')" type="primary" :icon="Plus" @click="btnClick('register')">
           Add
         </el-button>
-        <el-button type="success" :icon="Edit" :disabled="!isSelected" @click="btnClick('update')">
+        <el-button v-if="$hasPermission('app-reg')" type="success" :icon="Edit" :disabled="!isSelected" @click="btnClick('update')">
           Edit
         </el-button>
-        <el-button type="danger" :icon="Delete" :disabled="!isSelected" @click="btnClick('delete')">
+        <el-button v-if="$hasPermission('app-delete')" type="danger" :icon="Delete" :disabled="!isSelected" @click="btnClick('delete')">
           Delete
         </el-button>
       </el-button-group>
 
       <el-button-group>
-        <el-button type="success" :icon="Open" :disabled="!isSelected || isEnabled" @click="btnClick('enable')">
+        <el-button v-if="$hasPermission('app-control')" type="success" :icon="Open" :disabled="!isSelected || isEnabled" @click="btnClick('enable')">
           Enable
         </el-button>
         <el-button
+          v-if="$hasPermission('app-control')"
           type="warning" :icon="TurnOff" :disabled="!isSelected || !isEnabled"
           @click="btnClick('disable')"
         >
@@ -117,11 +118,18 @@
         <el-table-column prop="last_start_time" label="Last Start Time" min-width="210">
           <template #default="scope">
             <span v-if="scope.row.last_start_time">
-              <el-link underline="always" title="Show log" @click="showLog(scope.row)">
+              <template v-if="$hasPermission('app-output-view')">
+                <el-link underline="always" title="Show log" @click="showLog(scope.row)">
+                  <el-icon><Document /></el-icon>
+                  <el-icon style="margin-right: 5px"><Clock /></el-icon>
+                  {{ formatDate(scope.row.last_start_time) }}
+                </el-link>
+              </template>
+              <template v-else>
                 <el-icon><Document /></el-icon>
                 <el-icon style="margin-right: 5px"><Clock /></el-icon>
                 {{ formatDate(scope.row.last_start_time) }}
-              </el-link>
+              </template>
             </span>
             <span v-else>-</span>
           </template>

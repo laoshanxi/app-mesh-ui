@@ -11,6 +11,7 @@ import '@/styles/index.scss'
 import App from './App.vue'
 import store from './store'
 import router from './router'
+import { hasPermission } from '@/utils/permission'
 
 import '@/permission'
 
@@ -28,5 +29,7 @@ app.use(store)
 app.use(router)
 
 app.component('SvgIcon', SvgIcon)
+
+app.config.globalProperties.$hasPermission = hasPermission
 
 app.mount('#app')

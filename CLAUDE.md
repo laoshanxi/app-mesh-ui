@@ -109,7 +109,14 @@ View → `src/services/*.js` → `getClient()` (`src/utils/appmeshClient.js`) �
 
 ### Auth & Navigation Guard
 
-`src/permission.js` is the global router guard: it validates the cached session, loads identity + permissions into Vuex, and filters routes by permission. Tokens live in `sessionStorage` and are managed by `src/utils/oidc.js`.
+`src/permission.js` is the global router guard: it validates the cached session, loads identity + permissions into Vuex, and enforces `meta.roles` (redirecting unauthorized navigation to `/401`, or to the first permitted menu entry when the root landing page is not allowed). Tokens live in `sessionStorage` and are managed by `src/utils/oidc.js`.
+
+### Permission-Based Visibility
+
+`src/utils/permission.js` holds the shared checks: `checkPermission(userPermissions, required)` (OR semantics), `hasPermission(required)` (reads the Vuex user), `filterRoutes(routes)` (drops routes whose `meta.roles` fail and groups left without children), and `firstMenuPath(routes)`.
+
+- Menus: the sidebar renders `filterRoutes(constantRoutes)`; leaf routes declare the backend permission string(s) they need in `meta.roles` (names come from `Utility.h` in the app-mesh daemon, e.g. `app-view-all`, `app-control`, `file-upload`).
+- Buttons: hidden with `v-if="$hasPermission(...)"` (`$hasPermission` is a global property registered in `main.js`); the security pages keep their older `:disabled`-style gating.
 
 ## Code Conventions
 

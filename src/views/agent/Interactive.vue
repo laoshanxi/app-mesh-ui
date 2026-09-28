@@ -9,7 +9,10 @@
         >
           <el-option v-for="a in agents" :key="a.name" :label="a.name" :value="a.name" />
         </el-select>
-        <el-button size="small" type="primary" :loading="creating" :disabled="!template" @click="newSession">
+        <el-button
+          v-if="$hasPermission('app-reg')" size="small" type="primary" :loading="creating"
+          :disabled="!template" @click="newSession"
+        >
           + New
         </el-button>
       </div>

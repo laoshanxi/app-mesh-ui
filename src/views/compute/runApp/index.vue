@@ -11,7 +11,7 @@
           <span class="t-label">Timeout</span>
           <el-input-number v-model="timeout" :min="5" :max="300" :step="5" controls-position="right" class="t-num" />
           <span class="spacer" />
-          <el-button type="primary" :loading="running" :disabled="!selectedApp" @click="run">Run</el-button>
+          <el-button v-if="$hasPermission(['app-run-sync', 'app-run-async'])" type="primary" :loading="running" :disabled="!selectedApp" @click="run">Run</el-button>
           <el-button :disabled="!output" @click="output = ''">Clear</el-button>
         </div>
       </template>

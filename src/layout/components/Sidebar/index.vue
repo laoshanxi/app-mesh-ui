@@ -21,6 +21,7 @@ import { mapGetters } from 'vuex'
 import Logo from './Logo.vue'
 import SidebarItem from './SidebarItem.vue'
 import { constantRoutes } from '@/router/index.js'
+import { filterRoutes } from '@/utils/permission'
 import variables from '@/styles/variables.module.scss'
 
 export default {
@@ -30,7 +31,7 @@ export default {
       'sidebar'
     ]),
     routes() {
-      return constantRoutes
+      return filterRoutes(constantRoutes, this.$store.getters.user?.permissions)
     },
     activeMenu() {
       const route = this.$route
