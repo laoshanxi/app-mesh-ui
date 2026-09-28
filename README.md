@@ -85,20 +85,39 @@ docker run \
 
 ## Interface Preview
 
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/1.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/2.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/3.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/4.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/5.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/6.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/7.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/8.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/9.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/a.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/b.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/c.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/d.png?raw=true" />
-<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/e.png?raw=true" />
+### Login
+
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/login.png?raw=true" />
+
+### Applications
+
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/applications.png?raw=true" />
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/app-detail.png?raw=true" />
+
+### Compute
+
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/run-shell.png?raw=true" />
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/run-task.png?raw=true" />
+
+### AI & Workflow
+
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/workflow.png?raw=true" />
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/agent-chat.png?raw=true" />
+
+### Host & File Management
+
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/host.png?raw=true" />
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/files.png?raw=true" />
+
+### Security
+
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/security-principals.png?raw=true" />
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/security-roles.png?raw=true" />
+
+### Monitoring & Configuration
+
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/prometheus.png?raw=true" />
+<img src="https://github.com/laoshanxi/picture/blob/master/appmesh/ui/config.png?raw=true" />
 
 ## License
 

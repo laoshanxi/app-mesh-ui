@@ -19,3 +19,6 @@ tests/**/coverage/
 *.ntvs*
 *.njsproj
 *.sln
+
+# local clone of the laoshanxi/picture image repo (screenshots)
+/picture/
