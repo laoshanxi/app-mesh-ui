@@ -11,24 +11,57 @@ export class VueAppMeshClient extends AppMeshClient {
     super(options.baseURL, options.sslConfig);
   }
 
+  /**
+   * Single interception point for every API call:
+   * 1. refresh a near-expiry token BEFORE the request goes out (no 401 at all);
+   * 2. on a 401, silently refresh and retry once — the user only sees an error
+   *    when the refresh fails or the fresh token is still rejected.
+   */
+  async _request(method, path, body = null, options = {}) {
+    if (hasSession()) {
+      const token = await ensureFreshToken();
+      if (token) this.set_bearer_token(token);
+    }
+
+    try {
+      return await super._request(method, path, body, options);
+    } catch (error) {
+      if (error?.statusCode !== HttpStatus.UNAUTHORIZED || !hasSession()) throw error;
+
+      // Bearer rejected: one silent refresh + retry; report only if that fails.
+      const token = await refreshSession();
+      if (!token) this._sessionExpired(error);
+      this.set_bearer_token(token);
+
+      try {
+        return await super._request(method, path, body, options);
+      } catch (retryError) {
+        if (retryError?.statusCode === HttpStatus.UNAUTHORIZED) {
+          this._sessionExpired(retryError);
+        }
+        throw retryError;
+      }
+    }
+  }
+
+  /** Refresh failed or a fresh token was still rejected: the session is dead. */
+  _sessionExpired(error) {
+    ElMessage({
+      message: "Session expired, please sign in again",
+      type: "error",
+      duration: 5000,
+      grouping: true,
+    });
+    forceRelogin();
+    throw error;
+  }
+
   onError(error) {
     if (error?.statusCode === HttpStatus.UNAUTHORIZED) {
-      // 401 = bearer missing/expired: one silent refresh; re-login only if that fails.
-      if (hasSession()) {
-        refreshSession().then((token) => {
-          if (token) {
-            ElMessage({
-              message: "Session refreshed, please retry your action",
-              type: "info",
-              duration: 5000,
-            });
-          } else {
-            forceRelogin();
-          }
-        });
-      } else {
-        forceRelogin();
-      }
+      // 401 = bearer missing/expired. With a session, _request owns the silent
+      // refresh + retry, so stay quiet here; without one, go to login.
+      if (hasSession()) return error;
+      forceRelogin();
     }
     // 403/503 keep the session: the token is valid, only the action is not allowed.
 
