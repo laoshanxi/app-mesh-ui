@@ -1,33 +1,19 @@
 <template>
   <div class="app-container">
     <div class="page-title">Run Shell</div>
-    <el-card
-      class="shell-card"
-      @keyup="clearScreenByKeyUp"
-      @keydown="clearScreenByKeyDown"
-    >
+    <el-card class="shell-card">
       <template #header>
         <div class="toolbar">
           <el-switch v-model="isSync" active-text="Sync" inactive-text="Async" />
           <span class="t-label">Timeout</span>
           <el-input-number v-model="timeout" :min="5" :max="60" :step="5" controls-position="right" class="t-num" />
+          <span class="spacer" />
+          <el-button @click="clearScreen">
+            <el-icon><Delete /></el-icon>
+          </el-button>
         </div>
       </template>
       <div ref="shell_div" v-loading="loading" element-loading-text="Downloading" class="shell-div" @click="moveFocus">
-        <el-button-group class="buttonsArea">
-          <el-icon @click="clearScreen"><Delete /></el-icon>
-        </el-button-group>
-        <div class="shell-content">
-          <div v-for="(line, lineIndex) in shellContents" :key="lineIndex" class="shell-line">
-            <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{ line.content }}</pre>
-            <json-viewer
-              v-else-if="line.type == 'json'" boxed theme="my-awesome-json-theme" :value="line.content"
-              style="line-height: 18px"
-            >
-            </json-viewer>
-            <pre v-else :class="{ 'command': line.type == 'command' }">{{ line.content }}</pre>
-          </div>
-        </div>
         <div class="shell-command">
           <el-button v-if="connected === 0" @click.stop="connectHost()">Re-connect</el-button>
 
@@ -41,6 +27,17 @@
             </template>
           </el-input>
         </div>
+        <div class="shell-content">
+          <div v-for="(line, lineIndex) in shellContents" :key="lineIndex" class="shell-line">
+            <pre v-if="line.type == 'file'" class="file" @click="download(line)">{{ line.content }}</pre>
+            <json-viewer
+              v-else-if="line.type == 'json'" boxed theme="my-awesome-json-theme" :value="line.content"
+              style="line-height: 18px"
+            >
+            </json-viewer>
+            <pre v-else :class="{ 'command': line.type == 'command' }">{{ line.content }}</pre>
+          </div>
+        </div>
       </div>
     </el-card>
   </div>
@@ -50,6 +47,7 @@
 import shellService from "@/services/shell";
 import fileService from "@/services/file";
 import { Delete } from "@element-plus/icons-vue";
+import { ElMessageBox } from "element-plus";
 
 export default {
   name: "Shell",
@@ -58,7 +56,8 @@ export default {
     return {
       loading: false,
       timeout: 10,
-      control: false,
+      runningApp: "",
+      stopped: false,
       marks: {
         10: "10s",
         20: "20s",
@@ -88,8 +87,12 @@ export default {
       clearInterval(this.timer);
       this.timer = null;
     }
+    document.removeEventListener("keydown", this.onKeyDown);
   },
   mounted() {
+    // Focus leaves the input while a command runs, so the shortcut has to be
+    // listened for at the document level to stay reachable.
+    document.addEventListener("keydown", this.onKeyDown);
     this.connectHost();
   },
   methods: {
@@ -97,16 +100,20 @@ export default {
       this.shellContents = [];
       this.input = "";
     },
-    clearScreenByKeyDown(e) {
-      if (e.key == "Control") {
-        this.control = true;
-      } else if (this.control && e.key == "c") {
-        this.clearScreen();
+    onKeyDown(e) {
+      if (!e.ctrlKey || e.key.toLowerCase() !== "c") return;
+      // Leave Ctrl+C to the browser while text is selected, so copying output
+      // is not turned into a kill.
+      const selection = window.getSelection();
+      if (selection && selection.toString().length > 0) return;
+      if (this.inputDisabled) {
+        e.preventDefault();
+        shellService.stop(this);
+        return;
       }
-    },
-    clearScreenByKeyUp(e) {
-      if (e.key == "Control") {
-        this.control = false;
+      if (this.$refs.shell_div && this.$refs.shell_div.contains(e.target)) {
+        e.preventDefault();
+        this.clearScreen();
       }
     },
     moveFocus() {
@@ -125,14 +132,17 @@ export default {
       return;
     },
     downCommand() {
-      if (this.commands.length === 0) {
+      if (this.commands.length === 0 || this.index === -1) {
         return;
       }
-      if (this.index > -1 && this.index < this.commands.length - 1) {
+      if (this.index < this.commands.length - 1) {
         this.index++;
+        this.input = this.commands[this.index];
+        return;
       }
-      this.input = this.commands[this.index];
-      return;
+      // Walked past the newest entry: return to an empty prompt, as bash does.
+      this.index = -1;
+      this.input = "";
     },
     connectHost() {
       shellService.connectHost(this);
@@ -157,7 +167,20 @@ export default {
       shellService.run(this);
     },
     async download(obj) {
-      await fileService.downloadFile(this, obj.dir.trim() + "/" + obj.fileName);
+      // dir is "/" when listing the root; dropping the trailing slash keeps the
+      // join from producing "//name".
+      const dir = obj.dir.replace(/\/+$/, "");
+      const filePath = dir + "/" + obj.fileName;
+      // The listed name is derived from ls output, so show the path that will
+      // actually be fetched before anything is downloaded.
+      try {
+        await ElMessageBox.confirm(`Download <${filePath}>?`, "Download", {
+          type: "info", confirmButtonText: "Download", cancelButtonText: "Cancel",
+        });
+      } catch {
+        return; // dismissed
+      }
+      await fileService.downloadFile(this, filePath);
     },
   },
 };
@@ -168,6 +191,8 @@ export default {
   width: 100% !important;
 }
 
+/* Same face, size and green as the echoed "# command" lines, so the prompt row
+   reads as one more line of the session rather than a form field. */
 .shell-input .el-input__wrapper,
 .shell-input .el-input__inner {
   border: 0px !important;
@@ -175,19 +200,28 @@ export default {
   margin: 0px !important;
   padding: 0px !important;
   background-color: #001528 !important;
-  color: #889aa4;
+  color: #67c23a;
+  font-family: Consolas, Menlo, Courier, monospace;
+  font-size: 14px;
+  height: 20px;
+  line-height: 20px;
 }
 
 .shell-input .el-input-group__prepend {
   border: 0px !important;
   box-shadow: none !important;
   background-color: #001528 !important;
-  color: #889aa4;
-  padding: 0 5px !important;
+  color: #67c23a;
+  padding: 0 !important;
 }
 
-.el-card .el-card__body {
-  padding: 0 !important;
+/* The prepend's <pre> keeps a default 1em margin that drops the prompt below
+   the echoed lines it is meant to line up with. */
+.shell-input .el-input-group__prepend pre {
+  margin: 0 !important;
+  font-family: Consolas, Menlo, Courier, monospace;
+  font-size: 14px;
+  line-height: 20px;
 }
 </style>
 <style scoped>
@@ -211,6 +245,7 @@ export default {
   min-height: 0;
   display: flex;
   flex-direction: column;
+  padding: 0;
 }
 
 :deep(.el-card__header) {
@@ -227,20 +262,16 @@ export default {
   width: 120px;
 }
 
+.spacer {
+  flex: 1;
+}
+
 .t-label {
   color: #909399;
 }
 
-.buttonsArea {
-  position: absolute;
-  right: 35px;
-  padding: 10px;
-}
-
-.buttonsArea i {
-  cursor: pointer;
-}
-
+/* One monospace face and one line rhythm for the whole console, so the prompt,
+   what you type, and the echoed "# command" lines all share a baseline. */
 .shell-div {
   flex: 1 1 auto;
   min-height: 0;
@@ -248,20 +279,26 @@ export default {
   width: 100%;
   background-color: #001528;
   color: #bfcbd9;
+  font-family: Consolas, Menlo, Courier, monospace;
+  font-size: 14px;
+  line-height: 20px;
 }
 
+/* Pinned to the top of the scrolling console so the prompt stays reachable
+   while output grows underneath it. */
 .shell-command {
-  padding: 0px 10px 10px 10px;
-  line-height: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 10px;
   width: 100%;
-  height: 50px;
+  min-height: 40px;
   background-color: #001528;
   color: #bfcbd9;
 }
 
 .shell-content {
-  padding: 10px 10px 0px 10px;
-  line-height: 24px;
+  padding: 0px 10px 10px 10px;
   width: 100%;
   background-color: #001528;
   color: #bfcbd9;
@@ -269,6 +306,8 @@ export default {
 
 .shell-line>pre {
   margin: 0px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .shell-line>.command {

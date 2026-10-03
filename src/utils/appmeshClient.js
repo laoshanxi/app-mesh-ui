@@ -64,6 +64,13 @@ export class VueAppMeshClient extends AppMeshClient {
       forceRelogin();
     }
     // 403/503 keep the session: the token is valid, only the action is not allowed.
+    if (error?.statusCode === HttpStatus.EXPECTATION_FAILED) {
+      // 417 is the daemon's answer when the app behind a request no longer
+      // exists — what an in-flight output poll gets once its run is deleted.
+      // Every caller already reads that as "the run is over" and reports it in
+      // place, so a toast here is pure noise.
+      return error;
+    }
 
     // Grouped toast: poll loops can fire the same error repeatedly.
     ElMessage({

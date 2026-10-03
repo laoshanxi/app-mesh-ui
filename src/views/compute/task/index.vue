@@ -168,6 +168,7 @@ export default {
   margin: 0;
   font-family: Consolas, Menlo, Courier, monospace;
   font-size: 14px;
+  line-height: 20px;
   resize: none;
   outline: none;
   white-space: pre-wrap;

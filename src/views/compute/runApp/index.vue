@@ -100,6 +100,7 @@ export default {
   flex: 1;
 }
 
+/* Same face, size and line rhythm as the Shell console. */
 .console-body {
   flex: 1 1 auto;
   min-height: 0;
@@ -108,6 +109,9 @@ export default {
   background-color: #001528;
   color: #bfcbd9;
   padding: 10px;
+  font-family: Consolas, Menlo, Courier, monospace;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .console-pre {
