@@ -17,9 +17,9 @@
     "@antv/data-set": "^0.11.8",
     "@antv/g2": "^4.2.12",
     "@element-plus/icons-vue": "^2.3.1",
-    "appmesh": "^3.1.1",
+    "appmesh": "^3.1.6",
     "axios": "^1.16.1",
-    "element-plus": "^2.14.0",
+    "element-plus": "^2.14.7",
     "js-base64": "^3.7.8",
     "js-cookie": "^3.0.5",
     "js-yaml": "^4.2.0",
@@ -41,9 +41,9 @@
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^9.33.0",
     "fast-glob": "^3.3.3",
-    "sass": "^1.99.0",
+    "sass": "^1.105.1",
     "svgo": "^3.3.3",
-    "vite": "^6.4.2",
+    "vite": "^6.4.4",
     "vite-plugin-svg-icons-ng": "^1.10.0"
   },
   "engines": {
