@@ -65,11 +65,11 @@
                       :inactive-value="false"
                     />
                   </el-form-item>
-                  <el-form-item label="Worker thread pool size" prop="REST.WorkerThreadPoolSize">
-                    <el-input-number v-model="form.REST.WorkerThreadPoolSize" />
+                  <el-form-item label="Worker threads (0 = auto)" prop="REST.WorkerThreads">
+                    <el-input-number v-model="form.REST.WorkerThreads" :min="0" />
                   </el-form-item>
-                  <el-form-item label="IO thread pool size" prop="REST.IOThreadPoolSize">
-                    <el-input-number v-model="form.REST.IOThreadPoolSize" />
+                  <el-form-item label="Transport IO threads (0 = auto)" prop="REST.TransportIoThreads">
+                    <el-input-number v-model="form.REST.TransportIoThreads" :min="0" />
                   </el-form-item>
                   <el-form-item label="CORS disabled" prop="REST.CorsDisabled">
                     <el-switch
@@ -251,8 +251,8 @@ export default {
           TcpApiPort: 6059,
           WebSocketPort: 6058,
           PrometheusExporterListenPort: 0,
-          WorkerThreadPoolSize: 2,
-          IOThreadPoolSize: 2,
+          WorkerThreads: 0,
+          TransportIoThreads: 0,
           CorsDisabled: false,
           CsrfAllowedOrigins: [],
           FileAllowedBaseDir: "",
