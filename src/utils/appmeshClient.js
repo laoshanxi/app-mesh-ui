@@ -20,7 +20,7 @@ export class VueAppMeshClient extends AppMeshClient {
   async _request(method, path, body = null, options = {}) {
     if (hasSession()) {
       const token = await ensureFreshToken();
-      if (token) this.set_bearer_token(token);
+      if (token) this.setBearerToken(token);
     }
 
     try {
@@ -31,7 +31,7 @@ export class VueAppMeshClient extends AppMeshClient {
       // Bearer rejected: one silent refresh + retry; report only if that fails.
       const token = await refreshSession();
       if (!token) this._sessionExpired(error);
-      this.set_bearer_token(token);
+      this.setBearerToken(token);
 
       try {
         return await super._request(method, path, body, options);
@@ -108,9 +108,9 @@ export function getClient() {
 
   const token = getAccessToken();
   if (token) {
-    client.set_bearer_token(token);
+    client.setBearerToken(token);
   } else {
-    client.clear_bearer_token();
+    client.clearBearerToken();
   }
 
   return client;

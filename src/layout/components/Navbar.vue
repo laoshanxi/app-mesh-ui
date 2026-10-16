@@ -143,7 +143,7 @@ export default {
 
         client.forwardingHost = this.forward;
         // Probe: the bearer is forwarded unchanged; the target re-validates it against the same issuer.
-        await client.get_current_principal();
+        await client.getCurrentPrincipal();
         await this.$store.dispatch("settings/changeSetting", {
           key: "forwarding",
           value: this.forward

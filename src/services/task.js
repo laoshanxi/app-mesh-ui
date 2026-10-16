@@ -5,7 +5,7 @@ export default {
   // only task-server apps expose task_status ("idle"/"busy"); auto-select a default (prefer "pytask").
   getTaskApps(vueComp) {
     vueComp.appsLoading = true
-    getClient().list_apps().then(data => {
+    getClient().listApps().then(data => {
       vueComp.apps = data.filter(a => a.task_status === 'idle' || a.task_status === 'busy')
       vueComp.appsLoading = false
       if (!vueComp.selectedApp && vueComp.apps.length) {
@@ -29,7 +29,7 @@ export default {
     if (vueComp.payload && vueComp.payload !== vueComp.history[vueComp.history.length - 1]) {
       vueComp.history.push(vueComp.payload)
     }
-    getClient().run_task(vueComp.selectedApp, vueComp.payload, vueComp.timeout)
+    getClient().runTask(vueComp.selectedApp, vueComp.payload, vueComp.timeout)
       .then(res => {
         // run_task resolves to an object or a JSON string -> parse defensively.
         if (typeof res === 'object' && res !== null) {
@@ -54,7 +54,7 @@ export default {
 
   cancel(vueComp) {
     if (!vueComp.selectedApp) return
-    getClient().cancel_task(vueComp.selectedApp).then(() => {
+    getClient().cancelTask(vueComp.selectedApp).then(() => {
       ElMessage.success('Cancel request sent')
     }).catch(() => { }) // onError already showed the toast
   },

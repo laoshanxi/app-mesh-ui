@@ -22,7 +22,7 @@ function isAuthError(res) {
 }
 
 async function send(action, extra, timeout, token) {
-  const raw = await getClient().run_task(TRIGGER_APP, { action, token, ...extra }, timeout)
+  const raw = await getClient().runTask(TRIGGER_APP, { action, token, ...extra }, timeout)
   return parse(raw)
 }
 

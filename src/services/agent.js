@@ -124,7 +124,7 @@ function isAgentRelated(app) {
 
 // run_task; the engine returns 200 with status:"error" for auth problems — surfaced as a throw.
 async function call(appName, payload, timeout = 120) {
-  const res = parseMaybeJson(await getClient().run_task(appName, payload, timeout))
+  const res = parseMaybeJson(await getClient().runTask(appName, payload, timeout))
   if (!res || res.status === 'error') {
     throw new Error((res && res.message) || 'Agent request failed')
   }
@@ -172,7 +172,7 @@ export default {
   // Scenario-A Apps for the chat dropdown; writes vueComp.agents/selectedAgent.
   listChatAgents(vueComp) {
     vueComp.agentsLoading = true
-    return getClient().list_apps().then(
+    return getClient().listApps().then(
       data => {
         vueComp.agents = (data || []).filter(isAgentApp)
         vueComp.agentsLoading = false
@@ -203,7 +203,7 @@ export default {
   // All llm-agent-related Apps (Scenario-A Apps + session workers); writes vueComp.list.
   listAgentApps(vueComp) {
     vueComp.listLoading = true
-    getClient().list_apps().then(
+    getClient().listApps().then(
       data => {
         vueComp.list = (data || []).filter(isAgentRelated)
         vueComp.listLoading = false
@@ -213,14 +213,14 @@ export default {
   },
 
   enableApp(vueComp, name) {
-    return getClient().enable_app(name).then(() => {
+    return getClient().enableApp(name).then(() => {
       ElMessage.success(`Agent <${name}> enabled.`)
       this.listAgentApps(vueComp)
     }, () => {})
   },
 
   disableApp(vueComp, name) {
-    return getClient().disable_app(name).then(() => {
+    return getClient().disableApp(name).then(() => {
       ElMessage.success(`Agent <${name}> disabled.`)
       this.listAgentApps(vueComp)
     }, () => {})
@@ -229,7 +229,7 @@ export default {
   removeApp(vueComp, name) {
     return ElMessageBox.confirm(`Remove agent App <${name}>?`, 'Tooltip', {
       confirmButtonText: 'Confirm', cancelButtonText: 'Cancel', type: 'warning'
-    }).then(() => getClient().delete_app(name).then(() => {
+    }).then(() => getClient().deleteApp(name).then(() => {
       ElMessage.success(`Agent <${name}> removed.`)
       this.listAgentApps(vueComp)
     }, () => {})).catch(() => {})
@@ -237,7 +237,7 @@ export default {
 
   // Load an App's stdout (from the start, up to 256 KB) into vueComp.output.
   loadOutput(vueComp, name) {
-    return getClient().get_app_output(name, 0, 0, 262144).then(
+    return getClient().getAppOutput(name, 0, 0, 262144).then(
       out => { vueComp.output = (out && out.output) || '' },
       () => { vueComp.output = '' }
     )
@@ -303,7 +303,7 @@ export default {
   // Register/update a Scenario-A agent App via add_app.
   registerAgentApp(vueComp, form) {
     const app = this.buildAgentApp(form)
-    return getClient().add_app(app.name, app).then(() => {
+    return getClient().addApp(app.name, app).then(() => {
       ElMessage.success(`Agent <${app.name}> registered.`)
       this.listAgentApps(vueComp)
     }, () => {})
@@ -377,7 +377,7 @@ export default {
     const deadline = Date.now() + timeoutMs
     while (Date.now() < deadline) {
       try {
-        const app = await getClient().get_app(name)
+        const app = await getClient().getApp(name)
         if (app && (app.pid || app.health === 0)) return true
       } catch { /* not visible yet */ }
       await new Promise(r => setTimeout(r, 400))
@@ -387,16 +387,16 @@ export default {
 
   // Fetch the template, clone, add_app, wait for readiness; returns the built descriptor.
   async createWorker(templateName, owner, apiKey) {
-    const template = await getClient().get_app(templateName)
+    const template = await getClient().getApp(templateName)
     const built = this.buildWorkerApp(template, this.genSessionId(), owner, apiKey)
-    await getClient().add_app(built.name, built.app)
+    await getClient().addApp(built.name, built.app)
     await this.waitWorkerReady(built.name)
     return built // { app, name, sid }
   },
 
   // One stdout poll from `position`; 64 KB per read so token bursts aren't chunked thin.
   async pollOutput(worker, position) {
-    const out = await getClient().get_app_output(worker, position, 0, 65536)
+    const out = await getClient().getAppOutput(worker, position, 0, 65536)
     return {
       text: out.output || '',
       position: out.outPosition != null ? out.outPosition : position,

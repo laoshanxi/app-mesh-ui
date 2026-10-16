@@ -2,7 +2,7 @@ import { getClient } from '@/utils/appmeshClient'
 
 export default {
   getResources: function (vueComp) {
-    getClient().get_host_resources().then((res) => {
+    getClient().getHostResources().then((res) => {
       this.sortFS(res);
       vueComp.resources = res;
     }).catch((error) => {

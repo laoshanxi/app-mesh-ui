@@ -178,7 +178,7 @@ export default {
     },
     loadRoles() {
       getClient()
-        .list_roles()
+        .listRoles()
         .then((res) => {
           this.roleOptions = Object.keys(res || {});
         })
@@ -189,7 +189,7 @@ export default {
       this.listLoading = true;
       this.list = [];
       getClient()
-        .list_principals()
+        .listPrincipals()
         .then(
           (res) => {
             if (res) {
@@ -280,14 +280,14 @@ export default {
           if (this.formMode === "new") {
             principalId = await computePrincipalId(this.normalizeIssuer(form.issuer), form.subject.trim());
             // creation requires the full identity in the body; id = stable id from issuer+subject
-            await getClient().update_principal(principalId, {
+            await getClient().updatePrincipal(principalId, {
               kind: form.kind,
               issuer: this.normalizeIssuer(form.issuer),
               subject: form.subject.trim(),
               ...policy,
             });
           } else {
-            await getClient().update_principal(principalId, policy);
+            await getClient().updatePrincipal(principalId, policy);
           }
           ElMessage.success(`Principal ${principalId} saved.`);
           this.formVisible = false;
@@ -313,7 +313,7 @@ export default {
       ).then(() => {
         this.listLoading = true;
         getClient()
-          .delete_principal(row.principal_id)
+          .deletePrincipal(row.principal_id)
           .then(
             () => {
               ElMessage.success("Principal " + row.principal_id + " deleted.");

@@ -39,7 +39,7 @@ const actions = {
   // Fetch principal + effective permissions and persist the UI session.
   handleLoginSuccess({ commit }) {
     const client = getClient()
-    return client.get_current_principal().then(async (principal) => {
+    return client.getCurrentPrincipal().then(async (principal) => {
       const name = principal.display_name || principal.principal_id
       const account = principal.principal_id
 
@@ -47,7 +47,7 @@ const actions = {
       commit('SET_ACCOUNT', account)
       commit('SET_AVATAR', '')
 
-      const permissions = await client.get_principal_permissions()
+      const permissions = await client.getPrincipalPermissions()
       commit('SET_PERMISSIONS', permissions)
       setUser({ name, account, avatar: '', permissions })
       return { name, account, permissions }
@@ -62,7 +62,7 @@ const actions = {
       return Promise.reject(new Error('No active session'))
     }
     await ensureFreshToken()
-    return getClient().get_current_principal().then((principal) => {
+    return getClient().getCurrentPrincipal().then((principal) => {
       if (!principal) {
         return Promise.reject(new Error('Verification failed, please Login again.'))
       }
@@ -73,7 +73,7 @@ const actions = {
       commit('SET_ACCOUNT', account)
       commit('SET_AVATAR', '')
 
-      return getClient().get_principal_permissions().then((permissions) => {
+      return getClient().getPrincipalPermissions().then((permissions) => {
         commit('SET_PERMISSIONS', permissions)
         setUser({ name, account, avatar: '', permissions })
         return principal
@@ -85,7 +85,7 @@ const actions = {
   logout({ commit }) {
     return new Promise((resolve) => {
       clearSession()
-      getClient().clear_bearer_token()
+      getClient().clearBearerToken()
       commit('SET_NAME', '')
       commit('SET_ACCOUNT', '')
       commit('SET_AVATAR', '')

@@ -63,7 +63,7 @@ export default {
   mounted() { },
   methods: {
     initData() {
-      getClient().list_permissions()
+      getClient().listPermissions()
         .then((res) => {
           if (res) {
             let permission = null;
@@ -106,7 +106,7 @@ export default {
 
     savePermissions() {
       if (this.permissionsLoadFailed) return;
-      getClient().update_role(
+      getClient().updateRole(
         this.permissionForm.name,
         this.permissionForm.permissions
       ).then(() => {

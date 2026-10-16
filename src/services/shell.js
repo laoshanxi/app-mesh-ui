@@ -211,7 +211,7 @@ export default {
     vueComp.connected = 1;
     vueComp.shellApp.name = nextRunAppName();
     vueComp.shellApp.command = 'who';
-    getClient().run_app_sync(vueComp.shellApp, null, vueComp.timeout).then(() => {
+    getClient().runAppSync(vueComp.shellApp, null, vueComp.timeout).then(() => {
       vueComp.connected = 2;
       runFinished(vueComp);
     })
@@ -262,11 +262,11 @@ export default {
     };
 
     if (vueComp.isSync) {
-      getClient().run_app_sync(vueComp.shellApp, outputHandler, vueComp.timeout)
+      getClient().runAppSync(vueComp.shellApp, outputHandler, vueComp.timeout)
         .catch(failed)
         .finally(settled);
     } else {
-      getClient().run_app_async(vueComp.shellApp, vueComp.timeout)
+      getClient().runAppAsync(vueComp.shellApp, vueComp.timeout)
         .then((run) => {
           // A create response that lands after stop() belongs to a run the user
           // already stopped. Adopting its name would point the next Ctrl+C at
@@ -296,7 +296,7 @@ export default {
     // window; once the app is gone every later attempt just 404s again.
     const removeApp = (attempt) => {
       getClient()
-        .delete_app(appName)
+        .deleteApp(appName)
         .then((removed) => {
           if (!removed && attempt < 5) setTimeout(() => removeApp(attempt + 1), 120);
         })

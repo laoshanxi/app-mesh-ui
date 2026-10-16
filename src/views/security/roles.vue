@@ -93,7 +93,7 @@ export default {
       const selectedName = this.currentRow ? this.currentRow.name : null;
       this.listLoading = true;
       this.list = [];
-      getClient().list_roles().then((res) => {
+      getClient().listRoles().then((res) => {
           if (res) {
             for (let p in res) {
               this.list.push({
@@ -149,7 +149,7 @@ export default {
         }
       ).then(() => {
         this.listLoading = true;
-        getClient().delete_role(this.currentRow.name).then(
+        getClient().deleteRole(this.currentRow.name).then(
           () => {
             ElMessage.success("Role " + this.currentRow.name + " had deleted.");
             this.refreshData();

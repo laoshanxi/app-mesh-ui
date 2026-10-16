@@ -20,7 +20,7 @@ export default {
   getAppList: function (vueComp) {
     const selectedName = vueComp.currentRow ? vueComp.currentRow.name : null;
     vueComp.listLoading = true;
-    getClient().list_apps().then(data => {
+    getClient().listApps().then(data => {
       data.forEach(m => {
         m.desc = m.description
         this.addDisplayFields(m);
@@ -61,7 +61,7 @@ export default {
   },
   getAppByName: function (vueComp, name) {
     vueComp.isLoadingDetail = true
-    getClient().get_app(name).then(data => {
+    getClient().getApp(name).then(data => {
       this.addDisplayFields(data);
       vueComp.application = data;
       vueComp.isLoadingDetail = false
@@ -71,7 +71,7 @@ export default {
   },
   getAppLogByName: function (vueComp, name, pageNo, position) {
     vueComp.isLoadingLog = true
-    getClient().get_app_output(name, position, pageNo).then(data => {
+    getClient().getAppOutput(name, position, pageNo).then(data => {
       vueComp.appLogInfo = data.output;
       vueComp.isLoadingLog = false
     }, () => {
@@ -81,7 +81,7 @@ export default {
   getAppLogForLogPage: function (vueComp, name, pageNo, position) {
     vueComp.$emit("startLoading");
     vueComp.isLoadingLog = true
-    getClient().get_app_output(name, position, pageNo).then(data => {
+    getClient().getAppOutput(name, position, pageNo).then(data => {
       vueComp.$emit("loadingDone", data.output);
     }, () => {
       vueComp.$emit("loadingDone", null);
@@ -94,7 +94,7 @@ export default {
       cancelButtonText: 'Cancel',
       type: 'warning'
     }).then(() => {
-      getClient().enable_app(vueComp.currentRow.name).then(() => {
+      getClient().enableApp(vueComp.currentRow.name).then(() => {
         ElMessage.success('Application ' + vueComp.currentRow.name + ' enabled successfully.');
         vueComp.fetchData();
       }, () => {
@@ -107,7 +107,7 @@ export default {
       cancelButtonText: 'Cancel',
       type: 'warning'
     }).then(() => {
-      getClient().disable_app(vueComp.currentRow.name).then(() => {
+      getClient().disableApp(vueComp.currentRow.name).then(() => {
         ElMessage.success('Application ' + vueComp.currentRow.name + ' disabled successfully.');
         vueComp.fetchData();
       }, () => {
@@ -120,7 +120,7 @@ export default {
       cancelButtonText: 'Cancel',
       type: 'warning'
     }).then(() => {
-      getClient().delete_app(vueComp.currentRow.name).then(() => {
+      getClient().deleteApp(vueComp.currentRow.name).then(() => {
         ElMessage.success(`Application <${vueComp.currentRow.name}> removed successfully.`);
         vueComp.fetchData();
       }, () => {
@@ -213,7 +213,7 @@ export default {
           if (data[key] !== undefined && data[key] !== null) payload[key] = data[key];
         }
 
-        getClient().add_app(payload.name, payload).then(() => {
+        getClient().addApp(payload.name, payload).then(() => {
           ElMessage.success('Application ' + payload.name + ' register successfully.');
           vueComp.$emit("success");
           vueComp.reset();

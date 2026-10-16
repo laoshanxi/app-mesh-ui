@@ -248,7 +248,7 @@ export default {
   created() {
     this.resetForm();
     this.setFromWithProps();
-    getClient().list_apps().then(
+    getClient().listApps().then(
       (data) => { this.appNames = data.map((a) => a.name); },
       () => { /* picker falls back to free-text entry */ }
     );

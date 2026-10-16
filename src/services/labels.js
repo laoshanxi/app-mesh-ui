@@ -3,7 +3,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 
 export default {
   getLabels(vueComp) {
-    getClient().list_labels()
+    getClient().listLabels()
       .then(res => {
         vueComp.labels = Object.entries(res).map(([key, value]) => ({ key, value }));
       })
@@ -25,7 +25,7 @@ export default {
     }
 
     vueComp.listLoading = true;
-    return getClient().add_label(row.key.trim(), row.value.trim())
+    return getClient().addLabel(row.key.trim(), row.value.trim())
       .then(() => {
         ElMessage.success('Label updated successfully');
         vueComp.refresh();
@@ -53,7 +53,7 @@ export default {
     )
       .then(() => {
         vueComp.listLoading = true;
-        return getClient().delete_label(row.key);
+        return getClient().deleteLabel(row.key);
       })
       .then(() => {
         ElMessage.success(`Label "${row.key}" removed successfully`);

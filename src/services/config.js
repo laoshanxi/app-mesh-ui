@@ -13,7 +13,7 @@ export default {
 
   refresh(vueComp) {
     vueComp.loading = true;
-    getClient().get_config()
+    getClient().getConfig()
       .then(res => {
         this.setConfig(vueComp, res);
       })
@@ -28,7 +28,7 @@ export default {
       if (!valid) return false;
 
       vueComp.loading = true;
-      getClient().set_config(vueComp.form)
+      getClient().setConfig(vueComp.form)
         .then(res => {
           vueComp.form = res;
           ElMessage.success('Configuration updated successfully.');
@@ -42,7 +42,7 @@ export default {
 
   getPrometheus(vueComp) {
     vueComp.loading = true;
-    getClient().get_metrics()
+    getClient().getMetrics()
       .then(res => {
         vueComp.content = res;
       })

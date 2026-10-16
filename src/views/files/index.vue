@@ -95,7 +95,7 @@ export default {
 
       // form.file is the on-change UploadFile; .raw is the native File. The
       // el-upload ref no longer exposes its internal uploadFiles list (2.14.x).
-      getClient().upload_file(this.form.file.raw, path)
+      getClient().uploadFile(this.form.file.raw, path)
         .then(() => {
           this.$refs.upload.clearFiles();
           this.form.disabled = true;
