@@ -46,6 +46,9 @@
     "vite": "^6.4.2",
     "vite-plugin-svg-icons-ng": "^1.10.0"
   },
+  "overrides": {
+    "postcss-selector-parser": "^7.1.7"
+  },
   "engines": {
     "node": ">=22.0.0",
     "npm": ">= 9.0.0"
