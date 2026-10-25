@@ -355,10 +355,14 @@ export default {
     // Carry provider config + gateway aliases so subagent/quick calls hit the same model.
     ;[...WORKER_INHERIT_ENV, ...PRESET_MANAGED_KEYS].forEach(k => { if (tEnv[k] != null) env[k] = tEnv[k] })
 
+    // The worker runs the same llm_agent runtime as its template agent — inherit the
+    // interpreter from the agent's command (`<python> -m llm_agent ...`) so a custom
+    // python (venv/newer version) carries over; bare "python3" only as the fallback.
+    const baseInterpreter = (templateApp.command || '').split(' -m llm_agent')[0].trim()
     const app = {
       name,
       description: `llm-agent interactive worker (session=${sid})`,
-      command: `python3 -m llm_agent --session-worker --session-id=${sid} --server=127.0.0.1:6059`,
+      command: `${baseInterpreter || 'python3'} -m llm_agent --session-worker --session-id=${sid} --server=127.0.0.1:6059`,
       working_dir: templateApp.working_dir,
       enabled: true,
       permission: 11, // owner(+admin) only

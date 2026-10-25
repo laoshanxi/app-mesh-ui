@@ -157,6 +157,17 @@
           </el-form-item>
         </template>
 
+        <!-- Advanced: custom start command (optional; empty = default) -->
+        <el-form-item label="Command">
+          <div style="width: 100%">
+            <el-input v-model="form.command" placeholder="python3 -m llm_agent --server 127.0.0.1:6059" />
+            <div style="color: #909399; font-size: 12px; line-height: 1.5; margin-top: 4px">
+              Optional. Leave empty to use the default command. Enter a custom interpreter path
+              (e.g. a venv Python 3.10+) when the system python3 is older than required.
+            </div>
+          </div>
+        </el-form-item>
+
         <!-- Advanced: non-secret extra env -->
         <el-form-item label="Advanced env">
           <div style="width: 100%">
@@ -266,6 +277,7 @@ export default {
         awsRegion: "", awsAccessKeyId: "", awsSecretAccessKey: "", // bedrock
         vertexProject: "", vertexRegion: "",                  // vertex
         extraEnv: [],                                         // non-secret extra env
+        command: "",                                          // start command (empty = default)
       };
     },
     // explicit preset change: reset edit flags so the preset re-fills Base URL/Model
