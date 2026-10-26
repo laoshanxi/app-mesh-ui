@@ -6,6 +6,11 @@
       You don't have permission to view this page. Contact your administrator if
       you believe this is a mistake.
     </div>
+    <div v-if="noRoles" class="error-desc">
+      Your account has no roles assigned. On a new installation, the first
+      administrator claims the admin role by signing in once from the node CLI:
+      <code>appm logon --username admin@appmesh.local</code>
+    </div>
     <div class="error-actions">
       <el-button @click="back">Back</el-button>
       <el-button type="primary" @click="$router.push('/home')">Home</el-button>
@@ -16,6 +21,13 @@
 <script>
 export default {
   name: "Page401",
+  computed: {
+    // Zero permissions separates an unenrolled account from a merely denied page.
+    noRoles() {
+      const permissions = this.$store.getters.user?.permissions;
+      return Array.isArray(permissions) && permissions.length === 0;
+    },
+  },
   methods: {
     back() {
       if (this.$route.query.noGoBack) {

@@ -206,12 +206,18 @@ function nextRunAppName() {
   return "uishell-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
 }
 
+const CONNECT_FAIL_MARK = "# Connected remote host failed.";
+
 export default {
   connectHost: function (vueComp) {
     vueComp.connected = 1;
     vueComp.shellApp.name = nextRunAppName();
     vueComp.shellApp.command = 'who';
     getClient().runAppSync(vueComp.shellApp, null, vueComp.timeout).then(() => {
+      // The failure line describes a transient state; drop it once connected.
+      vueComp.shellContents = vueComp.shellContents.filter(
+        (entry) => entry.content !== CONNECT_FAIL_MARK
+      );
       vueComp.connected = 2;
       runFinished(vueComp);
     })
@@ -219,7 +225,7 @@ export default {
         vueComp.connected = 0;
         vueComp.shellContents.push(
           {
-            content: "# Connected remote host failed."
+            content: CONNECT_FAIL_MARK
           }
         );
       });

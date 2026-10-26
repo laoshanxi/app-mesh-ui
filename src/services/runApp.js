@@ -5,11 +5,12 @@ export default {
   getRegisteredApps(vueComp) {
     vueComp.appsLoading = true
     getClient().listApps().then(data => {
-      vueComp.apps = data
+      // the daemon rejects system-protected apps as on-demand run templates — never offer them
+      vueComp.apps = data.filter(app => !app.system)
       vueComp.appsLoading = false
-      if (!vueComp.selectedApp && data.length) {
-        const ping = data.find(a => a.name === 'ping')
-        vueComp.selectedApp = ping ? ping.name : data[0].name
+      if (!vueComp.selectedApp && vueComp.apps.length) {
+        const ping = vueComp.apps.find(a => a.name === 'ping')
+        vueComp.selectedApp = ping ? ping.name : vueComp.apps[0].name
       }
     }, () => {
       vueComp.appsLoading = false
@@ -29,13 +30,17 @@ export default {
     vueComp.running = true
     vueComp.output += `# run ${vueComp.selectedApp}\n`
 
+    // Both run paths resolve the app's exit code (null when absent); show it
+    // as the run footer so a silent run still reports how it ended.
     if (vueComp.isSync) {
       getClient().runAppSync(app, append, vueComp.timeout)
+        .then(exitCode => { if (exitCode !== null) append(`# exit ${exitCode}`) })
         .catch(e => append('# Failed: ' + e.message))
         .finally(() => { vueComp.running = false })
     } else {
       getClient().runAppAsync(app, vueComp.timeout)
         .then(run => run.wait(append))
+        .then(exitCode => { if (exitCode !== null) append(`# exit ${exitCode}`) })
         .catch(e => append('# Failed: ' + e.message))
         .finally(() => { vueComp.running = false })
     }

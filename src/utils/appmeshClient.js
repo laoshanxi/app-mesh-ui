@@ -1,5 +1,5 @@
 import { AppMeshClient } from "appmesh";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import { HttpStatus } from "./constants";
 import { getAccessToken, hasSession, refreshSession, ensureFreshToken } from "./oidc";
 import store from "@/store";
@@ -86,6 +86,9 @@ export class VueAppMeshClient extends AppMeshClient {
 
 /** Drop the local session and go to login (loop-guarded). */
 export function forceRelogin() {
+  // A modal confirm teleports to <body> and survives the route change to
+  // /login; a background expiry must not strand it there.
+  ElMessageBox.close();
   store.dispatch("user/logout").catch((err) => console.error("Logout error:", err));
   const currentPath = router.currentRoute.value.path;
   if (!currentPath.startsWith("/login")) {

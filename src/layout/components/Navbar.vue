@@ -63,8 +63,6 @@ import { Refresh, ArrowDown, User } from '@element-plus/icons-vue'
 import Breadcrumb from '@/components/Breadcrumb/index.vue'
 import Hamburger from '@/components/Hamburger/index.vue'
 import { getClient } from '@/utils/appmeshClient'
-import EventBus from '@/utils/event.bus.js'
-import { EVENTS } from '@/utils/constants.js'
 
 export default {
   components: {
@@ -78,7 +76,6 @@ export default {
       Refresh: markRaw(Refresh),
       restaurants: [],
       forward: "",
-      lastForward: "",
       forwardEnabled: false,
       fullscreenLoading: false
     };
@@ -101,11 +98,6 @@ export default {
     this.forward = this.$store.getters.forwarding;
     this.forwardEnabled = !!this.forward;
     this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
-    EventBus.on(EVENTS.SWITCH_FORWARD, (fw) => {
-      this.lastForward = this.forward;
-      this.forward = fw;
-      this.updateForward();
-    });
   },
   methods: {
     refresh() {
@@ -156,13 +148,8 @@ export default {
       } catch (error) {
         // Undo the unverified forwarding target on the shared client
         client.forwardingHost = previousForwardingHost;
-        if (error === 'cancel') { // element-plus rejects user cancel/close with exactly 'cancel'
-          throw 'cancel';
-        }
-        if (this.lastForward?.length > 0) {
-          this.forward = this.lastForward;
-        }
-        ElMessage.error(`Failed to forward request: ${error.message || error}`);
+        // Propagate so the switch handler resets the toggle; it owns the toast.
+        throw error;
       } finally {
         this.fullscreenLoading = false;
       }
@@ -188,7 +175,8 @@ export default {
           value: ''
         });
 
-        this.lastForward = this.forward;
+        // The remount from refresh() re-reads the cleared store, and the
+        // datalist (apiUrls) keeps the target one click away.
         this.forward = '';
         this.forwardEnabled = false;
         ElMessage.success('Disable forward successful');
@@ -279,7 +267,7 @@ export default {
   }
 
   .forward-input {
-    width: 200px;
+    width: 260px;
     margin-right: 12px;
   }
 
