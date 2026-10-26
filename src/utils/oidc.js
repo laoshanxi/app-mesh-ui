@@ -7,7 +7,9 @@ const TOKEN_STORE_KEY = "appmesh_oidc";
 const PKCE_STORE_KEY = "appmesh_pkce";
 const EXPIRY_SKEW_MS = 30 * 1000;
 
-// Pre-registered Dex browser client (auth-code + PKCE); password grant uses public_client_id from auth/config.
+// Pre-registered Dex browser client, used by the auth-code + PKCE flow and the password
+// form alike. Dex keeps one refresh-token chain per account and client ID, so signing in
+// with the CLI's public_client_id would end the user's `appm logon` session.
 const WEB_CLIENT_ID = "appmesh-web";
 
 let authConfig = null;
@@ -140,9 +142,9 @@ export async function passwordLogin(username, password) {
     username: user,
     password,
     scope: scopeString(cfg),
-    client_id: cfg.public_client_id,
+    client_id: WEB_CLIENT_ID,
   };
-  return installTokens(await tokenRequest(form), cfg.public_client_id);
+  return installTokens(await tokenRequest(form), WEB_CLIENT_ID);
 }
 
 // ---- Authorization-code + PKCE (client `appmesh-web`) ----

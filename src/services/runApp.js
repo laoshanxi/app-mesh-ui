@@ -5,8 +5,10 @@ export default {
   getRegisteredApps(vueComp) {
     vueComp.appsLoading = true
     getClient().listApps().then(data => {
-      // the daemon rejects system-protected apps as on-demand run templates — never offer them
-      vueComp.apps = data.filter(app => !app.system)
+      // the daemon rejects system-protected apps as on-demand run templates, and a keepalive
+      // task worker (py-task) only waits for a payload until the timeout kills it — Run Task
+      // is its page; offer neither here (same rule as the CLI's `run -a`)
+      vueComp.apps = data.filter(app => !app.system && app.behavior?.exit !== 'keepalive')
       vueComp.appsLoading = false
       if (!vueComp.selectedApp && vueComp.apps.length) {
         const ping = vueComp.apps.find(a => a.name === 'ping')
