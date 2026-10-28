@@ -210,7 +210,11 @@ export default {
         ];
         let payload = {};
         for (const key of definitionKeys) {
-          if (data[key] !== undefined && data[key] !== null) payload[key] = data[key];
+          if (data[key] === undefined || data[key] === null) continue;
+          // The form always carries start_time/end_time defaults of 0; the daemon
+          // treats epoch 0 as an expired window, so omit them instead of sending 0.
+          if ((key === 'start_time' || key === 'end_time') && data[key] === 0) continue;
+          payload[key] = data[key];
         }
 
         getClient().addApp(payload.name, payload).then(() => {
