@@ -75,7 +75,7 @@
           <el-input v-model="registerForm.interval" @input="onIntervalInput"></el-input><span class="hint">seconds or ISO 8601 duration, e.g. PT5M — exclusive with cron</span>
         </el-form-item>
         <el-form-item label="Cron schedule" prop="cron_schedule">
-          <el-input v-model="registerForm.cron_schedule" @input="onCronScheduleInput"></el-input><span class="hint">cron expression, e.g. */5 * * * *</span>
+          <el-input v-model="registerForm.cron_schedule" @input="onCronScheduleInput"></el-input><span class="hint">cron expression (6 or 7 fields), e.g. */5 * * * * *</span>
         </el-form-item>
         <el-form-item label="Stop grace period" prop="stop_grace_period">
           <el-input v-model="registerForm.stop_grace_period"></el-input><span class="hint">ISO 8601 durations or seconds</span>
