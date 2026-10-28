@@ -93,7 +93,15 @@ export default {
           items: [
             { k: "PID", v: r.pid },
             { k: "PID user", v: r.pid_user },
-            { k: "Health", tag: r.health === 0 ? { type: "success", label: "Healthy" } : (r.health === 1 ? { type: "danger", label: "Unhealthy" } : null) },
+            {
+              k: "Health",
+              tag: r.health === 0
+                ? { type: "success", label: "Healthy" }
+                // Between runs (enabled, no process, last exit 0) is standby, not a failure.
+                : r.enabled && !r.pid && r.return_code === 0
+                  ? { type: "info", label: "Standby" }
+                  : (r.health === 1 ? { type: "danger", label: "Unhealthy" } : null)
+            },
             { k: "Memory", v: formatMemory(r.memory) },
             { k: "CPU usage", v: formatCpu(r.cpu) },
             { k: "Next start time", v: r.next_start_time_TEXT },

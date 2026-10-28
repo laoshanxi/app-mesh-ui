@@ -97,7 +97,13 @@ export default {
   created() {
     this.forward = this.$store.getters.forwarding;
     this.forwardEnabled = !!this.forward;
-    this.restaurants = this.$store.getters.apiUrls ? this.$store.getters.apiUrls : [];
+    let history = [];
+    try {
+      history = JSON.parse(localStorage.getItem("appmesh-forward-history") || "[]");
+    } catch (e) {
+      // corrupted history is dropped
+    }
+    this.restaurants = this.mergeSuggestions(history);
   },
   methods: {
     refresh() {
@@ -142,6 +148,7 @@ export default {
         });
 
         this.forwardEnabled = true;
+        this.rememberForwardTarget(this.forward);
         ElMessage.success('Forward request successful');
         this.refresh();
 
@@ -191,10 +198,39 @@ export default {
       }
     },
 
+    // The cluster has no node-registry API yet; remembered targets keep repeat
+    // forwards one click away until one exists.
+    rememberForwardTarget(target) {
+      let history = [];
+      try {
+        history = JSON.parse(localStorage.getItem("appmesh-forward-history") || "[]");
+      } catch (e) {
+        // corrupted history is dropped
+      }
+      history = [target, ...history.filter((item) => item !== target)].slice(0, 8);
+      try {
+        localStorage.setItem("appmesh-forward-history", JSON.stringify(history));
+      } catch (e) {
+        // storage unavailable (private mode): suggestions just stay static
+      }
+      this.restaurants = this.mergeSuggestions(history);
+    },
+    mergeSuggestions(history) {
+      const urls = this.$store.getters.apiUrls || [];
+      const seen = new Set();
+      const merged = [];
+      for (const item of [...history.map((value) => ({ value })), ...urls]) {
+        if (item.value && !seen.has(item.value)) {
+          seen.add(item.value);
+          merged.push(item);
+        }
+      }
+      return merged;
+    },
+
     querySearch(queryString, callback) {
       const results = queryString
-        ? this.restaurants.filter(item => this.createFilter(queryString)(item))
-        : this.restaurants;
+        ? this.restaurants.filter(item => this.createFilter(queryString)(item))        : this.restaurants;
       callback(results);
     },
 

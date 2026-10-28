@@ -41,6 +41,13 @@
             >
               <SuccessFilled />
             </el-icon>
+            <el-icon
+              v-else-if="isIdleStandby(scope.row)"
+              title="standby (last run exited 0)"
+              style="color: #909399; font-size: 18px; vertical-align: middle"
+            >
+              <Clock />
+            </el-icon>
             <el-icon v-else style="color: #f56c6c; font-size: 18px; vertical-align: middle"><WarningFilled /></el-icon>
 
             <el-link
@@ -224,6 +231,11 @@ export default {
     formatMemory,
     formatCpu,
     formatDate,
+    // An enabled app between runs (no live process, last exit 0) is standing by
+    // for its next schedule, not unhealthy; only failed runs keep the alarm color.
+    isIdleStandby(row) {
+      return row.enabled && !row.pid && row.return_code === 0;
+    },
     logChange(loginfo) {
       this.isLoadingLog = false;
       this.appLogInfo = loginfo;

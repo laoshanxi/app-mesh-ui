@@ -11,6 +11,9 @@
         </el-form-item>
         <el-form-item label="Command line" prop="command">
           <el-input v-model="registerForm.command"></el-input>
+          <span v-if="shellOperatorsWithoutShellMode" class="hint warning-hint">
+            shell operators found but Shell mode is off — they will be passed as literal arguments
+          </span>
         </el-form-item>
         <el-form-item label="Shell mode" prop="shell">
           <el-switch v-model="registerForm.shell" :active-value="true" :inactive-value="false"></el-switch>
@@ -243,6 +246,14 @@ export default {
         this.onDailyTimeChange(newRange);
       },
       deep: true
+    },
+  },
+  computed: {
+    // Advisory only: passing shell operators as literal arguments is legitimate
+    // for some commands, so warn instead of blocking the submit.
+    shellOperatorsWithoutShellMode() {
+      const command = this.registerForm.command || "";
+      return !this.registerForm.shell && /[&&|\|;<>`$]/.test(command);
     },
   },
   created() {
@@ -526,6 +537,10 @@ export default {
   margin-left: 10px;
   color: #909399;
   font-size: 12px;
+}
+
+.warning-hint {
+  color: #e6a23c;
 }
 
 /* exit-code rule rows: code input + action select + remove button on one line */
