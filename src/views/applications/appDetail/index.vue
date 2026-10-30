@@ -248,7 +248,7 @@ export default {
   word-break: break-all;
 
   &.mono {
-    font-family: "Menlo", "Monaco", "Consolas", monospace;
+    font-family: var(--mono-font);
     font-size: 12px;
   }
 
@@ -261,7 +261,7 @@ export default {
   margin: 0;
   font-size: 12px;
   line-height: 1.5;
-  font-family: Menlo, Monaco, Consolas, monospace;
+  font-family: var(--mono-font);
   color: #303133;
   border-radius: 6px;
   background-color: #fafafa;

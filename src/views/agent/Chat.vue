@@ -8,7 +8,7 @@
       </el-radio-group>
     </div>
 
-    <Interactive v-if="mode === 'interactive'" />
+    <Interactive v-if="mode === 'interactive'" :initial-agent="selectedAgent" />
 
     <el-card v-else class="chat-card">
       <template #header>
@@ -287,6 +287,9 @@ export default {
 
 .composer {
   display: flex;
+  /* the button keeps its fixed 32px height, so stretch degenerates to
+     top-align; pin both controls to the row bottom */
+  align-items: flex-end;
   gap: 10px;
   padding: 10px 16px;
   border-top: 1px solid #ebeef5;

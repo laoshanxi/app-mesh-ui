@@ -59,13 +59,13 @@ const GATEWAY_PRESETS = [
   },
   {
     key: 'glm', label: 'GLM — Zhipu (open.bigmodel.cn)',
-    baseUrl: 'https://open.bigmodel.cn/api/anthropic', model: 'glm-5.2[1m]',
+    baseUrl: 'https://open.bigmodel.cn/api/anthropic', model: 'glm-5.3[1m]',
     aliases: {
-      ANTHROPIC_DEFAULT_OPUS_MODEL: 'glm-5.2[1m]',
-      ANTHROPIC_DEFAULT_SONNET_MODEL: 'glm-5.2[1m]',
-      ANTHROPIC_DEFAULT_HAIKU_MODEL: 'glm-4.5-air',
-      CLAUDE_CODE_SUBAGENT_MODEL: 'glm-4.5-air',
-      CLAUDE_CODE_AUTO_COMPACT_WINDOW: '1000000' // GLM-5.2 1M context (needs the [1m] suffix)
+      ANTHROPIC_DEFAULT_OPUS_MODEL: 'glm-5.3[1m]',
+      ANTHROPIC_DEFAULT_SONNET_MODEL: 'glm-5.3[1m]',
+      ANTHROPIC_DEFAULT_HAIKU_MODEL: 'glm-5.3-flash',
+      CLAUDE_CODE_SUBAGENT_MODEL: 'glm-5.3-flash',
+      CLAUDE_CODE_AUTO_COMPACT_WINDOW: '1000000' // GLM-5.3 1M context (needs the [1m] suffix)
     }
   },
   {

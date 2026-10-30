@@ -1,10 +1,10 @@
 <template>
   <div class="log-wrap">
+    <pre class="log">{{ loginfo ? loginfo : 'No log' }}</pre>
     <el-pagination
       v-if="app" v-model:current-page="curPage" v-model:page-size="pageSize" background class="log-pager"
       layout="prev, pager, next" :total="app.stdout_file_count || 0" @update:current-page="getAppLogByName"
     />
-    <pre class="log">{{ loginfo ? loginfo : 'No log' }}</pre>
   </div>
 </template>
 
@@ -34,7 +34,7 @@ export default {
 </script>
 
 <style scoped>
-/* flat: pagination on top, log fills below — one container, one (log) scroll */
+/* flat: log fills the top, pagination sits below — one container, one (log) scroll */
 .log-wrap {
   height: 100%;
   display: flex;
@@ -43,7 +43,8 @@ export default {
 
 .log-pager {
   flex: 0 0 auto;
-  margin-bottom: 8px;
+  margin-top: 8px;
+  justify-content: center;
 }
 
 .log {
@@ -53,11 +54,11 @@ export default {
   padding: 12px 14px;
   overflow: auto;
   box-sizing: border-box;
-  background-color: #001528;
-  color: #bfcbd9;
+  background-color: var(--console-bg);
+  color: var(--console-fg);
   font-size: 13px;
   line-height: 1.6;
-  font-family: "Menlo", "Monaco", "Consolas", monospace;
+  font-family: var(--mono-font);
   white-space: pre-wrap;
   word-break: break-word;
   border-radius: 6px;

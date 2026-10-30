@@ -44,8 +44,12 @@ server {
     # service itself (default loopback Dex listener). The same-origin proxy is
     # required: Dex sends no CORS headers and an https page cannot call http.
     # No URI part in proxy_pass: the full /auth/... path is forwarded as-is.
+    # Dex builds redirects from its configured issuer (an in-network host the
+    # browser cannot reach); rewrite any such absolute /auth URL back to this
+    # origin so flows like /auth/device complete behind the proxy.
     location /auth/ {
         proxy_pass ${APP_MESH_AUTH_URL};
+        proxy_redirect ~^(https?://[^/]+)(/auth/.*)$ $2;
     }
 
     # dexuser administration UI (Dex user/client/session/MFA management, served by the
@@ -54,6 +58,12 @@ server {
     # with sub_filter. The admin UI has NO authentication of its own: exposing this
     # location makes user management available to anyone who can reach this origin —
     # keep APP_MESH_ADMIN_UI_URL unreachable in untrusted deployments.
+    # Branding: the embedded administration UI ships the Dex glyph; serve the
+    # App Mesh logo (the daemon's issuer-path asset) in its place.
+    location = /dexuser/static/dex-glyph-color.svg {
+        rewrite ^ /appmesh/logo.svg last;
+    }
+
     location /dexuser/ {
         proxy_hide_header X-Frame-Options;
         proxy_set_header Host $http_host;
@@ -69,6 +79,11 @@ server {
         sub_filter 'href="/' 'href="/dexuser/';
         sub_filter 'src="/' 'src="/dexuser/';
         sub_filter 'action="/' 'action="/dexuser/';
+        sub_filter 'alt="Dex"' 'alt="App Mesh"';
+        # The top nav links only the demonstration pages (Flows, Token tools),
+        # which use an unregistered OAuth client and cannot work behind this
+        # proxy; the administration tabs remain.
+        sub_filter '</head>' '<style>.nav{display:none !important}</style></head>';
         sub_filter 'url(/' 'url(/dexuser/';
         # the demo home ("Flows") does an OIDC prompt=none roundtrip with an
         # unregistered client — keep nav inside the admin surface instead

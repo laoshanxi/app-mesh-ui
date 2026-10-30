@@ -149,7 +149,7 @@
       </el-table>
     </el-row>
 
-    <el-drawer v-model="registerFormVisible" custom-class="right-drawer" size="50%">
+    <el-drawer v-model="registerFormVisible" class="right-drawer" size="50%">
       <template #header><span>{{ drawerTitle }}</span></template>
       <app-reg :prop-form="selectedForm" @close="registerFormVisible = false" @success="regSuccess()" />
     </el-drawer>

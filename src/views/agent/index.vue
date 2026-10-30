@@ -1,6 +1,13 @@
 <template>
   <div class="app-container">
-    <div class="page-title">Agents</div>
+    <div class="page-title">
+      Agents
+      <el-tooltip
+        v-if="forwarding" content="Agent apps are registered per node — this list shows the apps on the forwarded node. Turn off 'Forward to host' to switch." placement="right"
+      >
+        <el-tag size="small" type="warning" effect="plain" class="node-tag">node: {{ forwarding }}</el-tag>
+      </el-tooltip>
+    </div>
     <el-row>
       <el-button-group>
         <el-button v-if="$hasPermission('app-reg')" type="primary" :icon="Plus" @click="openRegister">Register Agent</el-button>
@@ -198,7 +205,9 @@
 
     <!-- Output drawer -->
     <el-drawer v-model="outputVisible" :title="`Output — ${outputName}`" size="50%">
-      <pre class="output-pre">{{ output || 'No output.' }}</pre>
+      <div class="output-wrap">
+        <pre class="output-pre">{{ output || 'No output.' }}</pre>
+      </div>
     </el-drawer>
   </div>
 </template>
@@ -233,6 +242,10 @@ export default {
     isSelected() { return !!this.currentRow; },
     isEnabled() { return this.currentRow && !!this.currentRow.enabled; },
     gatewayPresets() { return agentService.gatewayPresets(); },
+    // active forward target ("host:port") or "" — agent apps live per node
+    forwarding() {
+      return this.$store.getters.forwarding || "";
+    },
     // required fields vary by provider (Bedrock/Vertex can rely on roles/ADC)
     rules() {
       const req = (msg) => [{ required: true, message: msg, trigger: "blur" }];
@@ -327,6 +340,17 @@ export default {
   margin-bottom: 8px;
 }
 
+/* title + node tag on one line (same treatment as the Workflows page) */
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.node-tag {
+  cursor: help;
+}
+
 /* Flex-fill: page fills app-main; the table row fills the rest — no pixel heights. */
 .app-container {
   display: flex;
@@ -349,11 +373,26 @@ export default {
   height: 100% !important;
 }
 
+/* Output drawer body: the same dark console panel as every other log surface,
+   stretched to the drawer height so short output doesn't sit on a white page. */
+.output-wrap {
+  height: 100%;
+  display: flex;
+}
+
 .output-pre {
+  flex: 1 1 auto;
+  margin: 0;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border-radius: 4px;
+  background-color: var(--console-bg);
+  color: var(--console-fg);
+  font-family: var(--mono-font);
+  font-size: 13px;
+  line-height: 1.6;
   white-space: pre-wrap;
   word-break: break-word;
-  font-family: Consolas, Menlo, Courier, monospace;
-  font-size: 13px;
-  margin: 0;
+  overflow-y: auto;
 }
 </style>

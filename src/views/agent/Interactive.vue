@@ -70,8 +70,9 @@
     <!-- Credential prompt: secrets aren't cloned — each session re-enters its provider credential -->
     <el-dialog v-model="keyVisible" :title="`Enter your ${credLabel}`" width="460px" align-center>
       <p style="color: #909399; margin-top: 0">
-        Enter your {{ credLabel }} to start the chat — it's stored
-        encrypted and used only for this conversation.
+        Live chats run in a dedicated per-session worker that never inherits the
+        agent's stored secret, so re-enter your {{ credLabel }} for this conversation.
+        It's stored encrypted and used only here (Quick answer uses the stored one).
         <template v-if="templateProvider === 'vertex'">
           (Vertex uses ADC; leave blank if the host provides credentials.)
         </template>
@@ -101,6 +102,11 @@ import agentService from "@/services/agent";
 export default {
   name: "AgentInteractive",
   components: { Close },
+  props: {
+    // agent picked in Quick answer mode — carried over so switching modes
+    // doesn't reset the selection
+    initialAgent: { type: String, default: "" }
+  },
   data() {
     return {
       agents: [],
@@ -139,8 +145,9 @@ export default {
   mounted() {
     agentService.listChatAgents(this).then(agents => {
       if (!this.template && agents.length) {
+        const carried = this.initialAgent && agents.find(a => a.name === this.initialAgent);
         const def = agents.find(a => a.name === "llm-agent");
-        this.template = def ? def.name : agents[0].name;
+        this.template = carried ? carried.name : (def ? def.name : agents[0].name);
       }
     });
   },
@@ -409,6 +416,9 @@ export default {
 
 .composer {
   display: flex;
+  /* the button keeps its fixed 32px height, so stretch degenerates to
+     top-align; pin both controls to the row bottom */
+  align-items: flex-end;
   gap: 10px;
   padding: 10px 16px;
   border-top: 1px solid #ebeef5;

@@ -32,6 +32,9 @@ export default {
   /* flex column so pages can `flex: 1` to fill the content area */
   display: flex;
   flex-direction: column;
+  /* explicit light canvas: pages don't all paint their own background, and a dark
+     prefers-color-scheme would otherwise bleed through as a black page background */
+  background-color: #ffffff;
 }
 .fixed-header+.app-main {
   /* fixed navbar is out of flow: take the full viewport and clear the navbar with padding */
