@@ -208,6 +208,19 @@ export default {
       regRules: {
         name: [
           { required: true, message: "Name is not empty", trigger: "blur" },
+          {
+            // mirrors the daemon's normalizeAppName: trim, then 1-128 of [A-Za-z0-9_-];
+            // other characters never reach that check because the URL route 404s first
+            validator: (rule, value, callback) => {
+              const name = String(value ?? "").trim();
+              if (name === "" || name.length > 128 || !/^[A-Za-z0-9_-]+$/.test(name)) {
+                callback(new Error("Use 1-128 letters, digits, '_' or '-'"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur",
+          },
         ],
       },
       Behaviors: [
@@ -420,7 +433,12 @@ export default {
         this.registerForm.daily_limitation.daily_end_TEXT = '';
       }
     },
-    registerApp() {
+    async registerApp() {
+      try {
+        await this.$refs.regForm.validate();
+      } catch {
+        return; // field errors are shown inline by the form
+      }
       let other = this.registerForm.otherPermission ? this.registerForm.otherPermission + "" : "3";
       let group = this.registerForm.groupPermission ? this.registerForm.groupPermission + "" : "3";
       this.registerForm.permission = other + group;

@@ -10,11 +10,12 @@
         @click="refresh()"
       />
 
-      <el-tooltip content="Request Forwarding (port defaults to 6059)" placement="bottom">
+      <el-tooltip :content="forwardHint" placement="bottom">
         <el-input
           v-model="forward"
           size="small"
           class="forward-input"
+          :class="{ 'forward-idle': forwardIdle }"
           placeholder="Forward to host"
           clearable
           list="forward-suggestions"
@@ -92,6 +93,16 @@ export default {
       if (this.$hasPermission('principal-list')) return '/security/principals';
       if (this.$hasPermission('role-view')) return '/security/roles';
       return '/security/users';
+    },
+    // A typed target with the switch off looks armed but requests stay local;
+    // the amber border and hint say forwarding is inactive.
+    forwardIdle() {
+      return !!this.forward.trim() && !this.forwardEnabled;
+    },
+    forwardHint() {
+      return this.forwardIdle
+        ? 'Not forwarding — requests go to this node. Toggle the switch to forward.'
+        : 'Request Forwarding (port defaults to 6059)';
     }
   },
   created() {
@@ -305,6 +316,10 @@ export default {
   .forward-input {
     width: 260px;
     margin-right: 12px;
+
+    &.forward-idle :deep(.el-input__wrapper) {
+      box-shadow: 0 0 0 1px var(--el-color-warning) inset;
+    }
   }
 
   .right-menu {
