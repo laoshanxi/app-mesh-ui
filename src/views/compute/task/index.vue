@@ -137,8 +137,8 @@ export default {
   min-height: 0;
   gap: 10px;
   width: 100%;
-  background-color: #001528;
-  color: #bfcbd9;
+  background-color: var(--console-bg);
+  color: var(--console-fg);
   padding: 10px;
   box-sizing: border-box;
 }
@@ -160,13 +160,13 @@ export default {
   flex: 1;
   width: 100%;
   box-sizing: border-box;
-  background-color: #001528;
-  color: #bfcbd9;
-  border: 1px solid #1b2948;
+  background-color: var(--console-bg);
+  color: var(--console-fg);
+  border: 1px solid var(--console-border);
   border-radius: 4px;
   padding: 8px;
   margin: 0;
-  font-family: Consolas, Menlo, Courier, monospace;
+  font-family: var(--mono-font);
   font-size: 14px;
   line-height: 20px;
   resize: none;

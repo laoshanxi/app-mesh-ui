@@ -41,7 +41,7 @@
     </el-row>
     <el-drawer
       v-model="permissionsVisible"
-      custom-class="right-drawer" size="60%"
+      class="right-drawer" size="60%"
     >
       <template #header><span>{{ selectedForm.name == null ? 'Add role' : 'Update role permissions' }}</span></template>
       <permissions :prop-form="selectedForm" @close="permissionsVisible = false" @success="updatePermissionsSuccess()">

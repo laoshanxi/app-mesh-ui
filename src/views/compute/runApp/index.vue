@@ -106,10 +106,10 @@ export default {
   min-height: 0;
   overflow: auto;
   width: 100%;
-  background-color: #001528;
-  color: #bfcbd9;
+  background-color: var(--console-bg);
+  color: var(--console-fg);
   padding: 10px;
-  font-family: Consolas, Menlo, Courier, monospace;
+  font-family: var(--mono-font);
   font-size: 14px;
   line-height: 20px;
 }
@@ -118,6 +118,6 @@ export default {
   margin: 0;
   white-space: pre-wrap;
   word-break: break-word;
-  font-family: Consolas, Menlo, Courier, monospace;
+  font-family: var(--mono-font);
 }
 </style>

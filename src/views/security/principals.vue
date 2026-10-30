@@ -57,7 +57,7 @@
 
     <!-- Principal overlay editor: identities live in Dex; the engine stores only the overlay
          (status/execution_user/roles). principal_id = stable id derived from issuer + subject. -->
-    <el-drawer v-model="formVisible" custom-class="right-drawer" size="50%">
+    <el-drawer v-model="formVisible" class="right-drawer" size="50%">
       <template #header>
         <span>{{ formMode === 'new' ? 'Add principal overlay' : 'Update principal overlay' }}</span>
       </template>
@@ -374,14 +374,18 @@ export default {
 }
 
 .right-drawer .dialog-footer {
-  border-top: 1px solid #bfcbd9;
+  /* same action-bar metrics as the Configuration page footer */
+  border-top: 1px solid #ebeef5;
   background-color: #ffffff;
   width: 100%;
   position: absolute;
   bottom: 0px;
-  text-align: right;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-right: 30px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  height: 52px;
+  padding: 0 16px;
 }
 </style>

@@ -585,10 +585,15 @@ export default {
 }
 
 .dialog-footer {
+  /* same action-bar metrics as the Configuration page footer */
   flex: 0 0 auto;
   border-top: 1px solid #ebeef5;
   background-color: #ffffff;
-  text-align: right;
-  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  height: 52px;
+  padding: 0 16px;
 }
 </style>

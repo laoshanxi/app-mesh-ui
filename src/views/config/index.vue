@@ -407,6 +407,48 @@ export default {
   max-width: 360px;
 }
 
+/* Pin the page to the viewport: the tab body scrolls, the action bar stays put. */
+.app-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.app-container > .el-row {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+:deep(.el-col) {
+  height: 100%;
+}
+
+:deep(.el-tabs) {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:deep(.el-tabs__content) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* a definite pane height lets the Labels table's height="100%" fill it */
+:deep(.el-tab-pane > .el-row) {
+  height: 100%;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
 .show-pwd {
   position: absolute;
   right: 5px;

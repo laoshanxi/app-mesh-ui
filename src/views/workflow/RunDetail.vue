@@ -141,7 +141,7 @@
         <el-tag v-if="stepLogTimer" type="warning" effect="plain" size="small" style="margin-left: 8px">● live</el-tag>
       </template>
       <div v-loading="stepLogLoading" class="detail-card">
-        <textarea ref="stepBox" v-model="stepLog" readonly class="log-box log-box--tall" placeholder="No stdout for this step."></textarea>
+        <textarea ref="stepBox" :value="stepLogDisplay" readonly class="log-box log-box--tall" placeholder="No stdout for this step."></textarea>
       </div>
     </el-drawer>
   </div>
@@ -200,6 +200,27 @@ export default {
   computed: {
     effectiveRunId() {
       return this.runId || this.internalRunId;
+    },
+    // `message` steps emit the agent's structured reply ({"status":"ok","data":
+    // {"answer":...}}) so ${{ steps.x.outputs.* }} stays machine-readable. For a
+    // human reader, surface the answer text first and pretty-print the JSON.
+    stepLogDisplay() {
+      const raw = this.stepLog;
+      if (!raw) return "";
+      try {
+        const obj = JSON.parse(raw);
+        if (obj && typeof obj === "object") {
+          const parts = [];
+          if (obj.status === "ok" && obj.data && typeof obj.data.answer === "string") {
+            parts.push(obj.data.answer, "", "——— structured output (JSON) ———");
+          }
+          parts.push(JSON.stringify(obj, null, 2));
+          return parts.join("\n");
+        }
+      } catch {
+        // not JSON — show raw stdout unchanged
+      }
+      return raw;
     },
     runStatus() {
       return (this.detail && this.detail.status) || (this.internalRunRow && this.internalRunRow.status) || "";
@@ -596,11 +617,11 @@ export default {
   height: 220px;
   box-sizing: border-box;
   padding: 8px 10px;
-  border: 1px solid #1b2948;
+  border: 1px solid var(--console-border);
   border-radius: 4px;
-  background-color: #001528;
-  color: #bfcbd9;
-  font-family: "Menlo", "Monaco", "Consolas", monospace;
+  background-color: var(--console-bg);
+  color: var(--console-fg);
+  font-family: var(--mono-font);
   font-size: 12px;
   line-height: 1.5;
   resize: none;

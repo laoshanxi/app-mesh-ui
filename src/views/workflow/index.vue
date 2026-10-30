@@ -1,6 +1,13 @@
 <template>
   <div class="app-container">
-    <div class="page-title">Workflows</div>
+    <div class="page-title">
+      Workflows
+      <el-tooltip
+        v-if="forwarding" content="Workflows are stored per node — this list shows the registry on the forwarded node. Turn off 'Forward to host' to switch." placement="right"
+      >
+        <el-tag size="small" type="warning" effect="plain" class="node-tag">node: {{ forwarding }}</el-tag>
+      </el-tooltip>
+    </div>
     <el-row>
       <el-button-group>
         <el-button type="primary" :icon="Plus" @click="btnClick('add')">
@@ -50,17 +57,17 @@
         </el-table-column>
         <el-table-column label="Actions" width="190" align="center">
           <template #default="scope">
-            <el-tooltip content="View YAML" placement="top">
-              <el-button size="small" :icon="Document" circle @click="openViewYaml(scope.row)" />
+            <el-tooltip content="View / Edit YAML" placement="top">
+              <el-button size="small" :icon="Document" circle aria-label="View or edit workflow YAML" @click="openViewYaml(scope.row)" />
             </el-tooltip>
             <el-tooltip content="Run" placement="top">
-              <el-button size="small" type="success" :icon="VideoPlay" circle @click="openRun(scope.row)" />
+              <el-button size="small" type="success" :icon="VideoPlay" circle aria-label="Run workflow" @click="openRun(scope.row)" />
             </el-tooltip>
-            <el-tooltip content="Runs" placement="top">
-              <el-button size="small" type="warning" :icon="List" circle @click="openRuns(scope.row)" />
+            <el-tooltip content="Runs history" placement="top">
+              <el-button size="small" type="warning" :icon="List" circle aria-label="Runs history" @click="openRuns(scope.row)" />
             </el-tooltip>
             <el-tooltip content="Monitor latest run" placement="top">
-              <el-button size="small" type="primary" :icon="Monitor" circle @click="openMonitor(scope.row)" />
+              <el-button size="small" type="primary" :icon="Monitor" circle aria-label="Monitor latest run" @click="openMonitor(scope.row)" />
             </el-tooltip>
           </template>
         </el-table-column>
@@ -84,14 +91,22 @@
       </template>
     </el-drawer>
 
-    <!-- View YAML (read-only) -->
+    <!-- View / edit YAML -->
     <el-drawer v-model="isShowYaml" size="50%">
       <template #header>
         <span><el-icon><Document /></el-icon>&nbsp;&nbsp;{{ yamlName }}</span>
       </template>
       <div v-loading="yamlLoading" class="yaml-wrap">
-        <textarea v-model="yamlContent" class="yaml-box" readonly></textarea>
+        <textarea v-model="yamlContent" class="yaml-box" :readonly="yamlLoading"></textarea>
       </div>
+      <template #footer>
+        <el-button @click="isShowYaml = false">
+          Cancel
+        </el-button>
+        <el-button type="primary" :loading="yamlSaving" @click="saveYaml">
+          Save
+        </el-button>
+      </template>
     </el-drawer>
 
     <!-- Run inputs dialog -->
@@ -99,13 +114,13 @@
       <el-form v-loading="inputsLoading" label-width="140px">
         <el-form-item
           v-for="(param, key) in inputsSpec" :key="key" :label="key"
-          :required="param.Required === true"
+          :required="normParam(param).required"
         >
-          <el-switch v-if="param.Type === 'boolean'" v-model="inputsForm[key]" />
-          <el-input-number v-else-if="param.Type === 'number'" v-model="inputsForm[key]" />
-          <el-input v-else v-model="inputsForm[key]" :placeholder="param.Description || ''" />
-          <div v-if="param.Description" class="input-desc">
-            {{ param.Description }}
+          <el-switch v-if="normParam(param).type === 'boolean'" v-model="inputsForm[key]" />
+          <el-input-number v-else-if="normParam(param).type === 'number'" v-model="inputsForm[key]" />
+          <el-input v-else v-model="inputsForm[key]" :placeholder="normParam(param).description || ''" />
+          <div v-if="normParam(param).description" class="input-desc">
+            {{ normParam(param).description }}
           </div>
         </el-form-item>
       </el-form>
@@ -215,6 +230,7 @@ export default {
       addContent: "",
       addLoading: false,
       isShowYaml: false,
+      yamlSaving: false,
       yamlName: "",
       yamlContent: "",
       yamlLoading: false,
@@ -236,6 +252,12 @@ export default {
       monitorRunId: "",
       monitorLoading: false
     };
+  },
+  computed: {
+    // active forward target ("host:port") or "" — workflows are stored per node
+    forwarding() {
+      return this.$store.getters.forwarding || "";
+    }
   },
   created() {
     this.fetchData();
@@ -373,6 +395,23 @@ export default {
       });
     },
 
+    // Saving an existing name re-registers in place; run history is kept and
+    // the server rejects a YAML whose `name:` differs from the drawer's.
+    saveYaml() {
+      if (!this.yamlContent.trim()) {
+        ElMessage.warning("YAML content is empty");
+        return;
+      }
+      this.yamlSaving = true;
+      workflow.addWorkflow(this, this.yamlName, this.yamlContent).then(() => {
+        this.yamlSaving = false;
+        this.isShowYaml = false;
+        this.fetchData();
+      }, () => {
+        this.yamlSaving = false;
+      });
+    },
+
     openRun(row) {
       if (!row) return;
       this.runName = row.name;
@@ -393,10 +432,10 @@ export default {
         this.inputsSpec = spec;
         const form = {};
         keys.forEach(k => {
-          const p = spec[k];
-          if (p.Type === "boolean") form[k] = p.Default === true || p.Default === "true";
-          else if (p.Type === "number") form[k] = p.Default !== undefined ? Number(p.Default) : 0;
-          else form[k] = p.Default !== undefined ? String(p.Default) : "";
+          const p = this.normParam(spec[k]);
+          if (p.type === "boolean") form[k] = p.def === true || p.def === "true";
+          else if (p.type === "number") form[k] = p.def !== undefined && p.def !== "" ? Number(p.def) : 0;
+          else form[k] = p.def !== undefined && p.def !== null ? String(p.def) : "";
         });
         this.inputsForm = form;
         this.isShowRun = true;
@@ -404,11 +443,33 @@ export default {
         this.inputsLoading = false;
       });
     },
+    // The engine serializes InputParam with lowercase json tags (type/required/
+    // default/description); accept both cases so prefill/type/required keep working.
+    normParam(p) {
+      p = p || {};
+      return {
+        type: p.type || p.Type,
+        required: p.required === true || p.Required === true,
+        def: p.default !== undefined ? p.default : p.Default,
+        description: p.description || p.Description || ""
+      };
+    },
     submitRun() {
+      // Block empty required inputs; a cleared optional input with a default is
+      // omitted so the engine's default applies (an empty string would be sent
+      // as a present key and defeat the default).
       const inputs = {};
-      Object.keys(this.inputsForm).forEach(k => {
-        inputs[k] = String(this.inputsForm[k]);
-      });
+      for (const k of Object.keys(this.inputsForm)) {
+        const p = this.normParam(this.inputsSpec[k]);
+        const v = this.inputsForm[k];
+        const empty = v === "" || v === undefined || v === null;
+        if (empty && p.required) {
+          ElMessage.warning(`Input "${k}" is required — please provide a value.`);
+          return;
+        }
+        if (!empty) inputs[k] = String(v);
+        else if (p.def === undefined) inputs[k] = ""; // optional, no default: present-but-empty (historical contract)
+      }
       this.runLoading = true;
       this.doRun(this.runName, inputs).finally(() => {
         this.runLoading = false;
@@ -423,7 +484,7 @@ export default {
 
     removeWorkflow(row) {
       if (!row) return;
-      ElMessageBox.confirm(`Do you want to remove the workflow <${row.name}>?`, "Tooltip", {
+      ElMessageBox.confirm(`Do you want to remove the workflow <${row.name}>?`, "Delete workflow", {
         confirmButtonText: "Confirm", cancelButtonText: "Cancel", type: "warning"
       }).then(() => {
         workflow.removeWorkflow(this, row.name).then(() => {
@@ -465,6 +526,16 @@ export default {
 <style lang="scss" scoped>
 .el-row {
   margin-bottom: 8px;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.node-tag {
+  cursor: help;
 }
 
 /* keep table links (Name, Run ID) on one line; the cell handles ellipsis */
@@ -517,11 +588,11 @@ export default {
   height: 100%;
   box-sizing: border-box;
   padding: 12px 14px;
-  border: 1px solid #1b2948;
+  border: 1px solid var(--console-border);
   border-radius: 6px;
-  background-color: #001528;
-  color: #bfcbd9;
-  font-family: "Menlo", "Monaco", "Consolas", monospace;
+  background-color: var(--console-bg);
+  color: var(--console-fg);
+  font-family: var(--mono-font);
   font-size: 13px;
   line-height: 1.7;
   tab-size: 2;

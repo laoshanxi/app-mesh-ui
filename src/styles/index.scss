@@ -4,6 +4,17 @@
 @use './element-ui.scss';
 @use './sidebar.scss';
 
+// Console palette — one definition for every command/log surface (Shell, Run App,
+// Run Task, app log, workflow YAML editor, run/step logs, agent output) so the
+// dark console look cannot drift between pages.
+:root {
+  --console-bg: #001528;
+  --console-fg: #bfcbd9;
+  --console-border: #1b2948;
+  --console-accent: #67c23a; // prompt and echoed commands
+  --mono-font: Consolas, Menlo, Monaco, Courier, monospace;
+}
+
 // Type scale — four sizes, one per purpose, applied app-wide:
 //   18px  page title / brand  (.page-title, sidebar brand)
 //   14px  nav chrome          Element Plus base: sidebar menu, buttons, inputs
@@ -76,6 +87,23 @@ div:focus {
 }
 
 // main-container global css
+/* Element's drawer defaults leave a 32px gap under the title plus 20px body
+   padding — over half the chrome above console drawers. Tighten both so the
+   content (log output, YAML editor, forms) starts near the title. */
+.el-drawer__header {
+  margin-bottom: 12px;
+}
+
+.el-drawer__body {
+  padding: 12px 16px;
+}
+
+/* right-drawer: form drawers whose content scrolls above a pinned action bar */
+.right-drawer .el-drawer__body {
+  position: relative;
+  overflow: hidden;
+}
+
 .app-container {
   padding: 10px;
 }

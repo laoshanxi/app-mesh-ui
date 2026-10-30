@@ -199,9 +199,9 @@ export default {
   box-shadow: none !important;
   margin: 0px !important;
   padding: 0px !important;
-  background-color: #001528 !important;
-  color: #67c23a;
-  font-family: Consolas, Menlo, Courier, monospace;
+  background-color: var(--console-bg) !important;
+  color: var(--console-accent);
+  font-family: var(--mono-font);
   font-size: 14px;
   height: 20px;
   line-height: 20px;
@@ -210,8 +210,8 @@ export default {
 .shell-input .el-input-group__prepend {
   border: 0px !important;
   box-shadow: none !important;
-  background-color: #001528 !important;
-  color: #67c23a;
+  background-color: var(--console-bg) !important;
+  color: var(--console-accent);
   padding: 0 !important;
 }
 
@@ -219,7 +219,7 @@ export default {
    the echoed lines it is meant to line up with. */
 .shell-input .el-input-group__prepend pre {
   margin: 0 !important;
-  font-family: Consolas, Menlo, Courier, monospace;
+  font-family: var(--mono-font);
   font-size: 14px;
   line-height: 20px;
 }
@@ -277,9 +277,9 @@ export default {
   min-height: 0;
   overflow: auto;
   width: 100%;
-  background-color: #001528;
-  color: #bfcbd9;
-  font-family: Consolas, Menlo, Courier, monospace;
+  background-color: var(--console-bg);
+  color: var(--console-fg);
+  font-family: var(--mono-font);
   font-size: 14px;
   line-height: 20px;
 }
@@ -293,15 +293,15 @@ export default {
   padding: 10px;
   width: 100%;
   min-height: 40px;
-  background-color: #001528;
-  color: #bfcbd9;
+  background-color: var(--console-bg);
+  color: var(--console-fg);
 }
 
 .shell-content {
   padding: 0px 10px 10px 10px;
   width: 100%;
-  background-color: #001528;
-  color: #bfcbd9;
+  background-color: var(--console-bg);
+  color: var(--console-fg);
 }
 
 .shell-line>pre {
@@ -311,25 +311,25 @@ export default {
 }
 
 .shell-line>.command {
-  color: #67c23a;
+  color: var(--console-accent);
 }
 
 .shell-line>.file {
-  color: #67c23a;
+  color: var(--console-accent);
   cursor: pointer;
 }
 </style>
 <style lang="scss">
 .my-awesome-json-theme.boxed {
-  border-color: #1B2948;
+  border-color: var(--console-border);
 }
 
 .my-awesome-json-theme {
-  background: #1B2948;
+  background: var(--console-border);
   white-space: nowrap;
   color: #999;
   font-size: 14px;
-  font-family: Consolas, Menlo, Courier, monospace;
+  font-family: var(--mono-font);
 
   .jv-ellipsis {
     color: #999;
@@ -400,7 +400,7 @@ export default {
 
       &:hover {
         &:before {
-          background: #1B2948;
+          background: var(--console-border);
         }
       }
     }
