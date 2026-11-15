@@ -77,12 +77,36 @@
                       inactive-text="No" :inactive-value="false"
                     />
                   </el-form-item>
+                  <el-form-item label="CORS allowed origins" prop="REST.CorsAllowOrigins">
+                    <el-select
+                      v-model="form.REST.CorsAllowOrigins" multiple filterable allow-create default-first-option
+                      :reserve-keyword="false" style="width: 100%"
+                      placeholder="e.g. https://app.example.com (empty = no CORS headers)"
+                    />
+                  </el-form-item>
                   <el-form-item label="CSRF allowed origins" prop="REST.CsrfAllowedOrigins">
                     <el-select
                       v-model="form.REST.CsrfAllowedOrigins" multiple filterable allow-create default-first-option
                       :reserve-keyword="false" style="width: 100%"
                       placeholder="e.g. https://ui.example.com (empty = same-origin only)"
                     />
+                  </el-form-item>
+                  <el-form-item label="Request replay protection" prop="REST.RequestReplayProtection">
+                    <el-select v-model="form.REST.RequestReplayProtection">
+                      <el-option label="off" value="off" />
+                      <el-option label="audit" value="audit" />
+                      <el-option label="enforce" value="enforce" />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="Request signature" prop="REST.RequestSignature">
+                    <el-select v-model="form.REST.RequestSignature">
+                      <el-option label="off" value="off" />
+                      <el-option label="audit" value="audit" />
+                      <el-option label="enforce" value="enforce" />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="Request replay window (seconds)" prop="REST.RequestReplayWindowSeconds">
+                    <el-input-number v-model="form.REST.RequestReplayWindowSeconds" :min="10" :max="3600" />
                   </el-form-item>
                   <el-form-item label="File allowed base dir" prop="REST.FileAllowedBaseDir">
                     <el-input v-model="form.REST.FileAllowedBaseDir" />
@@ -106,6 +130,12 @@
                     <el-input-number v-model="form.REST.PrometheusExporterListenPort" :min="0" :max="65534" />
                   </el-form-item>
 
+                  <el-form-item label="SSL enabled (restart required)" prop="REST.SSL.SSLEnabled">
+                    <el-switch
+                      v-model="form.REST.SSL.SSLEnabled" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false"
+                    />
+                  </el-form-item>
                   <el-form-item label="SSL verify server" prop="REST.SSL.VerifyServer">
                     <el-switch
                       v-model="form.REST.SSL.VerifyServer" active-text="Yes" :active-value="true"
@@ -133,6 +163,20 @@
                   </el-form-item>
                   <el-form-item label="SSL CA file" prop="REST.SSL.SSLCaPath">
                     <el-input v-model="form.REST.SSL.SSLCaPath" />
+                  </el-form-item>
+                </el-collapse-item>
+
+                <el-collapse-item name="3">
+                  <template #title>
+                    <el-icon style="margin-right: 8px;"><CollectionTag /></el-icon>
+                    Docker
+                  </template>
+                  <el-form-item label="Host security policy" prop="Docker.HostSecurityPolicy">
+                    <el-select v-model="form.Docker.HostSecurityPolicy">
+                      <el-option label="off" value="off" />
+                      <el-option label="audit" value="audit" />
+                      <el-option label="enforce" value="enforce" />
+                    </el-select>
                   </el-form-item>
                 </el-collapse-item>
               </el-collapse>
@@ -254,9 +298,14 @@ export default {
           WorkerThreads: 0,
           TransportIoThreads: 0,
           CorsDisabled: false,
+          CorsAllowOrigins: [],
           CsrfAllowedOrigins: [],
+          RequestReplayProtection: "off",
+          RequestSignature: "off",
+          RequestReplayWindowSeconds: 300,
           FileAllowedBaseDir: "",
           SSL: {
+            SSLEnabled: true,
             SSLCaPath: "ssl/ca.pem",
             SSLCertificateFile: "ssl/server.pem",
             SSLCertificateKeyFile: "ssl/server-key.pem",
@@ -265,6 +314,9 @@ export default {
             VerifyServer: true,
             VerifyClient: false,
           },
+        },
+        Docker: {
+          HostSecurityPolicy: "off",
         },
       },
       configData: null,

@@ -55,8 +55,6 @@ docker run \
   -p 443:443 \
   -e APP_MESH_API_URL=https://`hostname`:6060 \
   -e VUE_APP_TITLE=`hostname` \
-  -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro \
-  -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro \
   laoshanxi/appmesh-ui
 ```
 
@@ -71,17 +69,46 @@ docker run \
   --restart=always \
   --net=host \
   -e VUE_APP_TITLE=`hostname` \
-  -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro \
-  -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro \
   laoshanxi/appmesh-ui
 ```
 
 ### Environment Variables
 
-| Variable Name      | Description              | Default Value            |
-| ------------------ | ------------------------ | ------------------------ |
-| `APP_MESH_API_URL` | App Mesh API service URL | `https://127.0.0.1:6060` |
-| `VUE_APP_TITLE`    | Web site title           | `App Mesh`               |
+| Variable Name       | Description                                                                                                        | Default Value            |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------ |
+| `APP_MESH_API_URL`  | App Mesh API service URL                                                                                           | `https://127.0.0.1:6060` |
+| `APP_MESH_AUTH_URL` | OIDC (Dex) issuer URL proxied under `/auth/`                                                                       | `http://127.0.0.1:6062`  |
+| `VUE_APP_TITLE`     | Web site title                                                                                                     | `App Mesh`               |
+| `APP_MESH_TLS_SAN`  | Extra certificate SANs (comma separated DNS names/IPs) for the startup self-signed certificate                      | _(empty)_                |
+| `APP_MESH_TLS_REGEN`| `1` regenerates the certificate on every container start even if one persists                                      | `0`                      |
+| `PROXY_SSL_VERIFY`  | Verify the API upstream TLS certificate (`on` requires `APP_MESH_API_CA`)                                          | `off`                    |
+| `APP_MESH_API_CA`   | CA bundle file (mount it in) that signs the API upstream certificate, used when `PROXY_SSL_VERIFY=on`              | _(empty)_                |
+
+### TLS Certificate
+
+The image ships no TLS key. On startup the container self-signs a throwaway
+certificate (`SAN=localhost,127.0.0.1` plus `APP_MESH_TLS_SAN`), so every
+deployment gets its own key — the same model as the appmesh daemon. To serve a
+trusted certificate instead, mount both halves; a mounted certificate always
+wins. Note the container runs nginx unprivileged (uid 101), so mounted key
+files must be readable by uid 101 (`chmod o+r` on the host key):
+
+```shell
+  -v /opt/appmesh/ssl/server.pem:/etc/nginx/conf.d/server.crt:ro \
+  -v /opt/appmesh/ssl/server-key.pem:/etc/nginx/conf.d/server.key:ro \
+```
+
+### Upstream TLS Verification
+
+`PROXY_SSL_VERIFY=off` (default) accepts the daemon's self-signed certificate
+but also lets an attacker on the container network impersonate the API upstream
+and steal bearer tokens. For a CA-signed upstream, enable verification:
+
+```shell
+  -e PROXY_SSL_VERIFY=on \
+  -e APP_MESH_API_CA=/certs/ca.pem \
+  -v /path/to/ca.pem:/certs/ca.pem:ro \
+```
 
 ## Interface Preview
 

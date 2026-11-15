@@ -1,6 +1,15 @@
+# Throttle the OIDC token endpoint only (it is the endpoint that verifies
+# passwords). 1r/s with a small burst keeps browser login (one call per login)
+# and CLI token refresh well inside the limit while slowing password spraying.
+# Zone lives at http level; conf.d is included there.
+limit_req_zone $binary_remote_addr zone=auth_token:10m rate=1r/s;
+
 server {
     listen                         443 ssl;
     server_name                    localhost;
+
+    # Hide the nginx version from Server header and error pages
+    server_tokens                  off;
 
     ssl_certificate                /etc/nginx/conf.d/server.crt;
     ssl_certificate_key            /etc/nginx/conf.d/server.key;
@@ -15,6 +24,10 @@ server {
     add_header Strict-Transport-Security    "max-age=31536000; includeSubDomains" always;
     add_header X-Frame-Options              "SAMEORIGIN" always;
     add_header Referrer-Policy              "strict-origin-when-cross-origin" always;
+    # CSP: no inline scripts (the hash is the Dex login page's double-submit
+    # guard, served same-origin via /auth/ — a daemon template change only
+    # drops that guard); inline styles and data:/blob: images for Element Plus.
+    add_header Content-Security-Policy      "default-src 'self'; script-src 'self' 'sha256-8L66wXkInDnVEdLxlrsFPaRkqIpBKhVd5kdLxX6AvFk='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" always;
 
     # File upload limit control
     client_max_body_size          100m;
@@ -37,6 +50,16 @@ server {
     # the same hand-off serves the appmesh favicon from the backend.
     location = /auth/theme/favicon.png {
         rewrite ^ /appmesh/favicon.png last;
+    }
+
+    # Exact-match token endpoint (wins over the /auth/ prefix below);
+    # only this path verifies passwords, so only this path is rate limited.
+    # The rest of the browser OIDC flow (/auth/auth redirects) stays unlimited.
+    location = /auth/token {
+        limit_req zone=auth_token burst=5 nodelay;
+        limit_req_status 429;
+        proxy_pass ${APP_MESH_AUTH_URL};
+        proxy_redirect ~^(https?://[^/]+)(/auth/.*)$ $2;
     }
 
     # Dex issuer path (e.g. /auth/token, /auth/auth) for the browser OIDC flow.
@@ -108,6 +131,7 @@ server {
         add_header Strict-Transport-Security    "max-age=31536000; includeSubDomains" always;
         add_header X-Frame-Options              "SAMEORIGIN" always;
         add_header Referrer-Policy              "strict-origin-when-cross-origin" always;
+        add_header Content-Security-Policy      "default-src 'self'; script-src 'self' 'sha256-8L66wXkInDnVEdLxlrsFPaRkqIpBKhVd5kdLxX6AvFk='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" always;
 
         # CORS - only allow same-origin requests (no external origins)
         set $cors_origin '';
