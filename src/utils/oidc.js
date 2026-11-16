@@ -245,7 +245,8 @@ export async function startAuthorizationLogin({ popup = false } = {}) {
   const url = `${base}/auth?${params.toString()}`;
   if (popup) {
     const width = 520;
-    const height = 680;
+    // The Dex login form is ~400px tall; 540 leaves balanced whitespace without the dead area of a taller window.
+    const height = 540;
     const left = Math.max(0, Math.round(window.screenX + (window.outerWidth - width) / 2));
     const top = Math.max(0, Math.round(window.screenY + (window.outerHeight - height) / 2));
     const win = window.open(
