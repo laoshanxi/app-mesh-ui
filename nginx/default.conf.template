@@ -4,12 +4,39 @@
 # Zone lives at http level; conf.d is included there.
 limit_req_zone $binary_remote_addr zone=auth_token:10m rate=1r/s;
 
+# CORS headers for /appmesh/ are gated on the same-origin $cors_origin
+# computed there: each map below yields the header value only when an Origin
+# was matched, and an empty add_header value is simply not sent — non-browser
+# callers (no Origin) receive none of them, like ACAO.
+map $cors_origin $cors_allow_methods {
+    default 'GET,POST,PUT,DELETE,OPTIONS,HEAD';
+    ''      '';
+}
+map $cors_origin $cors_allow_headers {
+    default 'Authorization,Content-Type,X-Permission,X-Expire-Seconds,X-Audience,X-Totp-Code,X-Set-Cookie,X-Target-Host,X-File-Path,X-File-Mode,X-File-User,X-File-Group,X-Send-File-Socket,X-Recv-File-Socket,X-Request-HMAC';
+    ''      '';
+}
+map $cors_origin $cors_expose_headers {
+    default 'Content-Type,Content-Disposition,X-Exit-Code,X-Output-Position,X-File-Mode,X-File-User,X-File-Group,X-Subscription-Id,X-Event-Type,X-App-Name';
+    ''      '';
+}
+map $cors_origin $cors_max_age {
+    default '86400';
+    ''      '';
+}
+
 server {
     listen                         443 ssl;
     server_name                    localhost;
 
     # Hide the nginx version from Server header and error pages
     server_tokens                  off;
+
+    # nginx-generated redirects (the directory 301s, e.g. /appmesh -> /appmesh/)
+    # stay relative: the browser keeps the origin it actually used, so a
+    # non-default published port (docker -p 8443:443) is no longer dropped and
+    # an untrusted Host header is no longer reflected into the Location.
+    absolute_redirect              off;
 
     ssl_certificate                /etc/nginx/conf.d/server.crt;
     ssl_certificate_key            /etc/nginx/conf.d/server.key;
@@ -133,11 +160,10 @@ server {
         add_header Referrer-Policy              "strict-origin-when-cross-origin" always;
         add_header Content-Security-Policy      "default-src 'self'; script-src 'self' 'sha256-8L66wXkInDnVEdLxlrsFPaRkqIpBKhVd5kdLxX6AvFk='; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'" always;
 
-        # CORS - only allow same-origin requests (no external origins)
+        # CORS - only allow same-origin requests (no external origins).
+        # No Origin header means a non-browser caller: it gets no ACAO at all
+        # (an empty add_header value is simply not sent) instead of a bogus '*'.
         set $cors_origin '';
-        if ($http_origin = '') {
-            set $cors_origin '*';
-        }
         if ($http_origin = "https://$http_host") {
             set $cors_origin $http_origin;
         }
@@ -145,12 +171,14 @@ server {
             set $cors_origin $http_origin;
         }
         add_header 'Access-Control-Allow-Origin' $cors_origin always;
-        add_header 'Access-Control-Allow-Methods' 'GET,POST,PUT,DELETE,OPTIONS,HEAD' always;
+        # Values come from the $cors_origin-derived maps above: empty (not sent)
+        # unless the request carried a whitelisted same-origin Origin.
+        add_header 'Access-Control-Allow-Methods' $cors_allow_methods always;
         # Allow-Headers: all X-* request headers used by SDK/client
-        add_header 'Access-Control-Allow-Headers' 'Authorization,Content-Type,X-Permission,X-Expire-Seconds,X-Audience,X-Totp-Code,X-Set-Cookie,X-Target-Host,X-File-Path,X-File-Mode,X-File-User,X-File-Group,X-Send-File-Socket,X-Recv-File-Socket,X-Request-HMAC' always;
+        add_header 'Access-Control-Allow-Headers' $cors_allow_headers always;
         # Expose-Headers: all X-* response headers returned by server
-        add_header 'Access-Control-Expose-Headers' 'Content-Type,Content-Disposition,X-Exit-Code,X-Output-Position,X-File-Mode,X-File-User,X-File-Group,X-Subscription-Id,X-Event-Type,X-App-Name' always;
-        add_header 'Access-Control-Max-Age' '86400' always;
+        add_header 'Access-Control-Expose-Headers' $cors_expose_headers always;
+        add_header 'Access-Control-Max-Age' $cors_max_age always;
 
         if ($request_method = 'OPTIONS') {
             return 204;
@@ -187,18 +215,32 @@ server {
         error_page  405     =200 $uri;
     }
 
-    location /health {
-        access_log off;
-        proxy_ssl_verify off;
+    # Liveness endpoint for the container healthcheck. The engine has no
+    # dedicated /health route; its unauthenticated index (GET /, "apiIndex") is
+    # the liveness equivalent, so the proxy_pass URI pins exactly that path.
+    # The location is an exact match: only /health itself is forwarded, and a
+    # nested path like /health/x can no longer smuggle a rewritten URI to the
+    # engine (the old prefix location turned /health/x into //x, which the
+    # engine bounced back with a 301). Headers are pinned instead of taken
+    # from the client: the engine trusts X-Forwarded-Host for its same-origin
+    # CSRF check, and this unauthenticated location must not become a bypass
+    # to forge it. Requests are access-logged like every other proxy target.
+    location = /health {
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_ssl_verify ${PROXY_SSL_VERIFY};
         proxy_ssl_server_name on;
         proxy_pass ${APP_MESH_API_URL}/;
     }
 
     # A browser that typed http:// against this TLS-only listener gets nginx's
     # raw 497 page ("The plain HTTP request was sent to HTTPS port"). Bounce it
-    # to the https URL instead. $http_host (not $host) keeps a non-default
-    # published port, so a -p 8443:443 mapping still redirects where it should.
-    error_page 497 =301 https://$http_host$request_uri;
+    # to the https URL instead. $bounce_host (map generated by 99-custom-config.sh
+    # into 00-bounce-host.conf) echoes $http_host only for whitelisted hosts,
+    # keeping a non-default published port (-p 8443:443) without reflecting an
+    # arbitrary, client-controlled Host.
+    error_page 497 =301 https://$bounce_host$request_uri;
 
     # error_page  404             /404.html;
     # redirect server error pages to the static page /50x.html

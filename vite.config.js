@@ -26,6 +26,7 @@ function dexuserAdminProxy() {
             'accept-encoding': 'identity' // uncompressed, so HTML/CSS rewriting can see the body
           }
           if (req.headers['content-type']) headers['content-type'] = req.headers['content-type']
+          if (req.headers.authorization) headers.authorization = req.headers.authorization
           if (req.headers.cookie) headers.cookie = req.headers.cookie
           const upstream = await fetch(DEXUSER_TARGET + req.url, {
             method: req.method,

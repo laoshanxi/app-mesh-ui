@@ -28,7 +28,11 @@ USER nginx
 # PROXY_SSL_VERIFY: "off" (default) accepts the daemon's self-signed upstream
 # certificate; set "on" together with APP_MESH_API_CA to reject a MITM-ed
 # upstream — see README "Environment Variables" for the trade-off
-ENV VUE_APP_TITLE="App Mesh" APP_MESH_API_URL="https://127.0.0.1:6060" APP_MESH_AUTH_URL="http://127.0.0.1:6062" APP_MESH_ADMIN_UI_URL="http://127.0.0.1:6064" PROXY_SSL_VERIFY="off"
+# UI_PUBLIC_HOST: hostname whose Host header the 497 http->https bounce may
+# echo back with its port (default: a reserved, never-resolvable placeholder,
+# so only loopback hosts are whitelisted); set it when the UI is published
+# behind a real hostname. Any value must be plain hostname[:port] characters.
+ENV VUE_APP_TITLE="App Mesh" APP_MESH_API_URL="https://127.0.0.1:6060" APP_MESH_AUTH_URL="http://127.0.0.1:6062" APP_MESH_ADMIN_UI_URL="http://127.0.0.1:6064" PROXY_SSL_VERIFY="off" UI_PUBLIC_HOST="unset.invalid"
 HEALTHCHECK --interval=30s --timeout=3s --start-period=65s --retries=3 \
     CMD curl -fsk https://localhost:443/health >/dev/null 2>&1 || exit 1
 EXPOSE 443

@@ -23,8 +23,12 @@
 
 <script>
 // Embeds the bundled dexuser administration UI (users, clients, sessions, MFA) served by the
-// dexuser System App. The UI has no authentication of its own; menu access is gated by the
+// dexuser System App. dexuser requires an authenticated session: the engine bearer token is
+// exchanged for its HttpOnly session cookie via POST /dexuser/session before the iframe loads
+// (an iframe cannot send the SPA's Authorization header itself). Menu access is gated by the
 // principal-set permission and the gateway proxies it under /dexuser/.
+import { ensureFreshToken } from "@/utils/oidc";
+
 export default {
   name: "DexUserAdmin",
   data() {
@@ -34,7 +38,17 @@ export default {
   },
   async mounted() {
     try {
-      const res = await fetch("/dexuser/admin?section=passwords");
+      // ensureFreshToken() reuses the SPA token chain (proactive refresh near
+      // expiry), same as every other API call; credentials: "same-origin"
+      // stores the returned HttpOnly cookie for the iframe's requests.
+      // A later session expiry surfaces as dexuser's own error page inside the
+      // frame; re-running this POST (e.g. on iframe 401) is a future addition.
+      const token = await ensureFreshToken();
+      const res = await fetch("/dexuser/session", {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        credentials: "same-origin",
+      });
       this.available = res.ok;
     } catch {
       this.available = false;

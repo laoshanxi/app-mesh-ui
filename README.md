@@ -83,6 +83,13 @@ docker run \
 | `APP_MESH_TLS_REGEN`| `1` regenerates the certificate on every container start even if one persists                                      | `0`                      |
 | `PROXY_SSL_VERIFY`  | Verify the API upstream TLS certificate (`on` requires `APP_MESH_API_CA`)                                          | `off`                    |
 | `APP_MESH_API_CA`   | CA bundle file (mount it in) that signs the API upstream certificate, used when `PROXY_SSL_VERIFY=on`              | _(empty)_                |
+| `UI_PUBLIC_HOST`    | Public hostname whose `Host` header the http→https bounce (nginx 497) may echo back with its port; unset = loopback hosts only | `unset.invalid` |
+
+When the UI is published on a non-443 port (e.g. `-p 8443:443`) or the plain
+HTTP → HTTPS bounce must land on a public hostname, set `UI_PUBLIC_HOST`
+(`hostname[:port]`; an IP is also valid; escape regex metacharacters, e.g.
+`ui\.example\.com`). Hosts outside this whitelist still fall back to `$host`
+in the 497 bounce — that fallback is by design.
 
 ### TLS Certificate
 
