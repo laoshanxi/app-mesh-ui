@@ -141,8 +141,28 @@
         <el-form-item label="Docker image" prop="docker_image">
           <el-input v-model="registerForm.docker_image"></el-input>
         </el-form-item>
-        <el-form-item label="Docker options" prop="APP_DOCKER_OPTS">
-          <el-input v-model="registerForm.APP_DOCKER_OPTS"></el-input>
+        <el-form-item label="Docker network" prop="docker_network">
+          <el-input v-model="registerForm.docker_network" placeholder="host | bridge | none | <network name>"></el-input>
+        </el-form-item>
+        <el-form-item
+          v-for="(port, index) in registerForm.docker_ports" :key="'docker-port-' + index"
+          :label="'Docker port ' + index"
+        >
+          <el-input v-model="registerForm.docker_ports[index]" placeholder="[hostIp:]hostPort:containerPort[/protocol]"></el-input>
+          <el-button :icon="Delete" @click.prevent="removeDockerPort(index)"></el-button>
+        </el-form-item>
+        <el-form-item label="Docker ports">
+          <el-button @click="addDockerPort()">Add port</el-button>
+        </el-form-item>
+        <el-form-item
+          v-for="(volume, index) in registerForm.docker_volumes" :key="'docker-volume-' + index"
+          :label="'Docker volume ' + index"
+        >
+          <el-input v-model="registerForm.docker_volumes[index]" placeholder="/host:/container[:ro]"></el-input>
+          <el-button :icon="Delete" @click.prevent="removeDockerVolume(index)"></el-button>
+        </el-form-item>
+        <el-form-item label="Docker volumes">
+          <el-button @click="addDockerVolume()">Add volume</el-button>
         </el-form-item>
         <el-form-item label="Image pull timeout" prop="APP_DOCKER_IMG_PULL_TIMEOUT">
           <el-input-number v-model="registerForm.APP_DOCKER_IMG_PULL_TIMEOUT" :min="0"></el-input-number>S
@@ -350,11 +370,13 @@ export default {
           memory_virt_mb: null
         },
         APP_DOCKER_IMG_PULL_TIMEOUT: null,
-        APP_DOCKER_OPTS: '',
         envs: [],
         secretEnvs: [],
         exitCodeActions: [],
         docker_image: '',
+        docker_network: '',
+        docker_ports: [],
+        docker_volumes: [],
         pid: null,
         depends_on: [],
         interval: null,
@@ -397,6 +419,18 @@ export default {
       if (index !== -1) {
         this.registerForm.envs.splice(index, 1);
       }
+    },
+    addDockerPort() {
+      this.registerForm.docker_ports.push('');
+    },
+    removeDockerPort(index) {
+      this.registerForm.docker_ports.splice(index, 1);
+    },
+    addDockerVolume() {
+      this.registerForm.docker_volumes.push('');
+    },
+    removeDockerVolume(index) {
+      this.registerForm.docker_volumes.splice(index, 1);
     },
     addSecretEnvReg() {
       this.registerForm.secretEnvs.push({

@@ -10,6 +10,11 @@ const state = {
   account: user?.account || '',
   avatar: user?.avatar || '',
   permissions: user?.permissions || '',
+  // The bearer was verified against the server this page-load (router guard's
+  // once-per-load revalidation). Set by both getInfo and handleLoginSuccess so
+  // a fresh login doesn't re-fetch principal + permissions the guard would ask
+  // for again milliseconds later.
+  validated: false,
 }
 
 const mutations = {
@@ -24,6 +29,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_VALIDATED: (state, validated) => {
+    state.validated = validated
   }
 }
 
@@ -50,6 +58,7 @@ const actions = {
       const permissions = await client.getPrincipalPermissions()
       commit('SET_PERMISSIONS', permissions)
       setUser({ name, account, avatar: '', permissions })
+      commit('SET_VALIDATED', true)
       return { name, account, permissions }
     })
   },
@@ -76,6 +85,7 @@ const actions = {
       return getClient().getPrincipalPermissions().then((permissions) => {
         commit('SET_PERMISSIONS', permissions)
         setUser({ name, account, avatar: '', permissions })
+        commit('SET_VALIDATED', true)
         return principal
       })
     })
@@ -90,6 +100,7 @@ const actions = {
       commit('SET_ACCOUNT', '')
       commit('SET_AVATAR', '')
       commit('SET_PERMISSIONS', '')
+      commit('SET_VALIDATED', false)
       removeUser()
       clearClient() // drop the cached client instance
       resetRouter()

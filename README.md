@@ -76,7 +76,7 @@ docker run \
 
 | Variable Name       | Description                                                                                                        | Default Value            |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------ |
-| `APP_MESH_API_URL`  | App Mesh API service URL                                                                                           | `https://127.0.0.1:6060` |
+| `APP_MESH_API_URL`  | App Mesh API service URL (must be `https://`; the container rejects other schemes at startup)                       | `https://127.0.0.1:6060` |
 | `APP_MESH_AUTH_URL` | OIDC (Dex) issuer URL proxied under `/auth/`                                                                       | `http://127.0.0.1:6062`  |
 | `VUE_APP_TITLE`     | Web site title                                                                                                     | `App Mesh`               |
 | `APP_MESH_TLS_SAN`  | Extra certificate SANs (comma separated DNS names/IPs) for the startup self-signed certificate                      | _(empty)_                |
@@ -84,6 +84,9 @@ docker run \
 | `PROXY_SSL_VERIFY`  | Verify the API upstream TLS certificate (`on` requires `APP_MESH_API_CA`)                                          | `off`                    |
 | `APP_MESH_API_CA`   | CA bundle file (mount it in) that signs the API upstream certificate, used when `PROXY_SSL_VERIFY=on`              | _(empty)_                |
 | `UI_PUBLIC_HOST`    | Public hostname whose `Host` header the http→https bounce (nginx 497) may echo back with its port; unset = loopback hosts only | `unset.invalid` |
+
+`APP_MESH_API_URL` must be an `https://` URL. The container refuses to start
+with any other scheme; there is no plain-HTTP fallback.
 
 When the UI is published on a non-443 port (e.g. `-p 8443:443`) or the plain
 HTTP → HTTPS bounce must land on a public hostname, set `UI_PUBLIC_HOST`

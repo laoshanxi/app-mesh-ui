@@ -18,6 +18,18 @@
         />
       </el-form-item>
 
+      <el-alert
+        v-if="authConfigError" type="error" :closable="false" show-icon class="auth-config-alert"
+        title="Failed to load the authentication configuration"
+      >
+        <template #default>
+          <span>Sign-in options may be incomplete — the service was unreachable.</span>
+          <el-button size="small" text type="primary" :loading="authConfigLoading" @click="loadAuthConfig">
+            Retry
+          </el-button>
+        </template>
+      </el-alert>
+
       <el-form-item v-if="passwordFlow" prop="Password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
@@ -89,6 +101,8 @@ export default {
       redirect: undefined,
       // auth/config advertises "password" only in builtin mode; else only the SSO redirect works.
       passwordFlow: false,
+      authConfigError: false,
+      authConfigLoading: false,
     };
   },
   watch: {
@@ -102,21 +116,27 @@ export default {
     },
   },
   mounted() {
-    getAuthConfig().then((cfg) => {
-      this.passwordFlow = (cfg?.flows || []).includes("password");
-    }).catch(() => {
-      ElMessage({
-        message: "Failed to load the authentication configuration",
-        type: "error",
-        duration: 5000,
-      });
-    });
+    this.loadAuthConfig();
   },
   beforeUnmount() {
     window.removeEventListener("message", this.onOAuthMessage);
   },
 
   methods: {
+    // getAuthConfig already retries a transient gateway failure internally;
+    // if it still fails, the alert keeps the state visible with a Retry affordance.
+    loadAuthConfig() {
+      this.authConfigLoading = true;
+      getAuthConfig().then((cfg) => {
+        this.passwordFlow = (cfg?.flows || []).includes("password");
+        this.authConfigError = false;
+      }).catch(() => {
+        this.authConfigError = true;
+      }).finally(() => {
+        this.authConfigLoading = false;
+      });
+    },
+
     showPwd() {
       this.passwordType = this.passwordType === "Password" ? "" : "Password";
       this.$nextTick(() => this.$refs.Password.focus());
@@ -278,6 +298,10 @@ $light_gray: #eee;
     padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
+  }
+
+  .auth-config-alert {
+    margin-bottom: 20px;
   }
 
   .tips {

@@ -197,6 +197,44 @@ server {
         proxy_ssl_server_name on;
 
         proxy_pass ${APP_MESH_API_URL};
+
+        # SSE/streaming endpoints of the engine REST pipeline:
+        #   GET /appmesh/app/{name}/output/stream, POST /appmesh/app/{name}/task/stream
+        # The agent relays these locally and flushes per chunk; this location
+        # turns off nginx response buffering, which would otherwise hold SSE
+        # events until the response ends, and sets a read timeout long enough
+        # for a quiet LLM turn between events. TLS and CORS add_header
+        # inheritance carry over from this location — but proxy_pass does NOT
+        # inherit into a nested regex location, so it is restated here (no URI
+        # part: the path goes to the agent unchanged). proxy_set_header must be
+        # repeated because a nested block setting any of them drops the parent
+        # set (Connection is cleared for the HTTP/1.1 request style the agent
+        # expects for a stream).
+        location ~ ^/appmesh/app/[^/]+/(output|task)/stream$ {
+            # Rewrite-module directives do not propagate into a nested location:
+            # repeat the same-origin CORS computation and the OPTIONS short-circuit
+            # (the add_header set above is inherited unchanged — its values are the
+            # http-level maps keyed on $cors_origin, recomputed here).
+            set $cors_origin '';
+            if ($http_origin = "https://$http_host") {
+                set $cors_origin $http_origin;
+            }
+            if ($http_origin = "http://$http_host") {
+                set $cors_origin $http_origin;
+            }
+            if ($request_method = 'OPTIONS') {
+                return 204;
+            }
+
+            proxy_buffering off;
+            proxy_read_timeout 3600s;
+            proxy_http_version 1.1;
+            proxy_set_header Host $http_host;
+            proxy_set_header X-Forwarded-Host $http_host;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_set_header Connection "";
+            proxy_pass ${APP_MESH_API_URL};
+        }
     }
 
     # OAuth redirect target (appmesh-web client): the SPA itself completes the

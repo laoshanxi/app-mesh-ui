@@ -45,14 +45,17 @@ export default {
   // ---- list / state-mutating-into-vueComp ----
 
   // workflow_list -> data: WorkflowListItem[]; writes vueComp.list, toggles listLoading.
+  // listError separates a failed fetch (retryable empty-state) from an empty list.
   listWorkflows(vueComp) {
     vueComp.listLoading = true
     call('workflow_list', {}).then(
       res => {
         vueComp.list = res.data || []
+        vueComp.listError = false
         vueComp.listLoading = false
       },
       () => {
+        vueComp.listError = true
         vueComp.listLoading = false // onError already showed the toast
       }
     )

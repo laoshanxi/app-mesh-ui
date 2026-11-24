@@ -32,6 +32,7 @@ export default {
         }
       })
       vueComp.list = data;
+      vueComp.listError = false;
       vueComp.listLoading = false;
       if (selectedName && vueComp.$refs.appTable) {
         const row = data.find(r => r.name === selectedName);
@@ -42,6 +43,7 @@ export default {
         }
       }
     }, () => {
+      vueComp.listError = true; // failed fetch: retryable empty-state, not "No Data"
       vueComp.listLoading = false;
     })
   },
@@ -184,14 +186,14 @@ export default {
         delete data.secretEnvs;
         delete data.exitCodeActions; // UI-only rows; behavior.exit_code_actions carries the payload
 
-        if (data.APP_DOCKER_OPTS && data.APP_DOCKER_OPTS.length > 0) {
+        // blank rows would fail the daemon's port/volume spec parsing
+        data.docker_ports = (data.docker_ports || []).filter((spec) => spec && spec.trim());
+        data.docker_volumes = (data.docker_volumes || []).filter((spec) => spec && spec.trim());
+        // the pull timeout rides as an env var (daemon contract); it arrives as a number
+        // from the input control, so stringify it before the env map goes out
+        if (data.APP_DOCKER_IMG_PULL_TIMEOUT != null) {
           data.env = !data.env ? {} : data.env;
-          data.env["APP_DOCKER_OPTS"] = data.APP_DOCKER_OPTS;
-          delete data.APP_DOCKER_OPTS;
-        }
-        if (data.APP_DOCKER_IMG_PULL_TIMEOUT && data.APP_DOCKER_IMG_PULL_TIMEOUT.length > 0) {
-          data.env = !data.env ? {} : data.env;
-          data.env["APP_DOCKER_IMG_PULL_TIMEOUT"] = data.APP_DOCKER_IMG_PULL_TIMEOUT;
+          data.env["APP_DOCKER_IMG_PULL_TIMEOUT"] = String(data.APP_DOCKER_IMG_PULL_TIMEOUT);
           delete data.APP_DOCKER_IMG_PULL_TIMEOUT;
         }
 
@@ -203,6 +205,7 @@ export default {
         // edited rows also carry runtime fields (pid state, health, pstree, register_time, ...)
         const definitionKeys = [
           'name', 'command', 'description', 'enabled', 'working_dir', 'docker_image',
+          'docker_ports', 'docker_volumes', 'docker_network',
           'env', 'secret_env', 'resource_limit', 'daily_limitation', 'interval',
           'cron_schedule', 'stop_grace_period', 'stdout_backup_count', 'behavior',
           'permission', 'metadata', 'health_check_cmd', 'shell', 'session_login',

@@ -35,21 +35,35 @@ function persistTokens() {
   }
 }
 
-/** Engine's public OAuth/OIDC config (unauthenticated endpoint). */
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Engine's public OAuth/OIDC config (unauthenticated endpoint).
+ * Every caller shares one in-flight fetch, and a transient proxy failure
+ * (the agent's stale first-request-after-idle 502) is retried once inside
+ * that shared promise — concurrent callers still issue a single request.
+ */
 export function getAuthConfig() {
   if (authConfig) return Promise.resolve(authConfig);
   if (!authConfigPromise) {
-    authConfigPromise = axios
-      .get("/appmesh/auth/config")
-      .then((res) => {
-        authConfig = res.data;
+    authConfigPromise = (async () => {
+      try {
+        return (await axios.get("/appmesh/auth/config")).data;
+      } catch (error) {
+        // Retry only transport failures and gateway statuses (the stale
+        // first-request-after-idle 502); the engine itself answering —
+        // e.g. a 4xx — is a real answer and must surface as-is.
+        const status = error?.response?.status;
+        if (status && status !== 502 && status !== 503 && status !== 504) throw error;
+        await sleep(800);
+        return (await axios.get("/appmesh/auth/config")).data;
+      } finally {
         authConfigPromise = null;
-        return authConfig;
-      })
-      .catch((error) => {
-        authConfigPromise = null;
-        throw error;
-      });
+      }
+    })().then((cfg) => {
+      authConfig = cfg;
+      return cfg;
+    });
   }
   return authConfigPromise;
 }

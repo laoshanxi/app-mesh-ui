@@ -45,8 +45,11 @@ export default {
     getClient().getMetrics()
       .then(res => {
         vueComp.content = res;
+        vueComp.error = false;
       })
-      .catch(() => { }) // onError already showed the toast
+      .catch(() => {
+        vueComp.error = true; // failed fetch: show the retry alert, not an empty panel
+      }) // onError already showed the toast
       .finally(() => {
         vueComp.loading = false;
       });

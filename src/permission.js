@@ -9,8 +9,10 @@ import { checkPermission, filterRoutes, firstMenuPath } from "@/utils/permission
 
 NProgress.configure({ showSpinner: false });
 
-// Validate the cached session once per page-load (the sessionStorage identity is otherwise trusted blindly).
-let sessionValidated = false;
+// "Validate the cached session once per page-load" lives in the user store
+// (state.user.validated): getInfo and handleLoginSuccess both set it, so a
+// login that just verified the bearer doesn't refetch principal + permissions
+// when the next guard run revalidates.
 
 const finishLoading = (immediate = false) => {
   NProgress.done();
@@ -71,7 +73,6 @@ router.beforeEach(async (to, from, next) => {
     try {
       // No cached identity: verify with the server (or go to login).
       await store.dispatch("user/getInfo");
-      sessionValidated = true;
       next({ ...to, replace: true });
     } catch (error) {
       await store.dispatch("user/logout");
@@ -81,10 +82,9 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // Cached identity not yet validated this page-load: confirm it is alive, else re-login.
-  if (!sessionValidated) {
+  if (!store.getters.validated) {
     try {
       await store.dispatch("user/getInfo");
-      sessionValidated = true;
     } catch (error) {
       await store.dispatch("user/logout");
       next(`/login?redirect=${encodeURIComponent(to.fullPath)}`);

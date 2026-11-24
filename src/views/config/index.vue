@@ -130,6 +130,19 @@
                     <el-input-number v-model="form.REST.PrometheusExporterListenPort" :min="0" :max="65534" />
                   </el-form-item>
 
+                  <el-form-item label="Metrics require auth" prop="REST.MetricsRequireAuth">
+                    <el-switch
+                      v-model="form.REST.MetricsRequireAuth" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false"
+                    />
+                    <el-tooltip
+                      content="Require authentication with the config-view permission on /appmesh/metrics; turn off only for a trusted-network Prometheus scraper (hot-reloadable)"
+                      placement="right"
+                    >
+                      <el-icon class="field-hint"><InfoFilled /></el-icon>
+                    </el-tooltip>
+                  </el-form-item>
+
                   <el-form-item label="SSL enabled (restart required)" prop="REST.SSL.SSLEnabled">
                     <el-switch
                       v-model="form.REST.SSL.SSLEnabled" active-text="Yes" :active-value="true"
@@ -171,6 +184,18 @@
                     <el-icon style="margin-right: 8px;"><CollectionTag /></el-icon>
                     Docker
                   </template>
+                  <el-form-item label="Enable" prop="Docker.Enable">
+                    <el-switch
+                      v-model="form.Docker.Enable" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false"
+                    />
+                    <el-tooltip
+                      content="Master switch for container support on this node (container service, events push, image pulls); a node without a Docker endpoint is inert either way (hot-reloadable)"
+                      placement="right"
+                    >
+                      <el-icon class="field-hint"><InfoFilled /></el-icon>
+                    </el-tooltip>
+                  </el-form-item>
                   <el-form-item label="Host security policy" prop="Docker.HostSecurityPolicy">
                     <el-select v-model="form.Docker.HostSecurityPolicy">
                       <el-option label="off" value="off" />
@@ -235,6 +260,9 @@
                     </el-button>
                   </template>
                 </el-table-column>
+                <template #empty>
+                  <list-empty :error="listError" @retry="refreshLabels" />
+                </template>
               </el-table>
             </el-row>
           </el-tab-pane>
@@ -260,6 +288,7 @@ import { markRaw } from 'vue'
 import { Setting, Connection, CollectionTag, Edit as EditIcon, CircleCheck, Delete, Plus, InfoFilled } from '@element-plus/icons-vue'
 import configService from "@/services/config";
 import labelsService from "@/services/labels";
+import ListEmpty from "@/components/ListEmpty/index.vue";
 
 export default {
   components: {
@@ -267,6 +296,7 @@ export default {
     Connection,
     CollectionTag,
     InfoFilled,
+    ListEmpty,
   },
   data() {
     return {
@@ -304,6 +334,7 @@ export default {
           RequestSignature: "off",
           RequestReplayWindowSeconds: 300,
           FileAllowedBaseDir: "",
+          MetricsRequireAuth: true,
           SSL: {
             SSLEnabled: true,
             SSLCaPath: "ssl/ca.pem",
@@ -316,6 +347,7 @@ export default {
           },
         },
         Docker: {
+          Enable: true,
           HostSecurityPolicy: "off",
         },
       },
@@ -361,6 +393,7 @@ export default {
       tableKey: 0,
       isSelected: false,
       listLoading: false,
+      listError: false,
       isEdit: false,
       currentRow: null,
     };

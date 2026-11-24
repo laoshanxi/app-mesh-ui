@@ -61,6 +61,9 @@
         <el-table-column label="Memory" min-width="90">
           <template #default="scope">{{ formatMemory(scope.row.memory) }}</template>
         </el-table-column>
+        <template #empty>
+          <list-empty :error="listError" @retry="fetchData" />
+        </template>
       </el-table>
     </el-row>
 
@@ -217,16 +220,18 @@ import { markRaw } from "vue";
 import { Plus, Delete, Open, TurnOff, SuccessFilled, WarningFilled } from "@element-plus/icons-vue";
 import agentService from "@/services/agent";
 import { formatEmpty, formatMemory } from "@/utils";
+import ListEmpty from "@/components/ListEmpty/index.vue";
 
 export default {
   name: "AgentManage",
-  components: { SuccessFilled, WarningFilled, TurnOff },
+  components: { SuccessFilled, WarningFilled, TurnOff, ListEmpty },
   data() {
     return {
       Plus: markRaw(Plus), Delete: markRaw(Delete), Open: markRaw(Open),
       TurnOff: markRaw(TurnOff),
       list: [],
       listLoading: false,
+      listError: false,
       currentRow: null,
       registerVisible: false,
       registering: false,

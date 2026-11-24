@@ -6,8 +6,11 @@ export default {
     getClient().listLabels()
       .then(res => {
         vueComp.labels = Object.entries(res).map(([key, value]) => ({ key, value }));
+        vueComp.listError = false;
       })
-      .catch(() => { }) // onError already showed the toast
+      .catch(() => {
+        vueComp.listError = true; // failed fetch: retryable empty-state, not "No Data"
+      }) // onError already showed the toast
       .finally(() => {
         vueComp.listLoading = false;
       });

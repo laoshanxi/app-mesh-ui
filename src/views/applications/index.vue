@@ -146,6 +146,9 @@
             {{ formatEmpty(scope.row.command) }}
           </template>
         </el-table-column>
+        <template #empty>
+          <list-empty :error="listError" @retry="fetchData" />
+        </template>
       </el-table>
     </el-row>
 
@@ -194,12 +197,14 @@ import { Plus, Edit, Delete, Open, TurnOff, View as ViewIcon, Document, Clock, S
 import AppDetail from "./appDetail/index.vue";
 import AppLog from "./appLog/index.vue";
 import AppReg from "./appReg/index.vue";
+import ListEmpty from "@/components/ListEmpty/index.vue";
 
 export default {
   components: {
     AppDetail,
     AppLog,
     AppReg,
+    ListEmpty,
     SuccessFilled, WarningFilled, ViewIcon, Document, Clock,
   },
   data() {
@@ -215,6 +220,7 @@ export default {
       tableKey: 0,
       list: null,
       listLoading: true,
+      listError: false,
       application: null,
       currentRow: null,
       formLabelWidth: "100px",

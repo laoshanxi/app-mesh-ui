@@ -1,6 +1,15 @@
 <template>
   <div v-loading="loading" class="app-container">
     <div class="page-title">Prometheus</div>
+    <el-alert
+      v-if="error && !loading" type="error" :closable="false" show-icon class="metrics-error"
+      title="Failed to load metrics"
+    >
+      <template #default>
+        <span>The metrics endpoint could not be reached.</span>
+        <el-button size="small" text type="primary" @click="fetchMetrics">Retry</el-button>
+      </template>
+    </el-alert>
     <el-row>
       <el-col :span="24">
         <el-tabs type="border-card">
@@ -26,10 +35,16 @@ export default {
     return {
       content: "",
       loading: true,
+      error: false,
     };
   },
   mounted() {
-    configServices.getPrometheus(this);
+    this.fetchMetrics();
+  },
+  methods: {
+    fetchMetrics() {
+      configServices.getPrometheus(this);
+    },
   },
 };
 </script>
@@ -50,6 +65,10 @@ export default {
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
+}
+
+.metrics-error {
+  margin-bottom: 8px;
 }
 
 .app-container > .el-row {

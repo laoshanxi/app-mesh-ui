@@ -37,6 +37,9 @@
             </el-tag>
           </template>
         </el-table-column>
+        <template #empty>
+          <list-empty :error="listError" @retry="refreshData" />
+        </template>
       </el-table>
     </el-row>
     <el-drawer
@@ -56,10 +59,12 @@ import { ElMessageBox, ElMessage } from "element-plus";
 import { markRaw } from 'vue'
 import { Plus, Delete, Key } from "@element-plus/icons-vue";
 import permissions from "./permissions/index.vue";
+import ListEmpty from "@/components/ListEmpty/index.vue";
 
 export default {
   components: {
     permissions,
+    ListEmpty,
   },
   data() {
     return {
@@ -68,6 +73,7 @@ export default {
       isSelected: false,
       list: null,
       listLoading: false,
+      listError: false,
 
       currentRow: null,
       permissionsVisible: false,
@@ -103,6 +109,7 @@ export default {
             }
           }
           this.listLoading = false;
+          this.listError = false;
           if (selectedName && this.$refs.roleTable) {
             const row = this.list.find(r => r.name === selectedName);
             if (row) {
@@ -113,9 +120,10 @@ export default {
           }
         },
         () => {
+          this.listError = true; // failed fetch: retryable empty-state, not "No Data"
           this.listLoading = false;
         }
-      ).catch((err) => { console.warn(err); });
+      ).catch((err) => { console.warn(err); this.listError = true; });
     },
     btnClick(action) {
       switch (action) {

@@ -52,6 +52,9 @@
             </el-tag>
           </template>
         </el-table-column>
+        <template #empty>
+          <list-empty :error="listError" @retry="refreshData" />
+        </template>
       </el-table>
     </el-row>
 
@@ -108,9 +111,11 @@ import { computePrincipalId, getAuthConfig } from "@/utils/oidc";
 import { ElMessageBox, ElMessage } from "element-plus";
 import { markRaw } from "vue";
 import { Plus, Delete } from "@element-plus/icons-vue";
+import ListEmpty from "@/components/ListEmpty/index.vue";
 
 export default {
   name: "Principals",
+  components: { ListEmpty },
   data() {
     return {
       Plus: markRaw(Plus), Delete: markRaw(Delete),
@@ -118,6 +123,7 @@ export default {
       isSelected: false,
       list: [],
       listLoading: false,
+      listError: false,
       saving: false,
 
       currentRow: null,
@@ -208,6 +214,7 @@ export default {
               }
             }
             this.listLoading = false;
+            this.listError = false;
             if (selectedId && this.$refs.principalTable) {
               const row = this.list.find((r) => r.principal_id === selectedId);
               if (row) {
@@ -218,11 +225,13 @@ export default {
             }
           },
           () => {
+            this.listError = true; // failed fetch: retryable empty-state, not "No Data"
             this.listLoading = false;
           }
         )
         .catch((err) => {
           console.warn(err);
+          this.listError = true;
           this.listLoading = false;
         });
     },

@@ -71,6 +71,9 @@
             </el-tooltip>
           </template>
         </el-table-column>
+        <template #empty>
+          <list-empty :error="listError" @retry="fetchData" />
+        </template>
       </el-table>
     </el-row>
 
@@ -212,10 +215,11 @@ import {
 } from "@element-plus/icons-vue";
 import workflow from "@/services/workflow";
 import { formatEmpty, formatToLocalIso } from "@/utils";
+import ListEmpty from "@/components/ListEmpty/index.vue";
 import RunDetail from "./RunDetail.vue";
 
 export default {
-  components: { Document, List, Monitor, RunDetail },
+  components: { Document, List, Monitor, RunDetail, ListEmpty },
   data() {
     return {
       Plus: markRaw(Plus), Delete: markRaw(Delete), Document: markRaw(Document),
@@ -224,6 +228,7 @@ export default {
       tableKey: 0,
       list: null,
       listLoading: true,
+      listError: false,
       currentRow: null,
       isSelected: false,
       isShowAdd: false,

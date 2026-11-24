@@ -193,7 +193,8 @@ export const constantRoutes = [
         path: "index",
         name: "Prometheus",
         component: () => import("@/views/prometheus/index.vue"),
-        meta: { title: "Prometheus", icon: "Prometheus", roles: ["host-resource-view"] }
+        // /appmesh/metrics requires config-view when REST.MetricsRequireAuth is on (the default)
+        meta: { title: "Prometheus", icon: "Prometheus", roles: ["config-view"] }
       }
     ]
   },

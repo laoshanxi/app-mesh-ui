@@ -84,6 +84,17 @@ export default {
             { k: "Exit behavior", v: r.behavior && r.behavior.exit },
             { k: "Exit code actions", v: codeActions, mono: true },
             { k: "Docker image", v: r.docker_image },
+            { k: "Docker network", v: r.docker_network },
+            {
+              k: "Docker ports",
+              v: r.docker_ports && r.docker_ports.length ? r.docker_ports.join(", ") : null,
+              mono: true
+            },
+            {
+              k: "Docker volumes",
+              v: r.docker_volumes && r.docker_volumes.length ? r.docker_volumes.join(", ") : null,
+              mono: true
+            },
             { k: "Stdout backup count", v: r.stdout_backup_count },
             { k: "Description", v: r.description, full: true },
           ],

@@ -206,9 +206,13 @@ export default {
     getClient().listApps().then(
       data => {
         vueComp.list = (data || []).filter(isAgentRelated)
+        vueComp.listError = false
         vueComp.listLoading = false
       },
-      () => { vueComp.listLoading = false }
+      () => {
+        vueComp.listError = true // failed fetch: retryable empty-state, not "No Data"
+        vueComp.listLoading = false
+      }
     )
   },
 
@@ -227,7 +231,7 @@ export default {
   },
 
   removeApp(vueComp, name) {
-    return ElMessageBox.confirm(`Remove agent App <${name}>?`, 'Tooltip', {
+    return ElMessageBox.confirm(`Remove agent App <${name}>?`, 'Remove agent', {
       confirmButtonText: 'Confirm', cancelButtonText: 'Cancel', type: 'warning'
     }).then(() => getClient().deleteApp(name).then(() => {
       ElMessage.success(`Agent <${name}> removed.`)
