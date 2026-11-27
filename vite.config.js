@@ -7,7 +7,7 @@ import path from 'path'
 // Dev proxy for the dexuser admin UI (Security > Users iframe). Its HTML uses absolute
 // paths (href="/admin", src="/static/..."), which nginx rewrites with sub_filter in prod;
 // this middleware applies the same rewriting here so the dev server behaves identically.
-const DEXUSER_TARGET = 'http://127.0.0.1:6064'
+const DEXUSER_TARGET = 'http://127.0.0.1:6068'
 const readRequestBody = (req) => new Promise((resolve, reject) => {
   const chunks = []
   req.on('data', (c) => chunks.push(c))
@@ -96,7 +96,7 @@ export default defineConfig({
       },
       // Dex issuer path: same-origin proxy (Dex sends no CORS headers).
       '/auth': {
-        target: 'http://127.0.0.1:6062',
+        target: 'http://127.0.0.1:6065',
         changeOrigin: true
       }
       // '/dexuser' is served by the dexuserAdminProxy plugin above (needs HTML rewriting,

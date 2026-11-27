@@ -75,7 +75,7 @@ App Mesh UI is the web GUI for [App Mesh](https://github.com/laoshanxi/app-mesh)
 | Prefix | Target | Purpose |
 |--------|--------|---------|
 | `/appmesh` | `https://localhost:6060` | Daemon REST (no `changeOrigin` — a rewritten Host fails the daemon's CSRF origin check) |
-| `/auth` | `http://127.0.0.1:6062` | Dex issuer (Dex sends no CORS headers) |
+| `/auth` | `http://127.0.0.1:6065` | Dex issuer (Dex sends no CORS headers) |
 
 ## Build & Test
 

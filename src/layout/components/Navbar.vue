@@ -102,7 +102,7 @@ export default {
     forwardHint() {
       return this.forwardIdle
         ? 'Not forwarding — requests go to this node. Toggle the switch to forward.'
-        : 'Request Forwarding (port defaults to 6059)';
+        : 'Request Forwarding (port defaults to 6062)';
     }
   },
   created() {
@@ -129,9 +129,9 @@ export default {
       if (!this.forward) {
         throw new Error('Forward target cannot be empty');
       }
-      // No port -> the SDK appends base port 6060 (TCP-msgpack, unforwardable); 6059 is the TCP API port.
+      // No port -> the SDK appends base port 6060 (TCP-msgpack, unforwardable); 6062 is the TCP API port.
       if (!this.forward.includes(":")) {
-        this.forward = `${this.forward}:6059`;
+        this.forward = `${this.forward}:6062`;
       }
 
       const client = getClient();

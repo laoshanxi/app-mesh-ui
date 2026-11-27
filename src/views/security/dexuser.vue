@@ -6,12 +6,12 @@
       title="The bundled user administration UI (dexuser) is not reachable"
     >
       <p>
-        The dexuser System App serves on loopback only (default http://127.0.0.1:6064) and is proxied
+        The dexuser System App serves on loopback only (default http://127.0.0.1:6068) and is proxied
         at /dexuser/ by the UI gateway. It is unavailable when the App is stopped, built without the
         admin UI, or the gateway cannot reach the daemon host.
       </p>
       <p>Direct access through SSH port forwarding:</p>
-      <pre>ssh -L 6064:127.0.0.1:6064 &lt;host&gt;</pre>
+      <pre>ssh -L 6068:127.0.0.1:6068 &lt;host&gt;</pre>
     </el-alert>
     <iframe
       v-else-if="available" class="dexuser-frame" src="/dexuser/admin?section=passwords"

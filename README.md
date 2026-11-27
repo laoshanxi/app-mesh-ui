@@ -77,7 +77,7 @@ docker run \
 | Variable Name       | Description                                                                                                        | Default Value            |
 | ------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------ |
 | `APP_MESH_API_URL`  | App Mesh API service URL (must be `https://`; the container rejects other schemes at startup)                       | `https://127.0.0.1:6060` |
-| `APP_MESH_AUTH_URL` | OIDC (Dex) issuer URL proxied under `/auth/`                                                                       | `http://127.0.0.1:6062`  |
+| `APP_MESH_AUTH_URL` | OIDC (Dex) issuer URL proxied under `/auth/`                                                                       | `http://127.0.0.1:6065`  |
 | `VUE_APP_TITLE`     | Web site title                                                                                                     | `App Mesh`               |
 | `APP_MESH_TLS_SAN`  | Extra certificate SANs (comma separated DNS names/IPs) for the startup self-signed certificate                      | _(empty)_                |
 | `APP_MESH_TLS_REGEN`| `1` regenerates the certificate on every container start even if one persists                                      | `0`                      |

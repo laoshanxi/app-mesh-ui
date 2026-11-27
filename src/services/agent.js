@@ -293,7 +293,7 @@ export default {
     const app = {
       name: form.name,
       description: form.description || 'llm-agent — Claude Agent SDK handler',
-      command: form.command || 'python3 -m llm_agent --server 127.0.0.1:6059',
+      command: form.command || 'python3 -m llm_agent --server 127.0.0.1:6062',
       working_dir: form.workingDir,
       enabled: true,
       behavior: { exit: 'restart' },
@@ -366,7 +366,7 @@ export default {
     const app = {
       name,
       description: `llm-agent interactive worker (session=${sid})`,
-      command: `${baseInterpreter || 'python3'} -m llm_agent --session-worker --session-id=${sid} --server=127.0.0.1:6059`,
+      command: `${baseInterpreter || 'python3'} -m llm_agent --session-worker --session-id=${sid} --server=127.0.0.1:6062`,
       working_dir: templateApp.working_dir,
       enabled: true,
       permission: 11, // owner(+admin) only

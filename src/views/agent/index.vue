@@ -170,7 +170,7 @@
         <!-- Advanced: custom start command (optional; empty = default) -->
         <el-form-item label="Command">
           <div style="width: 100%">
-            <el-input v-model="form.command" placeholder="python3 -m llm_agent --server 127.0.0.1:6059" />
+            <el-input v-model="form.command" placeholder="python3 -m llm_agent --server 127.0.0.1:6062" />
             <div style="color: #909399; font-size: 12px; line-height: 1.5; margin-top: 4px">
               Optional. Leave empty to use the default command. Enter a custom interpreter path
               (e.g. a venv Python 3.10+) when the system python3 is older than required.

@@ -10,7 +10,7 @@ push:
 
 # Run the UI container against a daemon on this host. host.docker.internal rather
 # than --net=host: a container's 127.0.0.1 is its own network namespace, so the
-# daemon's loopback-bound 6060/6062/6064 stay unreachable (Docker Desktop for Mac
+# daemon's loopback-bound 6060/6065/6068 stay unreachable (Docker Desktop for Mac
 # maps --net=host to the Linux VM). --add-host makes the name resolve on plain
 # Linux Docker too. The image's built-in cert already covers https://localhost;
 # where /opt/appmesh/ssl is shared with Docker, mount server.{pem,key} over
@@ -20,8 +20,8 @@ run:
 	docker run -d --name appmesh-ui --restart=always -p 443:443 \
 		--add-host=host.docker.internal:host-gateway \
 		-e APP_MESH_API_URL=https://host.docker.internal:6060 \
-		-e APP_MESH_AUTH_URL=http://host.docker.internal:6062 \
-		-e APP_MESH_ADMIN_UI_URL=http://host.docker.internal:6064 \
+		-e APP_MESH_AUTH_URL=http://host.docker.internal:6065 \
+		-e APP_MESH_ADMIN_UI_URL=http://host.docker.internal:6068 \
 		${DOCKER_IMG_NAME}:latest
 
 dev:
