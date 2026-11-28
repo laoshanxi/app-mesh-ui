@@ -43,6 +43,11 @@
           <template #default="scope">{{ scope.row.execution_user }}</template>
         </el-table-column>
 
+        <!-- sandbox.mode of the overlay; empty while the principal follows the node default -->
+        <el-table-column label="Sandbox" width="90">
+          <template #default="scope">{{ scope.row.sandbox && scope.row.sandbox.mode }}</template>
+        </el-table-column>
+
         <!-- min-width so role tags keep their room; without it this column just
              absorbs whatever the flexible columns leave and clips the tags. -->
         <el-table-column label="Roles" min-width="200">
@@ -59,7 +64,7 @@
     </el-row>
 
     <!-- Principal overlay editor: identities live in Dex; the engine stores only the overlay
-         (status/execution_user/roles). principal_id = stable id derived from issuer + subject. -->
+         (status/execution_user/sandbox/roles). principal_id = stable id derived from issuer + subject. -->
     <el-drawer v-model="formVisible" class="right-drawer" size="50%">
       <template #header>
         <span>{{ formMode === 'new' ? 'Add principal overlay' : 'Update principal overlay' }}</span>
@@ -86,6 +91,14 @@
           </el-form-item>
           <el-form-item label="Execution user" prop="execution_user">
             <el-input v-model="principalForm.execution_user" placeholder="OS user the apps of this principal run as" />
+          </el-form-item>
+          <el-form-item label="Sandbox mode" prop="sandbox_mode">
+            <el-select v-model="principalForm.sandbox_mode" placeholder="Follow node default">
+              <el-option label="follow node default" value="" />
+              <el-option label="off" value="off" />
+              <el-option label="write" value="write" />
+              <el-option label="strict" value="strict" />
+            </el-select>
           </el-form-item>
           <el-form-item label="Roles" prop="roles">
             <el-select v-model="principalForm.roles" multiple filterable placeholder="Roles bound to this principal">
@@ -136,6 +149,7 @@ export default {
         kind: "user",
         status: "active",
         execution_user: "",
+        sandbox_mode: "",
         roles: [],
         principal_id: "",
       },
@@ -209,6 +223,7 @@ export default {
                   email: res[id].email,
                   status: res[id].status,
                   execution_user: res[id].execution_user,
+                  sandbox: res[id].sandbox,
                   roles: res[id].roles || [],
                 });
               }
@@ -251,6 +266,7 @@ export default {
             kind: "user",
             status: "active",
             execution_user: "",
+            sandbox_mode: "",
             roles: [],
             principal_id: "",
           };
@@ -266,6 +282,7 @@ export default {
             kind: row.kind,
             status: row.status,
             execution_user: row.execution_user || "",
+            sandbox_mode: row.sandbox?.mode || "",
             roles: [...row.roles],
             principal_id: row.principal_id,
           };
@@ -284,6 +301,7 @@ export default {
           const policy = {
             status: form.status,
             execution_user: form.execution_user,
+            sandbox: { mode: form.sandbox_mode }, // an empty mode removes the override
             roles: form.roles,
           };
           if (this.formMode === "new") {

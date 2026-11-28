@@ -72,6 +72,8 @@ export default {
             { k: "Permission", v: r.permission },
             { k: "State", tag: r.enabled ? { type: "success", label: "Enabled" } : null, offIcon: !r.enabled },
             { k: "Working dir", v: r.working_dir, mono: true },
+            { k: "Sandbox mode", v: r.sandbox_mode },
+            { k: "Sandbox workdir", v: r.sandbox_workdir, mono: true },
             { k: "Shell mode", bool: !!r.shell },
             { k: "Session login", bool: !!r.session_login },
             { k: "Healthcheck cmd", v: r.health_check_cmd, mono: true },

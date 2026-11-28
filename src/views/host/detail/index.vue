@@ -20,6 +20,10 @@
         <div class="kv"><span class="k">1 min load</span><span class="v">{{ formatEmpty(record.load?.["1min"]) }}</span></div>
         <div class="kv"><span class="k">5 min load</span><span class="v">{{ formatEmpty(record.load?.["5min"]) }}</span></div>
         <div class="kv"><span class="k">15 min load</span><span class="v">{{ formatEmpty(record.load?.["15min"]) }}</span></div>
+        <div class="kv"><span class="k">Sandbox</span><span class="v"><el-tag size="small" effect="light" :type="record.sandbox?.enabled ? 'success' : 'info'">{{ record.sandbox?.enabled ? "Enabled" : "Disabled" }}</el-tag></span></div>
+        <div class="kv"><span class="k">Sandbox mode</span><span class="v">{{ formatEmpty(record.sandbox?.mode) }}</span></div>
+        <div class="kv"><span class="k">Landlock support</span><span class="v"><el-tag size="small" effect="light" :type="record.sandbox?.supported ? 'success' : 'info'">{{ record.sandbox?.supported ? "Yes" : "No" }}</el-tag></span></div>
+        <div class="kv"><span class="k">Landlock ABI</span><span class="v">{{ formatEmpty(record.sandbox?.abi) }}</span></div>
       </div>
     </section>
 

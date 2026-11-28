@@ -204,6 +204,38 @@
                     </el-select>
                   </el-form-item>
                 </el-collapse-item>
+
+                <el-collapse-item name="4">
+                  <template #title>
+                    <el-icon style="margin-right: 8px;"><Lock /></el-icon>
+                    Sandbox
+                  </template>
+                  <el-form-item label="Enable" prop="Sandbox.Enable">
+                    <el-switch
+                      v-model="form.Sandbox.Enable" active-text="Yes" :active-value="true"
+                      inactive-text="No" :inactive-value="false"
+                    />
+                    <el-tooltip
+                      content="File system sandbox (Linux Landlock) for native applications; false runs every application unrestricted and ignores principal sandbox modes (hot-reloadable)"
+                      placement="right"
+                    >
+                      <el-icon class="field-hint"><InfoFilled /></el-icon>
+                    </el-tooltip>
+                  </el-form-item>
+                  <el-form-item label="Default mode" prop="Sandbox.Mode">
+                    <el-select v-model="form.Sandbox.Mode">
+                      <el-option label="off" value="off" />
+                      <el-option label="write" value="write" />
+                      <el-option label="strict" value="strict" />
+                    </el-select>
+                    <el-tooltip
+                      content="Node default for applications whose owner principal sets no sandbox mode: write limits writes to the application workspace and work/share, strict also limits reads (hot-reloadable)"
+                      placement="right"
+                    >
+                      <el-icon class="field-hint"><InfoFilled /></el-icon>
+                    </el-tooltip>
+                  </el-form-item>
+                </el-collapse-item>
               </el-collapse>
             </el-form>
           </el-tab-pane>
@@ -285,7 +317,7 @@
 
 <script>
 import { markRaw } from 'vue'
-import { Setting, Connection, CollectionTag, Edit as EditIcon, CircleCheck, Delete, Plus, InfoFilled } from '@element-plus/icons-vue'
+import { Setting, Connection, CollectionTag, Edit as EditIcon, CircleCheck, Delete, Plus, InfoFilled, Lock } from '@element-plus/icons-vue'
 import configService from "@/services/config";
 import labelsService from "@/services/labels";
 import ListEmpty from "@/components/ListEmpty/index.vue";
@@ -296,6 +328,7 @@ export default {
     Connection,
     CollectionTag,
     InfoFilled,
+    Lock,
     ListEmpty,
   },
   data() {
@@ -349,6 +382,10 @@ export default {
         Docker: {
           Enable: true,
           HostSecurityPolicy: "off",
+        },
+        Sandbox: {
+          Enable: false,
+          Mode: "off",
         },
       },
       configData: null,
